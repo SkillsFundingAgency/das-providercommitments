@@ -15,7 +15,7 @@ public class ReservationsAddDraftApprenticeshipRequestFromChoosePilotStatusViewM
             DeliveryModel = source.DeliveryModel,
             ReservationId = source.ReservationId.Value,
             StartMonthYear = source.StartMonthYear,
-            IsOnFlexiPaymentsPilot = source.Selection == null ? null : source.Selection.Value == ChoosePilotStatusOptions.Pilot
+            IsOnFlexiPaymentPilot = source.Selection == null ? null : source.Selection.Value == ChoosePilotStatusOptions.Pilot
         });
     }
 }

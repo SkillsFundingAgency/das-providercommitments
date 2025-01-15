@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string StartMonthYear { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
         public List<DeliveryModel> DeliveryModels { get; set; }
-        public bool? IsOnFlexiPaymentsPilot { get; set; }
+        public bool? IsOnFlexiPaymentPilot { get; set; }
         
     }
 }

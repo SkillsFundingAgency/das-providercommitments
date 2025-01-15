@@ -15,7 +15,7 @@ public class WhenIMapToSelectDeliveryCourseViewModel
     private ProviderCourseDeliveryModels _response;
     private long _providerId;
     private string _courseCode;
-    private bool? _isOnFlexiPaymentsPilot;
+    private bool? _isOnFlexiPaymentPilot;
 
     [SetUp]
     public void Arrange()
@@ -23,7 +23,7 @@ public class WhenIMapToSelectDeliveryCourseViewModel
         var fixture = new Fixture();
         _providerId = fixture.Create<long>();
         _courseCode = fixture.Create<string>();
-        _isOnFlexiPaymentsPilot = fixture.Create<bool?>();
+        _isOnFlexiPaymentPilot = fixture.Create<bool?>();
         _response = fixture.Create<ProviderCourseDeliveryModels>();
 
         _outerApiClient = new Mock<IApprovalsOuterApiClient>();
@@ -37,14 +37,14 @@ public class WhenIMapToSelectDeliveryCourseViewModel
     [Test]
     public async Task ThenCourseCodeIsMappedCorrectly()
     {
-        var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentsPilot);
+        var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentPilot);
         result.CourseCode.Should().Be(_courseCode);
     }
 
     [Test]
     public async Task ThenDeliveryModelsAreReturnedCorrectly()
     {
-        var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentsPilot);
+        var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentPilot);
         result.DeliveryModels.Should().BeEquivalentTo(_response.DeliveryModels);
     }
 
@@ -53,15 +53,15 @@ public class WhenIMapToSelectDeliveryCourseViewModel
     [TestCase(null)]
     public async Task ThenDeliveryModelisMappedCorrectly(DeliveryModel? dm)
     {
-        var result = await _mapper.Map(_providerId, _courseCode, 1234, dm, _isOnFlexiPaymentsPilot);
+        var result = await _mapper.Map(_providerId, _courseCode, 1234, dm, _isOnFlexiPaymentPilot);
         result.DeliveryModel.Should().Be(dm);
     }
 
     [Test]
-    public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
+    public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
     {
-        var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentsPilot);
-        result.IsOnFlexiPaymentsPilot.Should().Be(_isOnFlexiPaymentsPilot);
+        var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentPilot);
+        result.IsOnFlexiPaymentPilot.Should().Be(_isOnFlexiPaymentPilot);
     }
 }
 

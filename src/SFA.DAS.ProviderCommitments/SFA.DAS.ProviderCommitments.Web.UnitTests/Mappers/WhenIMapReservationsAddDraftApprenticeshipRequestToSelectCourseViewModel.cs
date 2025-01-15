@@ -52,9 +52,9 @@ public class WhenIMapAddDraftApprenticeshipViewModelToBaseReservationsAddDraftAp
     }
 
     [Test]
-    public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
+    public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
     {
         var result = await _act();
-        result.IsOnFlexiPaymentsPilot.Should().Be(_source.IsOnFlexiPaymentsPilot);
+        result.IsOnFlexiPaymentPilot.Should().Be(_source.IsOnFlexiPaymentPilot);
     }
 }

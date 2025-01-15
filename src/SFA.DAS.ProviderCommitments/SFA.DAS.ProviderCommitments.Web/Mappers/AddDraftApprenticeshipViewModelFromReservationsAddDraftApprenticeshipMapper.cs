@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 CourseCode = source.CourseCode,
                 DeliveryModel = source.DeliveryModel,
                 HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
-                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentsPilot
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
             };
         }
     }
