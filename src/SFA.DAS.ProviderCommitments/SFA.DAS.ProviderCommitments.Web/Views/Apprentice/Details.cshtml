@@ -309,7 +309,7 @@
                             <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
                         }
                         <td class="govuk-table__cell">
-                            @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.CanActualStartDateBeChanged == true)
+                            @if (Model.ShowChangeStartDateLink)
                             {
                                 <a id="linkChangeStartDate" asp-external-controller=""
                                    asp-external-subdomain="apprenticeshipdetails"
@@ -375,9 +375,12 @@
                             <th scope="row" class="govuk-table__header">Total price</th>
                             <td id="total-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
                             <td class="govuk-table__cell">
-                                <a id="linkChangePrice" asp-external-controller=""
-                                    asp-external-subdomain="apprenticeshipdetails"
-                                    asp-external-relativeroute="@Model.ChangeOfPriceRoute" class="govuk-link">Change</a>
+                                @if (Model.ShowChangePriceLink)
+                                {
+                                    <a id="linkChangePrice" asp-external-controller=""
+                                       asp-external-subdomain="apprenticeshipdetails"
+                                       asp-external-relativeroute="@Model.ChangeOfPriceRoute" class="govuk-link">Change</a>
+                                }
                             </td>
                         </tr>
                     }
