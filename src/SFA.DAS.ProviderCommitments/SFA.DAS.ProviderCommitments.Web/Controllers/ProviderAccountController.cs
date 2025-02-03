@@ -11,6 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     {
         [AllowAnonymous]
         [Route("signout", Name = RouteNames.ProviderSignOut)]
+        [Route("service/signout")]
         public IActionResult SignOut()
         {
             return SignOut(
