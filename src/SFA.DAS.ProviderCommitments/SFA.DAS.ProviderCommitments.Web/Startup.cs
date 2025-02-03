@@ -1,6 +1,7 @@
 ﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
 using FluentValidation;
 using OpenTelemetry.Logs;
+using SFA.DAS.DfESignIn.Auth.Extensions;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Extensions;
@@ -109,7 +110,11 @@ public class Startup(IConfiguration configuration, IHostEnvironment environment)
             .UseAuthentication()
             .UseRouting()
             .UseAuthorization()
-            .UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute())
+            .UseEndpoints(endpoints =>
+            {
+                endpoints.MapSessionKeepAliveEndpoint();
+                endpoints.MapDefaultControllerRoute();
+            })
             .UseHealthChecks("/health-check");
     }
 }
