@@ -33,5 +33,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _fixture.SetupEmployerNotified(NextAction.ViewDashBoard);
             _fixture.VerifyUserRedirectedToUrl();
         }
+
+        [Test]
+        public void AndWhenUserSelectsToGotoManageApprentices()
+        {
+            _fixture.SetupEmployerNotified(NextAction.ManageApprentices);
+            _fixture.VerifyUserRedirectedTo("apprentices-index", "Apprentice");
+        }
     }
 }
