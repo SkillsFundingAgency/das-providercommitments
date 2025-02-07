@@ -11,16 +11,16 @@
         <partial name="_ValidationSummary"/>
         <div class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
-                Stop date request sent
+                Request sent to employer
             </h1>
         </div>
         <p class="govuk-body">
-            We’ve sent a stop date request email to the previous employer.
+            We’ve sent a request email to the previous employer to change the record.
         </p>
         <h2 class="govuk-heading-m">What happens next</h2>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-6">
             <li>
-                the previous employer has 2 weeks to action the stop date request email
+                the previous employer has 2 weeks to action the request
             </li>
             <li>
                 we will send a reminder to the previous employer in 1 week
@@ -29,7 +29,7 @@
                 a draft apprenticeship record has been saved but you cannot approve it until the overlapping date has been resolved
             </li>
             <li>
-                you will be notified once the employer has amended or rejected changes for this apprentice
+                you will be notified when the record is updated
             </li>
         </ul>
         <form method="post">
@@ -44,13 +44,19 @@
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="radio-view-all-cohorts" name="NextAction" type="radio" value="@NextAction.ViewAllCohorts" data-aria-controls="conditional-approve">
                             <label class="govuk-label govuk-radios__label" for="radio-view-all-cohorts">
-                                View apprentice details
+                                Go to apprentice requests
                             </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="radio-view-dashboard" name="NextAction" type="radio" value="@NextAction.ViewDashBoard" data-aria-controls="conditional-approve">
+                            <input class="govuk-radios__input" id="radio-add-another-apprentice" name="NextAction" type="radio" value="@NextAction.AddAnotherApprentice" data-aria-controls="conditional-approve">
+                            <label class="govuk-label govuk-radios__label" for="radio-add-another-apprentice">
+                                Add another apprentice
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="radio-view-dashboard" name="NextAction" type="radio" value="@NextAction.ManageApprentices" data-aria-controls="conditional-approve">
                             <label class="govuk-label govuk-radios__label" for="radio-view-dashboard">
-                                Return to dashboard
+                                Manage my apprentices
                             </label>
                         </div>
                     </div>
