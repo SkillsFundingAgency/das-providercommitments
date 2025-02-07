@@ -106,7 +106,7 @@
     <partial name="DetailsPartials/_PaymentsFrozenBanner" />
 }
 
-@if (Model.LearnerStatus == LearnerStatus.Withdrawn)
+@if (Model.LearnerStatus == LearnerStatus.Withdrawn && Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
 {
     <partial name="DetailsPartials/_WithdrawnPermanentInformationBanner" />
 }
