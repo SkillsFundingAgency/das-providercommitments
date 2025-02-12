@@ -1,6 +1,8 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
-<div id="change-of-startdate-request-sent-banner" class="govuk-notification-banner">
+<div id="withdrawn-permanent-banner" class="govuk-notification-banner">
     <div class="govuk-notification-banner__header">
         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
             Important
@@ -8,8 +10,8 @@
     </div>
     <div class="govuk-notification-banner__content">
         <h3 class="govuk-notification-banner__heading">
-            Learner status changed to "Withdrawn" @*TODO FLP-788 set this date correctly: on the 10th January 2024*@
+            Learner status changed to "Withdrawn" on @Model.WithdrawalChangedDate?.ToGdsHumanisedDate()
         </h3>
-        <p class="govuk-body">The last payment you will receive for this apprenticeship will be @*TODO FLP-788 set this date correctly: December 2023..*@</p>
+        <p class="govuk-body">The last payment you will receive for this apprenticeship will be @Model.LastCensusDateOfLearning?.ToGdsFormatLongMonthWithoutDay()</p>
     </div>
 </div>
