@@ -696,7 +696,7 @@ public class DetailsViewModelMapperTests
     public async Task ThenPaymentStatusIsMappedCorrectly(bool paymentsFrozen, bool waitingToStart, string expectedStatus)
     {
         _fixture.WithPaymentsFrozenSetTo(paymentsFrozen);
-        _fixture.WithLearnerStatusSetTo(waitingToStart ? LearnerStatus.WaitingToStart : LearnerStatus.InLearning);
+        _fixture.WithLearnerStatusDetailsSetTo(waitingToStart ? new LearnerStatusDetails{ LearnerStatus = LearnerStatus.WaitingToStart } : new LearnerStatusDetails { LearnerStatus = LearnerStatus.InLearning });
 
         await _fixture.Map();
 
@@ -731,6 +731,30 @@ public class DetailsViewModelMapperTests
         await _fixture.Map();
 
         _fixture.Result.PaymentStatus.ReasonFrozen.Should().Be(_fixture.ApiResponse.PaymentsStatus.ReasonFrozen);
+    }
+
+    [Test]
+    public async Task ThenLearnerStatusIsMappedCorrectly()
+    {
+        await _fixture.Map();
+
+        _fixture.Result.LearnerStatus.Should().Be(_fixture.ApiResponse.LearnerStatusDetails.LearnerStatus);
+    }
+
+    [Test]
+    public async Task ThenWithdrawalChangedDateIsMappedCorrectly()
+    {
+        await _fixture.Map();
+
+        _fixture.Result.WithdrawalChangedDate.Should().Be(_fixture.ApiResponse.LearnerStatusDetails.WithdrawalChangedDate);
+    }
+
+    [Test]
+    public async Task ThenLastCensusDateOfLearningIsMappedCorrectly()
+    {
+        await _fixture.Map();
+
+        _fixture.Result.LastCensusDateOfLearning.Should().Be(_fixture.ApiResponse.LearnerStatusDetails.LastCensusDateOfLearning);
     }
 
     public class DetailsViewModelMapperFixture
@@ -1135,9 +1159,9 @@ public class DetailsViewModelMapperTests
             return this;
         }
 
-        public DetailsViewModelMapperFixture WithLearnerStatusSetTo(LearnerStatus learnerStatus)
+        public DetailsViewModelMapperFixture WithLearnerStatusDetailsSetTo(LearnerStatusDetails learnerStatusDetails)
         {
-            ApiResponse.LearnerStatus = learnerStatus;
+            ApiResponse.LearnerStatusDetails = learnerStatusDetails;
             return this;
         }
     }
