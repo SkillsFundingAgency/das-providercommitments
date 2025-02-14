@@ -11,6 +11,7 @@
     {
         ViewAllCohorts,
         AddAnotherApprentice,
-        ViewDashBoard
+        ViewDashBoard,
+        ManageApprentices
     }
 }
