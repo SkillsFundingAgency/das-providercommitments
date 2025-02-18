@@ -12,6 +12,13 @@
         <h3 class="govuk-notification-banner__heading">
             Learner status changed to "Withdrawn" on @Model.WithdrawalChangedDate?.ToGdsHumanisedDate()
         </h3>
-        <p class="govuk-body">The last payment you will receive for this apprenticeship will be @Model.LastCensusDateOfLearning?.ToGdsFormatLongMonthWithoutDay()</p>
+        @if (Model.ShowWithdrawnWithinQualifyingPeriodMessage)
+        {
+            <p class="govuk-body">The last day of learning was before the end of the qualifying period therefore you will not earn any funding for this apprenticeship, including learning support.</p>
+        }
+        else
+        {
+            <p class="govuk-body">The last payment you will receive for this apprenticeship will be @Model.LastCensusDateOfLearning?.ToGdsFormatLongMonthWithoutDay()</p>
+        }
     </div>
 </div>

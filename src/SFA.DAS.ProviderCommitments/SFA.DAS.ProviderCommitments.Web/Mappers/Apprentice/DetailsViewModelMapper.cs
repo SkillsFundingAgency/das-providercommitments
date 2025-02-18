@@ -126,7 +126,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     PaymentStatus = Map(data),
                     LearnerStatus = data.LearnerStatusDetails.LearnerStatus,
                     WithdrawalChangedDate = data.LearnerStatusDetails.WithdrawalChangedDate,
-                    LastCensusDateOfLearning = data.LearnerStatusDetails.LastCensusDateOfLearning
+                    LastCensusDateOfLearning = data.LearnerStatusDetails.LastCensusDateOfLearning,
+                    LastDayOfLearning = data.LearnerStatusDetails.LastDayOfLearning
                 };
             }
             catch (Exception e)

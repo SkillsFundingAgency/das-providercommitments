@@ -201,4 +201,5 @@ public class LearnerStatusDetails
     public LearnerStatus LearnerStatus { get; set; }
     public DateTime? WithdrawalChangedDate { get; set; }
     public DateTime? LastCensusDateOfLearning { get; set; }
+    public DateTime? LastDayOfLearning { get; set; }
 }
