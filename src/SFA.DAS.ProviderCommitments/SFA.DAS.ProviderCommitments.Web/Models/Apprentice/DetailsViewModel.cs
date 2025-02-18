@@ -110,7 +110,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool ShowWithdrawnWithinQualifyingPeriodMessage =>
             IsOnFlexiPaymentPilot.GetValueOrDefault()
             && (LastDayOfLearning - ActualStartDate).HasValue
-            && (LastDayOfLearning - ActualStartDate).GetValueOrDefault().TotalDays <= 42;
+            && (LastDayOfLearning - ActualStartDate).GetValueOrDefault().TotalDays < 42;
 
         public enum DataLockSummaryStatus
         {
