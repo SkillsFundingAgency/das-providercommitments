@@ -216,6 +216,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 case NextAction.AddAnotherApprentice:
                     return RedirectToAction("Details", "Cohort", new { vm.ProviderId, vm.CohortReference });
 
+                case NextAction.ManageApprentices:
+                    return RedirectToAction("Index", "Apprentice", new { vm.ProviderId });
+
                 default:
                     return Redirect(_urlHelper.ProviderApprenticeshipServiceLink("/account"));
             }
