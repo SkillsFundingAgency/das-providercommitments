@@ -1,6 +1,7 @@
 ﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
 using FluentValidation;
 using OpenTelemetry.Logs;
+using SFA.DAS.DfESignIn.Auth.Extensions;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Extensions;
@@ -16,16 +17,9 @@ using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 
 namespace SFA.DAS.ProviderCommitments.Web;
 
-public class Startup
+public class Startup(IConfiguration configuration, IHostEnvironment environment)
 {
-    private readonly IConfiguration _configuration;
-    private readonly IHostEnvironment _environment;
-
-    public Startup(IConfiguration configuration, IHostEnvironment environment)
-    {
-        _configuration = configuration.BuildDasConfiguration();
-        _environment = environment;
-    }
+    private readonly IConfiguration _configuration = configuration.BuildDasConfiguration();
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -53,7 +47,7 @@ public class Startup
         services.AddDasHealthChecks();
         services.AddProviderAuthentication(_configuration);
         services.AddMemoryCache();
-        services.AddCache(_environment, _configuration);
+        services.AddCache(environment, _configuration);
         services.AddModelMappings();
 
         services.AddDasMvc(_configuration);
@@ -64,7 +58,7 @@ public class Startup
 
         services
             .AddAuthorizationServices()
-            .AddDataProtection(_configuration, _environment)
+            .AddDataProtection(_configuration, environment)
             .AddUrlHelper()
             .AddHealthChecks();
 
@@ -96,7 +90,7 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
     {
-        if (_environment.IsDevelopment())
+        if (environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
         }
@@ -116,7 +110,11 @@ public class Startup
             .UseAuthentication()
             .UseRouting()
             .UseAuthorization()
-            .UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute())
+            .UseEndpoints(endpoints =>
+            {
+                endpoints.MapSessionKeepAliveEndpoint();
+                endpoints.MapDefaultControllerRoute();
+            })
             .UseHealthChecks("/health-check");
     }
 }
