@@ -1,19 +1,23 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Net;
+using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Types.Http;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 
+public interface IOuterApiClient
+{
+    Task<TResponse> Get<TResponse>(IGetApiRequest request);
+    Task<TResponse> Post<TResponse>(IPostApiRequest request);
+    Task<TResponse> Put<TResponse>(IPutApiRequest request);
+}
+
 public class OuterApiClient : IOuterApiClient
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly HttpClient _httpClient;
     private readonly ApprovalsOuterApiConfiguration _config;
     private readonly ILogger<OuterApiClient> _logger;
@@ -23,14 +27,12 @@ public class OuterApiClient : IOuterApiClient
     public OuterApiClient(
         IHttpClientFactory httpClientFactory,
         ApprovalsOuterApiConfiguration config,
-        ILogger<OuterApiClient> logger,
-        IHttpContextAccessor httpContextAccessor)
+        ILogger<OuterApiClient> logger)
     {
         _httpClient = httpClientFactory.CreateClient();
         _config = config;
         _httpClient.BaseAddress = new Uri(_config.ApiBaseUrl);
         _logger = logger;
-        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
@@ -58,11 +60,6 @@ public class OuterApiClient : IOuterApiClient
 
     private void AddAuthenticationHeaders(HttpRequestMessage httpRequestMessage)
     {
-        if (_httpContextAccessor.HttpContext.TryGetBearerToken(out var bearerToken))
-        {
-            httpRequestMessage.Headers.Add("Authorization", $"Bearer {bearerToken}");
-        }
-
         httpRequestMessage.Headers.Add(SubscriptionKeyRequestHeaderKey, _config.SubscriptionKey);
         httpRequestMessage.Headers.Add(VersionRequestHeaderKey, "1");
     }
@@ -92,9 +89,7 @@ public class OuterApiClient : IOuterApiClient
 
         var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-        // var errorContent = "";
         var responseBody = (TResponse)default;
-
 
         if (IsNot200RangeResponseCode(response.StatusCode))
         {
@@ -129,11 +124,10 @@ public class OuterApiClient : IOuterApiClient
         if (string.IsNullOrWhiteSpace(content))
         {
             _logger.LogWarning("{RequestUri} has returned an empty string when an array of error responses was expected.", httpResponseMessage.RequestMessage.RequestUri);
-            return new CommitmentsApiBulkUploadModelException(new List<BulkUploadValidationError>());
+            return new CommitmentsApiBulkUploadModelException([]);
         }
 
-        var errors = new CommitmentsApiBulkUploadModelException(JsonConvert.DeserializeObject<BulkUploadErrorResponse>(content).DomainErrors?.ToList());
-        return errors;
+        return new CommitmentsApiBulkUploadModelException(JsonConvert.DeserializeObject<BulkUploadErrorResponse>(content).DomainErrors?.ToList());
     }
 
     private Exception CreateApiModelException(HttpResponseMessage httpResponseMessage, string content)
@@ -141,21 +135,15 @@ public class OuterApiClient : IOuterApiClient
         if (string.IsNullOrWhiteSpace(content))
         {
             _logger.LogWarning("{RequestUri} has returned an empty string when an array of error responses was expected.", httpResponseMessage.RequestMessage.RequestUri);
-            return new CommitmentsV2.Api.Types.Validation.CommitmentsApiModelException(new List<CommitmentsV2.Api.Types.Validation.ErrorDetail>());
+            return new CommitmentsV2.Api.Types.Validation.CommitmentsApiModelException([]);
         }
 
         var errors = new CommitmentsV2.Api.Types.Validation.CommitmentsApiModelException(JsonConvert.DeserializeObject<CommitmentsV2.Api.Types.Validation.ErrorResponse>(content).Errors);
 
         var errorDetails = string.Join(";", errors.Errors.Select(e => $"{e.Field} ({e.Message})"));
+        
         _logger.Log(errors.Errors.Count == 0 ? LogLevel.Warning : LogLevel.Debug, "{RequestUri} has returned {ErrorsCount} errors: {ErrorDetails}", httpResponseMessage.RequestMessage.RequestUri, errors.Errors.Count, errorDetails);
 
         return errors;
     }
-}
-
-public interface IOuterApiClient
-{
-    Task<TResponse> Get<TResponse>(IGetApiRequest request);
-    Task<TResponse> Post<TResponse>(IPostApiRequest request);
-    Task<TResponse> Put<TResponse>(IPutApiRequest request);
 }
