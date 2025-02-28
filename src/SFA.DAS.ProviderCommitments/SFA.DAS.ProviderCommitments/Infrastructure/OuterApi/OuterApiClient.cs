@@ -36,15 +36,16 @@ public class OuterApiClient : IOuterApiClient
     public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
     {
         using var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
+        
         AddAuthenticationHeaders(requestMessage);
 
-        var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
+        using var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
         if (response.StatusCode.Equals(HttpStatusCode.NotFound))
         {
             return default;
         }
-            
+
         if (response.IsSuccessStatusCode)
         {
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -151,7 +152,6 @@ public class OuterApiClient : IOuterApiClient
         return errors;
     }
 }
-
 
 public interface IOuterApiClient
 {
