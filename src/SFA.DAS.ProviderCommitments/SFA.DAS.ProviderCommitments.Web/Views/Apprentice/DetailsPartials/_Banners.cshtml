@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.CommitmentsV2.Types
+﻿@using SFA.DAS.Apprenticeships.Types
+@using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Enums
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Shared
@@ -103,4 +104,9 @@
 @if (Model.PaymentStatus.PaymentsFrozen && Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
 {
     <partial name="DetailsPartials/_PaymentsFrozenBanner" />
+}
+
+@if (Model.LearnerStatus == LearnerStatus.Withdrawn && Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+{
+    <partial name="DetailsPartials/_WithdrawnPermanentInformationBanner" />
 }
