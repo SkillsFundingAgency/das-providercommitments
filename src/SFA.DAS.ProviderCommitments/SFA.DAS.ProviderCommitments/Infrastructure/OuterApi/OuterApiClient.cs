@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Types.Http;
@@ -19,6 +20,7 @@ public interface IOuterApiClient
 public class OuterApiClient : IOuterApiClient
 {
     private readonly HttpClient _httpClient;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ApprovalsOuterApiConfiguration _config;
     private readonly ILogger<OuterApiClient> _logger;
     private const string SubscriptionKeyRequestHeaderKey = "Ocp-Apim-Subscription-Key";
@@ -26,10 +28,12 @@ public class OuterApiClient : IOuterApiClient
 
     public OuterApiClient(
         IHttpClientFactory httpClientFactory,
+        IHttpContextAccessor httpContextAccessor,
         ApprovalsOuterApiConfiguration config,
         ILogger<OuterApiClient> logger)
     {
         _httpClient = httpClientFactory.CreateClient();
+        _httpContextAccessor = httpContextAccessor;
         _config = config;
         _httpClient.BaseAddress = new Uri(_config.ApiBaseUrl);
         _logger = logger;
@@ -38,7 +42,7 @@ public class OuterApiClient : IOuterApiClient
     public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
     {
         using var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
-        
+
         AddAuthenticationHeaders(requestMessage);
 
         using var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
@@ -60,6 +64,11 @@ public class OuterApiClient : IOuterApiClient
 
     private void AddAuthenticationHeaders(HttpRequestMessage httpRequestMessage)
     {
+        if (_httpContextAccessor.HttpContext.TryGetBearerToken(out var bearerToken))
+        {
+            httpRequestMessage.Headers.Add("Authorization", $"Bearer {bearerToken}");
+        }
+
         httpRequestMessage.Headers.Add(SubscriptionKeyRequestHeaderKey, _config.SubscriptionKey);
         httpRequestMessage.Headers.Add(VersionRequestHeaderKey, "1");
     }
@@ -141,7 +150,7 @@ public class OuterApiClient : IOuterApiClient
         var errors = new CommitmentsV2.Api.Types.Validation.CommitmentsApiModelException(JsonConvert.DeserializeObject<CommitmentsV2.Api.Types.Validation.ErrorResponse>(content).Errors);
 
         var errorDetails = string.Join(";", errors.Errors.Select(e => $"{e.Field} ({e.Message})"));
-        
+
         _logger.Log(errors.Errors.Count == 0 ? LogLevel.Warning : LogLevel.Debug, "{RequestUri} has returned {ErrorsCount} errors: {ErrorDetails}", httpResponseMessage.RequestMessage.RequestUri, errors.Errors.Count, errorDetails);
 
         return errors;
