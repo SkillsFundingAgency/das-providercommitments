@@ -34,7 +34,7 @@ public class GetManageApprenticeshipDetailsResponse
     public PendingStartDateChangeDetails PendingStartDateChange { get; set; }
     public bool? CanActualStartDateBeChanged { get; set; }
     public PaymentsStatusDetails PaymentsStatus { get; set; }
-    public LearnerStatus LearnerStatus { get; set; }
+    public LearnerStatusDetails LearnerStatusDetails { get; set; }
 
     public class ApprenticeshipDetails
     {
@@ -194,4 +194,12 @@ public class GetManageApprenticeshipDetailsResponse
         public DateTime? FrozenOn { get; set; }
     }
 
+}
+
+public class LearnerStatusDetails
+{
+    public LearnerStatus LearnerStatus { get; set; }
+    public DateTime? WithdrawalChangedDate { get; set; }
+    public DateTime? LastCensusDateOfLearning { get; set; }
+    public DateTime? LastDayOfLearning { get; set; }
 }
