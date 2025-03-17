@@ -97,14 +97,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             if (!string.IsNullOrWhiteSpace(filterModel.SearchAccountName))
             {
-                accountProviderLegalEntities = accountProviderLegalEntities.Where(x => x.EmployerAccountLegalEntityName.ToLower().Contains(filterModel.SearchEmployerName)
-                    && x.EmployerAccountName.ToLower().Contains(filterModel.SearchAccountName)).ToList();
+                accountProviderLegalEntities = accountProviderLegalEntities.Where(x => 
+                    x.EmployerAccountLegalEntityName.Contains(filterModel.SearchEmployerName, StringComparison.CurrentCultureIgnoreCase)
+                    && x.EmployerAccountName.Contains(filterModel.SearchAccountName, StringComparison.CurrentCultureIgnoreCase)
+                    ).ToList();
             }
             else
             {
-                accountProviderLegalEntities = accountProviderLegalEntities.Where(x => x.EmployerAccountName.ToLower().Contains(filterModel.SearchEmployerName)
-                    ||
-                    x.EmployerAccountLegalEntityName.ToLower().Contains(filterModel.SearchEmployerName)).ToList();
+                accountProviderLegalEntities = accountProviderLegalEntities.Where(x => 
+                    x.EmployerAccountName.Contains(filterModel.SearchEmployerName, StringComparison.CurrentCultureIgnoreCase)
+                    ||x.EmployerAccountLegalEntityName.Contains(filterModel.SearchEmployerName, StringComparison.CurrentCultureIgnoreCase)
+                    || x.EmployerAccountLegalEntityPublicHashedId.Contains(filterModel.SearchEmployerName, StringComparison.CurrentCultureIgnoreCase)
+                    ).ToList();
             }
 
             return accountProviderLegalEntities;

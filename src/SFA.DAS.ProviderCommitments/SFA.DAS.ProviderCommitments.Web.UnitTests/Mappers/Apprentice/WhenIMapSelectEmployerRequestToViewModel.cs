@@ -117,6 +117,22 @@ public class WhenIMapSelectEmployerRequestToViewModel
 
         SelectEmployerViewModelMapperFixture.Assert_FilterIsAppliedCorrectlyForEmployerName(result, "ATestAccountLegalEntityName");
     }
+    
+    [Test]
+    public async Task ThenFilterIsAppliedCorrectlyForAgreementId()
+    {
+        var fixture = new SelectEmployerViewModelMapperFixture()
+            .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
+            .WithApprenticeship(458);
+
+        var result = await fixture.Map(new SelectEmployerRequest
+        {
+            ProviderId = 123,
+            SearchTerm = "ADSFF23"
+        });
+
+        SelectEmployerViewModelMapperFixture.Assert_FilterIsAppliedCorrectlyForAgreementId(result, "ADSFF23");
+    }
 
     [Test]
     public async Task ThenCorrectlyMapsEmptyApiResponseToViewModel()
@@ -285,6 +301,12 @@ public class WhenIMapSelectEmployerRequestToViewModel
         {
             result.AccountProviderLegalEntities.Count.Should().Be(1);
             result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName.Should().Be(employerName);
+        }
+        
+        internal static void Assert_FilterIsAppliedCorrectlyForAgreementId(SelectEmployerViewModel result, string agreementId)
+        {
+            result.AccountProviderLegalEntities.Count.Should().Be(1);
+            result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityPublicHashedId.Should().Be(agreementId);
         }
     }
 }
