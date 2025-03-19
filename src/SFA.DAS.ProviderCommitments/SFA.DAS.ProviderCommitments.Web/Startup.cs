@@ -112,7 +112,6 @@ public class Startup(IConfiguration configuration, IHostEnvironment environment)
             .UseAuthorization()
             .UseEndpoints(endpoints =>
             {
-                endpoints.MapSessionKeepAliveEndpoint();
                 endpoints.MapDefaultControllerRoute();
             })
             .UseHealthChecks("/health-check");
