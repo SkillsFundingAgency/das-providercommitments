@@ -1,0 +1,24 @@
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+
+<div id="withdrawn-permanent-banner" class="govuk-notification-banner">
+    <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Important
+        </h2>
+    </div>
+    <div class="govuk-notification-banner__content">
+        <h3 class="govuk-notification-banner__heading">
+            Learner status changed to "Withdrawn" on @Model.WithdrawalChangedDate?.ToGdsHumanisedDate()
+        </h3>
+        @if (Model.ShowWithdrawnWithinQualifyingPeriodMessage)
+        {
+            <p class="govuk-body">The last day of learning was before the end of the qualifying period therefore you will not earn any funding for this apprenticeship, including learning support.</p>
+        }
+        else
+        {
+            <p class="govuk-body">The last payment you will receive for this apprenticeship will be @Model.LastCensusDateOfLearning?.ToGdsFormatLongMonthWithoutDay()</p>
+        }
+    </div>
+</div>
