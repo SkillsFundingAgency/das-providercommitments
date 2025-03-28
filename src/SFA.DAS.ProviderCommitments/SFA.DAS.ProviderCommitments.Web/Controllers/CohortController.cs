@@ -409,20 +409,15 @@ public class CohortController : Controller
     [HttpPost]
     [Route("add/entry-method")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public IActionResult SelectDraftApprenticeshipsEntryMethod(
-        SelectDraftApprenticeshipsEntryMethodViewModel viewModel)
+    public IActionResult SelectDraftApprenticeshipsEntryMethod(SelectDraftApprenticeshipsEntryMethodViewModel viewModel)
     {
-        if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.BulkCsv)
+        return viewModel.Selection switch
         {
-            return RedirectToAction(nameof(FileUploadInform), new { ProviderId = viewModel.ProviderId });
-        }
-
-        if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.Manual)
-        {
-            return RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney),
-                new { ProviderId = viewModel.ProviderId });
-        }
-        throw new InvalidOperationException();
+            AddDraftApprenticeshipEntryMethodOptions.ILR => RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId, UseIlrData = true }),
+            AddDraftApprenticeshipEntryMethodOptions.BulkCsv => RedirectToAction(nameof(FileUploadInform), new { viewModel.ProviderId }),
+            AddDraftApprenticeshipEntryMethodOptions.Manual => RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId }),
+            _ => throw new InvalidOperationException()
+        };
     }
 
     [HttpGet]
@@ -640,6 +635,7 @@ public class CohortController : Controller
         {
             return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId });
         }
+        
         throw new InvalidOperationException();
     }
 
