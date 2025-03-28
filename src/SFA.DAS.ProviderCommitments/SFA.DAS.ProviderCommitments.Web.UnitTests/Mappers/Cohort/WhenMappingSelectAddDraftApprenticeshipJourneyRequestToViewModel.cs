@@ -24,6 +24,15 @@ public class WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModel
 
         fixture.Verify_ProviderId_IsMapped();
     }
+    
+    [Test]
+    public async Task Then_UseIrlData_IsMapped()
+    {
+        var fixture = new WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture();
+        await fixture.WithCohort().SetUp().Map();
+
+        fixture.Verify_UseIlrData_IsMapped();
+    }
 
     [Test]
     public async Task Then_HasCreateCohortPermission_IsMapped()
@@ -80,7 +89,7 @@ public class WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFix
         _hasCreateCohortPermission = true;
         _hasPermissionResponse = new GetHasRelationshipWithPermissionResponse { HasPermission = _hasCreateCohortPermission };
 
-        _request = new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = ProviderId };
+        _request = new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = ProviderId, UseIlrData = true};
 
         _approvalsOuterApiClient = new Mock<IApprovalsOuterApiClient>();
         _approvalsOuterApiClient
@@ -211,5 +220,10 @@ public class WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFix
     public void Verify_WhenNoCohortExist_HasExistingCohort_IsMapped()
     {
         _viewModel.HasExistingCohort.Should().Be(false);
+    }
+
+    public void Verify_UseIlrData_IsMapped()
+    {
+        _viewModel.UseIlrData.Should().Be(true);
     }
 }

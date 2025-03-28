@@ -1,5 +1,4 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -44,68 +43,44 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             return result;
         }
     }
+}
 
-    public class RecognisePriorLearningRequestToDetailsViewModelMapper : IMapper<RecognisePriorLearningRequest, PriorLearningDetailsViewModel>
+public class RecognisePriorLearningSummaryRequestToSummaryViewModelMapper : IMapper<PriorLearningSummaryRequest, PriorLearningSummaryViewModel>
+{
+    private readonly IOuterApiService _outerApiService;
+
+    public RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(IOuterApiService outerApiService)
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
-        public RecognisePriorLearningRequestToDetailsViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
-        {
-            _commitmentsApiClient = commitmentsApiClient;
-        }
-        public async Task<PriorLearningDetailsViewModel> Map(RecognisePriorLearningRequest source)
-        {
-            var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
-            return new PriorLearningDetailsViewModel
-            {
-                CohortId = source.CohortId,
-                CohortReference = source.CohortReference,
-                DraftApprenticeshipId = source.DraftApprenticeshipId,
-                ProviderId = source.ProviderId,
-                DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
-                DurationReducedByHours = apprenticeship.DurationReducedByHours,
-                ReducedDuration = apprenticeship.DurationReducedBy,
-                ReducedPrice = apprenticeship.PriceReducedBy,
-            };
-        }
+        _outerApiService = outerApiService;
     }
 
-    public class RecognisePriorLearningSummaryRequestToSummaryViewModelMapper : IMapper<PriorLearningSummaryRequest, PriorLearningSummaryViewModel>
+    public async Task<PriorLearningSummaryViewModel> Map(PriorLearningSummaryRequest source)
     {
-        private readonly IOuterApiService _outerApiService;
+        var result = new PriorLearningSummaryViewModel();
+        var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(source.ProviderId, source.CohortId, source.DraftApprenticeshipId);
 
-        public RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(IOuterApiService outerApiService)
+        result.CohortId = source.CohortId;
+        result.CohortReference = source.CohortReference;
+        result.DraftApprenticeshipId = source.DraftApprenticeshipId;
+        result.ProviderId = source.ProviderId;
+        result.DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId;
+
+        if (priorLearningSummary != null)
         {
-            _outerApiService = outerApiService;
+            result.TrainingTotalHours = priorLearningSummary.TrainingTotalHours;
+            result.DurationReducedByHours = priorLearningSummary.DurationReducedByHours;
+            result.CostBeforeRpl = priorLearningSummary.CostBeforeRpl;
+            result.PriceReducedBy = priorLearningSummary.PriceReducedBy;
+            result.FundingBandMaximum = priorLearningSummary.FundingBandMaximum;
+            result.PercentageOfPriorLearning = priorLearningSummary.PercentageOfPriorLearning;
+            result.MinimumPercentageReduction = priorLearningSummary.MinimumPercentageReduction;
+            result.MinimumPriceReduction = priorLearningSummary.MinimumPriceReduction;
+            result.RplPriceReductionError = priorLearningSummary.RplPriceReductionError;
+            result.TotalCost = priorLearningSummary.TotalCost;
+            result.FullName = $"{priorLearningSummary.FirstName} {priorLearningSummary.LastName}";
+            result.HasStandardOptions = priorLearningSummary.HasStandardOptions;
         }
 
-        public async Task<PriorLearningSummaryViewModel> Map(PriorLearningSummaryRequest source)
-        {
-            var result = new PriorLearningSummaryViewModel();
-            var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(source.ProviderId, source.CohortId, source.DraftApprenticeshipId);
-
-            result.CohortId = source.CohortId;
-            result.CohortReference = source.CohortReference;
-            result.DraftApprenticeshipId = source.DraftApprenticeshipId;
-            result.ProviderId = source.ProviderId;
-            result.DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId;
-
-            if (priorLearningSummary != null)
-            {
-                result.TrainingTotalHours = priorLearningSummary.TrainingTotalHours;
-                result.DurationReducedByHours = priorLearningSummary.DurationReducedByHours;
-                result.CostBeforeRpl = priorLearningSummary.CostBeforeRpl;
-                result.PriceReducedBy = priorLearningSummary.PriceReducedBy;
-                result.FundingBandMaximum = priorLearningSummary.FundingBandMaximum;
-                result.PercentageOfPriorLearning = priorLearningSummary.PercentageOfPriorLearning;
-                result.MinimumPercentageReduction = priorLearningSummary.MinimumPercentageReduction;
-                result.MinimumPriceReduction = priorLearningSummary.MinimumPriceReduction;
-                result.RplPriceReductionError = priorLearningSummary.RplPriceReductionError;
-                result.TotalCost = priorLearningSummary.TotalCost;
-                result.FullName = $"{priorLearningSummary.FirstName} {priorLearningSummary.LastName}";
-                result.HasStandardOptions = priorLearningSummary.HasStandardOptions;
-            }
- 
-            return result;
-        }
+        return result;
     }
 }
