@@ -41,10 +41,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     });
                     break;
                 case SaveStatus.ApproveAndSend:
-                    result.WhatHappensNext.Add("The employer will review the cohort and either approve it or contact you with an update.");
+                    result.WhatHappensNext.Add("The employer has 2 weeks to review and approve the cohort. If they don’t do this within 2 weeks, the cohort will automatically go into your ready for review requests.");
                     break;
                 default:
-                    result.WhatHappensNext.Add("The updated cohort will appear in the employer’s account for them to review.");
+                    result.WhatHappensNext.Add("The employer has 2 weeks to review the cohort. If they don’t do this within 2 weeks, the cohort will automatically go into your ready for review requests.");
                     break;
             }
 
