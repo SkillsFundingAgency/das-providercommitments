@@ -46,6 +46,10 @@
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
+        <Content Update="Views\Apprentice\DetailsPartials\_WithdrawnPermanentInformationBanner.cshtml">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
         <Content Update="Views\Shared\AddDraftApprenticeship.cshtml">
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>

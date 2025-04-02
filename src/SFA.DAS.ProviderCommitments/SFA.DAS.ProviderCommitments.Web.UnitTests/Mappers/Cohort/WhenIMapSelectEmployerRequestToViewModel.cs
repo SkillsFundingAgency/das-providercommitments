@@ -102,6 +102,22 @@ public class WhenIMapSelectEmployerRequestToViewModel
     }
 
     [Test]
+    public async Task ThenFilterIsAppliedCorrectlyForAgreementId()
+    {
+        var fixture = new SelectEmployerViewModelMapperFixture();
+        fixture.AddListOfAccountProviderLegalEntities()
+            .WithRequest(new SelectEmployerRequest
+            {
+                ProviderId = 123,
+                SearchTerm = "CDSFF23",                
+            });
+
+        var result = await fixture.Act();
+
+        SelectEmployerViewModelMapperFixture.Assert_FilterIsAppliedCorrectlyForAgreementId(result);
+    }
+
+    [Test]
     public async Task ThenCorrectlyMapsEmptyApiResponseToViewModel()
     {
         var fixture = new SelectEmployerViewModelMapperFixture().WithNoMatchingEmployers();
@@ -290,6 +306,12 @@ public class WhenIMapSelectEmployerRequestToViewModel
         {
             result.AccountProviderLegalEntities.Count.Should().Be(1);
             result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName.Should().Be("ATestAccountLegalEntityName");
+        }
+        
+        internal static void Assert_FilterIsAppliedCorrectlyForAgreementId(SelectEmployerViewModel result)
+        {
+            result.AccountProviderLegalEntities.Count.Should().Be(1);
+            result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityPublicHashedId.Should().Be("CDSFF23");
         }
     }
 }
