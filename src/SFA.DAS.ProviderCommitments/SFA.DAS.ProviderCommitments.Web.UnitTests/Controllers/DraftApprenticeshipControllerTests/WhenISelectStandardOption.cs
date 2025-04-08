@@ -1,25 +1,24 @@
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests;
+
+public class WhenISelectStandardOption
 {
-    public class WhenISelectStandardOption
+    private DraftApprenticeshipControllerTestFixture _fixture;
+
+    [SetUp]
+    public void Arrange()
     {
-        private DraftApprenticeshipControllerTestFixture _fixture;
+        _fixture = new DraftApprenticeshipControllerTestFixture();
+    }
 
-        [SetUp]
-        public void Arrange()
-        {
-            _fixture = new DraftApprenticeshipControllerTestFixture();
-        }
-
-        [Test]
-        public async Task Then_The_Option_Is_Saved_And_Redirected_To_Cohort_Details()
-        {
-            _fixture.SetupUpdateRequestCourseOption();
+    [Test]
+    public async Task Then_The_Option_Is_Saved_And_Redirected_To_RecognisePriorLearning()
+    {
+        _fixture.SetupUpdateRequestCourseOption();
                 
-            await _fixture.PostToSelectOption();
+        await _fixture.PostToSelectOption();
             
-            _fixture
-                .VerifyApiUpdateWithStandardOptionSet()
-                .VerifyRedirectedBackToCohortDetailsPage();
-        }
+        _fixture
+            .VerifyApiUpdateWithStandardOptionSet()
+            .VerifyRedirectToRecognisePriorLearningPage();
     }
 }

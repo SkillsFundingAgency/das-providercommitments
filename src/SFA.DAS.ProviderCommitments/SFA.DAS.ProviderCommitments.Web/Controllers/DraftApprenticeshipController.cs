@@ -594,7 +594,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             await _outerApiService.UpdateDraftApprenticeship(model.CohortId, model.DraftApprenticeshipId, request);
             
-            return RedirectToAction(nameof(RecognisePriorLearning), new { model.CohortReference,  model.DraftApprenticeshipId, model.ProviderId });
+            return RedirectToAction(nameof(RecognisePriorLearning), new { model.CohortReference,  model.DraftApprenticeshipHashedId, model.ProviderId });
         }
 
         [HttpGet]
