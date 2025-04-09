@@ -75,6 +75,7 @@ public class DraftApprenticeshipControllerTestFixture
         _selectOptionsViewModel = autoFixture.Build<ViewSelectOptionsViewModel>()
             .With(c => c.CohortId, _cohortId)
             .With(x => x.DraftApprenticeshipId, _draftApprenticeshipId)
+            .With(x => x.DraftApprenticeshipHashedId, _draftApprenticeshipHashedId)
             .Create();
 
         _draftApprenticeshipDetails = autoFixture.Build<GetDraftApprenticeshipResponse>()
