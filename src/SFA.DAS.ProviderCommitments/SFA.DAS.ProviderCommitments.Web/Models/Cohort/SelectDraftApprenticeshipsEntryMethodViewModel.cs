@@ -1,15 +1,15 @@
-﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
+﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+
+public class SelectDraftApprenticeshipsEntryMethodViewModel
 {
-    public class SelectDraftApprenticeshipsEntryMethodViewModel
-    {
-        public long ProviderId { get; set; }
+    public long ProviderId { get; set; }
 
-        public AddDraftApprenticeshipEntryMethodOptions? Selection { get; set; }
-    }
+    public AddDraftApprenticeshipEntryMethodOptions? Selection { get; set; }
+}
 
-    public enum AddDraftApprenticeshipEntryMethodOptions
-    {
-        Manual,
-        BulkCsv
-    }
+public enum AddDraftApprenticeshipEntryMethodOptions
+{
+    Manual,
+    BulkCsv,
+    ILR
 }

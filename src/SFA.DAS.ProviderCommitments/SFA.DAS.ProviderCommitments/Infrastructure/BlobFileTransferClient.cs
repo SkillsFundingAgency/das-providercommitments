@@ -1,140 +1,79 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage.Blob;
-using System;
+﻿using System;
 using System.IO;
-using Microsoft.WindowsAzure.Storage;
+using Azure.Storage.Blobs;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.ProviderCommitments.Configuration;
 
-namespace SFA.DAS.ProviderCommitments.Infrastructure
-{
-    public class BlobFileTransferClient : IBlobFileTransferClient
+namespace SFA.DAS.ProviderCommitments.Infrastructure;
+
+public class BlobFileTransferClient : IBlobFileTransferClient{
+    private readonly ILogger<BlobFileTransferClient> _logger;
+    private readonly BlobServiceClient _blobServiceClient;
+    private readonly BlobContainerClient _containerClient;
+
+    public BlobFileTransferClient(ILogger<BlobFileTransferClient> logger, BlobStorageSettings blobStorageSettings)
     {
-        private readonly ILogger<BlobFileTransferClient> _logger;
-        private string ConnectionString { get; }
-        private string ContainerName { get; set; }
+        _logger = logger;
+        _blobServiceClient = new BlobServiceClient(blobStorageSettings.ConnectionString);
+        _containerClient = _blobServiceClient.GetBlobContainerClient(blobStorageSettings.BulkuploadContainer);
+    }
 
-        public BlobFileTransferClient(ILogger<BlobFileTransferClient> logger, BlobStorageSettings blobStorageSettings)
+    public async Task UploadFile(string fileContents, string path)
+    {
+        try
         {
-            _logger = logger;
-            ConnectionString = blobStorageSettings.ConnectionString;
-            ContainerName = blobStorageSettings.BulkuploadContainer;
-        }
+            var blobClient = _containerClient.GetBlobClient(path);
+            _logger.LogDebug("Uploading {path} to blob storage {ContainerName}", path, _containerClient.Name);
 
-        public async Task UploadFile(string fileContents, string path)
-        {
-            try
+            using (var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(fileContents)))
             {
-                var directory = await GetCloudBlobDirectory(GetBlobDirectoryName(path));
-                var blob = directory.GetBlockBlobReference(GetBlobFileName(path));
-
-                _logger.LogDebug("Uploading {path} to blob storage {ContainerName}", path, ContainerName);
-
-                var array = System.Text.Encoding.ASCII.GetBytes(fileContents);
-                using (var stream = new MemoryStream(array))
-                {
-                    await blob.UploadFromStreamAsync(stream);
-                }
-
-                _logger.LogDebug("Uploaded {path} to blob storage {ContainerName}", path, ContainerName);
+                await blobClient.UploadAsync(stream, overwrite: true);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error uploading file {path}", path);
-                throw;
-            }
+                
+            _logger.LogDebug("Uploaded {path} to blob storage {ContainerName}", path, _containerClient.Name);
         }
-
-        public async Task<string> DownloadFile(string path)
+        catch (Exception ex)
         {
-            string fileContent;
-
-            try
-            {
-                _logger.LogDebug("Downloading {path} from blob storage {ContainerName}", path, ContainerName);
-
-                using (var stream = new MemoryStream())
-                {
-                    await Download(path, stream);
-                    using (var reader = new StreamReader(stream, System.Text.Encoding.UTF8))
-                    {
-                        fileContent = await reader.ReadToEndAsync();
-                    }
-                }
-
-                _logger.LogDebug("Downloaded {path} from blob storage {ContainerName}", path, ContainerName);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error downloading {path} from blob storage {ContainerName}", path, ContainerName);
-                throw;
-            }
-
-            return fileContent;
+            _logger.LogError(ex, "Error uploading file {path}", path);
+            throw;
         }
+    }
 
-        public async Task DeleteFile(string path)
+    public async Task<string> DownloadFile(string path)
+    {
+        try
         {
-            try
-            {
-                var directory = await GetCloudBlobDirectory(GetBlobDirectoryName(path));
-                var blob = directory.GetBlockBlobReference(GetBlobFileName(path));
+            var blobClient = _containerClient.GetBlobClient(path);
+            _logger.LogDebug("Downloading {path} from blob storage {ContainerName}", path, _containerClient.Name);
 
-                _logger.LogDebug("Deleting {path} from blob storage {ContainerName}", path, ContainerName);
-
-                await blob.DeleteAsync();
-
-                _logger.LogDebug("Deleted {path} from blob storage {ContainerName}", path, ContainerName);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error deleting {path} from blob storage {ContainerName}", path, ContainerName);
-                throw;
-            }
+            var response = await blobClient.DownloadContentAsync();
+            string content = response.Value.Content.ToString();
+                
+            _logger.LogDebug("Downloaded {path} from blob storage {ContainerName}", path, _containerClient.Name);
+            return content;
         }
-
-        private async Task Download(string path, Stream stream)
+        catch (Exception ex)
         {
-            var directory = await GetCloudBlobDirectory(GetBlobDirectoryName(path));
-            var blob = directory.GetBlockBlobReference(GetBlobFileName(path));
-
-            using (var memoryStream = new MemoryStream())
-            {
-                await blob.DownloadToStreamAsync(memoryStream);
-
-                memoryStream.Position = 0;
-                await memoryStream.CopyToAsync(stream);
-                stream.Position = 0;
-            }
+            _logger.LogError(ex, "Error downloading {path}", path);
+            throw;
         }
+    }
 
-        private async Task<CloudBlobDirectory> GetCloudBlobDirectory(string path)
+    public async Task DeleteFile(string path)
+    {
+        try
         {
-            var account = CloudStorageAccount.Parse(ConnectionString);
-            var client = account.CreateCloudBlobClient();
-            var container = client.GetContainerReference(ContainerName);
+            var blobClient = _containerClient.GetBlobClient(path);
+            _logger.LogDebug("Deleting {path} from blob storage {ContainerName}", path, _containerClient.Name);
 
-            var directory = container.GetDirectoryReference(GetBlobDirectoryName(path));
-            await container.CreateIfNotExistsAsync();
+            await blobClient.DeleteIfExistsAsync();
 
-            return directory;
+            _logger.LogDebug("Deleted {path} from blob storage {ContainerName}", path, _containerClient.Name);
         }
-
-        private static string GetBlobFileName(string path)
+        catch (Exception ex)
         {
-            return Path.GetFileName(path);
-        }
-
-        private static string GetBlobDirectoryName(string path)
-        {
-            var directoryName = Path.GetDirectoryName(path);
-
-            directoryName = !string.IsNullOrEmpty(directoryName)
-                ? directoryName.Replace('\\', '/').TrimStart('/')
-                : path;
-
-            return directoryName.EndsWith('/')
-                ? directoryName
-                : directoryName += '/';
+            _logger.LogError(ex, "Error deleting {path} from blob storage {ContainerName}", path, _containerClient.Name);
+            throw;
         }
     }
 }

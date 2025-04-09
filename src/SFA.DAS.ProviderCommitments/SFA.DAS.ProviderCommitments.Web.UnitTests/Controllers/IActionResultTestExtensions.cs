@@ -27,6 +27,12 @@ internal static class IActionResultTestExtensions
         result.ActionName.Should().Be(expectedName);
         return result;
     }
+    
+    public static RedirectToActionResult WithRouteValue<T>(this RedirectToActionResult result, string name, T expectedValue)
+    {
+        result.RouteValues[name].Should().Be(expectedValue);
+        return result;
+    }
 
     public static RedirectToActionResult WithControllerName(this RedirectToActionResult result, string expectedName)
     {

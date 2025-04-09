@@ -40,7 +40,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 ProviderId = source.ProviderId,
                 HasCreateCohortPermission = hasRelationshipTask.Result.HasPermission,
-                HasExistingCohort = hasExistingCohort
+                HasExistingCohort = hasExistingCohort,
+                UseIlrData = source.UseIlrData
             };
 
             return result;
