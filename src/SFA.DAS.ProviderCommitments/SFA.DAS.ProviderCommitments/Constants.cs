@@ -16,5 +16,12 @@
             public const string ApprovedApprenticeshipResponse = "ApprovedApprenticeshipResponse";
             public const string BulkUploadErrors = "bulk-upload-errors";
         }
+
+        public static class IlrRecordSearch
+        {
+            public const int NumberOfApprenticesPerSearchPage = 100;
+            public const int NumberOfApprenticesRequiredForSearch = 10;
+        }
+
     }
 }
