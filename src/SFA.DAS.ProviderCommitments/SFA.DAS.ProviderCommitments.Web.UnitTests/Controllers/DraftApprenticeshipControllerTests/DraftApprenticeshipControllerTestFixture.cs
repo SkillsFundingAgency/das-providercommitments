@@ -51,7 +51,7 @@ public class DraftApprenticeshipControllerTestFixture
     private readonly Mock<IOuterApiService> _outerApiService;
     private readonly ValidateUlnOverlapResult _validateUlnOverlapResult;
     private Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult _validateUlnOverlapOnStartDateResult;
-        
+
     public DraftApprenticeshipControllerTestFixture()
     {
         var autoFixture = new Fixture();
@@ -75,6 +75,7 @@ public class DraftApprenticeshipControllerTestFixture
         _selectOptionsViewModel = autoFixture.Build<ViewSelectOptionsViewModel>()
             .With(c => c.CohortId, _cohortId)
             .With(x => x.DraftApprenticeshipId, _draftApprenticeshipId)
+            .With(x => x.DraftApprenticeshipHashedId, _draftApprenticeshipHashedId)
             .Create();
 
         _draftApprenticeshipDetails = autoFixture.Build<GetDraftApprenticeshipResponse>()
@@ -141,15 +142,16 @@ public class DraftApprenticeshipControllerTestFixture
             ULN = "XXXX"
         };
 
-        _viewSelectOptionsViewModel = autoFixture.Build<ViewSelectOptionsViewModel>().Create();
+        _viewSelectOptionsViewModel = autoFixture.Build<ViewSelectOptionsViewModel>()
+            .With(x => x.DraftApprenticeshipHashedId, _draftApprenticeshipHashedId)
+            .Create();
 
         _cohortResponse = autoFixture.Build<GetCohortResponse>()
             .With(x => x.LevyStatus, ApprenticeshipEmployerType.Levy)
             .With(x => x.ChangeOfPartyRequestId, default(long?))
             .Create();
 
-        _apiModelException = new CommitmentsApiModelException(new List<ErrorDetail>()
-            {new("Name", "Cannot be more than...")});
+        _apiModelException = new CommitmentsApiModelException([new("Name", "Cannot be more than...")]);
 
         _mediator = new Mock<IMediator>();
         _mediator.Setup(x => x.Send(It.IsAny<GetTrainingCoursesQueryRequest>(), It.IsAny<CancellationToken>()))
@@ -198,10 +200,10 @@ public class DraftApprenticeshipControllerTestFixture
             _commitmentsApiClient.Object,
             _modelMapper.Object,
             encodingService.Object,
-            providerFeatureToggle.Object, _outerApiService.Object, 
+            providerFeatureToggle.Object, _outerApiService.Object,
             Mock.Of<IAuthenticationService>()
         );
-            
+
         _controller.TempData = _tempData.Object;
 
         _linkGenerator = new Mock<ILinkGenerator>();
@@ -262,6 +264,7 @@ public class DraftApprenticeshipControllerTestFixture
         {
             _getReservationIdForAddAnotherApprenticeRequest.TransferSenderHashedId = transferSenderId;
         }
+
         _actionResult = _controller.GetReservationId(_getReservationIdForAddAnotherApprenticeRequest, _linkGenerator.Object);
         return this;
     }
@@ -284,7 +287,7 @@ public class DraftApprenticeshipControllerTestFixture
 
     public DraftApprenticeshipControllerTestFixture ReturnNoMappedOptions()
     {
-        _viewSelectOptionsViewModel.Options = new List<string>();
+        _viewSelectOptionsViewModel.Options = [];
         return this;
     }
 
@@ -332,7 +335,7 @@ public class DraftApprenticeshipControllerTestFixture
         _actionResult = await _controller.PostSelectOptions(_selectOptionsViewModel);
         return this;
     }
-        
+
     public DraftApprenticeshipControllerTestFixture SetupUpdateRequestCourseOption()
     {
         _updateDraftApprenticeshipRequest.CourseOption = _selectOptionsViewModel.SelectedOption;
@@ -379,6 +382,7 @@ public class DraftApprenticeshipControllerTestFixture
         {
             _cohortResponse.TransferSenderId = null;
         }
+
         return this;
     }
 
@@ -392,6 +396,7 @@ public class DraftApprenticeshipControllerTestFixture
         {
             _cohortResponse.ChangeOfPartyRequestId = null;
         }
+
         return this;
     }
 
@@ -408,7 +413,7 @@ public class DraftApprenticeshipControllerTestFixture
         _tempData.Setup(x => x.TryGetValue(nameof(AddDraftApprenticeshipViewModel), out addModelAsString));
         return this;
     }
-        
+
     public void VerifyViewModelFromTempDataHasDeliveryModelAndCourseValuesSet()
     {
         var model = _actionResult.VerifyReturnsViewModel().WithModel<AddDraftApprenticeshipViewModel>();

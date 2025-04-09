@@ -247,18 +247,10 @@ public class CohortController : Controller
 
         var response = await _mediator.Send(request);
 
-        if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
-        {
-            var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
-                EncodingType.ApprenticeshipId);
-            return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship",
-                new { response.CohortReference, draftApprenticeshipHashedId, request.ProviderId });
-        }
+        var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value, EncodingType.ApprenticeshipId);
 
         if (response.HasStandardOptions)
         {
-            var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
-                EncodingType.ApprenticeshipId);
             return RedirectToAction("SelectOptions", "DraftApprenticeship",
                 new
                 {
@@ -268,7 +260,8 @@ public class CohortController : Controller
                 });
         }
 
-        return RedirectToAction(nameof(Details), new { model.ProviderId, response.CohortReference });
+        return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship",
+            new { response.CohortReference, draftApprenticeshipHashedId, request.ProviderId });
     }
 
     [HttpGet]
@@ -374,15 +367,15 @@ public class CohortController : Controller
         {
             case CohortDetailsOptions.Send:
             case CohortDetailsOptions.Approve:
-                {
-                    await ValidateUserIsAuthorizedToAct(authorizationService);
-                    var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
-                    return RedirectToAction(nameof(Acknowledgement), request);
-                }
+            {
+                await ValidateUserIsAuthorizedToAct(authorizationService);
+                var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
+                return RedirectToAction(nameof(Acknowledgement), request);
+            }
             case CohortDetailsOptions.ApprenticeRequest:
-                {
-                    return RedirectToAction(nameof(Review), new { viewModel.ProviderId });
-                }
+            {
+                return RedirectToAction(nameof(Review), new { viewModel.ProviderId });
+            }
             default:
                 throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));
         }
@@ -422,6 +415,7 @@ public class CohortController : Controller
             return RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney),
                 new { ProviderId = viewModel.ProviderId });
         }
+
         throw new InvalidOperationException();
     }
 
@@ -509,7 +503,7 @@ public class CohortController : Controller
             default:
                 return RedirectToAction(nameof(FileUploadAmendedFile),
                     new FileUploadAmendedFileRequest
-                    { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
+                        { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
         }
     }
 
@@ -543,7 +537,7 @@ public class CohortController : Controller
     public IActionResult FileUploadDiscard(FileDiscardRequest fileDiscardRequest)
     {
         var viewModel = new FileDiscardViewModel
-        { CacheRequestId = fileDiscardRequest.CacheRequestId, ProviderId = fileDiscardRequest.ProviderId };
+            { CacheRequestId = fileDiscardRequest.CacheRequestId, ProviderId = fileDiscardRequest.ProviderId };
         return View(viewModel);
     }
 
@@ -613,7 +607,7 @@ public class CohortController : Controller
 
         return RedirectToAction(nameof(FileUploadReview),
             new FileUploadReviewRequest
-            { CacheRequestId = viewModel.CacheRequestId, ProviderId = viewModel.ProviderId });
+                { CacheRequestId = viewModel.CacheRequestId, ProviderId = viewModel.ProviderId });
     }
 
     [HttpGet]
@@ -640,6 +634,7 @@ public class CohortController : Controller
         {
             return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId });
         }
+
         throw new InvalidOperationException();
     }
 

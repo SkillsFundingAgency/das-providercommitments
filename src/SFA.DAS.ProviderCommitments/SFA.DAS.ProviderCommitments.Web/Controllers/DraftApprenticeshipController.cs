@@ -580,7 +580,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (!model.Options.Any())
             {
-                return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
+                 return RedirectToAction(nameof(RecognisePriorLearning), new { model.CohortReference,  model.DraftApprenticeshipHashedId, model.ProviderId });
             }
 
             return View("SelectStandardOption", model);
@@ -593,8 +593,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _modelMapper.Map<UpdateDraftApprenticeshipApimRequest>(model);
 
             await _outerApiService.UpdateDraftApprenticeship(model.CohortId, model.DraftApprenticeshipId, request);
-
-            return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
+            
+            return RedirectToAction(nameof(RecognisePriorLearning), new { model.CohortReference,  model.DraftApprenticeshipHashedId, model.ProviderId });
         }
 
         [HttpGet]

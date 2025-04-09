@@ -38,10 +38,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public async Task ThenTheUserIsRedirectedToTheViewCohortPage()
+        public async Task ThenTheUserIsRedirectedToTheRecognisePriorLearningPage()
         {
             await _fixture.PostDraftApprenticeshipViewModel();
-            _fixture.VerifyUserRedirectedTo("Details");
+            _fixture.VerifyUserRedirectedTo("RecognisePriorLearning");
         }
 
         [Test]
@@ -84,16 +84,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _fixture.SetModelStartDate("012023", setActualDate);
             await _fixture.PostDraftApprenticeshipViewModel();
             _fixture.VerifyUserRedirectedTo("RecognisePriorLearning");
-        }
-
-        [TestCase(true)]
-        [TestCase(false)]
-        [Test]
-        public async Task UserIsNotRedirectedToRecognisePriorLearningPageWhenStartDateIsBeforeActivationDate(bool setActualDate)
-        {
-            _fixture.SetModelStartDate("012022", setActualDate);
-            await _fixture.PostDraftApprenticeshipViewModel();
-            _fixture.VerifyUserRedirectIsNotToRecognisePriorLearning();
         }
 
         [Test]
