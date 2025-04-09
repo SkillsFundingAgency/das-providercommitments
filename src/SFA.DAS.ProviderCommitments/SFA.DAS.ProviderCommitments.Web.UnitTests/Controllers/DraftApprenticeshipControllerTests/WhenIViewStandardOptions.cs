@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .ReturnNoMappedOptions()
                 .ViewStandardOptions();
             
-            _fixture.VerifyRedirectedBackToCohortDetailsPage();
+            _fixture.VerifyRedirectToRecognisePriorLearningPage();
         }
 
         [Test]
