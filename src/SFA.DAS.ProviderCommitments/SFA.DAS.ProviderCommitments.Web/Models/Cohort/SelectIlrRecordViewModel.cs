@@ -1,4 +1,6 @@
-﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
+using SFA.DAS.ProviderCommitments.Web.ModelBinding;
+using static SFA.DAS.ProviderCommitments.Constants;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -54,15 +56,14 @@ public class IlrRecordsFilterModel
     public string EmployerAccountLegalEntityPublicHashedId { get; set; }
     public int PageNumber { get; set; } = 1;
     public string SearchTerm { get; set; }
-    public int TotalNumberOfApprenticeships { get; set; }
     public int TotalNumberOfApprenticeshipsFound { get; set; }
     public string TotalNumberOfApprenticeshipsFoundDescription => TotalNumberOfApprenticeshipsFound == 1
         ? "1 apprentice record"
         : $"{TotalNumberOfApprenticeshipsFound} apprentice records";
 
-    public bool ShowSearch => TotalNumberOfApprenticeships >= Constants.IlrRecordSearch.NumberOfApprenticesRequiredForSearch;
     public string SortField { get; set; }
     public bool ReverseSort { get; set; }
+    public bool ShowPageLinks => TotalNumberOfApprenticeshipsFound > IlrRecordSearch.NumberOfApprenticesPerSearchPage;
 
     public Dictionary<string, string> RouteData => BuildRouteData();
 
@@ -110,10 +111,6 @@ public class IlrRecordsFilterModel
 
         return routeData;
     }
-
-
-
-
 }
 
 public class IlrApprenticeshipSummary
@@ -124,4 +121,16 @@ public class IlrApprenticeshipSummary
     public string Name => $"{FirstName} {LastName}";
     public long Uln { get; set; }
     public string CourseName { get; set; }
+
+    public static explicit operator IlrApprenticeshipSummary(IlrLearnerSummary v)
+    {
+        return new IlrApprenticeshipSummary
+        {
+            Id = v.Id,
+            FirstName = v.FirstName,
+            LastName = v.LastName,
+            Uln = v.Uln,
+            CourseName = v.Course
+        };
+    }
 }

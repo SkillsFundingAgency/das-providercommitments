@@ -20,7 +20,6 @@
         public static class IlrRecordSearch
         {
             public const int NumberOfApprenticesPerSearchPage = 100;
-            public const int NumberOfApprenticesRequiredForSearch = 10;
         }
 
     }

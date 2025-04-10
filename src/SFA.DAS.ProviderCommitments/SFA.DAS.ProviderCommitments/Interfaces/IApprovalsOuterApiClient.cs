@@ -15,6 +15,5 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<GetProviderAccountLegalEntitiesResponse> GetProviderAccountLegalEntities(int ukprn);
 
         Task<GetHasRelationshipWithPermissionResponse> GetHasRelationshipWithPermission(long ukprn);
-        Task<GetHasRelationshipWithPermissionResponse> GetHasRelationshipWithPermission(long ukprn);
     }
 }

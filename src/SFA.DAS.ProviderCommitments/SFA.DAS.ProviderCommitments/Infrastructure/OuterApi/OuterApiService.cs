@@ -8,6 +8,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderRelationships;
@@ -232,6 +233,15 @@ public class OuterApiService : IOuterApiService
         var response = await _outerApiClient.Get<GetApprenticeshipAccessResponse>(content);
 
         return response.HasApprenticeshipAccess;
+    }
+
+    public async Task<GetIlrDetailsForProviderResponse> GetIlrDetailsForProvider(long providerId, long accountLegalEntityId, string searchTerm, string sortColumn, bool sortDesc, int page)
+    {
+        var request = new GetIlrDetailsForProviderRequest(providerId, accountLegalEntityId, searchTerm, sortColumn, sortDesc, page);
+
+        var response = await _outerApiClient.Get<GetIlrDetailsForProviderResponse>(request);
+
+        return response;
     }
 
     public async Task<bool> CanAccessCohort(long providerId, long cohortId)
