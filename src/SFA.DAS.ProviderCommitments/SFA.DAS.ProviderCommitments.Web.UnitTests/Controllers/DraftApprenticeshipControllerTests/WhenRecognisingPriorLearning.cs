@@ -331,7 +331,6 @@ public class WhenRecognisingPriorLearningFixture
     public RecognisePriorLearningRequest Request;
     public PriorLearningSummaryRequest RplSummaryRequest;
     public RecognisePriorLearningViewModel ViewModel;
-    public PriorLearningDetailsViewModel DetailsViewModel;
     public PriorLearningDataViewModel DataViewModel;
     public CreatePriorLearningDataResponse RplCreatePriorLearningDataResponse;
     public GetPriorLearningDataQueryResult PriorLearningDataQueryResult;
@@ -355,7 +354,6 @@ public class WhenRecognisingPriorLearningFixture
         RplSummaryRequest = fixture.Create<PriorLearningSummaryRequest>();
         ViewModel = fixture.Create<RecognisePriorLearningViewModel>();
         ViewModel.IsTherePriorLearning = true;
-        DetailsViewModel = fixture.Build<PriorLearningDetailsViewModel>().Create();
         DataViewModel = fixture.Build<PriorLearningDataViewModel>().Create();
         Apprenticeship = fixture.Create<GetDraftApprenticeshipResponse>();
         RplSummary = fixture.Create<GetPriorLearningSummaryQueryResult>();
@@ -390,9 +388,6 @@ public class WhenRecognisingPriorLearningFixture
                 new RecognisePriorLearningRequestToDataViewModelMapper(OuterApiService.Object),
                 new RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(OuterApiService.Object),
                 new RecognisePriorLearningViewModelToResultMapper(ApiClient.Object),
-                new RecognisePriorLearningRequestToDetailsViewModelMapper(ApiClient.Object),
-                new PriorLearningDetailsViewModelToResultMapper(ApiClient.Object, AuthorizationService.Object,
-                    OuterApiClient.Object),
                 new PriorLearningDataViewModelToResultMapper(OuterApiService.Object)),
             Mock.Of<IEncodingService>(),
             AuthorizationService.Object,
@@ -478,22 +473,7 @@ public class WhenRecognisingPriorLearningFixture
         RplCreatePriorLearningDataResponse.RplPriceReductionError = rplPriceReductionError;
         return this;
     }
-
-    internal WhenRecognisingPriorLearningFixture EnterRplDetails(int reducedDuration, int reducedPrice)
-    {
-        DetailsViewModel.ReducedDuration = reducedDuration;
-        DetailsViewModel.ReducedPrice = reducedPrice;
-        return this;
-    }
-
-    internal WhenRecognisingPriorLearningFixture EnterRplDetails(PriorLearningDetailsViewModel model)
-    {
-        DetailsViewModel.ReducedDuration = model.ReducedDuration;
-        DetailsViewModel.ReducedPrice = model.ReducedPrice;
-        DetailsViewModel.DurationReducedByHours = model.DurationReducedByHours;
-        return this;
-    }
-
+    
     internal WhenRecognisingPriorLearningFixture EnterRplData(PriorLearningDataViewModel model)
     {
         DataViewModel.TrainingTotalHours = model.TrainingTotalHours;
