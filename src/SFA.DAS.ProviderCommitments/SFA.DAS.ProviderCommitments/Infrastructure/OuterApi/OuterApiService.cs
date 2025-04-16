@@ -235,11 +235,11 @@ public class OuterApiService : IOuterApiService
         return response.HasApprenticeshipAccess;
     }
 
-    public async Task<GetIlrDetailsForProviderResponse> GetIlrDetailsForProvider(long providerId, long accountLegalEntityId, string searchTerm, string sortColumn, bool sortDesc, int page)
+    public async Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, long accountLegalEntityId, string searchTerm, string sortColumn, bool sortDesc, int page)
     {
-        var request = new GetIlrDetailsForProviderRequest(providerId, accountLegalEntityId, searchTerm, sortColumn, sortDesc, page);
+        var request = new GetLearnerDetailsForProviderRequest(providerId, accountLegalEntityId, searchTerm, sortColumn, sortDesc, page);
 
-        var response = await _outerApiClient.Get<GetIlrDetailsForProviderResponse>(request);
+        var response = await _outerApiClient.Get<GetLearnerDetailsForProviderResponse>(request);
 
         return response;
     }

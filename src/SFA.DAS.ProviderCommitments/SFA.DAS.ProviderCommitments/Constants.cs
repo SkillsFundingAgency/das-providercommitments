@@ -17,9 +17,9 @@
             public const string BulkUploadErrors = "bulk-upload-errors";
         }
 
-        public static class IlrRecordSearch
+        public static class LearnerRecordSearch
         {
-            public const int NumberOfApprenticesPerSearchPage = 100;
+            public const int NumberOfLearnersPerSearchPage = 100;
         }
 
     }

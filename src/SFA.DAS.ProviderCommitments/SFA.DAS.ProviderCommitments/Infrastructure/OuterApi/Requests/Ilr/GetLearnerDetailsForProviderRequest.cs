@@ -4,7 +4,7 @@ using System.Net;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 
-public class GetIlrDetailsForProviderRequest(
+public class GetLearnerDetailsForProviderRequest(
     long providerId,
     long accountLegalEntityId,
     string searchTerm,
@@ -17,7 +17,7 @@ public class GetIlrDetailsForProviderRequest(
         $"providers/{providerId}/unapproved/add/ilrs/select?AccountLegalEntity={accountLegalEntityId}&SearchTerm={WebUtility.UrlEncode(searchTerm)}&SortColumn={WebUtility.UrlEncode(sortColumn)}&SortDescending={sortDesc}&Page={page}";
 }
 
-public class GetIlrDetailsForProviderResponse
+public class GetLearnerDetailsForProviderResponse
 {
     public DateTime LastSubmissionDate { get; set; }
     public int Total { get; set; }
@@ -26,10 +26,10 @@ public class GetIlrDetailsForProviderResponse
     public int TotalPages { get; set; }
     public long AccountLegalEntityId { get; set; }
     public string EmployerName { get; set; }
-    public List<IlrLearnerSummary> Learners { get; set; }
+    public List<GetLearnerSummary> Learners { get; set; }
 }
 
-public class IlrLearnerSummary
+public class GetLearnerSummary
 {
     public long Id { get; set; }
     public string FirstName { get; set; }

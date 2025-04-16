@@ -1,17 +1,19 @@
 ﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
+using System.Drawing.Printing;
 using static SFA.DAS.ProviderCommitments.Constants;
+using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ApprenticesFilterModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
-public class SelectIlrRecordViewModel : IAuthorizationContextModel
+public class SelectLearnerRecordViewModel : IAuthorizationContextModel
 {
     public long ProviderId { get; set; }
     public string EmployerAccountName { get; set; }
     public string EmployerAccountLegalEntityPublicHashedId { get; set; }
     public long AccountLegalEntityId { get; set; }
     public string EmployerAccountLegalEntityName { get; set; }
-    public List<IlrApprenticeshipSummary> IlrApprenticeships { get; set; } = new();
+    public List<LearnerSummary> Learners { get; set; } = new();
     public string PageTitle => $"Select apprentice from ILR for {EmployerAccountName}";
     public string MatchingRecordCount { get; set; }
 
@@ -45,27 +47,29 @@ public class SelectIlrRecordViewModel : IAuthorizationContextModel
             return $"Last updated {LastIlrSubmittedOn.Value:h:mmtt} on {LastIlrSubmittedOn.Value:dddd d MMMM}";
         }
     }
+    public bool ShowPageLinks => FilterModel.TotalNumberOfLearnersFound > Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage;
 
-    public IlrRecordsFilterModel FilterModel { get; set; }
+    public LearnerRecordsFilterModel FilterModel { get; set; }
 
 }
 
-public class IlrRecordsFilterModel
+public class LearnerRecordsFilterModel
 {
     public long ProviderId { get; set; }
     public string EmployerAccountLegalEntityPublicHashedId { get; set; }
     public int PageNumber { get; set; } = 1;
     public string SearchTerm { get; set; }
-    public int TotalNumberOfApprenticeshipsFound { get; set; }
-    public string TotalNumberOfApprenticeshipsFoundDescription => TotalNumberOfApprenticeshipsFound == 1
+    public int TotalNumberOfLearnersFound { get; set; }
+    public string TotalNumberOfApprenticeshipsFoundDescription => TotalNumberOfLearnersFound == 1
         ? "1 apprentice record"
-        : $"{TotalNumberOfApprenticeshipsFound} apprentice records";
+        : $"{TotalNumberOfLearnersFound} apprentice records";
 
     public string SortField { get; set; }
     public bool ReverseSort { get; set; }
-    public bool ShowPageLinks => TotalNumberOfApprenticeshipsFound > IlrRecordSearch.NumberOfApprenticesPerSearchPage;
-
+    public bool ShowPageLinks => TotalNumberOfLearnersFound > LearnerRecordSearch.NumberOfLearnersPerSearchPage;
     public Dictionary<string, string> RouteData => BuildRouteData();
+
+    private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
     private Dictionary<string, string> BuildRouteData()
     {
@@ -83,21 +87,74 @@ public class IlrRecordsFilterModel
         return routeData;
     }
 
-    //private Dictionary<string, string> BuildPagedRouteData(int pageNumber)
-    //{
-    //    var routeData = BuildRouteData();
+    public IEnumerable<PageLink> PageLinks
+    {
+        get
+        {
+            var links = new List<PageLink>();
+            var totalPages = (int)Math.Ceiling((double)TotalNumberOfLearnersFound / PageSize);
+            var totalPageLinks = totalPages < 5 ? totalPages : 5;
 
-    //    routeData.Add(nameof(PageNumber), pageNumber.ToString());
+            if (totalPages > 1 && PageNumber > 1)
+            {
+                links.Add(new PageLink
+                {
+                    Label = "Previous",
+                    AriaLabel = "Previous page",
+                    RouteData = BuildPagedRouteData(PageNumber - 1)
+                });
+            }
+            var pageNumberSeed = 1;
+            if (totalPages > 5 && PageNumber > 3)
+            {
+                pageNumberSeed = PageNumber - 2;
 
-    //    if (!string.IsNullOrEmpty(SortField))
-    //    {
-    //        routeData.Add(nameof(SortField), SortField);
+                if (PageNumber > totalPages - 2)
+                    pageNumberSeed = totalPages - 4;
+            }
 
-    //        routeData.Add(nameof(ReverseSort), ReverseSort.ToString());
-    //    }
+            for (var i = 0; i < totalPageLinks; i++)
+            {
+                var link = new PageLink
+                {
+                    Label = (pageNumberSeed + i).ToString(),
+                    AriaLabel = $"Page {pageNumberSeed + i}",
+                    IsCurrent = pageNumberSeed + i == PageNumber ? true : (bool?)null,
+                    RouteData = BuildPagedRouteData(pageNumberSeed + i)
+                };
+                links.Add(link);
+            }
 
-    //    return routeData;
-    //}
+            //next link
+            if (totalPages > 1 && PageNumber < totalPages)
+            {
+                links.Add(new PageLink
+                {
+                    Label = "Next",
+                    AriaLabel = "Next page",
+                    RouteData = BuildPagedRouteData(PageNumber + 1)
+                });
+            }
+
+            return links;
+        }
+    }
+
+    private Dictionary<string, string> BuildPagedRouteData(int pageNumber)
+    {
+        var routeData = BuildRouteData();
+
+        routeData.Add(nameof(PageNumber), pageNumber.ToString());
+
+        if (!string.IsNullOrEmpty(SortField))
+        {
+            routeData.Add(nameof(SortField), SortField);
+
+            routeData.Add(nameof(ReverseSort), ReverseSort.ToString());
+        }
+
+        return routeData;
+    }
 
     public Dictionary<string, string> BuildSortRouteData(string sortField)
     {
@@ -113,7 +170,7 @@ public class IlrRecordsFilterModel
     }
 }
 
-public class IlrApprenticeshipSummary
+public class LearnerSummary
 {
     public long Id { get; set; }
     public string FirstName { get; set; }
@@ -122,9 +179,9 @@ public class IlrApprenticeshipSummary
     public long Uln { get; set; }
     public string CourseName { get; set; }
 
-    public static explicit operator IlrApprenticeshipSummary(IlrLearnerSummary v)
+    public static explicit operator LearnerSummary(GetLearnerSummary v)
     {
-        return new IlrApprenticeshipSummary
+        return new LearnerSummary
         {
             Id = v.Id,
             FirstName = v.FirstName,

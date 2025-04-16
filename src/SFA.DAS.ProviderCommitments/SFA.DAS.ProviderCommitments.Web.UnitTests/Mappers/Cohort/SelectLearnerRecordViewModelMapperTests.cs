@@ -7,27 +7,27 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort;
 
 [TestFixture]
-public class SelectIlrRecordViewModelMapperTests
+public class SelectLearnerRecordViewModelMapperTests
 {
-    private SelectIlrRecordViewModelMapper _mapper;
+    private SelectLearnerRecordViewModelMapper _mapper;
     private Mock<IOuterApiService> _outerApiService;
-    private SelectIlrRecordRequest _request;
-    private GetIlrDetailsForProviderResponse _apiResponse;
+    private SelectLearnerRecordRequest _request;
+    private GetLearnerDetailsForProviderResponse _apiResponse;
 
     [SetUp]
     public void Setup()
     {
         var fixture = new Fixture();
 
-        _request = fixture.Create<SelectIlrRecordRequest>();
-        _apiResponse = fixture.Create<GetIlrDetailsForProviderResponse>();
+        _request = fixture.Create<SelectLearnerRecordRequest>();
+        _apiResponse = fixture.Create<GetLearnerDetailsForProviderResponse>();
 
         _outerApiService = new Mock<IOuterApiService>();
 
-        _outerApiService.Setup(x => x.GetIlrDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.SearchTerm, _request.SortField, _request.ReverseSort, 1))
+        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.SearchTerm, _request.SortField, _request.ReverseSort, 1))
             .ReturnsAsync(_apiResponse);
 
-        _mapper = new SelectIlrRecordViewModelMapper(_outerApiService.Object);
+        _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
     }
 
     [Test]
@@ -36,7 +36,7 @@ public class SelectIlrRecordViewModelMapperTests
         var result = await _mapper.Map(_request);
         result.FilterModel.ProviderId.Should().Be(_request.ProviderId);
         result.FilterModel.EmployerAccountLegalEntityPublicHashedId.Should().Be(_request.EmployerAccountLegalEntityPublicHashedId);
-        result.FilterModel.TotalNumberOfApprenticeshipsFound.Should().Be(_apiResponse.Total);
+        result.FilterModel.TotalNumberOfLearnersFound.Should().Be(_apiResponse.Total);
         result.FilterModel.PageNumber.Should().Be(_apiResponse.Page);
         result.FilterModel.SortField.Should().Be(_request.SortField);
         result.FilterModel.ReverseSort.Should().Be(_request.ReverseSort);
@@ -56,6 +56,6 @@ public class SelectIlrRecordViewModelMapperTests
     public async Task MapLearnersCorrectly()
     {
         var result = await _mapper.Map(_request);
-        result.IlrApprenticeships.Should().BeEquivalentTo(_apiResponse.Learners.Select(x=>(IlrApprenticeshipSummary)x).ToList());
+        result.Learners.Should().BeEquivalentTo(_apiResponse.Learners.Select(x=>(LearnerSummary)x).ToList());
     }
 }

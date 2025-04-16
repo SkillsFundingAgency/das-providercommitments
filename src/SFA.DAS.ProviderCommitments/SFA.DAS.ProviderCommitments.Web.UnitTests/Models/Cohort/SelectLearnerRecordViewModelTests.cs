@@ -4,16 +4,16 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort;
 
-public class SelectIlrRecordViewModelTests
+public class SelectLearnerRecordViewModelTests
 {
-    private SelectIlrRecordViewModel _viewModel;
+    private SelectLearnerRecordViewModel _viewModel;
     private Fixture _fixture;
 
     [SetUp]
     public void Arrange()
     {
         _fixture = new Fixture();
-        _viewModel  = _fixture.Create<SelectIlrRecordViewModel>();
+        _viewModel  = _fixture.Create<SelectLearnerRecordViewModel>();
     }
 
     [TestCase("Test Name")]
@@ -56,7 +56,7 @@ public class SelectIlrRecordViewModelTests
     [TestCase(100, "100 apprentice records")]
     public void TotalNumberOfApprenticesDescription_IsCorrect(int count, string expected)
     {
-        _viewModel.FilterModel.TotalNumberOfApprenticeshipsFound = count;
+        _viewModel.FilterModel.TotalNumberOfLearnersFound = count;
         _viewModel.FilterModel.TotalNumberOfApprenticeshipsFoundDescription.Should().Be(expected);
     }
 
@@ -112,8 +112,8 @@ public class SelectIlrRecordViewModelTests
     [Test]
     public void MapsIlrLearnerSummary_ToIlrApprenticeshipSummary()
     {
-        var ilrLearner = _fixture.Create<IlrLearnerSummary>();
-        var apprenticeship = (IlrApprenticeshipSummary) ilrLearner;
+        var ilrLearner = _fixture.Create<GetLearnerSummary>();
+        var apprenticeship = (LearnerSummary) ilrLearner;
 
         apprenticeship.Should().NotBeNull();
         apprenticeship.Id.Should().Be(ilrLearner.Id);

@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
-    public class SelectIlrRecordRequest : IAuthorizationContextModel
+    public class SelectLearnerRecordRequest : IAuthorizationContextModel
     {
         public long ProviderId { get; set; }
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }

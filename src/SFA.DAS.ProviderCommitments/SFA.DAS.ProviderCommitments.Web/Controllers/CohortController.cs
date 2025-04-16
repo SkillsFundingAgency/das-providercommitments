@@ -303,18 +303,18 @@ public class CohortController : Controller
             {
                 return RedirectToAction(nameof(NoDeclaredStandards), viewModel.ProviderId);
             }
-            return RedirectToAction("SelectIlrRecord", new { ProviderId = viewModel.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId });
+            return RedirectToAction("SelectLearnerRecord", new { ProviderId = viewModel.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId });
         }
 
         return RedirectToAction(nameof(SelectEmployer), new { viewModel.ProviderId });
     }
 
     [HttpGet]
-    [Route("add/ilrs/select", Name = RouteNames.SelectIlrRecord)]
+    [Route("add/learners/select", Name = RouteNames.SelectLearnerRecord)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> SelectIlrRecord(SelectIlrRecordRequest request)
+    public async Task<IActionResult> SelectLearnerRecord(SelectLearnerRecordRequest request)
     {
-        var model = await _modelMapper.Map<SelectIlrRecordViewModel>(request);
+        var model = await _modelMapper.Map<SelectLearnerRecordViewModel>(request);
         return View(model);
     }
 

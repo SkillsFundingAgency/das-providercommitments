@@ -4,29 +4,29 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class SelectIlrRecordViewModelMapper(IOuterApiService client) : IMapper<SelectIlrRecordRequest, SelectIlrRecordViewModel>
+    public class SelectLearnerRecordViewModelMapper(IOuterApiService client) : IMapper<SelectLearnerRecordRequest, SelectLearnerRecordViewModel>
     {
-        public async Task<SelectIlrRecordViewModel> Map(SelectIlrRecordRequest source)
+        public async Task<SelectLearnerRecordViewModel> Map(SelectLearnerRecordRequest source)
         {
-            var response = await client.GetIlrDetailsForProvider(source.ProviderId, source.AccountLegalEntityId, source.SearchTerm, source.SortField, source.ReverseSort, 1);
+            var response = await client.GetLearnerDetailsForProvider(source.ProviderId, source.AccountLegalEntityId, source.SearchTerm, source.SortField, source.ReverseSort, 1);
 
-            var filterModel = new IlrRecordsFilterModel()
+            var filterModel = new LearnerRecordsFilterModel()
             {
                 ProviderId = source.ProviderId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                TotalNumberOfApprenticeshipsFound = response.Total,
+                TotalNumberOfLearnersFound = response.Total,
                 PageNumber = response.Page,
                 SortField = source.SortField,
                 ReverseSort = source.ReverseSort,
                 SearchTerm = source.SearchTerm,
             };
 
-            var model= new SelectIlrRecordViewModel
+            var model= new SelectLearnerRecordViewModel
             {
                 ProviderId = source.ProviderId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 EmployerAccountName = response.EmployerName,
-                IlrApprenticeships = response.Learners.Select(x=>(IlrApprenticeshipSummary)x).ToList(),
+                Learners = response.Learners.Select(x=>(LearnerSummary)x).ToList(),
                 
                 FilterModel = filterModel
             };

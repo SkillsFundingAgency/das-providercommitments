@@ -47,6 +47,6 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<bool> HasRelationshipWithPermission(long? ukprn);
         Task<bool> CanAccessCohort(long providerId, long cohortId);
         Task<bool> CanAccessApprenticeship(long providerId, long apprenticeshipId);
-        Task<GetIlrDetailsForProviderResponse> GetIlrDetailsForProvider(long providerId, long accountLegalEntityId, string searchTerm, string sortColumn, bool sortDesc, int page);
+        Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, long accountLegalEntityId, string searchTerm, string sortColumn, bool sortDesc, int page);
     }
 }
