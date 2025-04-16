@@ -14,7 +14,7 @@ public class GetIlrDetailsForProviderRequest(
     : IGetApiRequest
 {
     public string GetUrl =>
-        $"provider/{providerId}/ilr/select?AccountLegalEntity={accountLegalEntityId}&SearchTerm={WebUtility.UrlEncode(searchTerm)}&SortColumn={WebUtility.UrlEncode(sortColumn)}&SortDescending={sortDesc}&Page={page}";
+        $"providers/{providerId}/unapproved/add/ilrs/select?AccountLegalEntity={accountLegalEntityId}&SearchTerm={WebUtility.UrlEncode(searchTerm)}&SortColumn={WebUtility.UrlEncode(sortColumn)}&SortDescending={sortDesc}&Page={page}";
 }
 
 public class GetIlrDetailsForProviderResponse
