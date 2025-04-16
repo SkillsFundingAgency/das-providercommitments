@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .WithHasNoDeclaredStandards(false);
 
             var result = await fixture.Act();
-            fixture.VerifyReturnsRedirect(result);
+            PostConfirmEmployerFixture.VerifySelectLearnerRecordRedirect(result);
         }
 
         [Test]
@@ -113,6 +113,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public static void VerifyNoDeclaredStandardsRedirect(IActionResult redirectResult)
         {
             redirectResult.VerifyReturnsRedirectToActionResult().WithActionName("NoDeclaredStandards");
+        }
+
+        public static void VerifySelectLearnerRecordRedirect(IActionResult redirectResult)
+        {
+            redirectResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectLearnerRecord");
         }
 
         public async Task<IActionResult> Act() => await _sut.ConfirmEmployer(_viewModel);
