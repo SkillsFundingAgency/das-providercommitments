@@ -19,8 +19,7 @@
 
         public static class LearnerRecordSearch
         {
-            public const int NumberOfLearnersPerSearchPage = 100;
+            public const int NumberOfLearnersPerSearchPage = 10;
         }
-
     }
 }

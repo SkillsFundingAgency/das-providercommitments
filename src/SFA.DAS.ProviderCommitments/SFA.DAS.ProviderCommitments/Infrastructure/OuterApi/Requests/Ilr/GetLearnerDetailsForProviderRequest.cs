@@ -14,12 +14,13 @@ public class GetLearnerDetailsForProviderRequest(
     : IGetApiRequest
 {
     public string GetUrl =>
-        $"providers/{providerId}/unapproved/add/ilrs/select?AccountLegalEntity={accountLegalEntityId}&SearchTerm={WebUtility.UrlEncode(searchTerm)}&SortColumn={WebUtility.UrlEncode(sortColumn)}&SortDescending={sortDesc}&Page={page}";
+        $"providers/{providerId}/unapproved/add/learners/select?AccountLegalEntityId={accountLegalEntityId}&SearchTerm={WebUtility.UrlEncode(searchTerm)}" +
+        $"&SortColumn={WebUtility.UrlEncode(sortColumn)}&SortDescending={sortDesc}&Page={page}&pageSize={Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage}";
 }
 
 public class GetLearnerDetailsForProviderResponse
 {
-    public DateTime LastSubmissionDate { get; set; }
+    public DateTime? LastSubmissionDate { get; set; }
     public int Total { get; set; }
     public int Page { get; set; }
     public int PageSize { get; set; }

@@ -33,7 +33,7 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
         }
     }
 
-    public DateTime? LastIlrSubmittedOn { get; set; } = DateTime.Now;
+    public DateTime? LastIlrSubmittedOn { get; set; }
 
     public string LastIlrSubmittedOnDesc
     {
@@ -47,7 +47,7 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
             return $"Last updated {LastIlrSubmittedOn.Value:h:mmtt} on {LastIlrSubmittedOn.Value:dddd d MMMM}";
         }
     }
-    public bool ShowPageLinks => FilterModel.TotalNumberOfLearnersFound > Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage;
+    public bool ShowPageLinks => FilterModel.TotalNumberOfLearnersFound > Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
     public LearnerRecordsFilterModel FilterModel { get; set; }
 
@@ -144,12 +144,11 @@ public class LearnerRecordsFilterModel
     {
         var routeData = BuildRouteData();
 
-        routeData.Add(nameof(PageNumber), pageNumber.ToString());
+        routeData.Add("page", pageNumber.ToString());
 
         if (!string.IsNullOrEmpty(SortField))
         {
             routeData.Add(nameof(SortField), SortField);
-
             routeData.Add(nameof(ReverseSort), ReverseSort.ToString());
         }
 

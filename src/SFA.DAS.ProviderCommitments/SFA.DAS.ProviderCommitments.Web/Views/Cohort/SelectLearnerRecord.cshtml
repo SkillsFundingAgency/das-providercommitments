@@ -61,9 +61,9 @@
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
         <th scope="col" class="govuk-table__header">
-            <a class="@(Model.FilterModel.SortField == "FirstName" ? Model.SortedByHeaderClassName : SelectLearnerRecordViewModel.HeaderClassName)"
+            <a class="@(Model.FilterModel.SortField == "LastName" ? Model.SortedByHeaderClassName : SelectLearnerRecordViewModel.HeaderClassName)"
                asp-route="@RouteNames.SelectLearnerRecord"
-               asp-all-route-data="@Model.FilterModel.BuildSortRouteData("FirstName")"
+               asp-all-route-data="@Model.FilterModel.BuildSortRouteData("LastName")"
                title="Sort the table by name">
                 Name
             </a>
@@ -118,7 +118,7 @@
             {
                 <li class="das-pagination__item">
                     <a class="das-pagination__link @(pageLink.IsCurrent.HasValue && pageLink.IsCurrent.Value ? "current":"")"
-                       asp-route="@RouteNames.ApprenticesIndex"
+                       asp-route="@RouteNames.SelectLearnerRecord"
                        asp-all-route-data="@pageLink.RouteData"
                        aria-current="@pageLink.IsCurrent"
                        aria-label="@pageLink.AriaLabel">
