@@ -179,7 +179,7 @@ public class WhenAddingServicesToTheContainer
 
                 new("ProviderSharedUIConfiguration:DashboardUrl", "https://test.com/"),
 
-                new("BlobStorage:ConnectionString", "test"),
+                new("BlobStorage:ConnectionString", "UseDevelopmentStorage=true"),
                 new("BlobStorage:BulkUploadContainer", "test"),
                 
                 new("DfEOidcConfiguration:APIServiceUrl", "https://test.com"),
