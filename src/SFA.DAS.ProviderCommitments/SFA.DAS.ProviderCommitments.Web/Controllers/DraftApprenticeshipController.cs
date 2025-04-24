@@ -504,11 +504,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 });
             }
 
-            return RedirectToOptionalPages(
-                result.HasStandardOptions,
+            return RedirectToAction("Details", "Cohort", new
+            {
                 request.ProviderId,
                 request.DraftApprenticeshipHashedId,
-                request.CohortReference);
+                request.CohortReference,
+            });
         }
 
         [HttpGet]
