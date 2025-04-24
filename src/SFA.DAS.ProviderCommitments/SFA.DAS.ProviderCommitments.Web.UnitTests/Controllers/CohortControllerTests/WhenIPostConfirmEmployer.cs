@@ -24,6 +24,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
+        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrueAndUseIlrDataTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
+        {
+            var fixture = new PostConfirmEmployerFixture()
+                .WithConfirmTrue()
+                .WithUseIlrDataTrue()
+                .WithHasNoDeclaredStandards(false);
+
+            var result = await fixture.Act();
+            PostConfirmEmployerFixture.VerifySelectLearnerRecordRedirect(result);
+        }
+
+        [Test]
         public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
         {
             var fixture = new PostConfirmEmployerFixture()
@@ -31,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .WithHasNoDeclaredStandards(false);
 
             var result = await fixture.Act();
-            PostConfirmEmployerFixture.VerifySelectLearnerRecordRedirect(result);
+            fixture.VerifyReturnsRedirect(result);
         }
 
         [Test]
@@ -102,6 +114,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public PostConfirmEmployerFixture WithConfirmTrue()
         {
             _viewModel.Confirm = true;
+            return this;
+        }
+        public PostConfirmEmployerFixture WithUseIlrDataTrue()
+        {
+            _viewModel.UseIlrData = true;
             return this;
         }
 

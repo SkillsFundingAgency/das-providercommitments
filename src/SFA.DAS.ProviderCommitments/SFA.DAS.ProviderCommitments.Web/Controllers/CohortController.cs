@@ -303,7 +303,13 @@ public class CohortController : Controller
             {
                 return RedirectToAction(nameof(NoDeclaredStandards), viewModel.ProviderId);
             }
-            return RedirectToAction("SelectLearnerRecord", new { ProviderId = viewModel.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId });
+
+            if (viewModel.UseIlrData)
+            {
+                return RedirectToAction("SelectLearnerRecord", new { ProviderId = viewModel.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId });
+            }
+            
+            return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
         }
 
         return RedirectToAction(nameof(SelectEmployer), new { viewModel.ProviderId });
@@ -640,7 +646,7 @@ public class CohortController : Controller
 
         if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.NewCohort)
         {
-            return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId });
+            return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId, UseIlrData = viewModel.UseIlrData });
         }
         
         throw new InvalidOperationException();
