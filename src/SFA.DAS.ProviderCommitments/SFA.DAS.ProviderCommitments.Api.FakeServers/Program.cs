@@ -7,7 +7,6 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-
         if (args.Contains("--h"))
         {
             Console.WriteLine("examples:");
@@ -16,7 +15,6 @@ public static class Program
 
             return;
         }
-
 
         if (!args.Contains("!PasAccounts", StringComparer.CurrentCultureIgnoreCase))
         {
@@ -30,6 +28,7 @@ public static class Program
             CommitmentsOuterApiBuilder.Create(10234)
                 .WithCourseDeliveryModels()
                 .WithBulkUpload()
+                .WithIlrData()
                 .Build();
         }
 

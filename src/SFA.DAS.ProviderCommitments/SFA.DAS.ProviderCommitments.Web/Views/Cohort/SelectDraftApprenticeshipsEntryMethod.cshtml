@@ -1,9 +1,11 @@
 ﻿@inject ILinkGenerator LinkGenerator
+@inject IConfiguration Configuration;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectAddDraftApprenticeshipJourneyViewModel
 
 @{
     ViewBag.Title = "Add Apprentice";
     ViewBag.GaData.Vpv = "/unapproved/add/entry-method";
+    var ilrFeaturesEnabled = Configuration.GetValue<bool>("ILRFeaturesEnabled");
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -20,20 +22,30 @@
                     </legend>
                     @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
                     <div class="govuk-radios">
+                        @if (ilrFeaturesEnabled)
+                        {
+                            <div class="govuk-radios__item">
+                                <input asp-for="Selection" value="ILR" type="radio" class="govuk-radios__input" id="confirm-ILR"/>
+                                <label class="govuk-label govuk-radios__label" for="confirm-ILR">
+                                    Select apprentices from ILR
+                                </label>
+                                <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">Add new apprentice details imported from the ILR file you have submitted to Submit Learner Data</div>
+                            </div>
+                        }
                         <div class="govuk-radios__item">
-                            <input asp-for="Selection" value="BulkCsv" type="radio" class="govuk-radios__input" id="confirm-BulkCsv" />
+                            <input asp-for="Selection" value="BulkCsv" type="radio" class="govuk-radios__input" id="confirm-BulkCsv"/>
                             <label class="govuk-label govuk-radios__label" for="confirm-BulkCsv">
                                 Upload a CSV file
                             </label>
-                            <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">You can add new apprentices into existing or new cohorts from a file. The file can contain apprentices for 1 or more employers.</div>
+                            <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">You can add new apprentices into existing or new cohorts from a file. The file can contain apprentices for 1 or more employers</div>
                         </div>
 
                         <div class="govuk-radios__item">
-                            <input asp-for="Selection" value="Manual" type="radio" class="govuk-radios__input" id="confirm-Manual" />
+                            <input asp-for="Selection" value="Manual" type="radio" class="govuk-radios__input" id="confirm-Manual"/>
                             <label class="govuk-label govuk-radios__label" for="confirm-Manual">
                                 Manually
                             </label>
-                            <div id="manual-input-hint" class="govuk-hint govuk-radios__hint">You can add details of new apprentices into an existing cohort or create a new one.</div>
+                            <div id="manual-input-hint" class="govuk-hint govuk-radios__hint">Add new apprentice details to an existing or new cohort</div>
                         </div>
                     </div>
                 </fieldset>

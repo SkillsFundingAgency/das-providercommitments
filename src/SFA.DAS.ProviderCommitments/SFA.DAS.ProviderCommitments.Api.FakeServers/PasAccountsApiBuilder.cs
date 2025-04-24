@@ -6,51 +6,44 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 
-namespace SFA.DAS.ProviderCommitments.Api.FakeServers
+namespace SFA.DAS.ProviderCommitments.Api.FakeServers;
+
+public class PasAccountsApiBuilder
 {
-    public class PasAccountsApiBuilder
+    private static readonly JsonSerializerSettings DefaultSerializerSettings = new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+
+    private readonly WireMockServer _server;
+
+    private PasAccountsApiBuilder(int port) => _server = WireMockServer.StartWithAdminInterface(port, true);
+
+    public static PasAccountsApiBuilder Create(int port) => new(port);
+
+    public MockApi Build()
     {
-        private static readonly JsonSerializerSettings DefaultSerializerSettings = new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+        Console.WriteLine($"PasAccounts Fake Api Running ({_server.Urls[0]})");
+        return new MockApi(_server);
+    }
 
-        private readonly WireMockServer _server;
-
-        private PasAccountsApiBuilder(int port)
+    public PasAccountsApiBuilder WithAgreementStatusSet()
+    {
+        var data = new
         {
-            _server = WireMockServer.StartWithAdminInterface(port, true);
-        }
+            Status = "Agreed"
+        };
+        var response = JsonConvert.SerializeObject(data, DefaultSerializerSettings);
 
-        public static PasAccountsApiBuilder Create(int port)
-        {
-            return new PasAccountsApiBuilder(port);
-        }
-
-        public MockApi Build()
-        {
-            Console.WriteLine($"PasAccounts Fake Api Running ({_server.Urls[0]})");
-            return new MockApi(_server);
-        }
-
-        public PasAccountsApiBuilder WithAgreementStatusSet()
-        {
-            var data = new
-            {
-                Status = "Agreed"
-            };
-            var response = JsonConvert.SerializeObject(data, DefaultSerializerSettings);
-
-            _server.Given(
+        _server.Given(
                 Request.Create()
                     .WithPath("/api/account/*/agreement")
                     .UsingGet()
-                         )
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode(HttpStatusCode.OK)
-                        .WithHeader("Content-Type", "application/json")
-                        .WithBody(response)
-                            );
+            )
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(HttpStatusCode.OK)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(response)
+            );
 
-            return this;
-        }
+        return this;
     }
 }
