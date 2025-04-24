@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -33,7 +32,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 AccountProviderLegalEntities = accountProviderLegalEntities,
                 ProviderId = source.ProviderId,
-                SelectEmployerFilterModel = filterModel
+                SelectEmployerFilterModel = filterModel,
+                UseIlrData = source.UseIlrData
             };
         }
 

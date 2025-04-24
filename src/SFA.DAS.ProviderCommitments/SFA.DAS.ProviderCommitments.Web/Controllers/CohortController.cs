@@ -304,11 +304,24 @@ public class CohortController : Controller
                 return RedirectToAction(nameof(NoDeclaredStandards), viewModel.ProviderId);
             }
 
-            return Redirect(_urlHelper.ReservationsLink(
-                $"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
+            if (viewModel.UseIlrData)
+            {
+                return RedirectToAction("SelectLearnerRecord", new { ProviderId = viewModel.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId });
+            }
+            
+            return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
         }
 
         return RedirectToAction(nameof(SelectEmployer), new { viewModel.ProviderId });
+    }
+
+    [HttpGet]
+    [Route("add/learners/select", Name = RouteNames.SelectLearnerRecord)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> SelectLearnerRecord(SelectLearnerRecordRequest request)
+    {
+        var model = await _modelMapper.Map<SelectLearnerRecordViewModel>(request);
+        return View(model);
     }
 
     [HttpGet]
@@ -633,7 +646,7 @@ public class CohortController : Controller
 
         if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.NewCohort)
         {
-            return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId });
+            return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId, UseIlrData = viewModel.UseIlrData });
         }
         
         throw new InvalidOperationException();

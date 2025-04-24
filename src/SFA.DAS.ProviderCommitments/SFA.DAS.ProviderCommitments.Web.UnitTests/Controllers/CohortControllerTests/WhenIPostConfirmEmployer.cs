@@ -24,6 +24,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
+        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrueAndUseIlrDataTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
+        {
+            var fixture = new PostConfirmEmployerFixture()
+                .WithConfirmTrue()
+                .WithUseIlrDataTrue()
+                .WithHasNoDeclaredStandards(false);
+
+            var result = await fixture.Act();
+            PostConfirmEmployerFixture.VerifySelectLearnerRecordRedirect(result);
+        }
+
+        [Test]
         public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
         {
             var fixture = new PostConfirmEmployerFixture()
@@ -104,6 +116,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _viewModel.Confirm = true;
             return this;
         }
+        public PostConfirmEmployerFixture WithUseIlrDataTrue()
+        {
+            _viewModel.UseIlrData = true;
+            return this;
+        }
 
         public void VerifyReturnsRedirect(IActionResult redirectResult)
         {
@@ -113,6 +130,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public static void VerifyNoDeclaredStandardsRedirect(IActionResult redirectResult)
         {
             redirectResult.VerifyReturnsRedirectToActionResult().WithActionName("NoDeclaredStandards");
+        }
+
+        public static void VerifySelectLearnerRecordRedirect(IActionResult redirectResult)
+        {
+            redirectResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectLearnerRecord");
         }
 
         public async Task<IActionResult> Act() => await _sut.ConfirmEmployer(_viewModel);
