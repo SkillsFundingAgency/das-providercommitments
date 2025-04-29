@@ -244,6 +244,15 @@ public class OuterApiService : IOuterApiService
         return response;
     }
 
+    public async Task<GetLearnerSelectedResponse> GetLearnerSelected(long providerId, long learnerId)
+    {
+        var request = new GetLearnerSelectedRequest(providerId, learnerId);
+
+        var response = await _outerApiClient.Get<GetLearnerSelectedResponse>(request);
+
+        return response;
+    }
+
     public async Task<bool> CanAccessCohort(long providerId, long cohortId)
     {
         var content = new GetCohortAccessRequest(Party.Provider, providerId, cohortId);

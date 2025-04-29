@@ -20,6 +20,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public async Task<CreateCohortRedirectModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
+            CreateCohortRedirectModel.RedirectTarget RedirectTo(bool isOnFlexiPaymentPiolt)
+            {
+                if (isOnFlexiPaymentPiolt)
+                {
+                    return CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus;
+                }
+
+                return source.UseIlrData == true
+                    ? CreateCohortRedirectModel.RedirectTarget.SelectLearner
+                    : CreateCohortRedirectModel.RedirectTarget.SelectCourse;
+            }
+
             var flexiPaymentsAuthorized = await _authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot);
 
             var cacheKey = Guid.NewGuid();
@@ -28,6 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ReservationId = source.ReservationId.Value,
                 StartMonthYear = source.StartMonthYear,
                 AccountLegalEntityId = source.AccountLegalEntityId,
+                UseIlrData = source.UseIlrData,
                 IsOnFlexiPaymentPilot = flexiPaymentsAuthorized ? null : false
             };
             await _cacheStorageService.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
@@ -35,9 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return new CreateCohortRedirectModel
             {
                 CacheKey = cacheKey,
-                RedirectTo = flexiPaymentsAuthorized
-                    ? CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus
-                    : CreateCohortRedirectModel.RedirectTarget.SelectCourse
+                RedirectTo = RedirectTo(flexiPaymentsAuthorized)
             };
         }
     }

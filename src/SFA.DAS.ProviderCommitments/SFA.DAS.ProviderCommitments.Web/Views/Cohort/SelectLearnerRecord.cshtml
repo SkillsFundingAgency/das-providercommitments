@@ -104,8 +104,10 @@
                 <td class="govuk-table__cell" data-label="Apprenticeship training course">
                     @apprenticeship.CourseName
                 </td>
-                <td class="govuk-table__cell" data-label="Select">
-                    Select
+                <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
+                        <a href="@Url.Action("LearnerSelected", new { Model.ProviderId, Model.CacheKey, Model.EmployerAccountLegalEntityPublicHashedId, LearnerDataId = apprenticeship.Id })" class="govuk-link">
+                        Select
+                    </a>
                 </td>
             </tr>
         }

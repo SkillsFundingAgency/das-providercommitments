@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .WithHasNoDeclaredStandards(false);
 
             var result = await fixture.Act();
-            PostConfirmEmployerFixture.VerifySelectLearnerRecordRedirect(result);
+            fixture.VerifyReturnsRedirect(result, true);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .WithHasNoDeclaredStandards(false);
 
             var result = await fixture.Act();
-            fixture.VerifyReturnsRedirect(result);
+            fixture.VerifyReturnsRedirect(result, false);
         }
 
         [Test]
@@ -91,9 +91,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .Setup(x => x.CreateCohort(emptyCohortRequest, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(emptyCohortResponse);
 
-            _redirectUrl = $"{providerId}/reservations/{_viewModel.EmployerAccountLegalEntityPublicHashedId}/select";
+            _redirectUrl = $"{providerId}/reservations/{_viewModel.EmployerAccountLegalEntityPublicHashedId}/select?useIlrData=";
             var linkGenerator = new Mock<ILinkGenerator>();
-            linkGenerator.Setup(x => x.ReservationsLink(_redirectUrl)).Returns(_redirectUrl);
+            linkGenerator.Setup(x => x.ReservationsLink(It.IsAny<string>())).Returns(_redirectUrl);
 
             _sut = new CohortController(Mock.Of<IMediator>(), mockModelMapper.Object, linkGenerator.Object, commitmentApiClient.Object, 
                          Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
@@ -122,9 +122,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             return this;
         }
 
-        public void VerifyReturnsRedirect(IActionResult redirectResult)
+        public void VerifyReturnsRedirect(IActionResult redirectResult, bool useIlrData)
         {
-            var equals = redirectResult.VerifyReturnsRedirect().Url.Equals(_redirectUrl);
+            var equals = redirectResult.VerifyReturnsRedirect().Url.Equals(_redirectUrl + useIlrData);
         }
 
         public static void VerifyNoDeclaredStandardsRedirect(IActionResult redirectResult)

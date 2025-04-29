@@ -29,6 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
                 pageLinks[index].RouteData.Should().BeEquivalentTo(new Dictionary<string, string>
                 {
                     { nameof(filterModel.ProviderId), filterModel.ProviderId.ToString() },
+                    { nameof(filterModel.CacheKey), filterModel.CacheKey.ToString() },
                     { nameof(filterModel.SearchTerm), filterModel.SearchTerm },
                     { nameof(filterModel.SortField), filterModel.SortField },
                     { nameof(filterModel.ReverseSort), filterModel.ReverseSort.ToString() },
