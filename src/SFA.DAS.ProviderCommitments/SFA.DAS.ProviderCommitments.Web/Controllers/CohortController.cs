@@ -100,8 +100,9 @@ public class CohortController : Controller
     [Route("apprentices/add")]
     [Authorize(Policy = nameof(PolicyNames.CreateCohort))]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
+    public async Task<IActionResult> AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request, [FromServices] ILogger<CohortController> logger)
     {
+        logger.LogInformation("Adding apprentice: IsOnFlexiPaymentPilot {0}, UseIlrData {1} ", request.IsOnFlexiPaymentPilot, request.UseIlrData);
         var redirectModel = await _modelMapper.Map<CreateCohortRedirectModel>(request);
 
         string action = redirectModel.RedirectTo switch

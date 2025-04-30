@@ -27,7 +27,7 @@ public class CreateCohortRedirectModelMapperTests
         _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
             .ReturnsAsync(true);
 
-        _mapper = new CreateCohortRedirectModelMapper(_authorizationService.Object, _cacheStorage.Object);
+        _mapper = new CreateCohortRedirectModelMapper(_authorizationService.Object, _cacheStorage.Object, Mock.Of<ILogger<CreateCohortRedirectModelMapper>>());
 
         _request = fixture.Create<CreateCohortWithDraftApprenticeshipRequest>();
     }

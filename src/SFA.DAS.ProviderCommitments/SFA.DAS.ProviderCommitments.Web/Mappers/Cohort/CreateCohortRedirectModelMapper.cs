@@ -7,18 +7,13 @@ using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
- public class CreateCohortRedirectModelMapper : IMapper<CreateCohortWithDraftApprenticeshipRequest, CreateCohortRedirectModel>
-    {
-        private readonly IAuthorizationService _authorizationService;
-        private readonly ICacheStorageService _cacheStorageService;
-
-        public CreateCohortRedirectModelMapper(IAuthorizationService authorizationService, ICacheStorageService cacheStorageService)
-        {
-            _authorizationService = authorizationService;
-            _cacheStorageService = cacheStorageService;
-        }
-
-        public async Task<CreateCohortRedirectModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
+ public class CreateCohortRedirectModelMapper(
+     IAuthorizationService authorizationService,
+     ICacheStorageService cacheStorageService,
+     ILogger<CreateCohortRedirectModelMapper> logger)
+     : IMapper<CreateCohortWithDraftApprenticeshipRequest, CreateCohortRedirectModel>
+ {
+     public async Task<CreateCohortRedirectModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
             CreateCohortRedirectModel.RedirectTarget RedirectTo(bool isOnFlexiPaymentPiolt)
             {
@@ -32,7 +27,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     : CreateCohortRedirectModel.RedirectTarget.SelectCourse;
             }
 
-            var flexiPaymentsAuthorized = await _authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot);
+            var flexiPaymentsAuthorized = await authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot);
+            logger.LogInformation("Returning CreateCohortRedirectModel, isOnFlexiPaymentPilot {0}, useIlrData {1}", flexiPaymentsAuthorized, source.UseIlrData);
 
             var cacheKey = Guid.NewGuid();
             var cacheItem = new CreateCohortCacheItem(cacheKey)
@@ -43,7 +39,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 UseIlrData = source.UseIlrData,
                 IsOnFlexiPaymentPilot = flexiPaymentsAuthorized ? null : false
             };
-            await _cacheStorageService.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
+            await cacheStorageService.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
+
 
             return new CreateCohortRedirectModel
             {
