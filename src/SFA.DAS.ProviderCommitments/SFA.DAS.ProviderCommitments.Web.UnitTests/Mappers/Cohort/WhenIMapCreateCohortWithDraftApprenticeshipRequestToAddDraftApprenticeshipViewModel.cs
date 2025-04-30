@@ -150,7 +150,6 @@ public class WhenIMapCreateCohortWithDraftApprenticeshipRequestToAddDraftApprent
         result.EmploymentPrice.Should().Be(_cacheItem.EmploymentPrice);
     }
 
-
     [Test]
     public async Task Then_Cost_IsMappedCorrectly()
     {
