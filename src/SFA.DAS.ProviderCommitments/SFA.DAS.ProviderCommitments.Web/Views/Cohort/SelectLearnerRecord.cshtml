@@ -1,7 +1,6 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@inject ILinkGenerator LinkGenerator
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectLearnerRecordViewModel
 
 @{
@@ -21,7 +20,7 @@
             <li>refreshing this page</li>
             <li>updating the ILR</li>
             <li>
-                <a class="govuk-link" href="@LinkGenerator.ReservationsLink($"{Model.ProviderId}/reservations/{Model.EmployerAccountLegalEntityPublicHashedId}/select")">
+                <a href="@Url.Action("AddNewDraftApprenticeship", new { Model.ProviderId, Model.EmployerAccountLegalEntityPublicHashedId, Model.ReservationId })" class="govuk-link">
                     manually adding you apprentice
                 </a>
             </li>

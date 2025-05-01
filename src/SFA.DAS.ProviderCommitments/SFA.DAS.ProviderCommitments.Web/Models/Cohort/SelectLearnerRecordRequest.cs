@@ -7,6 +7,7 @@ public class SelectLearnerRecordRequest : IAuthorizationContextModel
     public long ProviderId { get; set; }
     public string EmployerAccountLegalEntityPublicHashedId { get; set; }
     public Guid? CacheKey { get; set; }
+    public Guid? ReservationId { get; set; }
     public long AccountLegalEntityId { get; set; }
     public string SearchTerm { get; set; }
     public string SortField { get; set; }

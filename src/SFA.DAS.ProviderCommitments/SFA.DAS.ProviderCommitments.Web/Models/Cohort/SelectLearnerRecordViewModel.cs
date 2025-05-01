@@ -12,6 +12,8 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
     public string EmployerAccountLegalEntityPublicHashedId { get; set; }
     public long AccountLegalEntityId { get; set; }
     public Guid? CacheKey { get; set; }
+    public Guid? ReservationId { get; set; }
+
     public List<LearnerSummary> Learners { get; set; } = new();
     public string PageTitle => $"Select apprentice from ILR for {EmployerAccountName}";
 
@@ -65,6 +67,7 @@ public class LearnerRecordsFilterModel
     public string SortField { get; set; }
     public bool ReverseSort { get; set; }
     public Guid? CacheKey { get; set; }
+    public Guid? ReservationId { get; set; }
     public bool ShowPageLinks => TotalNumberOfLearnersFound > LearnerRecordSearch.NumberOfLearnersPerSearchPage;
     public Dictionary<string, string> RouteData => BuildRouteData();
 
@@ -76,6 +79,7 @@ public class LearnerRecordsFilterModel
         {
             {nameof(ProviderId), ProviderId.ToString()},
             {nameof(CacheKey), CacheKey.ToString()},
+            {nameof(ReservationId), ReservationId.ToString()},
             {nameof(EmployerAccountLegalEntityPublicHashedId), EmployerAccountLegalEntityPublicHashedId}
         };
 

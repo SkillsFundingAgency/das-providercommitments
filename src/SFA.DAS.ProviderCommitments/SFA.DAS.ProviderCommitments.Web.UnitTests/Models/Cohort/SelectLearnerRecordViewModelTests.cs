@@ -83,8 +83,8 @@ public class SelectLearnerRecordViewModelTests
         sort["ReverseSort"].Should().Be((!reverse).ToString());
     }
 
-    [TestCase("", 3)]
-    [TestCase(null, 3)]
+    [TestCase("", 4)]
+    [TestCase(null, 4)]
     public void BuildRouteData_IsCorrect(string searchTerm, int expectedCount)
     {
         _viewModel.FilterModel.SearchTerm = searchTerm;
@@ -106,7 +106,7 @@ public class SelectLearnerRecordViewModelTests
         var routeData = _viewModel.FilterModel.RouteData;
 
         routeData.Should().NotBeNull();
-        routeData.Count.Should().Be(4);
+        routeData.Count.Should().Be(5);
         routeData["SearchTerm"].Should().Be(_viewModel.FilterModel.SearchTerm);
     }
 
