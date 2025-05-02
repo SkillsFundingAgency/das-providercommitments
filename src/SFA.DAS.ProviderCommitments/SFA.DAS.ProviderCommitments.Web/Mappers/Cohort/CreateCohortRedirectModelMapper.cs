@@ -22,13 +22,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     return CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus;
                 }
 
-                return source.UseIlrData == true
+                return source.UseLearnerData == true
                     ? CreateCohortRedirectModel.RedirectTarget.SelectLearner
                     : CreateCohortRedirectModel.RedirectTarget.SelectCourse;
             }
 
             var flexiPaymentsAuthorized = await authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot);
-            logger.LogInformation("Returning CreateCohortRedirectModel, isOnFlexiPaymentPilot {0}, useIlrData {1}", flexiPaymentsAuthorized, source.UseIlrData);
+            logger.LogInformation("Returning CreateCohortRedirectModel, isOnFlexiPaymentPilot {0}, UseLearnerData {1}", flexiPaymentsAuthorized, source.UseLearnerData);
 
             var cacheKey = Guid.NewGuid();
             var cacheItem = new CreateCohortCacheItem(cacheKey)
@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ReservationId = source.ReservationId.Value,
                 StartMonthYear = source.StartMonthYear,
                 AccountLegalEntityId = source.AccountLegalEntityId,
-                UseIlrData = source.UseIlrData,
+                UseLearnerData = source.UseLearnerData,
                 IsOnFlexiPaymentPilot = flexiPaymentsAuthorized ? null : false
             };
             await cacheStorageService.SaveToCache(cacheItem.CacheKey, cacheItem, 1);

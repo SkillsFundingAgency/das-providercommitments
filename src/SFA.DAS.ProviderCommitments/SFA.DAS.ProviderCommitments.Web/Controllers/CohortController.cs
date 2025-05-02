@@ -102,7 +102,7 @@ public class CohortController : Controller
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request, [FromServices] ILogger<CohortController> logger)
     {
-        logger.LogInformation("Adding apprentice: IsOnFlexiPaymentPilot {0}, UseIlrData {1} ", request.IsOnFlexiPaymentPilot, request.UseIlrData);
+        logger.LogInformation("Adding apprentice: IsOnFlexiPaymentPilot {0}, UseLearnerData {1} ", request.IsOnFlexiPaymentPilot, request.UseLearnerData);
         var redirectModel = await _modelMapper.Map<CreateCohortRedirectModel>(request);
 
         string action = redirectModel.RedirectTo switch
@@ -306,7 +306,7 @@ public class CohortController : Controller
             {
                 return RedirectToAction(nameof(NoDeclaredStandards), viewModel.ProviderId);
             }
-            return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select?useIlrData={viewModel.UseIlrData}"));
+            return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select?useLearnerData={viewModel.UseLearnerData}"));
         }
 
         return RedirectToAction(nameof(SelectEmployer), new { viewModel.ProviderId });
@@ -433,7 +433,7 @@ public class CohortController : Controller
     {
         return viewModel.Selection switch
         {
-            AddDraftApprenticeshipEntryMethodOptions.ILR => RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId, UseIlrData = true }),
+            AddDraftApprenticeshipEntryMethodOptions.ILR => RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId, UseLearnerData = true }),
             AddDraftApprenticeshipEntryMethodOptions.BulkCsv => RedirectToAction(nameof(FileUploadInform), new { viewModel.ProviderId }),
             AddDraftApprenticeshipEntryMethodOptions.Manual => RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId }),
             _ => throw new InvalidOperationException()
@@ -653,7 +653,7 @@ public class CohortController : Controller
 
         if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.NewCohort)
         {
-            return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId, UseIlrData = viewModel.UseIlrData });
+            return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId, UseLearnerData = viewModel.UseLearnerData });
         }
         
         throw new InvalidOperationException();

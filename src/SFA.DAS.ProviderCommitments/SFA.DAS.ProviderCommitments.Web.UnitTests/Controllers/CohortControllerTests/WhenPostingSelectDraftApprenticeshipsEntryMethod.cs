@@ -39,7 +39,7 @@ public class WhenPostingSelectDraftApprenticeshipsEntryMethod
         var result = fixture.ILR().Act();
 
         result.VerifyReturnsRedirectToActionResult()
-            .WithRouteValue("UseIlrData", true)
+            .WithRouteValue("UseLearnerData", true)
             .WithActionName(nameof(CohortController.SelectAddDraftApprenticeshipJourney));
     }
 }

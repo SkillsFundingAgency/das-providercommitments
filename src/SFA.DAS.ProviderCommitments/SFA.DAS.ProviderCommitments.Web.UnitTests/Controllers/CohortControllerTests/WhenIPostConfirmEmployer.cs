@@ -1,4 +1,5 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using System.Linq;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -24,11 +25,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrueAndUseIlrDataTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
+        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrueAndUseLearnerDataTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
         {
             var fixture = new PostConfirmEmployerFixture()
                 .WithConfirmTrue()
-                .WithUseIlrDataTrue()
+                .WithUseLearnerDataTrue()
                 .WithHasNoDeclaredStandards(false);
 
             var result = await fixture.Act();
@@ -91,9 +92,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .Setup(x => x.CreateCohort(emptyCohortRequest, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(emptyCohortResponse);
 
-            _redirectUrl = $"{providerId}/reservations/{_viewModel.EmployerAccountLegalEntityPublicHashedId}/select?useIlrData=";
+            _redirectUrl = $"{providerId}/reservations/{_viewModel.EmployerAccountLegalEntityPublicHashedId}/select?useLearnerData=";
             var linkGenerator = new Mock<ILinkGenerator>();
-            linkGenerator.Setup(x => x.ReservationsLink(It.IsAny<string>())).Returns(_redirectUrl);
+            linkGenerator.Setup(x => x.ReservationsLink(It.Is<string>(p=>p.StartsWith(_redirectUrl)))).Returns(_redirectUrl);
 
             _sut = new CohortController(Mock.Of<IMediator>(), mockModelMapper.Object, linkGenerator.Object, commitmentApiClient.Object, 
                          Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
@@ -116,15 +117,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _viewModel.Confirm = true;
             return this;
         }
-        public PostConfirmEmployerFixture WithUseIlrDataTrue()
+        public PostConfirmEmployerFixture WithUseLearnerDataTrue()
         {
-            _viewModel.UseIlrData = true;
+            _viewModel.UseLearnerData = true;
             return this;
         }
 
-        public void VerifyReturnsRedirect(IActionResult redirectResult, bool useIlrData)
+        public void VerifyReturnsRedirect(IActionResult redirectResult, bool useLearnerData)
         {
-            var equals = redirectResult.VerifyReturnsRedirect().Url.Equals(_redirectUrl + useIlrData);
+            var equals = redirectResult.VerifyReturnsRedirect().Url.Equals(_redirectUrl + useLearnerData);
         }
 
         public static void VerifyNoDeclaredStandardsRedirect(IActionResult redirectResult)

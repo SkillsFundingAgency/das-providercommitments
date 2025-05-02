@@ -38,7 +38,7 @@ public class CreateCohortRedirectModelMapperTests
     {
         _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
             .ReturnsAsync(isFlexiPaymentsEnabled);
-        _request.UseIlrData = false;
+        _request.UseLearnerData = false;
 
         var result = await _mapper.Map(_request);
         result.RedirectTo.Should().Be(expectTarget);
@@ -46,22 +46,22 @@ public class CreateCohortRedirectModelMapperTests
 
     [TestCase(true, CreateCohortRedirectModel.RedirectTarget.SelectLearner)]
     [TestCase(false, CreateCohortRedirectModel.RedirectTarget.SelectCourse)]
-    public async Task Redirect_Target_Is_Mapped_Correctly_When_UseIlrData(bool useIlrData, CreateCohortRedirectModel.RedirectTarget expectTarget)
+    public async Task Redirect_Target_Is_Mapped_Correctly_When_UseLearnerData(bool useLearnerData, CreateCohortRedirectModel.RedirectTarget expectTarget)
     {
         _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
             .ReturnsAsync(false);
-        _request.UseIlrData = useIlrData;
+        _request.UseLearnerData = useLearnerData;
         var result = await _mapper.Map(_request);
         result.RedirectTo.Should().Be(expectTarget);
     }
 
     [Test]
-    public async Task UseIlrData_Is_Added_To_Cache()
+    public async Task UseLearnerData_Is_Added_To_Cache()
     {
-        _request.UseIlrData = true;
+        _request.UseLearnerData = true;
         var result = await _mapper.Map(_request);
         _cacheStorage.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
-                It.Is<CreateCohortCacheItem>(m => m.UseIlrData == _request.UseIlrData),
+                It.Is<CreateCohortCacheItem>(m => m.UseLearnerData == _request.UseLearnerData),
                 1),
             Times.Once);
     }

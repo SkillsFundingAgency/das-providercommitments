@@ -13,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     {
         public Guid CacheKey { get; set; }
         public long ProviderId { get; set; }
-        public bool? UseIlrData { get; set; }
+        public bool? UseLearnerData { get; set; }
         public Guid? ReservationId { get; set; }
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public string StartMonthYear { get; set; }

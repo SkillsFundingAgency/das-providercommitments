@@ -95,6 +95,7 @@ public class SelectLearnerRecordViewModelTests
         routeData.Count.Should().Be(expectedCount);
         routeData["ProviderId"].Should().Be(_viewModel.FilterModel.ProviderId.ToString());
         routeData["CacheKey"].Should().Be(_viewModel.FilterModel.CacheKey.ToString());
+        routeData["ReservationId"].Should().Be(_viewModel.FilterModel.ReservationId.ToString());
         routeData["EmployerAccountLegalEntityPublicHashedId"].Should().Be(_viewModel.FilterModel.EmployerAccountLegalEntityPublicHashedId);
     }
 
