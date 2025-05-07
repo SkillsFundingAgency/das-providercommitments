@@ -33,7 +33,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
             ReservationId = source.ReservationId,
             EmployerAccountName = response.EmployerName,
             Learners = response.Learners.Select(x => (LearnerSummary) x).ToList(),
-
+            LastIlrSubmittedOn = response.LastSubmissionDate,
             FilterModel = filterModel
         };
         model.SortedByHeader();
