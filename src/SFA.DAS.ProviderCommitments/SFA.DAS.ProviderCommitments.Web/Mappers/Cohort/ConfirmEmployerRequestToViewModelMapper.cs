@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 EmployerAccountLegalEntityName = accountLegalEntity.LegalEntityName,
                 ProviderId = source.ProviderId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                UseIlrData = source.UseIlrData
+                UseLearnerData = source.UseLearnerData
             };
         }
     }

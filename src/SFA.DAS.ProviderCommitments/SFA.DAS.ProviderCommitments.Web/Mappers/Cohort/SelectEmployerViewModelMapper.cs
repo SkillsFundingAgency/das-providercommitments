@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 AccountProviderLegalEntities = accountProviderLegalEntities,
                 ProviderId = source.ProviderId,
                 SelectEmployerFilterModel = filterModel,
-                UseIlrData = source.UseIlrData
+                UseLearnerData = source.UseLearnerData
             };
         }
 

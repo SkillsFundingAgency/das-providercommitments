@@ -4,7 +4,7 @@ public class SelectAddDraftApprenticeshipJourneyViewModel
 {
     public long ProviderId { get; set; }
     public bool HasCreateCohortPermission { get; set; }
-    public bool UseIlrData { get; set; }
+    public bool UseLearnerData { get; set; }
     public bool HasExistingCohort { get; set; }
     public AddDraftApprenticeshipJourneyOptions? Selection { get; set; }
 }

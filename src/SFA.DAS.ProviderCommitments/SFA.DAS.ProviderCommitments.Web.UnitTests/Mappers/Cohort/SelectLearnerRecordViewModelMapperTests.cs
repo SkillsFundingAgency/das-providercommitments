@@ -41,6 +41,7 @@ public class SelectLearnerRecordViewModelMapperTests
         result.FilterModel.SortField.Should().Be(_request.SortField);
         result.FilterModel.ReverseSort.Should().Be(_request.ReverseSort);
         result.FilterModel.SearchTerm.Should().Be(_request.SearchTerm);
+        result.FilterModel.CacheKey.Should().Be(_request.CacheKey);
     }
 
     [Test]
@@ -48,8 +49,10 @@ public class SelectLearnerRecordViewModelMapperTests
     {
         var result = await _mapper.Map(_request);
         result.ProviderId.Should().Be(_request.ProviderId);
+        result.CacheKey.Should().Be(_request.CacheKey);
         result.EmployerAccountLegalEntityPublicHashedId.Should().Be(_request.EmployerAccountLegalEntityPublicHashedId);
         result.EmployerAccountName.Should().Be(_apiResponse.EmployerName);
+        result.LastIlrSubmittedOn.Should().Be(_apiResponse.LastSubmissionDate);
     }
 
     [Test]

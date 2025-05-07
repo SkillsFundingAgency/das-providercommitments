@@ -6,6 +6,6 @@
         public string SortField { get; set; }
         public bool ReverseSort { get; set; }
         public string SearchTerm { get; set; }
-        public bool UseIlrData { get; set; }
+        public bool UseLearnerData { get; set; }
     }
 }
