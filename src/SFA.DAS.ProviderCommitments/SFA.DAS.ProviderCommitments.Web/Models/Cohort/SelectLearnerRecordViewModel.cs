@@ -11,6 +11,8 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
     public string EmployerAccountName { get; set; }
     public string EmployerAccountLegalEntityPublicHashedId { get; set; }
     public long AccountLegalEntityId { get; set; }
+    public string CohortReference { get; set; }
+    public long CohortId { get; set; }
     public Guid? CacheKey { get; set; }
     public Guid? ReservationId { get; set; }
 

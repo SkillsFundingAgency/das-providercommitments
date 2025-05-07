@@ -28,6 +28,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
         var model = new SelectLearnerRecordViewModel
         {
             ProviderId = source.ProviderId,
+            CohortReference = source.CohortReference,
             EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
             CacheKey = source.CacheKey,
             ReservationId = source.ReservationId,

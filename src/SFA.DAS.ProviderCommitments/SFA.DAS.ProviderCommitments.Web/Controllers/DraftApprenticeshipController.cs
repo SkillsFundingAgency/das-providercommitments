@@ -70,6 +70,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
         {
+            if (request.UseLearnerData == true)
+            {
+                return RedirectToRoute(RouteNames.SelectLearnerRecordAndAddToCohort, new { request.ProviderId, request.CohortReference, EmployerAccountLegalEntityPublicHashedId = "XEGE5X", request.ReservationId });
+            }
+
             return RedirectToAction(nameof(AddDraftApprenticeshipCourse), "DraftApprenticeship", request);
         }
 
@@ -77,7 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/reservation")]
         public IActionResult GetReservationId(GetReservationIdForAddAnotherApprenticeRequest request, [FromServices] ILinkGenerator urlHelper)
         {
-            var reservationUrl = $"{request.ProviderId}/reservations/{request.AccountLegalEntityHashedId}/select?cohortReference={request.CohortReference}&encodedPledgeApplicationId={request.EncodedPledgeApplicationId}";
+            var reservationUrl = $"{request.ProviderId}/reservations/{request.AccountLegalEntityHashedId}/select?cohortReference={request.CohortReference}&encodedPledgeApplicationId={request.EncodedPledgeApplicationId}&useLearnerData={request.UseLearnerData}";
             if (!string.IsNullOrWhiteSpace(request.TransferSenderHashedId))
             {
                 reservationUrl += $"&transferSenderId={request.TransferSenderHashedId}";

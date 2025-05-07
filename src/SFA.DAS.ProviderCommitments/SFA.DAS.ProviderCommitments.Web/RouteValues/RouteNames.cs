@@ -48,5 +48,6 @@ public static class RouteNames
     public const string RecognisePriorLearningData = "recognise-prior-learning-data";
     public const string RecognisePriorLearning = "recognise-prior-learning";
     public const string SelectStandardOption = "select-standard-option";
-    public const string SelectLearnerRecord = "select-ilr";
+    public const string SelectLearnerRecordAndCreateCohort = "select-ilr";
+    public const string SelectLearnerRecordAndAddToCohort = "select-ilr-to-cohort";
 }

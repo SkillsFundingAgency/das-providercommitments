@@ -20,15 +20,24 @@
             <li>refreshing this page</li>
             <li>updating the ILR</li>
             <li>
-                <a href="@Url.Action("AddNewDraftApprenticeship", new { Model.ProviderId, Model.EmployerAccountLegalEntityPublicHashedId, Model.ReservationId })" class="govuk-link">
-                    manually adding you apprentice
-                </a>
+                @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
+                {
+                    <a href="@Url.Action("AddDraftApprenticeshipCourse", "DraftApprenticeship", new {Model.ProviderId, Model.CohortReference, Model.ReservationId})" class="govuk-link">
+                        manually adding you apprentice
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("AddNewDraftApprenticeship", "Cohort", new {Model.ProviderId, Model.CohortReference, Model.ReservationId})" class="govuk-link">
+                        manually adding you apprentice
+                    </a>
+                }
             </li>
         </ul>
     </div>
 </div>
 
-<form method="get" asp-route="@RouteNames.SelectLearnerRecord">
+<form method="get" asp-route="@RouteNames.SelectLearnerRecordAndCreateCohort">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
@@ -65,7 +74,7 @@
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">
                 <a class="@(Model.FilterModel.SortField == "LastName" ? Model.SortedByHeaderClassName : SelectLearnerRecordViewModel.HeaderClassName)"
-                   asp-route="@RouteNames.SelectLearnerRecord"
+                   asp-route="@RouteNames.SelectLearnerRecordAndCreateCohort"
                    asp-all-route-data="@Model.FilterModel.BuildSortRouteData("LastName")"
                    title="Sort the table by name">
                     Name
@@ -73,7 +82,7 @@
             </th>
             <th scope="col" class="govuk-table__header">
                 <a class="@(Model.FilterModel.SortField == "Uln" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                   asp-route="@RouteNames.SelectLearnerRecord"
+                   asp-route="@RouteNames.SelectLearnerRecordAndCreateCohort"
                    asp-all-route-data="@Model.FilterModel.BuildSortRouteData("Uln")"
                    title="Sort the table by ULN">
                     ULN
@@ -81,7 +90,7 @@
             </th>
             <th scope="col" class="govuk-table__header">
                 <a class="@(Model.FilterModel.SortField == "CourseName" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                   asp-route="@RouteNames.SelectLearnerRecord"
+                   asp-route="@RouteNames.SelectLearnerRecordAndCreateCohort"
                    asp-all-route-data="@Model.FilterModel.BuildSortRouteData("CourseName")"
                    title="Sort the table by course">
                     Course
@@ -129,7 +138,7 @@ else
             {
                 <li class="das-pagination__item">
                     <a class="das-pagination__link @(pageLink.IsCurrent.HasValue && pageLink.IsCurrent.Value ? "current":"")"
-                       asp-route="@RouteNames.SelectLearnerRecord"
+                       asp-route="@RouteNames.SelectLearnerRecordAndCreateCohort"
                        asp-all-route-data="@pageLink.RouteData"
                        aria-current="@pageLink.IsCurrent"
                        aria-label="@pageLink.AriaLabel">
@@ -142,5 +151,12 @@ else
 }
 
 @section breadcrumb {
-    <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", new { @Model.ProviderId, UseLearnerData = true })>Back</a>
+    @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("Details", "Cohort", new {Model.ProviderId, Model.CohortReference })>Back</a>
+    }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", "Cohort", new { @Model.ProviderId, UseLearnerData = true })>Back</a>
+    }
 }

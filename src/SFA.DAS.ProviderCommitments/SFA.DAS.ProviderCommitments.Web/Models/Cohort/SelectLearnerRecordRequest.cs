@@ -13,6 +13,8 @@ public class SelectLearnerRecordRequest : IAuthorizationContextModel
     public string SortField { get; set; }
     public bool ReverseSort { get; set; }
     public int Page { get; set; } = 1;
+    public string CohortReference { get; set; }
+    public long CohortId { get; set; }
 
 }
 
