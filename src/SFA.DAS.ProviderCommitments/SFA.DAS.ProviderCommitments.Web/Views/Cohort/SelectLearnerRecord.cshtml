@@ -64,9 +64,9 @@
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">
-                <a class="@(Model.FilterModel.SortField == "LastName" ? Model.SortedByHeaderClassName : SelectLearnerRecordViewModel.HeaderClassName)"
+                <a class="@(Model.FilterModel.SortField == "FirstName" ? Model.SortedByHeaderClassName : SelectLearnerRecordViewModel.HeaderClassName)"
                    asp-route="@RouteNames.SelectLearnerRecord"
-                   asp-all-route-data="@Model.FilterModel.BuildSortRouteData("LastName")"
+                   asp-all-route-data="@Model.FilterModel.BuildSortRouteData("FirstName")"
                    title="Sort the table by name">
                     Name
                 </a>
@@ -80,12 +80,7 @@
                 </a>
             </th>
             <th scope="col" class="govuk-table__header">
-                <a class="@(Model.FilterModel.SortField == "CourseName" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                   asp-route="@RouteNames.SelectLearnerRecord"
-                   asp-all-route-data="@Model.FilterModel.BuildSortRouteData("CourseName")"
-                   title="Sort the table by course">
-                    Course
-                </a>
+                Course
             </th>
             <th scope="col" class="govuk-table__header">
 
