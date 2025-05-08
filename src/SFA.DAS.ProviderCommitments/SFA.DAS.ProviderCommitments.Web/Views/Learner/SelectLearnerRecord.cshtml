@@ -6,6 +6,7 @@
 @{
     ViewData["Title"] = Model.PageTitle;
     ViewBag.GaData.Vpv = "/add/ilrs/select";
+    var getRoute = string.IsNullOrWhiteSpace(Model.CohortReference) ? RouteNames.SelectLearnerRecordAndCreateCohort : RouteNames.SelectLearnerRecordAndCreateCohort;
 }
 
 <h1 class="govuk-heading-xl">@Model.PageTitle</h1>
@@ -37,7 +38,7 @@
     </div>
 </div>
 
-<form method="get" asp-route="@RouteNames.SelectLearnerRecordAndCreateCohort">
+<form method="get" asp-route="@getRoute">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
@@ -55,7 +56,14 @@
     <input type="hidden" value="@Model.FilterModel.ReverseSort.ToString()" name="ReverseSort" />
     <input type="hidden" value="@Model.CacheKey" name="CacheKey" />
     <input type="hidden" value="@Model.ReservationId" name="ReservationId" />
-    <input type="hidden" value="@Model.EmployerAccountLegalEntityPublicHashedId" name="EmployerAccountLegalEntityPublicHashedId" />
+    @if (!string.IsNullOrWhiteSpace(Model.EmployerAccountLegalEntityPublicHashedId))
+    {
+        <input type="hidden" value="@Model.EmployerAccountLegalEntityPublicHashedId" name="EmployerAccountLegalEntityPublicHashedId"/>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
+    {
+        <input type="hidden" value="@Model.CohortReference" name="CohortReference"/>
+    }
 </form>
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
@@ -110,9 +118,12 @@
                     @apprenticeship.CourseName
                 </td>
                 <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
-                        <a href="@Url.Action("LearnerSelected", new { Model.ProviderId, Model.CacheKey, Model.EmployerAccountLegalEntityPublicHashedId, LearnerDataId = apprenticeship.Id })" class="govuk-link">
-                        Select
-                    </a>
+                    @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
+                    {
+                        <a href="@Url.Action("LearnerSelected", new {Model.ProviderId, Model.CacheKey, Model.EmployerAccountLegalEntityPublicHashedId, LearnerDataId = apprenticeship.Id})" class="govuk-link">
+                            Select
+                        </a>
+                    }
                 </td>
             </tr>
         }

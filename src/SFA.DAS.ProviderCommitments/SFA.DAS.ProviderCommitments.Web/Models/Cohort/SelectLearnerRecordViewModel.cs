@@ -59,6 +59,7 @@ public class LearnerRecordsFilterModel
 {
     public long ProviderId { get; set; }
     public string EmployerAccountLegalEntityPublicHashedId { get; set; }
+    public string CohortReference { get; set; }
     public int PageNumber { get; set; } = 1;
     public string SearchTerm { get; set; }
     public int TotalNumberOfLearnersFound { get; set; }

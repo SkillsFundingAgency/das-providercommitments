@@ -5,8 +5,9 @@ using System.Net;
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 
 public class GetLearnerDetailsForProviderRequest(
-    long providerId,
-    long accountLegalEntityId,
+    long? providerId,
+    long? accountLegalEntityId,
+    long? cohortId,
     string searchTerm,
     string sortColumn,
     bool sortDesc,
@@ -14,7 +15,7 @@ public class GetLearnerDetailsForProviderRequest(
     : IGetApiRequest
 {
     public string GetUrl =>
-        $"providers/{providerId}/unapproved/add/learners/select?AccountLegalEntityId={accountLegalEntityId}&SearchTerm={WebUtility.UrlEncode(searchTerm)}" +
+        $"providers/{providerId}/unapproved/add/learners/select?AccountLegalEntityId={accountLegalEntityId}&cohortOd={cohortId}&SearchTerm={WebUtility.UrlEncode(searchTerm)}" +
         $"&SortColumn={WebUtility.UrlEncode(sortColumn)}&SortDescending={sortDesc}&Page={page}&pageSize={Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage}";
 }
 
