@@ -52,6 +52,7 @@ public class SelectLearnerRecordViewModelMapperTests
         result.CacheKey.Should().Be(_request.CacheKey);
         result.EmployerAccountLegalEntityPublicHashedId.Should().Be(_request.EmployerAccountLegalEntityPublicHashedId);
         result.EmployerAccountName.Should().Be(_apiResponse.EmployerName);
+        result.LastIlrSubmittedOn.Should().Be(_apiResponse.LastSubmissionDate);
     }
 
     [Test]
