@@ -24,7 +24,7 @@ public class SelectLearnerRecordViewModelMapperTests
 
         _outerApiService = new Mock<IOuterApiService>();
 
-        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.SearchTerm, _request.SortField, _request.ReverseSort, _request.Page))
+        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.CohortId, _request.SearchTerm, _request.SortField, _request.ReverseSort, _request.Page))
             .ReturnsAsync(_apiResponse);
 
         _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
@@ -36,6 +36,7 @@ public class SelectLearnerRecordViewModelMapperTests
         var result = await _mapper.Map(_request);
         result.FilterModel.ProviderId.Should().Be(_request.ProviderId);
         result.FilterModel.EmployerAccountLegalEntityPublicHashedId.Should().Be(_request.EmployerAccountLegalEntityPublicHashedId);
+        result.FilterModel.CohortReference.Should().Be(_request.CohortReference);
         result.FilterModel.TotalNumberOfLearnersFound.Should().Be(_apiResponse.Total);
         result.FilterModel.PageNumber.Should().Be(_apiResponse.Page);
         result.FilterModel.SortField.Should().Be(_request.SortField);
@@ -51,6 +52,7 @@ public class SelectLearnerRecordViewModelMapperTests
         result.ProviderId.Should().Be(_request.ProviderId);
         result.CacheKey.Should().Be(_request.CacheKey);
         result.EmployerAccountLegalEntityPublicHashedId.Should().Be(_request.EmployerAccountLegalEntityPublicHashedId);
+        result.CohortReference.Should().Be(_request.CohortReference);
         result.EmployerAccountName.Should().Be(_apiResponse.EmployerName);
         result.LastIlrSubmittedOn.Should().Be(_apiResponse.LastSubmissionDate);
     }

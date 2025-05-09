@@ -15,7 +15,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
                 SearchTerm = "asedfas",
                 TotalNumberOfLearnersFound = Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage * 3,
                 SortField = "gsd",
-                ReverseSort = false
+                ReverseSort = false,
+                EmployerAccountLegalEntityPublicHashedId = "XXXX",
+                CohortReference = "CCCXX"
             };
 
             var pageLinks = filterModel.PageLinks.Where(link =>
@@ -35,6 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
                     { nameof(filterModel.SortField), filterModel.SortField },
                     { nameof(filterModel.ReverseSort), filterModel.ReverseSort.ToString() },
                     { nameof(filterModel.EmployerAccountLegalEntityPublicHashedId), filterModel.EmployerAccountLegalEntityPublicHashedId },
+                    { nameof(filterModel.CohortReference), filterModel.CohortReference },
                     { "page", (index + 1).ToString() }
                 });
             }

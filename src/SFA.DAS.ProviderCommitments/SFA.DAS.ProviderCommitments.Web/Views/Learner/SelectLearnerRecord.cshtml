@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+﻿@using System.Security.Cryptography
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectLearnerRecordViewModel
@@ -6,7 +7,6 @@
 @{
     ViewData["Title"] = Model.PageTitle;
     ViewBag.GaData.Vpv = "/add/ilrs/select";
-    var getRoute = string.IsNullOrWhiteSpace(Model.CohortReference) ? RouteNames.SelectLearnerRecordAndCreateCohort : RouteNames.SelectLearnerRecordAndCreateCohort;
 }
 
 <h1 class="govuk-heading-xl">@Model.PageTitle</h1>
@@ -38,7 +38,7 @@
     </div>
 </div>
 
-<form method="get" asp-route="@getRoute">
+<form method="get" asp-route="@RouteNames.SelectLearnerRecord">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
@@ -82,7 +82,7 @@
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">
                 <a class="@(Model.FilterModel.SortField == "FirstName" ? Model.SortedByHeaderClassName : SelectLearnerRecordViewModel.HeaderClassName)"
-                   asp-route="@RouteNames.SelectLearnerRecordAndCreateCohort"
+                   asp-route="@RouteNames.SelectLearnerRecord"
                    asp-all-route-data="@Model.FilterModel.BuildSortRouteData("FirstName")"
                    title="Sort the table by name">
                     Name
@@ -90,7 +90,7 @@
             </th>
             <th scope="col" class="govuk-table__header">
                 <a class="@(Model.FilterModel.SortField == "Uln" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                   asp-route="@RouteNames.SelectLearnerRecordAndCreateCohort"
+                   asp-route="@RouteNames.SelectLearnerRecord"
                    asp-all-route-data="@Model.FilterModel.BuildSortRouteData("Uln")"
                    title="Sort the table by ULN">
                     ULN
@@ -118,9 +118,9 @@
                     @apprenticeship.CourseName
                 </td>
                 <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
-                    @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
+                    @if (string.IsNullOrWhiteSpace(Model.CohortReference))
                     {
-                        <a href="@Url.Action("LearnerSelected", new {Model.ProviderId, Model.CacheKey, Model.EmployerAccountLegalEntityPublicHashedId, LearnerDataId = apprenticeship.Id})" class="govuk-link">
+                        <a href="@Url.Action("LearnerSelectedForNewCohort", new {Model.ProviderId, Model.CacheKey, Model.EmployerAccountLegalEntityPublicHashedId, LearnerDataId = apprenticeship.Id})" class="govuk-link">
                             Select
                         </a>
                     }
@@ -144,7 +144,7 @@ else
             {
                 <li class="das-pagination__item">
                     <a class="das-pagination__link @(pageLink.IsCurrent.HasValue && pageLink.IsCurrent.Value ? "current":"")"
-                       asp-route="@RouteNames.SelectLearnerRecordAndCreateCohort"
+                       asp-route="@RouteNames.SelectLearnerRecord"
                        asp-all-route-data="@pageLink.RouteData"
                        aria-current="@pageLink.IsCurrent"
                        aria-label="@pageLink.AriaLabel">

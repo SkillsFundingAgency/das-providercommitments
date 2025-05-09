@@ -17,6 +17,7 @@ using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests;
@@ -408,7 +409,14 @@ public class DraftApprenticeshipControllerTestFixture
         _tempData.Setup(x => x.TryGetValue(nameof(AddDraftApprenticeshipViewModel), out addModelAsString));
         return this;
     }
-        
+
+    public DraftApprenticeshipControllerTestFixture SetupUseLearnerData(bool? useLearnerData)
+    {
+        _reservationsAddDraftApprenticeshipRequest.UseLearnerData = useLearnerData;
+        return this;
+    }
+
+
     public void VerifyViewModelFromTempDataHasDeliveryModelAndCourseValuesSet()
     {
         var model = _actionResult.VerifyReturnsViewModel().WithModel<AddDraftApprenticeshipViewModel>();
@@ -534,6 +542,12 @@ public class DraftApprenticeshipControllerTestFixture
     public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectCoursePage()
     {
         _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("AddDraftApprenticeshipCourse");
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectLearnerPage()
+    {
+        _actionResult.VerifyReturnsRedirectToRouteResult().RouteName.Should().Be(RouteNames.SelectLearnerRecord);
         return this;
     }
 

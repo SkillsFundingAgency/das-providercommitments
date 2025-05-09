@@ -72,7 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (request.UseLearnerData == true)
             {
-                return RedirectToRoute(RouteNames.SelectLearnerRecordAndAddToCohort, new { request.ProviderId, request.CohortReference, EmployerAccountLegalEntityPublicHashedId = "XEGE5X", request.ReservationId });
+                return RedirectToRoute(RouteNames.SelectLearnerRecord, new { request.ProviderId, request.CohortReference, request.ReservationId });
             }
 
             return RedirectToAction(nameof(AddDraftApprenticeshipCourse), "DraftApprenticeship", request);

@@ -21,8 +21,7 @@ public class LearnerController : Controller
     }
 
     [HttpGet]
-    [Route("add/learners/select", Name = RouteNames.SelectLearnerRecordAndCreateCohort)]
-    [Route("{cohortReference}/add/learners/select", Name = RouteNames.SelectLearnerRecordAndAddToCohort)]
+    [Route("add/learners/select", Name = RouteNames.SelectLearnerRecord)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> SelectLearnerRecord(SelectLearnerRecordRequest request)
     {
@@ -33,7 +32,7 @@ public class LearnerController : Controller
     [HttpGet]
     [Route("add/learners/select/{learnerDataId}")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> LearnerSelected(LearnerSelectedRequest request)
+    public async Task<IActionResult> LearnerSelectedForNewCohort(LearnerSelectedRequest request)
     {
         var model = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(request);
         return RedirectToAction("AddDraftApprenticeship", "Cohort", model.CloneBaseValues());
