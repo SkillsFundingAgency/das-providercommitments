@@ -2,7 +2,7 @@
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 
 public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
     : IMapper<SelectLearnerRecordRequest, SelectLearnerRecordViewModel>
@@ -34,7 +34,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
             CacheKey = source.CacheKey,
             ReservationId = source.ReservationId,
             EmployerAccountName = response.EmployerName,
-            Learners = response.Learners.Select(x => (LearnerSummary) x).ToList(),
+            Learners = response.Learners.Select(x => (LearnerSummary)x).ToList(),
             LastIlrSubmittedOn = response.LastSubmissionDate,
             FilterModel = filterModel
         };
