@@ -10,7 +10,9 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
     public long ProviderId { get; set; }
     public string EmployerAccountName { get; set; }
     public string EmployerAccountLegalEntityPublicHashedId { get; set; }
-    public long AccountLegalEntityId { get; set; }
+    public long? AccountLegalEntityId { get; set; }
+    public string CohortReference { get; set; }
+    public long? CohortId { get; set; }
     public Guid? CacheKey { get; set; }
     public Guid? ReservationId { get; set; }
 
@@ -57,6 +59,7 @@ public class LearnerRecordsFilterModel
 {
     public long ProviderId { get; set; }
     public string EmployerAccountLegalEntityPublicHashedId { get; set; }
+    public string CohortReference { get; set; }
     public int PageNumber { get; set; } = 1;
     public string SearchTerm { get; set; }
     public int TotalNumberOfLearnersFound { get; set; }
@@ -80,8 +83,17 @@ public class LearnerRecordsFilterModel
             {nameof(ProviderId), ProviderId.ToString()},
             {nameof(CacheKey), CacheKey.ToString()},
             {nameof(ReservationId), ReservationId.ToString()},
-            {nameof(EmployerAccountLegalEntityPublicHashedId), EmployerAccountLegalEntityPublicHashedId}
         };
+
+        if (!string.IsNullOrWhiteSpace(EmployerAccountLegalEntityPublicHashedId))
+        {
+            routeData.Add(nameof(EmployerAccountLegalEntityPublicHashedId), EmployerAccountLegalEntityPublicHashedId);
+        }
+
+        if (!string.IsNullOrWhiteSpace(CohortReference))
+        {
+            routeData.Add(nameof(CohortReference), CohortReference);
+        }
 
         if (!string.IsNullOrWhiteSpace(SearchTerm))
         {

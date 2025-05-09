@@ -135,7 +135,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public static void VerifySelectLearnerRecordRedirect(IActionResult redirectResult)
         {
-            redirectResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectLearnerRecord");
+            redirectResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectLearnerRecordAndCreateCohort");
         }
 
         public async Task<IActionResult> Act() => await _sut.ConfirmEmployer(_viewModel);

@@ -7,12 +7,14 @@
 @using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel
 @inject IAuthorizationService AuthorizationService
 @inject ILinkGenerator LinkGenerator;
+@inject IConfiguration Configuration;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.DetailsViewModel
 
 @{
     ViewData["Title"] = Model.PageTitle;
     ViewBag.GaData.Vpv = "/unapproved/cohort";
     ViewBag.GaData.Org = Model.LegalEntityName;
+    var ilrFeaturesEnabled = Configuration.GetValue<bool>("ILRFeaturesEnabled");
 }
 
 @* This ensures that only one banner is visible at any given time *@
@@ -410,7 +412,7 @@
     <p>
         @if (Model.ShowAddAnotherApprenticeOption)
         {
-            <a class="govuk-link add-apprentice" href="@Url.Action("GetReservationId", "DraftApprenticeship", new { Model.CohortReference, Model.ProviderId, Model.AccountLegalEntityHashedId, Model.EncodedPledgeApplicationId, Model.TransferSenderHashedId })">
+            <a class="govuk-link add-apprentice" href="@Url.Action("GetReservationId", "DraftApprenticeship", new { Model.CohortReference, Model.ProviderId, Model.AccountLegalEntityHashedId, Model.EncodedPledgeApplicationId, Model.TransferSenderHashedId, UseLearnerData = ilrFeaturesEnabled })">
                 Add another apprentice
             </a>
         }

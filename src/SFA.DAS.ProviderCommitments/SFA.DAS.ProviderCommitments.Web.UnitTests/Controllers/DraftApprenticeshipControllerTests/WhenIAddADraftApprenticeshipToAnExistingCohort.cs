@@ -73,6 +73,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
+        public void AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithUseLearnerDataAsTrueRedirectsToSelectLearner()
+        {
+            _fixture.SetupUseLearnerData(true);
+            _fixture.AddNewDraftApprenticeshipWithReservation();
+            _fixture.VerifyRedirectedToSelectLearnerPage();
+        }
+
+        [Test]
         public void AndWhenCallingTheGetReservationIdEndpointRedirectToReservationsPage()
         {
             _fixture.GetReservationId();
