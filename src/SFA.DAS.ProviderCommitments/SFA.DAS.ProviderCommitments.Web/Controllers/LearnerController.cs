@@ -9,23 +9,14 @@ using SFA.DAS.ProviderUrlHelper;
 namespace SFA.DAS.ProviderCommitments.Web.Controllers;
 
 [Route("{providerId}/unapproved")]
-public class LearnerController : Controller
+public class LearnerController(IModelMapper modelMapper) : Controller
 {
-    private readonly IModelMapper _modelMapper;
-
-    public LearnerController(IMediator mediator,
-        IModelMapper modelMapper,
-        ILinkGenerator urlHelper)
-    {
-        _modelMapper = modelMapper;
-    }
-
     [HttpGet]
     [Route("add/learners/select", Name = RouteNames.SelectLearnerRecord)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> SelectLearnerRecord(SelectLearnerRecordRequest request)
     {
-        var model = await _modelMapper.Map<SelectLearnerRecordViewModel>(request);
+        var model = await modelMapper.Map<SelectLearnerRecordViewModel>(request);
         return View(model);
     }
 
@@ -34,7 +25,7 @@ public class LearnerController : Controller
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> LearnerSelectedForNewCohort(LearnerSelectedRequest request)
     {
-        var model = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(request);
+        var model = await modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(request);
         return RedirectToAction("AddDraftApprenticeship", "Cohort", model.CloneBaseValues());
     }
 }
