@@ -416,7 +416,6 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
-
     public void VerifyViewModelFromTempDataHasDeliveryModelAndCourseValuesSet()
     {
         var model = _actionResult.VerifyReturnsViewModel().WithModel<AddDraftApprenticeshipViewModel>();
