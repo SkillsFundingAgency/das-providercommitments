@@ -54,9 +54,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var viewOrApprove = cohortDetails.WithParty == Party.Provider ? "Approve" : "View";
             var isAgreementSigned = agreementStatus.Status == ProviderAgreementStatus.Agreed;
 
-            var test = configuration.GetValue<bool>("ILRFeaturesEnabled");
-
-
             return new DetailsViewModel
             {
                 ProviderId = source.ProviderId,
