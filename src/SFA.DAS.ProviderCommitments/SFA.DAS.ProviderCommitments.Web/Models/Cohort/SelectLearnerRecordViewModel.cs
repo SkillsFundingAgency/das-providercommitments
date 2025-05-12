@@ -44,7 +44,10 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
                 return "";
             }
 
-            return $"Last updated {LastIlrSubmittedOn.Value:h:mmtt} on {LastIlrSubmittedOn.Value:dddd d MMMM}";
+            var britishTimeZone = TimeZoneInfo.FindSystemTimeZoneById("GMT Standard Time");
+            var britishDateTime = TimeZoneInfo.ConvertTimeFromUtc(LastIlrSubmittedOn.Value, britishTimeZone);
+
+            return $"Last updated {britishDateTime:h:mmtt} on {britishDateTime:dddd d MMMM}";
         }
     }
     public bool ShowPageLinks => FilterModel.TotalNumberOfLearnersFound > Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage;
