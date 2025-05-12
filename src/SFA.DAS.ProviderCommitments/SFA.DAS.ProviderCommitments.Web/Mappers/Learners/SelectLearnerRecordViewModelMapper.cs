@@ -34,7 +34,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
             CacheKey = source.CacheKey,
             ReservationId = source.ReservationId,
             EmployerAccountName = response.EmployerName,
-            Learners = response.Learners.Select(x => (LearnerSummary)x).ToList(),
+            Learners = response.Learners.ConvertAll(x => (LearnerSummary)x),
             LastIlrSubmittedOn = response.LastSubmissionDate,
             FilterModel = filterModel
         };
