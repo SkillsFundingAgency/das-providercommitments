@@ -12,7 +12,7 @@
     <div class="govuk-grid-column-two-thirds">
 
         <h1 class="govuk-heading-xl">@Model.PageTitle</h1>
-        
+
         <p class="govuk-body">
             If you cannot find the apprentice you're looking for, try:
         </p>
@@ -79,51 +79,57 @@
 {
     <table class="govuk-table das-table--responsive das-table--double-arrows das-table--condensed">
         <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">
-                <a class="@(Model.FilterModel.SortField == "FirstName" ? Model.SortedByHeaderClassName : SelectLearnerRecordViewModel.HeaderClassName)"
-                   asp-route="@RouteNames.SelectLearnerRecord"
-                   asp-all-route-data="@Model.FilterModel.BuildSortRouteData("FirstName")"
-                   title="Sort the table by name">
-                    Name
-                </a>
-            </th>
-            <th scope="col" class="govuk-table__header">
-                <a class="@(Model.FilterModel.SortField == "Uln" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                   asp-route="@RouteNames.SelectLearnerRecord"
-                   asp-all-route-data="@Model.FilterModel.BuildSortRouteData("Uln")"
-                   title="Sort the table by ULN">
-                    ULN
-                </a>
-            </th>
-            <th scope="col" class="govuk-table__header">
-                Course
-            </th>
-            <th scope="col" class="govuk-table__header">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">
+                    <a class="@(Model.FilterModel.SortField == "FirstName" ? Model.SortedByHeaderClassName : SelectLearnerRecordViewModel.HeaderClassName)"
+                    asp-route="@RouteNames.SelectLearnerRecord"
+                    asp-all-route-data="@Model.FilterModel.BuildSortRouteData("FirstName")"
+                    title="Sort the table by name">
+                        Name
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    <a class="@(Model.FilterModel.SortField == "Uln" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
+                    asp-route="@RouteNames.SelectLearnerRecord"
+                    asp-all-route-data="@Model.FilterModel.BuildSortRouteData("Uln")"
+                    title="Sort the table by ULN">
+                        ULN
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    Course
+                </th>
+                <th scope="col" class="govuk-table__header">
 
-            </th>
-        </tr>
+                </th>
+            </tr>
         </thead>
         <tbody class="govuk-table__body">
-        @foreach (var apprenticeship in Model.Learners)
-        {
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell" data-label="Apprentice name">
-                    @apprenticeship.Name
-                </td>
-                <td class="govuk-table__cell" data-label="ULN">
-                    @apprenticeship.Uln
-                </td>
-                <td class="govuk-table__cell" data-label="Apprenticeship training course">
-                    @apprenticeship.CourseName
-                </td>
-                <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
-                    @if (string.IsNullOrWhiteSpace(Model.CohortReference))
-                    {
-                        <a href="@Url.Action("LearnerSelectedForNewCohort", new {Model.ProviderId, Model.CacheKey, Model.EmployerAccountLegalEntityPublicHashedId, LearnerDataId = apprenticeship.Id})" class="govuk-link">
-                            Select
-                        </a>
-                    }
+            @foreach (var apprenticeship in Model.Learners)
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell" data-label="Apprentice name">
+                        @apprenticeship.Name
+                    </td>
+                    <td class="govuk-table__cell" data-label="ULN">
+                        @apprenticeship.Uln
+                    </td>
+                    <td class="govuk-table__cell" data-label="Apprenticeship training course">
+                        @apprenticeship.CourseName
+                    </td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
+                        @if (string.IsNullOrWhiteSpace(Model.CohortReference))
+                        {
+                            <a href="@Url.Action("LearnerSelectedForNewCohort", new {Model.ProviderId, Model.CacheKey, Model.EmployerAccountLegalEntityPublicHashedId, LearnerDataId = apprenticeship.Id})" class="govuk-link">
+                                Select
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("LearnerToBeAddedToCohort", new {Model.ProviderId, Model.CacheKey, Model.CohortReference, LearnerDataId = apprenticeship.Id})" class="govuk-link">
+                                Select
+                            </a>
+                        }
                 </td>
             </tr>
         }

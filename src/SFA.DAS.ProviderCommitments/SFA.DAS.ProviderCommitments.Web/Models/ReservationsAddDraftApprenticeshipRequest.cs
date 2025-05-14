@@ -11,6 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
     public class BaseReservationsAddDraftApprenticeshipRequest
     {
+        public Guid? CacheKey { get; set; }
         public string CohortReference { get; set; }
         public long ProviderId { get; set; }
         public Guid ReservationId { get; set; }
