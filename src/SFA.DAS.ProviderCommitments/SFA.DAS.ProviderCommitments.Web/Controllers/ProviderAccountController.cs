@@ -3,16 +3,31 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     public class ProviderAccountController(ProviderSharedUIConfiguration providerSharedUiConfiguration)
         : Controller
     {
-        [AllowAnonymous]
-        [Route("signout", Name = RouteNames.ProviderSignOut)]
-        public IActionResult SignOut()
+        [Route("", Name = RouteNames.ProviderAccountIndex)]
+        public IActionResult Index([FromServices] IHttpContextAccessor httpContextAccessor)
         {
+            var ukprn = httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ProviderClaims.Ukprn)?.Value;
+            return RedirectToRoute(RouteNames.Cohort, new { providerId = ukprn });
+        }
+        
+        [Route("{providerId}/dashboard", Name = RouteNames.Dashboard)]
+        public IActionResult Dashboard()
+        {
+            return RedirectPermanent(providerSharedUiConfiguration.DashboardUrl);
+        }
+        
+        [Route("signout", Name = RouteNames.ProviderSignOut)]
+        [Route("service/signout")]
+        public IActionResult SignOut([FromQuery] bool autoSignOut = false)
+        {
+            TempData["AutoSignOut"] = autoSignOut;
             return SignOut(
                 new Microsoft.AspNetCore.Authentication.AuthenticationProperties
                 {
@@ -21,12 +36,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 OpenIdConnectDefaults.AuthenticationScheme);
         }
-
-        [HttpGet]
-        [Route("{providerId}/dashboard")]
-        public IActionResult Dashboard()
+        
+        [Route("~/signed-out", Name = "signed-out")]
+        [AllowAnonymous]
+        public IActionResult ProviderSignedOut()
         {
-            return RedirectPermanent(providerSharedUiConfiguration.DashboardUrl);
+            var autoSignOut = TempData["AutoSignOut"] as bool? ?? false;
+            return autoSignOut ? View("AutoSignOut") : RedirectToRoute(RouteNames.ProviderAccountIndex);
         }
     }
 }
