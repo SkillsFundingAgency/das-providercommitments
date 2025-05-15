@@ -25,7 +25,7 @@ public class WhenLearnerSelected
 
         var result = await fixture.Act();
 
-        result.VerifyReturnsRedirectToActionResult().WithActionName("AddDraftApprenticeship");
+        result.VerifyReturnsRedirectToActionResult().WithActionName("AddDraftApprenticeship").WithControllerName("Cohort");
     }
 }
 
