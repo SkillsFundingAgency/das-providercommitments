@@ -26,7 +26,7 @@ public static class AuthenticationExtensions
                 typeof(CustomServiceRole),
                 ClientName.ProviderRoatp,
                 "/signout",
-                "");
+                "/signed-out");
         }
 
         return services;
