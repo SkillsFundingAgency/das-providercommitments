@@ -17,8 +17,9 @@ using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderUrlHelper;
+using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.SelectCourseViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests;
 
@@ -34,6 +35,8 @@ public class DraftApprenticeshipControllerTestFixture
     private readonly Mock<ILinkGenerator> _linkGenerator;
     private readonly AddDraftApprenticeshipViewModel _addModel;
     private readonly SelectCourseViewModel _selectCourseViewModel;
+    private readonly AddAnotherApprenticeshipRedirectModel _redirectToAddAnotherModelWithCourse;
+    private readonly AddAnotherApprenticeshipRedirectModel _redirectToAddAnotherModelWithLearner;
     private readonly EditDraftApprenticeshipViewModel _editModel;
     private readonly AddDraftApprenticeshipApimRequest _createAddDraftApprenticeshipRequest;
     private readonly UpdateDraftApprenticeshipApimRequest _updateDraftApprenticeshipRequest;
@@ -142,6 +145,12 @@ public class DraftApprenticeshipControllerTestFixture
             ULN = "XXXX"
         };
 
+        _redirectToAddAnotherModelWithCourse = autoFixture.Build<AddAnotherApprenticeshipRedirectModel>().With(x => x.RedirectTo,
+            AddAnotherApprenticeshipRedirectModel.RedirectTarget.SelectCourse).Create();
+
+        _redirectToAddAnotherModelWithLearner = autoFixture.Build<AddAnotherApprenticeshipRedirectModel>().With(x => x.RedirectTo,
+            AddAnotherApprenticeshipRedirectModel.RedirectTarget.SelectLearner).Create();
+
         _viewSelectOptionsViewModel = autoFixture.Build<ViewSelectOptionsViewModel>().Create();
 
         _cohortResponse = autoFixture.Build<GetCohortResponse>()
@@ -171,6 +180,12 @@ public class DraftApprenticeshipControllerTestFixture
 
         _modelMapper.Setup(x => x.Map<UpdateDraftApprenticeshipApimRequest>(It.IsAny<ViewSelectOptionsViewModel>()))
             .ReturnsAsync(_updateDraftApprenticeshipRequest);
+
+        _modelMapper.Setup(x => x.Map<AddAnotherApprenticeshipRedirectModel>(It.Is<BaseReservationsAddDraftApprenticeshipRequest>(p=>p.UseLearnerData == false)))
+            .ReturnsAsync(_redirectToAddAnotherModelWithCourse);
+
+        _modelMapper.Setup(x => x.Map<AddAnotherApprenticeshipRedirectModel>(It.Is<BaseReservationsAddDraftApprenticeshipRequest>(p => p.UseLearnerData == true)))
+            .ReturnsAsync(_redirectToAddAnotherModelWithLearner);
 
         _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
         _commitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -251,9 +266,15 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
-    public DraftApprenticeshipControllerTestFixture AddNewDraftApprenticeshipWithReservation()
+    public async Task<DraftApprenticeshipControllerTestFixture> AddNewDraftApprenticeshipWithReservation()
     {
-        _actionResult = _controller.AddNewDraftApprenticeship(_reservationsAddDraftApprenticeshipRequest);
+        _actionResult = await _controller.AddNewDraftApprenticeship(_reservationsAddDraftApprenticeshipRequest);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetUseLearnerData(bool useLearnerData)
+    {
+        _getReservationIdForAddAnotherApprenticeRequest.UseLearnerData = useLearnerData;
         return this;
     }
 
@@ -266,6 +287,8 @@ public class DraftApprenticeshipControllerTestFixture
         _actionResult = _controller.GetReservationId(_getReservationIdForAddAnotherApprenticeRequest, _linkGenerator.Object);
         return this;
     }
+
+
 
     public async Task<DraftApprenticeshipControllerTestFixture> EditDraftApprenticeship()
     {
@@ -546,7 +569,8 @@ public class DraftApprenticeshipControllerTestFixture
 
     public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectLearnerPage()
     {
-        _actionResult.VerifyReturnsRedirectToRouteResult().RouteName.Should().Be(RouteNames.SelectLearnerRecord);
+        _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectLearnerRecord")
+            .WithControllerName("Learner");
         return this;
     }
 

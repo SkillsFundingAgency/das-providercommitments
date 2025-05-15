@@ -3,6 +3,9 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;
 
@@ -13,6 +16,7 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
     private ReservationsAddDraftApprenticeshipRequest _source;
     private Mock<IOuterApiClient> _commitmentsApiClient;
     private Mock<IEncodingService> _encodingService;
+    private Mock<ICacheStorageService> _cacheService;
     private GetAddDraftApprenticeshipDetailsResponse _apiResponse;
 
     [SetUp]
@@ -23,6 +27,7 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
         _source = fixture.Build<ReservationsAddDraftApprenticeshipRequest>()
             .With(x => x.StartMonthYear, "042020")
             .With(x => x.CohortId, 1)
+            .Without(x => x.CacheKey)
             .Create();
 
         _apiResponse = fixture.Create<GetAddDraftApprenticeshipDetailsResponse>();
@@ -34,7 +39,9 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
         _encodingService.Setup(x => x.Encode(_apiResponse.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId))
             .Returns("EmployerAccountLegalEntityPublicHashedId");
 
-        _mapper = new AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper(_encodingService.Object, _commitmentsApiClient.Object);
+        _cacheService = new Mock<ICacheStorageService>();
+
+        _mapper = new AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper(_encodingService.Object, _commitmentsApiClient.Object, _cacheService.Object);
     }
 
     [Test]
