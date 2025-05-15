@@ -7,7 +7,6 @@ using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
 {
  public class AddAnotherApprenticeshipRedirectModelMapper(
-     IAuthorizationService authorizationService,
      ICacheStorageService cacheStorageService,
      ILogger<AddAnotherApprenticeshipRedirectModelMapper> logger)
      : IMapper<BaseReservationsAddDraftApprenticeshipRequest, AddAnotherApprenticeshipRedirectModel>
