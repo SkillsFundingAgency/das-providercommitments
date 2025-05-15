@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
 
             if (source.CacheKey.HasValue)
             {
-                cacheItem = await _cacheStorage.RetrieveFromCache<AddAnotherApprenticeshipCacheItem>(source.CacheKey.ToString());
+                cacheItem = await _cacheStorage.RetrieveFromCache<AddAnotherApprenticeshipCacheItem>(source.CacheKey.Value);
             }
 
             var apiRequest = new GetAddDraftApprenticeshipDetailsRequest(source.ProviderId, source.CohortId.Value, source.CourseCode);

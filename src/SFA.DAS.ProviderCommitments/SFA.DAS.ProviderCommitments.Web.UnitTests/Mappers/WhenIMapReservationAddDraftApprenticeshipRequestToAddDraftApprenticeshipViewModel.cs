@@ -1,11 +1,12 @@
-﻿using SFA.DAS.ProviderCommitments.Web.Mappers;
+﻿using System;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Infrastructure;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;
 
@@ -18,6 +19,7 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
     private Mock<IEncodingService> _encodingService;
     private Mock<ICacheStorageService> _cacheService;
     private GetAddDraftApprenticeshipDetailsResponse _apiResponse;
+    private AddAnotherApprenticeshipCacheItem _cacheResponse;
 
     [SetUp]
     public void Arrange()
@@ -27,8 +29,9 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
         _source = fixture.Build<ReservationsAddDraftApprenticeshipRequest>()
             .With(x => x.StartMonthYear, "042020")
             .With(x => x.CohortId, 1)
-            .Without(x => x.CacheKey)
             .Create();
+
+        _cacheResponse = fixture.Create<AddAnotherApprenticeshipCacheItem>();
 
         _apiResponse = fixture.Create<GetAddDraftApprenticeshipDetailsResponse>();
         _commitmentsApiClient = new Mock<IOuterApiClient>();
@@ -40,6 +43,7 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
             .Returns("EmployerAccountLegalEntityPublicHashedId");
 
         _cacheService = new Mock<ICacheStorageService>();
+        _cacheService.Setup(x => x.RetrieveFromCache<AddAnotherApprenticeshipCacheItem>(It.IsAny<Guid>())).ReturnsAsync(_cacheResponse);
 
         _mapper = new AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper(_encodingService.Object, _commitmentsApiClient.Object, _cacheService.Object);
     }
@@ -68,6 +72,7 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
     [Test]
     public async Task ThenCourseCodeIsMappedCorrectly()
     {
+        _source.CacheKey = null;
         var result = await _mapper.Map(_source);
         result.CourseCode.Should().Be(_source.CourseCode);
     }
@@ -75,6 +80,7 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
     [Test]
     public async Task ThenStartMonthYearIsMappedCorrectly()
     {
+        _source.CacheKey = null;
         var result = await _mapper.Map(_source);
         result.StartDate.MonthYear.Should().Be(_source.StartMonthYear);
     }
@@ -82,6 +88,7 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
     [Test]
     public async Task ThenReservationIdIsMappedCorrectly()
     {
+        _source.CacheKey = null;
         var result = await _mapper.Map(_source);
         result.ReservationId.Should().Be(_source.ReservationId);
     }
@@ -89,6 +96,7 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
     [Test]
     public async Task ThenAccountLegalEntityIdIsMappedCorrectly()
     {
+        _source.CacheKey = null;
         var result = await _mapper.Map(_source);
         result.AccountLegalEntityId.Should().Be(_apiResponse.AccountLegalEntityId);
     }
@@ -110,7 +118,99 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
     [Test]
     public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
     {
+        _source.CacheKey = null;
         var result = await _mapper.Map(_source);
         result.IsOnFlexiPaymentPilot.Should().Be(_source.IsOnFlexiPaymentPilot);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task AndHasCacheKeyThenIsOnFlexiPaymentPilotIsAlwaysFalse(bool isFlexiPayment)
+    {
+        _source.IsOnFlexiPaymentPilot = isFlexiPayment;
+        var result = await _mapper.Map(_source);
+        result.IsOnFlexiPaymentPilot.Should().BeFalse();
+    }
+
+    [Test]
+    public async Task AndHasCacheKeyThenReservationIdIsMappedFromCache()
+    {
+        var result = await _mapper.Map(_source);
+        result.ReservationId.Should().Be(_cacheResponse.ReservationId);
+    }
+
+    [Test]
+    public async Task AndHasCacheKeyThenNameIsMappedFromCache()
+    {
+        var result = await _mapper.Map(_source);
+        result.FirstName.Should().Be(_cacheResponse.FirstName);
+        result.LastName.Should().Be(_cacheResponse.LastName);
+    }
+
+    [Test]
+    public async Task AndHasCacheKeyThenEmailIsMappedFromCache()
+    {
+        var result = await _mapper.Map(_source);
+        result.Email.Should().Be(_cacheResponse.Email);
+    }
+
+    [Test]
+    public async Task AndHasCacheKeyThenDoBIsMappedFromCache()
+    {
+        var result = await _mapper.Map(_source);
+        result.DateOfBirth.Day.Should().Be(_cacheResponse.DateOfBirth.Value.Day);
+        result.DateOfBirth.Month.Should().Be(_cacheResponse.DateOfBirth.Value.Month);
+        result.DateOfBirth.Year.Should().Be(_cacheResponse.DateOfBirth.Value.Year);
+    }
+
+    [Test]
+    public async Task AndHasCacheKeyThenStartDateIsMappedFromCache()
+    {
+        var result = await _mapper.Map(_source);
+        result.StartDate.Day.Should().Be(1);
+        result.StartDate.Month.Should().Be(_cacheResponse.StartDate.Value.Month);
+        result.StartDate.Year.Should().Be(_cacheResponse.StartDate.Value.Year);
+    }
+
+    [Test]
+    public async Task AndHasCacheKeyThenEndDateIsMappedFromCache()
+    {
+        var result = await _mapper.Map(_source);
+        result.EndDate.Day.Should().Be(1);
+        result.EndDate.Month.Should().Be(_cacheResponse.EndDate.Value.Month);
+        result.EndDate.Year.Should().Be(_cacheResponse.EndDate.Value.Year);
+    }
+
+    [Test]
+    public async Task AndHasCacheKeyThenUlnIsMappedFromCache()
+    {
+        var result = await _mapper.Map(_source);
+        result.Uln.Should().Be(_cacheResponse.Uln);
+    }
+
+    [Test]
+    public async Task AndHasCacheKeyThenCourseCodeIsMappedFromCache()
+    {
+        var result = await _mapper.Map(_source);
+        result.CourseCode.Should().Be(_cacheResponse.CourseCode);
+    }
+
+    [Test]
+    public async Task AndHasCacheKeyThenCostsAreMappedFromCache()
+    {
+        var result = await _mapper.Map(_source);
+        result.Cost.Should().Be(_cacheResponse.Cost);
+        result.TrainingPrice.Should().Be(_cacheResponse.TrainingPrice);
+        result.EndPointAssessmentPrice.Should().Be(_cacheResponse.EndPointAssessmentPrice);
+    }
+
+    [TestCase(Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency, DeliveryModel.FlexiJobAgency)]
+    [TestCase(Infrastructure.OuterApi.Types.DeliveryModel.Regular, DeliveryModel.Regular)]
+    [TestCase(Infrastructure.OuterApi.Types.DeliveryModel.PortableFlexiJob, DeliveryModel.Regular)]
+    public async Task AndHasCacheKeyThenDeliveryModelIsMappedFromCache(Infrastructure.OuterApi.Types.DeliveryModel dm, DeliveryModel expected)
+    {
+        _cacheResponse.DeliveryModel = dm;
+        var result = await _mapper.Map(_source);
+        result.DeliveryModel.Should().Be(expected);
     }
 }
