@@ -303,12 +303,19 @@ public class CohortController : Controller
             {
                 return RedirectToAction(nameof(NoDeclaredStandards), viewModel.ProviderId);
             }
-
-            return Redirect(_urlHelper.ReservationsLink(
-                $"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
+            return RedirectToAction("SelectIlrRecord", new { ProviderId = viewModel.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId });
         }
 
         return RedirectToAction(nameof(SelectEmployer), new { viewModel.ProviderId });
+    }
+
+    [HttpGet]
+    [Route("add/ilrs/select", Name = RouteNames.SelectIlrRecord)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> SelectIlrRecord(SelectIlrRecordRequest request)
+    {
+        var model = await _modelMapper.Map<SelectIlrRecordViewModel>(request);
+        return View(model);
     }
 
     [HttpGet]
