@@ -2,13 +2,7 @@
 {
     public class AddAnotherApprenticeshipRedirectModel
     {
-        public RedirectTarget RedirectTo { get; set; }
         public Guid CacheKey { get; set; }
-
-        public enum RedirectTarget
-        {
-            SelectCourse,
-            SelectLearner
-        }
+        public bool UseLearnerData { get; set; }
     }
 }

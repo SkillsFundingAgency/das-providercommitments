@@ -26,15 +26,15 @@ public class LearnerController(IModelMapper modelMapper) : Controller
     public async Task<IActionResult> LearnerSelectedForNewCohort(LearnerSelectedRequest request)
     {
         var model = await modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(request);
-        return RedirectToAction("AddDraftApprenticeship", "Cohort", model.CloneBaseValues());
+        return RedirectToRoute(RouteNames.CreateCohortAndAddFirstApprenticeship, model.CloneBaseValues());
     }
-    
+
     [HttpGet]
     [Route("add-another/learners/select/{learnerDataId}")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> LearnerToBeAddedToCohort(AddAnotherLearnerSelectedRequest request)
     {
         var model = await modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(request);
-        return RedirectToAction("AddDraftApprenticeship", "DraftApprenticeship", model.CloneBaseValues());
+        return RedirectToRoute(RouteNames.DraftApprenticeshipAddAnother, model.CloneBaseValues());
     }
 }

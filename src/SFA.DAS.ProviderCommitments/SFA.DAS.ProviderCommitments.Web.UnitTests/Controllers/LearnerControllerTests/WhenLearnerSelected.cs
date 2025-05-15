@@ -2,6 +2,7 @@
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.LearnerControllerTests;
 
@@ -25,7 +26,7 @@ public class WhenLearnerSelected
 
         var result = await fixture.Act();
 
-        result.VerifyReturnsRedirectToActionResult().WithActionName("AddDraftApprenticeship").WithControllerName("Cohort");
+        result.VerifyReturnsRedirectToRouteResult().RouteName.Should().Be(RouteNames.CreateCohortAndAddFirstApprenticeship);
     }
 }
 

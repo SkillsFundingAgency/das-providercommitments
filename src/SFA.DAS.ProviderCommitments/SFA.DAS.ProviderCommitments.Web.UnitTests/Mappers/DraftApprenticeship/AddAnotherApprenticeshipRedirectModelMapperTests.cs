@@ -26,14 +26,14 @@ public class AddAnotherApprenticeshipRedirectModelMapperTests
         _request = fixture.Create<BaseReservationsAddDraftApprenticeshipRequest>();
     }
 
-    [TestCase(true, AddAnotherApprenticeshipRedirectModel.RedirectTarget.SelectLearner)]
-    [TestCase(false, AddAnotherApprenticeshipRedirectModel.RedirectTarget.SelectCourse)]
-    public async Task Redirect_Target_Is_Mapped_Correctly(bool useLearnerData, AddAnotherApprenticeshipRedirectModel.RedirectTarget expectTarget)
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task Redirect_Target_Is_Mapped_Correctly(bool useLearnerData)
     {
         _request.UseLearnerData = useLearnerData;
 
         var result = await _mapper.Map(_request);
-        result.RedirectTo.Should().Be(expectTarget);
+        result.UseLearnerData.Should().Be(useLearnerData);
     }
 
     [Test]

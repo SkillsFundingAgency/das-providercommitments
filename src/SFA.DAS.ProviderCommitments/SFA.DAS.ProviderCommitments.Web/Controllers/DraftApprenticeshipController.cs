@@ -74,14 +74,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var redirectModel = await _modelMapper.Map<AddAnotherApprenticeshipRedirectModel>(request);
 
-            string action = redirectModel.RedirectTo switch
-            {
-                AddAnotherApprenticeshipRedirectModel.RedirectTarget.SelectLearner => "SelectLearnerRecord",
-                _ => nameof(AddDraftApprenticeshipCourse)
-            };
-
             request.CacheKey = redirectModel.CacheKey;
-            return RedirectToAction(action, (action == "SelectLearnerRecord" ? "Learner" : "DraftApprenticeship"), request.CloneBaseValues());
+
+            var route = redirectModel.UseLearnerData
+                ? RouteNames.SelectLearnerRecord
+                : RouteNames.SelectCourse;
+            return RedirectToRoute(route, request.CloneBaseValues());
         }
 
         [HttpGet]

@@ -18,6 +18,7 @@ using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.SelectCourseViewModel;
 
@@ -145,11 +146,11 @@ public class DraftApprenticeshipControllerTestFixture
             ULN = "XXXX"
         };
 
-        _redirectToAddAnotherModelWithCourse = autoFixture.Build<AddAnotherApprenticeshipRedirectModel>().With(x => x.RedirectTo,
-            AddAnotherApprenticeshipRedirectModel.RedirectTarget.SelectCourse).Create();
+        _redirectToAddAnotherModelWithCourse = autoFixture.Build<AddAnotherApprenticeshipRedirectModel>()
+            .With(x => x.UseLearnerData, false).Create();
 
-        _redirectToAddAnotherModelWithLearner = autoFixture.Build<AddAnotherApprenticeshipRedirectModel>().With(x => x.RedirectTo,
-            AddAnotherApprenticeshipRedirectModel.RedirectTarget.SelectLearner).Create();
+        _redirectToAddAnotherModelWithLearner = autoFixture.Build<AddAnotherApprenticeshipRedirectModel>()
+            .With(x => x.UseLearnerData, true).Create();
 
         _viewSelectOptionsViewModel = autoFixture.Build<ViewSelectOptionsViewModel>().Create();
 
@@ -433,7 +434,7 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
-    public DraftApprenticeshipControllerTestFixture SetupUseLearnerData(bool? useLearnerData)
+    public DraftApprenticeshipControllerTestFixture SetupUseLearnerData(bool useLearnerData)
     {
         _reservationsAddDraftApprenticeshipRequest.UseLearnerData = useLearnerData;
         return this;
@@ -563,14 +564,13 @@ public class DraftApprenticeshipControllerTestFixture
 
     public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectCoursePage()
     {
-        _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("AddDraftApprenticeshipCourse");
+        _actionResult.VerifyReturnsRedirectToRouteResult().RouteName.Should().Be(RouteNames.SelectCourse);
         return this;
     }
 
     public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectLearnerPage()
     {
-        _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectLearnerRecord")
-            .WithControllerName("Learner");
+        _actionResult.VerifyReturnsRedirectToRouteResult().RouteName.Should().Be(RouteNames.SelectLearnerRecord);
         return this;
     }
 

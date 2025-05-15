@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
             return new AddAnotherApprenticeshipRedirectModel
             {
                 CacheKey = cacheKey,
-                RedirectTo = source.UseLearnerData == true ? AddAnotherApprenticeshipRedirectModel.RedirectTarget.SelectLearner : AddAnotherApprenticeshipRedirectModel.RedirectTarget.SelectCourse
+                UseLearnerData = source.UseLearnerData
             };
         }
     }
