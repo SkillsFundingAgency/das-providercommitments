@@ -41,7 +41,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             };
             await cacheStorageService.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
 
-
             return new CreateCohortRedirectModel
             {
                 CacheKey = cacheKey,

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -21,6 +22,7 @@ using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.Helpers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
@@ -68,14 +70,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add")]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
         {
-            if (request.UseLearnerData == true)
-            {
-                return RedirectToRoute(RouteNames.SelectLearnerRecord, new { request.ProviderId, request.CohortReference, request.ReservationId });
-            }
+            var redirectModel = await _modelMapper.Map<AddAnotherApprenticeshipRedirectModel>(request);
 
-            return RedirectToAction(nameof(AddDraftApprenticeshipCourse), "DraftApprenticeship", request);
+            request.CacheKey = redirectModel.CacheKey;
+
+            var route = redirectModel.UseLearnerData
+                ? RouteNames.SelectLearnerRecord
+                : RouteNames.SelectCourse;
+            return RedirectToRoute(route, request.CloneBaseValues());
         }
 
         [HttpGet]

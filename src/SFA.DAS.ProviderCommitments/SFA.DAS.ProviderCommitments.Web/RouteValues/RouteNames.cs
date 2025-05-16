@@ -49,4 +49,5 @@ public static class RouteNames
     public const string RecognisePriorLearning = "recognise-prior-learning";
     public const string SelectStandardOption = "select-standard-option";
     public const string SelectLearnerRecord = "select-ilr";
+    public const string CreateCohortAndAddFirstApprenticeship = "create-cohort-add-apprenticeship";
 }

@@ -3,8 +3,8 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Models.Learners;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers;
 
@@ -26,6 +26,15 @@ public class LearnerController(IModelMapper modelMapper) : Controller
     public async Task<IActionResult> LearnerSelectedForNewCohort(LearnerSelectedRequest request)
     {
         var model = await modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(request);
-        return RedirectToAction("AddDraftApprenticeship", "Cohort", model.CloneBaseValues());
+        return RedirectToRoute(RouteNames.CreateCohortAndAddFirstApprenticeship, model.CloneBaseValues());
+    }
+
+    [HttpGet]
+    [Route("add-another/learners/select/{learnerDataId}")]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> LearnerToBeAddedToCohort(AddAnotherLearnerSelectedRequest request)
+    {
+        var model = await modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(request);
+        return RedirectToRoute(RouteNames.DraftApprenticeshipAddAnother, model.CloneBaseValues());
     }
 }

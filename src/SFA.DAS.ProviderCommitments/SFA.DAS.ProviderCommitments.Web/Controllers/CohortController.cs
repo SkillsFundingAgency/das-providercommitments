@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Routing;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -187,7 +188,7 @@ public class CohortController : Controller
     }
 
     [HttpGet]
-    [Route("add/apprenticeship")]
+    [Route("add/apprenticeship", Name  = RouteNames.CreateCohortAndAddFirstApprenticeship)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     [ServiceFilter(typeof(UseCacheForValidationAttribute))]
     public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
