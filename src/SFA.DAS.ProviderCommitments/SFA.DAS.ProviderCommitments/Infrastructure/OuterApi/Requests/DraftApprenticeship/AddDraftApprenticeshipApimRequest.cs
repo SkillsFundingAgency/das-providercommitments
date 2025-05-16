@@ -27,5 +27,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
         public DateTime? EmploymentEndDate { get; set; }
         public bool IgnoreStartDateOverlap { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
+        public long? LearnerDataId { get; set; }
     }
 }

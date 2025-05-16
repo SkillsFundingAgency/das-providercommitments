@@ -87,6 +87,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
                 model.DeliveryModel = cacheItem.DeliveryModel == DeliveryModel.FlexiJobAgency
                     ? CommitmentsV2.Types.DeliveryModel.FlexiJobAgency
                     : CommitmentsV2.Types.DeliveryModel.Regular;
+
+                model.LearnerDataId = cacheItem.LearnerDataId;
             }
 
             return model;
