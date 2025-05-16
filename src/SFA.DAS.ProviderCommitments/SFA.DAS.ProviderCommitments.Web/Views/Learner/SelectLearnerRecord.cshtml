@@ -24,13 +24,13 @@
                 @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
                 {
                     <a href="@Url.Action("AddDraftApprenticeshipCourse", "DraftApprenticeship", new {Model.ProviderId, Model.CohortReference, Model.ReservationId})" class="govuk-link">
-                        manually adding you apprentice
+                        manually adding your apprentice
                     </a>
                 }
                 else
                 {
                     <a href="@Url.Action("AddNewDraftApprenticeship", "Cohort", new {Model.ProviderId, Model.CohortReference, Model.ReservationId})" class="govuk-link">
-                        manually adding you apprentice
+                        manually adding your apprentice
                     </a>
                 }
             </li>
