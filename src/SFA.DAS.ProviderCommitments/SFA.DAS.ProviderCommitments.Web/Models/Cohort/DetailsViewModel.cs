@@ -71,6 +71,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public List<string> InvalidProviderCourseCodes { get; set; }
         public List<long> RplErrorDraftApprenticeshipIds { get; set; }
         public int NumberOfRplErrors => RplErrorDraftApprenticeshipIds?.Count ?? 0;
+        public bool UseLearnerData { get; set; }
     }
 
     public enum CohortDetailsOptions

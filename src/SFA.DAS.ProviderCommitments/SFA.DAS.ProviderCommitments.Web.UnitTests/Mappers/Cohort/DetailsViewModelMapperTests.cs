@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using AutoFixture.Dsl;
 using FluentAssertions.Execution;
+using Microsoft.Extensions.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -853,6 +854,16 @@ public class DetailsViewModelMapperTests
 
         result.ShowRofjaaRemovalBanner.Should().Be(expectShowBanner);
     }
+
+    [Test]
+    public async Task UseLearningDataMappedCorrectly()
+    {
+        var fixture = new DetailsViewModelMapperTestsFixture();
+
+        var result = await fixture.Map();
+
+        result.UseLearnerData.Should().BeTrue();
+    }
 }
 
 public class DetailsViewModelMapperTestsFixture
@@ -868,6 +879,7 @@ public class DetailsViewModelMapperTestsFixture
 
     public DetailsRequest Source { get; }
     public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; }
+    public IConfiguration Configuration { get; }
     public GetCohortDetailsResponse CohortDetails { get; }
     public DateTime DefaultStartDate = new(2019, 10, 1);
 
@@ -924,10 +936,23 @@ public class DetailsViewModelMapperTestsFixture
                 ReasonPhrase = "Url not found"
             }, "Course not found"));
 
+        var configData = new Dictionary<string, string>
+        {
+            { "ILRFeaturesEnabled", "true" }
+        };
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(configData)
+            .Build();
+
+        Configuration = configuration;
+
         _encodingService = new Mock<IEncodingService>();
         SetEncodingOfApprenticeIds();
 
-        _mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, _encodingService.Object, _pasAccountApiClient.Object, outerApiClient.Object, Mock.Of<ITempDataStorageService>(), providerFeatureToggle.Object);
+        _mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, _encodingService.Object,
+            _pasAccountApiClient.Object, outerApiClient.Object, Mock.Of<ITempDataStorageService>(),
+            Configuration);
         Source = _autoFixture.Create<DetailsRequest>();
     }
 

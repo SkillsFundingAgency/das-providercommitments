@@ -21,9 +21,18 @@
             <li>refreshing this page</li>
             <li>updating the ILR</li>
             <li>
-                <a href="@Url.Action("AddNewDraftApprenticeship", new { Model.ProviderId, Model.EmployerAccountLegalEntityPublicHashedId, Model.ReservationId })" class="govuk-link">
-                    manually adding your apprentice
-                </a>
+                @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
+                {
+                    <a href="@Url.Action("AddDraftApprenticeshipCourse", "DraftApprenticeship", new {Model.ProviderId, Model.CohortReference, Model.ReservationId})" class="govuk-link">
+                        manually adding your apprentice
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("AddNewDraftApprenticeship", "Cohort", new {Model.ProviderId, Model.CohortReference, Model.ReservationId})" class="govuk-link">
+                        manually adding your apprentice
+                    </a>
+                }
             </li>
         </ul>
     </div>
@@ -47,7 +56,14 @@
     <input type="hidden" value="@Model.FilterModel.ReverseSort.ToString()" name="ReverseSort" />
     <input type="hidden" value="@Model.CacheKey" name="CacheKey" />
     <input type="hidden" value="@Model.ReservationId" name="ReservationId" />
-    <input type="hidden" value="@Model.EmployerAccountLegalEntityPublicHashedId" name="EmployerAccountLegalEntityPublicHashedId" />
+    @if (!string.IsNullOrWhiteSpace(Model.EmployerAccountLegalEntityPublicHashedId))
+    {
+        <input type="hidden" value="@Model.EmployerAccountLegalEntityPublicHashedId" name="EmployerAccountLegalEntityPublicHashedId"/>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
+    {
+        <input type="hidden" value="@Model.CohortReference" name="CohortReference"/>
+    }
 </form>
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
@@ -102,9 +118,12 @@
                     @apprenticeship.CourseName
                 </td>
                 <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
-                        <a href="@Url.Action("LearnerSelected", new { Model.ProviderId, Model.CacheKey, Model.EmployerAccountLegalEntityPublicHashedId, LearnerDataId = apprenticeship.Id })" class="govuk-link">
-                        Select
-                    </a>
+                    @if (string.IsNullOrWhiteSpace(Model.CohortReference))
+                    {
+                        <a href="@Url.Action("LearnerSelectedForNewCohort", new {Model.ProviderId, Model.CacheKey, Model.EmployerAccountLegalEntityPublicHashedId, LearnerDataId = apprenticeship.Id})" class="govuk-link">
+                            Select
+                        </a>
+                    }
                 </td>
             </tr>
         }
@@ -138,5 +157,12 @@ else
 }
 
 @section breadcrumb {
-    <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", new { @Model.ProviderId, UseLearnerData = true })>Back</a>
+    @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("Details", "Cohort", new {Model.ProviderId, Model.CohortReference })>Back</a>
+    }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", "Cohort", new { @Model.ProviderId, UseLearnerData = true })>Back</a>
+    }
 }
