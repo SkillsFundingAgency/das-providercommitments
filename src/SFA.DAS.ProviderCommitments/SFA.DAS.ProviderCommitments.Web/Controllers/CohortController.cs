@@ -100,14 +100,17 @@ public class CohortController : Controller
     [Route("apprentices/add")]
     [Authorize(Policy = nameof(PolicyNames.CreateCohort))]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
+    public async Task<IActionResult> AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request, [FromServices] ILogger<CohortController> logger)
     {
+        logger.LogInformation("Adding apprentice: IsOnFlexiPaymentPilot {0}, UseLearnerData {1} ", request.IsOnFlexiPaymentPilot, request.UseLearnerData);
         var redirectModel = await _modelMapper.Map<CreateCohortRedirectModel>(request);
 
-        var action = redirectModel.RedirectTo ==
-                     CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus
-            ? nameof(ChoosePilotStatus)
-            : nameof(SelectCourse);
+        string action = redirectModel.RedirectTo switch
+        {
+            CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus => nameof(ChoosePilotStatus),
+            CreateCohortRedirectModel.RedirectTarget.SelectLearner => nameof(SelectLearnerRecord),
+            _ => nameof(SelectCourse)
+        };
 
         request.CacheKey = redirectModel.CacheKey;
         return RedirectToAction(action, request.CloneBaseValues());
@@ -303,13 +306,7 @@ public class CohortController : Controller
             {
                 return RedirectToAction(nameof(NoDeclaredStandards), viewModel.ProviderId);
             }
-
-            if (viewModel.UseIlrData)
-            {
-                return RedirectToAction("SelectLearnerRecord", new { ProviderId = viewModel.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId });
-            }
-            
-            return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
+            return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select?useLearnerData={viewModel.UseLearnerData}"));
         }
 
         return RedirectToAction(nameof(SelectEmployer), new { viewModel.ProviderId });
@@ -320,8 +317,18 @@ public class CohortController : Controller
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> SelectLearnerRecord(SelectLearnerRecordRequest request)
     {
+        // populate cacheKey with values
         var model = await _modelMapper.Map<SelectLearnerRecordViewModel>(request);
         return View(model);
+    }
+
+    [HttpGet]
+    [Route("add/learners/select/{learnerDataId}")]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> LearnerSelected(LearnerSelectedRequest request)
+    {
+        var model = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(request);
+        return RedirectToAction(nameof(AddDraftApprenticeship), model.CloneBaseValues());
     }
 
     [HttpGet]
@@ -426,7 +433,7 @@ public class CohortController : Controller
     {
         return viewModel.Selection switch
         {
-            AddDraftApprenticeshipEntryMethodOptions.ILR => RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId, UseIlrData = true }),
+            AddDraftApprenticeshipEntryMethodOptions.ILR => RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId, UseLearnerData = true }),
             AddDraftApprenticeshipEntryMethodOptions.BulkCsv => RedirectToAction(nameof(FileUploadInform), new { viewModel.ProviderId }),
             AddDraftApprenticeshipEntryMethodOptions.Manual => RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId }),
             _ => throw new InvalidOperationException()
@@ -646,7 +653,7 @@ public class CohortController : Controller
 
         if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.NewCohort)
         {
-            return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId, UseIlrData = viewModel.UseIlrData });
+            return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId, UseLearnerData = viewModel.UseLearnerData });
         }
         
         throw new InvalidOperationException();

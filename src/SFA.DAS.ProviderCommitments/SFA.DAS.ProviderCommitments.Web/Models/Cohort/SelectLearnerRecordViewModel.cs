@@ -1,6 +1,5 @@
 ﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
-using System.Drawing.Printing;
 using static SFA.DAS.ProviderCommitments.Constants;
 using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ApprenticesFilterModel;
 
@@ -12,10 +11,11 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
     public string EmployerAccountName { get; set; }
     public string EmployerAccountLegalEntityPublicHashedId { get; set; }
     public long AccountLegalEntityId { get; set; }
-    public string EmployerAccountLegalEntityName { get; set; }
+    public Guid? CacheKey { get; set; }
+    public Guid? ReservationId { get; set; }
+
     public List<LearnerSummary> Learners { get; set; } = new();
     public string PageTitle => $"Select apprentice from ILR for {EmployerAccountName}";
-    public string MatchingRecordCount { get; set; }
 
     public string SortedByHeaderClassName { get; set; }
     public const string HeaderClassName = "das-table__sort";
@@ -44,7 +44,10 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
                 return "";
             }
 
-            return $"Last updated {LastIlrSubmittedOn.Value:h:mmtt} on {LastIlrSubmittedOn.Value:dddd d MMMM}";
+            var britishTimeZone = TimeZoneInfo.FindSystemTimeZoneById("GMT Standard Time");
+            var britishDateTime = TimeZoneInfo.ConvertTimeFromUtc(LastIlrSubmittedOn.Value, britishTimeZone);
+
+            return $"Last updated {britishDateTime:h:mmtt} on {britishDateTime:dddd d MMMM}";
         }
     }
     public bool ShowPageLinks => FilterModel.TotalNumberOfLearnersFound > Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage;
@@ -66,6 +69,8 @@ public class LearnerRecordsFilterModel
 
     public string SortField { get; set; }
     public bool ReverseSort { get; set; }
+    public Guid? CacheKey { get; set; }
+    public Guid? ReservationId { get; set; }
     public bool ShowPageLinks => TotalNumberOfLearnersFound > LearnerRecordSearch.NumberOfLearnersPerSearchPage;
     public Dictionary<string, string> RouteData => BuildRouteData();
 
@@ -76,6 +81,8 @@ public class LearnerRecordsFilterModel
         var routeData = new Dictionary<string, string>
         {
             {nameof(ProviderId), ProviderId.ToString()},
+            {nameof(CacheKey), CacheKey.ToString()},
+            {nameof(ReservationId), ReservationId.ToString()},
             {nameof(EmployerAccountLegalEntityPublicHashedId), EmployerAccountLegalEntityPublicHashedId}
         };
 

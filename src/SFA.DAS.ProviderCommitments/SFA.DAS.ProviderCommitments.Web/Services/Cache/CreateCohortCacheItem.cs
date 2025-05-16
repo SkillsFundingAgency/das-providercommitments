@@ -31,5 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
         public int? EmploymentPrice { get; set; }
         public DateTime? EmploymentEndDate { get; set; }
         public string Reference { get; set; }
+        public bool? UseLearnerData { get; set; }
+        public long? LearnerDataId { get; set; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@inject ILinkGenerator LinkGenerator
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectLearnerRecordViewModel
 
 @{
@@ -9,10 +8,11 @@
     ViewBag.GaData.Vpv = "/add/ilrs/select";
 }
 
-<h1 class="govuk-heading-xl">@Model.PageTitle</h1>
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">@Model.PageTitle</h1>
+        
         <p class="govuk-body">
             If you cannot find the apprentice you're looking for, try:
         </p>
@@ -21,8 +21,8 @@
             <li>refreshing this page</li>
             <li>updating the ILR</li>
             <li>
-                <a class="govuk-link" href="@LinkGenerator.ReservationsLink($"{Model.ProviderId}/reservations/{Model.EmployerAccountLegalEntityPublicHashedId}/select")">
-                    manually adding you apprentice
+                <a href="@Url.Action("AddNewDraftApprenticeship", new { Model.ProviderId, Model.EmployerAccountLegalEntityPublicHashedId, Model.ReservationId })" class="govuk-link">
+                    manually adding your apprentice
                 </a>
             </li>
         </ul>
@@ -45,6 +45,8 @@
     </div>
     <input type="hidden" value="@Model.FilterModel.SortField" name="SortField" />
     <input type="hidden" value="@Model.FilterModel.ReverseSort.ToString()" name="ReverseSort" />
+    <input type="hidden" value="@Model.CacheKey" name="CacheKey" />
+    <input type="hidden" value="@Model.ReservationId" name="ReservationId" />
     <input type="hidden" value="@Model.EmployerAccountLegalEntityPublicHashedId" name="EmployerAccountLegalEntityPublicHashedId" />
 </form>
 
@@ -63,9 +65,9 @@
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">
-                <a class="@(Model.FilterModel.SortField == "LastName" ? Model.SortedByHeaderClassName : SelectLearnerRecordViewModel.HeaderClassName)"
+                <a class="@(Model.FilterModel.SortField == "FirstName" ? Model.SortedByHeaderClassName : SelectLearnerRecordViewModel.HeaderClassName)"
                    asp-route="@RouteNames.SelectLearnerRecord"
-                   asp-all-route-data="@Model.FilterModel.BuildSortRouteData("LastName")"
+                   asp-all-route-data="@Model.FilterModel.BuildSortRouteData("FirstName")"
                    title="Sort the table by name">
                     Name
                 </a>
@@ -79,12 +81,7 @@
                 </a>
             </th>
             <th scope="col" class="govuk-table__header">
-                <a class="@(Model.FilterModel.SortField == "CourseName" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                   asp-route="@RouteNames.SelectLearnerRecord"
-                   asp-all-route-data="@Model.FilterModel.BuildSortRouteData("CourseName")"
-                   title="Sort the table by course">
-                    Course
-                </a>
+                Course
             </th>
             <th scope="col" class="govuk-table__header">
 
@@ -104,8 +101,10 @@
                 <td class="govuk-table__cell" data-label="Apprenticeship training course">
                     @apprenticeship.CourseName
                 </td>
-                <td class="govuk-table__cell" data-label="Select">
-                    Select
+                <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
+                        <a href="@Url.Action("LearnerSelected", new { Model.ProviderId, Model.CacheKey, Model.EmployerAccountLegalEntityPublicHashedId, LearnerDataId = apprenticeship.Id })" class="govuk-link">
+                        Select
+                    </a>
                 </td>
             </tr>
         }
@@ -139,5 +138,5 @@ else
 }
 
 @section breadcrumb {
-    <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", new { @Model.ProviderId, UseIlrData = true })>Back</a>
+    <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", new { @Model.ProviderId, UseLearnerData = true })>Back</a>
 }
