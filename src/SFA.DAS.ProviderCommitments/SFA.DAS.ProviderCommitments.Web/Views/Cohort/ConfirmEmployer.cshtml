@@ -64,5 +64,5 @@
 
 @section breadcrumb
 {
-    @Html.ActionLink("Back", "SelectEmployer", new { Model.ProviderId }, new { id = "back-link", @class = "govuk-back-link" })
+    @Html.ActionLink("Back", "SelectEmployer", new { Model.ProviderId, UseLearnerData = Model.UseLearnerData }, new { id = "back-link", @class = "govuk-back-link" })
 }

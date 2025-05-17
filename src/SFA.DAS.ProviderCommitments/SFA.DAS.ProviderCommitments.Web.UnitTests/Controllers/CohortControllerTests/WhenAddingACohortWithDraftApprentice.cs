@@ -107,6 +107,6 @@ public class WhenAddingACohortWithDraftApprenticeFixture
         _modelMapper.Verify(x => x.Map<AddDraftApprenticeshipViewModel>(_request));
     }
 
-    public IActionResult Act() => _sut.AddNewDraftApprenticeship(_request).Result;
+    public IActionResult Act() => _sut.AddNewDraftApprenticeship(_request, Mock.Of<ILogger<CohortController>>()).Result;
     public async Task<IActionResult> ActOnAddApprenticeship() => await _sut.AddDraftApprenticeship(_request);
 }
