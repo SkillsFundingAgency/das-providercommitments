@@ -86,7 +86,6 @@ public class LearnerRecordsFilterModel
             {nameof(ProviderId), ProviderId.ToString()},
             {nameof(CacheKey), CacheKey.ToString()},
             {nameof(ReservationId), ReservationId.ToString()},
-            {nameof(EmployerAccountLegalEntityPublicHashedId), EmployerAccountLegalEntityPublicHashedId}
         };
 
         if (!string.IsNullOrWhiteSpace(EmployerAccountLegalEntityPublicHashedId))
