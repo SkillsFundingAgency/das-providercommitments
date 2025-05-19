@@ -39,7 +39,7 @@ public class WhenPostingSelectDraftApprenticeshipsEntryMethod
         var result = fixture.ILR().Act();
 
         result.VerifyReturnsRedirectToActionResult()
-            .WithRouteValue("UseIlrData", true)
+            .WithRouteValue("UseLearnerData", true)
             .WithActionName(nameof(CohortController.SelectAddDraftApprenticeshipJourney));
     }
 }
@@ -55,7 +55,7 @@ public class WhenPostingSelectDraftApprenticeshipsEntryMethodFixture
         _viewModel = new SelectDraftApprenticeshipsEntryMethodViewModel { ProviderId = ProviderId };
 
         _sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
-            Mock.Of<IEncodingService>(),Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
+            Mock.Of<IEncodingService>(),Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>(), Mock.Of<ILogger<CohortController>>());
     }
 
     public WhenPostingSelectDraftApprenticeshipsEntryMethodFixture Manual()

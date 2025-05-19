@@ -1,4 +1,5 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using System.Linq;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -24,6 +25,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
+        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrueAndUseLearnerDataTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
+        {
+            var fixture = new PostConfirmEmployerFixture()
+                .WithConfirmTrue()
+                .WithUseLearnerDataTrue()
+                .WithHasNoDeclaredStandards(false);
+
+            var result = await fixture.Act();
+            fixture.VerifyReturnsRedirect(result, true);
+        }
+
+        [Test]
         public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
         {
             var fixture = new PostConfirmEmployerFixture()
@@ -31,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .WithHasNoDeclaredStandards(false);
 
             var result = await fixture.Act();
-            fixture.VerifyReturnsRedirect(result);
+            fixture.VerifyReturnsRedirect(result, false);
         }
 
         [Test]
@@ -79,12 +92,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .Setup(x => x.CreateCohort(emptyCohortRequest, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(emptyCohortResponse);
 
-            _redirectUrl = $"{providerId}/reservations/{_viewModel.EmployerAccountLegalEntityPublicHashedId}/select";
+            _redirectUrl = $"{providerId}/reservations/{_viewModel.EmployerAccountLegalEntityPublicHashedId}/select?useLearnerData=";
             var linkGenerator = new Mock<ILinkGenerator>();
-            linkGenerator.Setup(x => x.ReservationsLink(_redirectUrl)).Returns(_redirectUrl);
+            linkGenerator.Setup(x => x.ReservationsLink(It.Is<string>(p=>p.StartsWith(_redirectUrl)))).Returns(_redirectUrl);
 
             _sut = new CohortController(Mock.Of<IMediator>(), mockModelMapper.Object, linkGenerator.Object, commitmentApiClient.Object, 
-                         Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
+                         Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>(), Mock.Of<ILogger<CohortController>>());
         }
 
         public PostConfirmEmployerFixture WithHasNoDeclaredStandards(bool hasDeclaredStandards)
@@ -104,15 +117,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _viewModel.Confirm = true;
             return this;
         }
-
-        public void VerifyReturnsRedirect(IActionResult redirectResult)
+        public PostConfirmEmployerFixture WithUseLearnerDataTrue()
         {
-            var equals = redirectResult.VerifyReturnsRedirect().Url.Equals(_redirectUrl);
+            _viewModel.UseLearnerData = true;
+            return this;
+        }
+
+        public void VerifyReturnsRedirect(IActionResult redirectResult, bool useLearnerData)
+        {
+            var equals = redirectResult.VerifyReturnsRedirect().Url.Equals(_redirectUrl + useLearnerData);
         }
 
         public static void VerifyNoDeclaredStandardsRedirect(IActionResult redirectResult)
         {
             redirectResult.VerifyReturnsRedirectToActionResult().WithActionName("NoDeclaredStandards");
+        }
+
+        public static void VerifySelectLearnerRecordRedirect(IActionResult redirectResult)
+        {
+            redirectResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectLearnerRecord");
         }
 
         public async Task<IActionResult> Act() => await _sut.ConfirmEmployer(_viewModel);

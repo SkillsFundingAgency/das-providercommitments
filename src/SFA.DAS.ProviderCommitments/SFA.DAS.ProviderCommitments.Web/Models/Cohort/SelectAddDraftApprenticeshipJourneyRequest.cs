@@ -5,5 +5,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 public class SelectAddDraftApprenticeshipJourneyRequest : IAuthorizationContextModel
 {
     public long ProviderId { get; set; }
-    public bool UseIlrData { get; set; }
+    public bool UseLearnerData { get; set; }
 }
