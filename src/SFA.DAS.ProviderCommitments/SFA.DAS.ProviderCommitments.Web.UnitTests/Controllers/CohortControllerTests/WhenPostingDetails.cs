@@ -145,7 +145,7 @@ public class WhenPostingDetails
                 commitmentsApiClient.Object,
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IOuterApiService>(),
-                Mock.Of<IAuthorizationService>());
+                Mock.Of<IAuthorizationService>(), Mock.Of<ILogger<CohortController>>());
         }
 
         public async Task Post(CohortDetailsOptions option)
