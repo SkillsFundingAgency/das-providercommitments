@@ -318,15 +318,6 @@ public class CohortController : Controller
     }
 
     [HttpGet]
-    [Route("add/learners/select/{learnerDataId}")]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> LearnerSelected(LearnerSelectedRequest request)
-    {
-        var model = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(request);
-        return RedirectToAction(nameof(AddDraftApprenticeship), model.CloneBaseValues());
-    }
-
-    [HttpGet]
     [Route("{cohortReference}/details/delete")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> Delete(DeleteCohortRequest request)
