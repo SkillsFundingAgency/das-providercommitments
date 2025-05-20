@@ -97,7 +97,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             linkGenerator.Setup(x => x.ReservationsLink(It.Is<string>(p=>p.StartsWith(_redirectUrl)))).Returns(_redirectUrl);
 
             _sut = new CohortController(Mock.Of<IMediator>(), mockModelMapper.Object, linkGenerator.Object, commitmentApiClient.Object, 
-                         Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
+                         Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>(), Mock.Of<ILogger<CohortController>>());
         }
 
         public PostConfirmEmployerFixture WithHasNoDeclaredStandards(bool hasDeclaredStandards)

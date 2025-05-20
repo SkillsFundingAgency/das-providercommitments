@@ -81,7 +81,8 @@ public class WhenAddingACohortWithDraftApprenticeFixture
             Mock.Of<ICommitmentsApiClient>(),
             Mock.Of<IEncodingService>(),
             Mock.Of<IOuterApiService>(),
-            Mock.Of<IAuthorizationService>()
+            Mock.Of<IAuthorizationService>(), 
+            Mock.Of<ILogger<CohortController>>()
         );
 
         _tempData = new Mock<ITempDataDictionary>();
@@ -107,6 +108,6 @@ public class WhenAddingACohortWithDraftApprenticeFixture
         _modelMapper.Verify(x => x.Map<AddDraftApprenticeshipViewModel>(_request));
     }
 
-    public IActionResult Act() => _sut.AddNewDraftApprenticeship(_request, Mock.Of<ILogger<CohortController>>()).Result;
+    public IActionResult Act() => _sut.AddNewDraftApprenticeship(_request).Result;
     public async Task<IActionResult> ActOnAddApprenticeship() => await _sut.AddDraftApprenticeship(_request);
 }

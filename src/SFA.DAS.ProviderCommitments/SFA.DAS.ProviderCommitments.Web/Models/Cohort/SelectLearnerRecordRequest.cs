@@ -16,3 +16,4 @@ public class SelectLearnerRecordRequest : IAuthorizationContextModel
     public string CohortReference { get; set; }
     public long? CohortId { get; set; }
 }
+

@@ -50,7 +50,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 Mock.Of<ICommitmentsApiClient>(),
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IOuterApiService>(),
-                Mock.Of<IAuthorizationService>()
+                Mock.Of<IAuthorizationService>(), 
+                Mock.Of<ILogger<CohortController>>()
                 );
         }
 

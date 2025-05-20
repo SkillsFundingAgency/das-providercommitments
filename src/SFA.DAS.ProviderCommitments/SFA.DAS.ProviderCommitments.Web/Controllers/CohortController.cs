@@ -36,6 +36,7 @@ public class CohortController : Controller
     private readonly IEncodingService _encodingService;
     private readonly IOuterApiService _outerApiService;
     private readonly IAuthorizationService _authorizationService;
+    private readonly ILogger<CohortController> _logger;
 
     public CohortController(IMediator mediator,
         IModelMapper modelMapper,
@@ -43,7 +44,8 @@ public class CohortController : Controller
         ICommitmentsApiClient commitmentsApiClient,
         IEncodingService encodingService,
         IOuterApiService outerApiService,
-        IAuthorizationService authorizationService)
+        IAuthorizationService authorizationService, 
+        ILogger<CohortController> logger)
     {
         _mediator = mediator;
         _modelMapper = modelMapper;
@@ -52,6 +54,7 @@ public class CohortController : Controller
         _encodingService = encodingService;
         _outerApiService = outerApiService;
         _authorizationService = authorizationService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -101,9 +104,9 @@ public class CohortController : Controller
     [Route("apprentices/add")]
     [Authorize(Policy = nameof(PolicyNames.CreateCohort))]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request, [FromServices] ILogger<CohortController> logger)
+    public async Task<IActionResult> AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
     {
-        logger.LogInformation("Adding apprentice: IsOnFlexiPaymentPilot {0}, UseLearnerData {1} ", request.IsOnFlexiPaymentPilot, request.UseLearnerData);
+        _logger.LogInformation("Adding apprentice: IsOnFlexiPaymentPilot {0}, UseLearnerData {1} ", request.IsOnFlexiPaymentPilot, request.UseLearnerData);
         var redirectModel = await _modelMapper.Map<CreateCohortRedirectModel>(request);
 
         string action = redirectModel.RedirectTo switch
@@ -307,10 +310,20 @@ public class CohortController : Controller
             {
                 return RedirectToAction(nameof(NoDeclaredStandards), viewModel.ProviderId);
             }
-            return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select?useLearnerData={viewModel.UseLearnerData}"));
-        }
 
+            return Redirect(_urlHelper.ReservationsLink(
+                $"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select?useLearnerData={viewModel.UseLearnerData}"));
+        }
         return RedirectToAction(nameof(SelectEmployer), new { viewModel.ProviderId });
+    }
+
+    [HttpGet]
+    [Route("add/learners/select/{learnerDataId}")]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> LearnerSelected(LearnerSelectedRequest request)
+    {
+        var model = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(request);
+        return RedirectToAction(nameof(AddDraftApprenticeship), model.CloneBaseValues());
     }
 
     [HttpGet]
@@ -354,7 +367,6 @@ public class CohortController : Controller
 
         return View(viewModel);
     }
-
 
     [HttpGet]
     [Route("NoDeclaredStandards")]
