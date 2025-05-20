@@ -16,6 +16,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
         {
             ProviderId = source.ProviderId,
             EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
+            CohortReference = source.CohortReference,
             CacheKey = source.CacheKey,
             ReservationId = source.ReservationId,
             TotalNumberOfLearnersFound = response.Total,
@@ -29,6 +30,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
         {
             ProviderId = source.ProviderId,
             EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
+            CohortReference = source.CohortReference,
             CacheKey = source.CacheKey,
             ReservationId = source.ReservationId,
             EmployerAccountName = response.EmployerName,
