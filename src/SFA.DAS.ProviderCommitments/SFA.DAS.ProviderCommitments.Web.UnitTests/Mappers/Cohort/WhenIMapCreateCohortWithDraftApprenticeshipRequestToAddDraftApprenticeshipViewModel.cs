@@ -126,7 +126,7 @@ public class WhenIMapCreateCohortWithDraftApprenticeshipRequestToAddDraftApprent
     public async Task Then_EndDate_IsMappedCorrectly()
     {
         var result = await _mapper.Map(_source);
-        result.EndDate.Date.Value.Date.Should().Be(_cacheItem.EndDate.Value.Date);
+        result.EndDate.Date.Value.Date.Should().Be(_cacheItem.EndDate.GetFirstDayOfMonth());
     }
 
     [Test]
@@ -149,7 +149,6 @@ public class WhenIMapCreateCohortWithDraftApprenticeshipRequestToAddDraftApprent
         var result = await _mapper.Map(_source);
         result.EmploymentPrice.Should().Be(_cacheItem.EmploymentPrice);
     }
-
 
     [Test]
     public async Task Then_Cost_IsMappedCorrectly()

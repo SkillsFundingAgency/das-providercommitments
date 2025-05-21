@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             ViewModel.ProviderId = ProviderId;
             ViewModel.HasExistingCohort = true;
             ViewModel.HasCreateCohortPermission = true;
-            ViewModel.UseIlrData = true;
+            ViewModel.UseLearnerData = true;
 
             var modelMapperMock = new Mock<IModelMapper>();
             modelMapperMock
@@ -50,7 +50,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 Mock.Of<ICommitmentsApiClient>(),
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IOuterApiService>(),
-                Mock.Of<IAuthorizationService>()
+                Mock.Of<IAuthorizationService>(), 
+                Mock.Of<ILogger<CohortController>>()
                 );
         }
 

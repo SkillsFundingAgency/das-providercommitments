@@ -124,7 +124,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             _sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, Mock.Of<ILinkGenerator>(),Mock.Of<ICommitmentsApiClient>(), 
-                         Mock.Of<IEncodingService>(), _outerApiService.Object,Mock.Of<IAuthorizationService>());
+                         Mock.Of<IEncodingService>(), _outerApiService.Object,Mock.Of<IAuthorizationService>(), Mock.Of<ILogger<CohortController>>());
             _sut.TempData = tempData;
         }
 

@@ -50,4 +50,5 @@ public static class RouteNames
     public const string SelectStandardOption = "select-standard-option";
     public const string Dashboard = "provider-dashboard";
     public const string ProviderAccountIndex = "provider-account-index";
+    public const string SelectLearnerRecord = "select-ilr";
 }
