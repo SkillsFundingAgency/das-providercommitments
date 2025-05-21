@@ -36,6 +36,7 @@ public class SelectLearnerRecordViewModelMapperTests
         var result = await _mapper.Map(_request);
         result.FilterModel.ProviderId.Should().Be(_request.ProviderId);
         result.FilterModel.EmployerAccountLegalEntityPublicHashedId.Should().Be(_request.EmployerAccountLegalEntityPublicHashedId);
+        result.FilterModel.CohortReference.Should().Be(_request.CohortReference);
         result.FilterModel.TotalNumberOfLearnersFound.Should().Be(_apiResponse.Total);
         result.FilterModel.PageNumber.Should().Be(_apiResponse.Page);
         result.FilterModel.SortField.Should().Be(_request.SortField);
@@ -51,6 +52,7 @@ public class SelectLearnerRecordViewModelMapperTests
         result.ProviderId.Should().Be(_request.ProviderId);
         result.CacheKey.Should().Be(_request.CacheKey);
         result.EmployerAccountLegalEntityPublicHashedId.Should().Be(_request.EmployerAccountLegalEntityPublicHashedId);
+        result.CohortReference.Should().Be(_request.CohortReference);
         result.EmployerAccountName.Should().Be(_apiResponse.EmployerName);
         result.LastIlrSubmittedOn.Should().Be(_apiResponse.LastSubmissionDate);
     }
