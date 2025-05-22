@@ -49,7 +49,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 TrainingPrice = cacheItem.TrainingPrice,
                 EndPointAssessmentPrice = cacheItem.EndPointAssessmentPrice,
                 Reference = cacheItem.Reference,
-                EmploymentPrice = cacheItem.EmploymentPrice
+                EmploymentPrice = cacheItem.EmploymentPrice,
+                LearnerDataId = cacheItem.LearnerDataId
             };
 
             if (cacheItem.StartDate.HasValue)
