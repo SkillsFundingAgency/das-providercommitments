@@ -50,6 +50,11 @@
                     </div>
                 </div>
             </div>
+            
+            @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm))
+            {
+                <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.SelectLearnerRecord">Clear search</a></p>
+            }
         </div>
     </div>
     <input type="hidden" value="@Model.FilterModel.SortField" name="SortField" />
