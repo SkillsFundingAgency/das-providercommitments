@@ -152,4 +152,11 @@ public class WhenIMapCreateCohortRequestToApiCreateCohortRequest
         var result = await _mapper.Map(_source);
         result.IsOnFlexiPaymentPilot.Should().Be(_source.IsOnFlexiPaymentPilot);
     }
+
+    [Test]
+    public async Task ThenLearnerDataIdIsMappedCorrectly()
+    {
+        var result = await _mapper.Map(_source);
+        result.LearnerDataId.Should().Be(_source.LearnerDataId);
+    }
 }

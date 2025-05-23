@@ -2,15 +2,15 @@
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 
 public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
     : IMapper<SelectLearnerRecordRequest, SelectLearnerRecordViewModel>
 {
     public async Task<SelectLearnerRecordViewModel> Map(SelectLearnerRecordRequest source)
     {
-        var response = await client.GetLearnerDetailsForProvider(source.ProviderId, source.AccountLegalEntityId, source.CohortId,
-            source.SearchTerm, source.SortField, source.ReverseSort, source.Page);
+        var response = await client.GetLearnerDetailsForProvider(source.ProviderId, source.AccountLegalEntityId,
+            source.CohortId, source.SearchTerm, source.SortField, source.ReverseSort, source.Page);
 
         var filterModel = new LearnerRecordsFilterModel()
         {
@@ -29,12 +29,12 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
         var model = new SelectLearnerRecordViewModel
         {
             ProviderId = source.ProviderId,
-            EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
             CohortReference = source.CohortReference,
+            EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
             CacheKey = source.CacheKey,
             ReservationId = source.ReservationId,
             EmployerAccountName = response.EmployerName,
-            Learners = response.Learners.Select(x => (LearnerSummary) x).ToList(),
+            Learners = response.Learners.ConvertAll(x => (LearnerSummary)x),
             LastIlrSubmittedOn = response.LastSubmissionDate,
             FilterModel = filterModel
         };

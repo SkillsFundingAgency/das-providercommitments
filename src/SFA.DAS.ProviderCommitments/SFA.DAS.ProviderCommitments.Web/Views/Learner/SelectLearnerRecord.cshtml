@@ -1,0 +1,174 @@
+﻿@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+@using SFA.DAS.ProviderCommitments.Web.Models.Cohort
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectLearnerRecordViewModel
+
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewBag.GaData.Vpv = "/add/ilrs/select";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">@Model.PageTitle</h1>
+
+        <p class="govuk-body">
+            If you cannot find the apprentice you're looking for, try:
+        </p>
+
+        <ul class="govuk-list govuk-list--bullet xgovuk-list--spaced">
+            <li>refreshing this page</li>
+            <li>updating the ILR</li>
+            <li>
+                @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
+                {
+                    <a href="@Url.Action("AddDraftApprenticeshipCourse", "DraftApprenticeship", new {Model.ProviderId, Model.CohortReference, Model.ReservationId})" class="govuk-link">
+                        manually adding your apprentice
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("AddNewDraftApprenticeship", "Cohort", new {Model.ProviderId, Model.CohortReference, Model.ReservationId})" class="govuk-link">
+                        manually adding your apprentice
+                    </a>
+                }
+            </li>
+        </ul>
+    </div>
+</div>
+
+<form method="get" asp-route="@RouteNames.SelectLearnerRecord">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+                <label for="searchTerm" class="govuk-label">Search apprentice name or unique learner number (ULN)</label>
+                <div class="das-search-form__group">
+                    <input class="govuk-input das-search-form__input" id="searchTerm" name="searchTerm" type="text" value="@Model.FilterModel.SearchTerm">
+                    <div class="das-search-form__button-wrap">
+                        <button class="govuk-button das-search-form__button" type="submit">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" value="@Model.FilterModel.SortField" name="SortField" />
+    <input type="hidden" value="@Model.FilterModel.ReverseSort.ToString()" name="ReverseSort" />
+    <input type="hidden" value="@Model.CacheKey" name="CacheKey" />
+    <input type="hidden" value="@Model.ReservationId" name="ReservationId" />
+    @if (!string.IsNullOrWhiteSpace(Model.EmployerAccountLegalEntityPublicHashedId))
+    {
+        <input type="hidden" value="@Model.EmployerAccountLegalEntityPublicHashedId" name="EmployerAccountLegalEntityPublicHashedId"/>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
+    {
+        <input type="hidden" value="@Model.CohortReference" name="CohortReference"/>
+    }
+</form>
+
+<div class="govuk-grid-row govuk-!-margin-bottom-2">
+    <div class="govuk-grid-column-one-third">
+        <p class="govuk-body">@Model.FilterModel.TotalNumberOfApprenticeshipsFoundDescription</p>
+    </div>
+    <div class="govuk-grid-column-two-thirds das-!-text-align-right--from-tablet">
+        <p class="govuk-body">@Model.LastIlrSubmittedOnDesc</p>
+    </div>
+</div>
+
+@if (Model.FilterModel.TotalNumberOfLearnersFound > 0)
+{
+    <table class="govuk-table das-table--responsive das-table--double-arrows das-table--condensed">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">
+                    <a class="@(Model.FilterModel.SortField == "FirstName" ? Model.SortedByHeaderClassName : SelectLearnerRecordViewModel.HeaderClassName)"
+                    asp-route="@RouteNames.SelectLearnerRecord"
+                    asp-all-route-data="@Model.FilterModel.BuildSortRouteData("FirstName")"
+                    title="Sort the table by name">
+                        Name
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    <a class="@(Model.FilterModel.SortField == "Uln" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
+                    asp-route="@RouteNames.SelectLearnerRecord"
+                    asp-all-route-data="@Model.FilterModel.BuildSortRouteData("Uln")"
+                    title="Sort the table by ULN">
+                        ULN
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    Course
+                </th>
+                <th scope="col" class="govuk-table__header">
+
+                </th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            @foreach (var apprenticeship in Model.Learners)
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell" data-label="Apprentice name">
+                        @apprenticeship.Name
+                    </td>
+                    <td class="govuk-table__cell" data-label="ULN">
+                        @apprenticeship.Uln
+                    </td>
+                    <td class="govuk-table__cell" data-label="Apprenticeship training course">
+                        @apprenticeship.CourseName
+                    </td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
+                        @if (string.IsNullOrWhiteSpace(Model.CohortReference))
+                        {
+                            <a href="@Url.Action("LearnerSelectedForNewCohort", new {Model.ProviderId, Model.CacheKey, Model.EmployerAccountLegalEntityPublicHashedId, LearnerDataId = apprenticeship.Id})" class="govuk-link">
+                                Select
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("LearnerToBeAddedToCohort", new {Model.ProviderId, Model.CacheKey, Model.CohortReference, LearnerDataId = apprenticeship.Id})" class="govuk-link">
+                                Select
+                            </a>
+                        }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="govuk-grid-row">
+        <p class="govuk-body">No results found</p>
+    </div>
+}
+@if (Model.ShowPageLinks)
+{
+    <nav role="navigation" aria-label="Pagination">
+        <ul class="das-pagination">
+            @foreach (var pageLink in Model.FilterModel.PageLinks)
+            {
+                <li class="das-pagination__item">
+                    <a class="das-pagination__link @(pageLink.IsCurrent.HasValue && pageLink.IsCurrent.Value ? "current":"")"
+                       asp-route="@RouteNames.SelectLearnerRecord"
+                       asp-all-route-data="@pageLink.RouteData"
+                       aria-current="@pageLink.IsCurrent"
+                       aria-label="@pageLink.AriaLabel">
+                        @pageLink.Label
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+@section breadcrumb {
+    @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("Details", "Cohort", new {Model.ProviderId, Model.CohortReference })>Back</a>
+    }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", "Cohort", new { @Model.ProviderId, UseLearnerData = true })>Back</a>
+    }
+}

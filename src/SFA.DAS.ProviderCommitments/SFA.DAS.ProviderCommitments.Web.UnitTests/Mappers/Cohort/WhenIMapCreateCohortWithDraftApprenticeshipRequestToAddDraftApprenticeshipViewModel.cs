@@ -94,6 +94,16 @@ public class WhenIMapCreateCohortWithDraftApprenticeshipRequestToAddDraftApprent
         result.ReservationId.Should().Be(_cacheItem.ReservationId);
     }
 
+    [TestCase(null)]
+    [TestCase(98798)]
+    public async Task ThenLearnerDataIdIsMappedCorrectly(long? id)
+    {
+        _cacheItem.LearnerDataId = id;
+        var result = await _mapper.Map(_source);
+        result.LearnerDataId.Should().Be(_cacheItem.LearnerDataId);
+    }
+
+
     [Test]
     public async Task ThenHasMultipleDeliveryModelOptionsIsMappedCorrectly()
     {

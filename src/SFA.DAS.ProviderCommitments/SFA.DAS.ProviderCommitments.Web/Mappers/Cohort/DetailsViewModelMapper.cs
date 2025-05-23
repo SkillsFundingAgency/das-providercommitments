@@ -11,7 +11,6 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services;
@@ -25,36 +24,24 @@ using TransferApprovalStatus = SFA.DAS.ProviderCommitments.Infrastructure.OuterA
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class DetailsViewModelMapper : IMapper<DetailsRequest, DetailsViewModel>
+    public class DetailsViewModelMapper(
+        ICommitmentsApiClient commitmentsApiClient,
+        IEncodingService encodingService,
+        IPasAccountApiClient pasAccountApiClient,
+        IOuterApiClient outerApiClient,
+        ITempDataStorageService storageService,
+        IConfiguration configuration)
+        : IMapper<DetailsRequest, DetailsViewModel>
     {
-        private readonly IOuterApiClient _outerApiClient;
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IEncodingService _encodingService;
-        private readonly IPasAccountApiClient _pasAccountsApiClient;
-        private readonly ITempDataStorageService _storageService;
-        private readonly IAuthorizationService _authorizationService;
-
-        public DetailsViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IEncodingService encodingService,
-            IPasAccountApiClient pasAccountApiClient, IOuterApiClient outerApiClient, ITempDataStorageService storageService,
-            IAuthorizationService authorizationService)
-        {
-            _commitmentsApiClient = commitmentsApiClient;
-            _encodingService = encodingService;
-            _pasAccountsApiClient = pasAccountApiClient;
-            _outerApiClient = outerApiClient;
-            _storageService = storageService;
-            _authorizationService = authorizationService;
-        }
-
         public async Task<DetailsViewModel> Map(DetailsRequest source)
         {
             //clear leftover tempdata from add/edit
             //this solution should NOT use tempdata in this way
-            _storageService.RemoveFromCache<EditDraftApprenticeshipViewModel>();
+            storageService.RemoveFromCache<EditDraftApprenticeshipViewModel>();
 
-            var cohortId = _encodingService.Decode(source.CohortReference, EncodingType.CohortReference);
-            var cohortDetailsTask = _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(source.ProviderId, cohortId));
-            var agreementStatusTask = _pasAccountsApiClient.GetAgreement(source.ProviderId);
+            var cohortId = encodingService.Decode(source.CohortReference, EncodingType.CohortReference);
+            var cohortDetailsTask = outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(source.ProviderId, cohortId));
+            var agreementStatusTask = pasAccountApiClient.GetAgreement(source.ProviderId);
 
             await Task.WhenAll(cohortDetailsTask, agreementStatusTask);
 
@@ -73,11 +60,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 HasNoDeclaredStandards = cohortDetails.HasNoDeclaredStandards,
                 CohortReference = source.CohortReference,
                 WithParty = cohortDetails.WithParty,
-                AccountLegalEntityHashedId = _encodingService.Encode(cohortDetails.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
+                AccountLegalEntityHashedId = encodingService.Encode(cohortDetails.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                 LegalEntityName = cohortDetails.LegalEntityName,
                 ProviderName = cohortDetails.ProviderName,
-                TransferSenderHashedId = cohortDetails.TransferSenderId == null ? null : _encodingService.Encode(cohortDetails.TransferSenderId.Value, EncodingType.PublicAccountId),
-                EncodedPledgeApplicationId = cohortDetails.PledgeApplicationId == null ? null : _encodingService.Encode(cohortDetails.PledgeApplicationId.Value, EncodingType.PledgeApplicationId),
+                TransferSenderHashedId = cohortDetails.TransferSenderId == null ? null : encodingService.Encode(cohortDetails.TransferSenderId.Value, EncodingType.PublicAccountId),
+                EncodedPledgeApplicationId = cohortDetails.PledgeApplicationId == null ? null : encodingService.Encode(cohortDetails.PledgeApplicationId.Value, EncodingType.PledgeApplicationId),
                 Message = cohortDetails.LatestMessageCreatedByEmployer,
                 Courses = courses,
                 PageTitle = cohortDetails.DraftApprenticeships.Count > 1
@@ -95,8 +82,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 Status = GetCohortStatus(cohortDetails, cohortDetails.DraftApprenticeships),
                 ShowRofjaaRemovalBanner = cohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel,
                 InvalidProviderCourseCodes = cohortDetails.InvalidProviderCourseCodes.ToList(),
-                RplErrorDraftApprenticeshipIds = cohortDetails.RplErrorDraftApprenticeshipIds.ToList()
+                RplErrorDraftApprenticeshipIds = cohortDetails.RplErrorDraftApprenticeshipIds.ToList(),
+                UseLearnerData = configuration.GetValue<bool>("ILRFeaturesEnabled")
             };
+
         }
 
         private static string GetCohortStatus(GetCohortDetailsResponse cohort, IReadOnlyCollection<DraftApprenticeshipDto> draftApprenticeships)
@@ -197,7 +186,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                         .Select(a => new CohortDraftApprenticeshipViewModel
                         {
                             Id = a.Id,
-                            DraftApprenticeshipHashedId = _encodingService.Encode(a.Id, EncodingType.ApprenticeshipId),
+                            DraftApprenticeshipHashedId = encodingService.Encode(a.Id, EncodingType.ApprenticeshipId),
                             FirstName = a.FirstName,
                             LastName = a.LastName,
                             Cost = a.Cost,
@@ -295,7 +284,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 if (!string.IsNullOrWhiteSpace(draftApprenticeship.ULN) && draftApprenticeship.StartDate.HasValue && draftApprenticeship.EndDate.HasValue)
                 {
-                    var result = _outerApiClient.Get<GetOverlapRequestQueryResult>(new GetOverlapRequestQueryRequest(draftApprenticeship.Id));
+                    var result = outerApiClient.Get<GetOverlapRequestQueryResult>(new GetOverlapRequestQueryRequest(draftApprenticeship.Id));
                     overlapRequestQueryResultsTasks.Add(result);
                 }
             }
@@ -366,7 +355,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 if (!string.IsNullOrWhiteSpace(draftApprenticeship.ULN) && draftApprenticeship.StartDate.HasValue && draftApprenticeship.EndDate.HasValue)
                 {
-                    var result = await _commitmentsApiClient.ValidateUlnOverlap(new CommitmentsV2.Api.Types.Requests.ValidateUlnOverlapRequest
+                    var result = await commitmentsApiClient.ValidateUlnOverlap(new CommitmentsV2.Api.Types.Requests.ValidateUlnOverlapRequest
                     {
                         EndDate = draftApprenticeship.EndDate.Value,
                         StartDate = draftApprenticeship.StartDate.Value,
@@ -386,7 +375,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 try
                 {
-                    course = await _commitmentsApiClient.GetTrainingProgramme(courseCode);
+                    course = await commitmentsApiClient.GetTrainingProgramme(courseCode);
                 }
                 catch (RestHttpClientException e)
                 {

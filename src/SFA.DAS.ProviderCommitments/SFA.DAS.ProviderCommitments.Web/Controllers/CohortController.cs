@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Routing;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -111,12 +112,12 @@ public class CohortController : Controller
         string action = redirectModel.RedirectTo switch
         {
             CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus => nameof(ChoosePilotStatus),
-            CreateCohortRedirectModel.RedirectTarget.SelectLearner => nameof(SelectLearnerRecord),
+            CreateCohortRedirectModel.RedirectTarget.SelectLearner => "SelectLearnerRecord",
             _ => nameof(SelectCourse)
         };
 
         request.CacheKey = redirectModel.CacheKey;
-        return RedirectToAction(action, request.CloneBaseValues());
+        return RedirectToAction(action, (action == "SelectLearnerRecord" ? "Learner" : "Cohort"), request.CloneBaseValues());
     }
 
     [HttpGet]
@@ -190,7 +191,7 @@ public class CohortController : Controller
     }
 
     [HttpGet]
-    [Route("add/apprenticeship")]
+    [Route("add/apprenticeship", Name  = RouteNames.CreateCohortAndAddFirstApprenticeship)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     [ServiceFilter(typeof(UseCacheForValidationAttribute))]
     public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
@@ -309,29 +310,11 @@ public class CohortController : Controller
             {
                 return RedirectToAction(nameof(NoDeclaredStandards), viewModel.ProviderId);
             }
-            return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select?useLearnerData={viewModel.UseLearnerData}"));
+
+            return Redirect(_urlHelper.ReservationsLink(
+                $"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select?useLearnerData={viewModel.UseLearnerData}"));
         }
-
         return RedirectToAction(nameof(SelectEmployer), new { viewModel.ProviderId });
-    }
-
-    [HttpGet]
-    [Route("add/learners/select", Name = RouteNames.SelectLearnerRecord)]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> SelectLearnerRecord(SelectLearnerRecordRequest request)
-    {
-        // populate cacheKey with values
-        var model = await _modelMapper.Map<SelectLearnerRecordViewModel>(request);
-        return View(model);
-    }
-
-    [HttpGet]
-    [Route("add/learners/select/{learnerDataId}")]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> LearnerSelected(LearnerSelectedRequest request)
-    {
-        var model = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(request);
-        return RedirectToAction(nameof(AddDraftApprenticeship), model.CloneBaseValues());
     }
 
     [HttpGet]
@@ -375,7 +358,6 @@ public class CohortController : Controller
 
         return View(viewModel);
     }
-
 
     [HttpGet]
     [Route("NoDeclaredStandards")]

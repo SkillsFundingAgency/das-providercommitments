@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -20,6 +21,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
@@ -67,16 +69,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add")]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
         {
-            return RedirectToAction(nameof(AddDraftApprenticeshipCourse), "DraftApprenticeship", request);
+            var redirectModel = await _modelMapper.Map<AddAnotherApprenticeshipRedirectModel>(request);
+
+            request.CacheKey = redirectModel.CacheKey;
+
+            var route = redirectModel.UseLearnerData
+                ? RouteNames.SelectLearnerRecord
+                : RouteNames.SelectCourse;
+            return RedirectToRoute(route, request.CloneBaseValues());
         }
 
         [HttpGet]
         [Route("add/reservation")]
         public IActionResult GetReservationId(GetReservationIdForAddAnotherApprenticeRequest request, [FromServices] ILinkGenerator urlHelper)
         {
-            var reservationUrl = $"{request.ProviderId}/reservations/{request.AccountLegalEntityHashedId}/select?cohortReference={request.CohortReference}&encodedPledgeApplicationId={request.EncodedPledgeApplicationId}";
+            var reservationUrl = $"{request.ProviderId}/reservations/{request.AccountLegalEntityHashedId}/select?cohortReference={request.CohortReference}&encodedPledgeApplicationId={request.EncodedPledgeApplicationId}&useLearnerData={request.UseLearnerData}";
             if (!string.IsNullOrWhiteSpace(request.TransferSenderHashedId))
             {
                 reservationUrl += $"&transferSenderId={request.TransferSenderHashedId}";
