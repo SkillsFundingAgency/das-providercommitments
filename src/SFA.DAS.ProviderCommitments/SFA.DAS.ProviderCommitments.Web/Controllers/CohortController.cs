@@ -253,14 +253,6 @@ public class CohortController : Controller
 
         var response = await _mediator.Send(request);
 
-        if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
-        {
-            var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
-                EncodingType.ApprenticeshipId);
-            return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship",
-                new { response.CohortReference, draftApprenticeshipHashedId, request.ProviderId });
-        }
-
         if (response.HasStandardOptions)
         {
             var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
@@ -272,6 +264,14 @@ public class CohortController : Controller
                     DraftApprenticeshipHashedId = draftApprenticeshipHashedId,
                     response.CohortReference
                 });
+        }
+
+        if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
+        {
+            var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
+                EncodingType.ApprenticeshipId);
+            return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship",
+                new { response.CohortReference, draftApprenticeshipHashedId, request.ProviderId });
         }
 
         return RedirectToAction(nameof(Details), new { model.ProviderId, response.CohortReference });
