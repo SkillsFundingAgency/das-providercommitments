@@ -558,7 +558,12 @@ public class DraftApprenticeshipControllerTestFixture
     public DraftApprenticeshipControllerTestFixture VerifyRedirectedBackToCohortDetailsPage()
     {
         _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("Details");
+        return this;
+    }
 
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectedToRplQuestion()
+    {
+        _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("RecognisePriorLearning");
         return this;
     }
 
