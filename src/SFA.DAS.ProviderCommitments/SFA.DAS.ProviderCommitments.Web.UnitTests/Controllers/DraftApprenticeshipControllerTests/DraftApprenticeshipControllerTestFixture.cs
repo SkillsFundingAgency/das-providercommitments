@@ -563,7 +563,7 @@ public class DraftApprenticeshipControllerTestFixture
 
     public DraftApprenticeshipControllerTestFixture VerifyRedirectedToRplQuestion()
     {
-        _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("RecognisePriorLearning"); //.WithControllerName("DraftApprenticeship");
+        _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("RecognisePriorLearning");
         return this;
     }
 
