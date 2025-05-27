@@ -43,6 +43,7 @@ public class DraftApprenticeshipControllerTestFixture
     private readonly UpdateDraftApprenticeshipApimRequest _updateDraftApprenticeshipRequest;
     private readonly ReservationsAddDraftApprenticeshipRequest _reservationsAddDraftApprenticeshipRequest;
     private readonly GetReservationIdForAddAnotherApprenticeRequest _getReservationIdForAddAnotherApprenticeRequest;
+    private readonly SelectAddAnotherDraftApprenticeshipJourneyViewModel _selectAddAnotherApprenticeshipJourneyViewModel;
     private IActionResult _actionResult;
     private readonly CommitmentsApiModelException _apiModelException;
     private readonly long _cohortId;
@@ -89,6 +90,8 @@ public class DraftApprenticeshipControllerTestFixture
         _getReservationIdForAddAnotherApprenticeRequest = autoFixture
             .Build<GetReservationIdForAddAnotherApprenticeRequest>().Without(x => x.TransferSenderHashedId)
             .Create();
+
+        _selectAddAnotherApprenticeshipJourneyViewModel = autoFixture.Create<SelectAddAnotherDraftApprenticeshipJourneyViewModel>();
 
         _createAddDraftApprenticeshipRequest = new AddDraftApprenticeshipApimRequest();
         _updateDraftApprenticeshipRequest = new UpdateDraftApprenticeshipApimRequest();
@@ -289,7 +292,18 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
+    public DraftApprenticeshipControllerTestFixture GotoSelectHowPage()
+    {
+        _actionResult = _controller.AddAnotherSelectMethod(_getReservationIdForAddAnotherApprenticeRequest);
+        return this;
+    }
 
+    public DraftApprenticeshipControllerTestFixture PostToAddAnotherSelectionMethod(AddAnotherDraftApprenticeshipJourneyOptions? option)
+    {
+        _selectAddAnotherApprenticeshipJourneyViewModel.Selection = option;
+        _actionResult = _controller.AddAnotherSelectMethod(_selectAddAnotherApprenticeshipJourneyViewModel);
+        return this;
+    }
 
     public async Task<DraftApprenticeshipControllerTestFixture> EditDraftApprenticeship()
     {
@@ -436,6 +450,7 @@ public class DraftApprenticeshipControllerTestFixture
 
     public DraftApprenticeshipControllerTestFixture SetupUseLearnerData(bool useLearnerData)
     {
+        _getReservationIdForAddAnotherApprenticeRequest.UseLearnerData = useLearnerData;
         _reservationsAddDraftApprenticeshipRequest.UseLearnerData = useLearnerData;
         return this;
     }
@@ -596,7 +611,30 @@ public class DraftApprenticeshipControllerTestFixture
         _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("EditDraftApprenticeshipCourse");
         return this;
     }
+    public DraftApprenticeshipControllerTestFixture VerifyReturnsSelectHowViewModelWithCorrectValues()
+    {
+        var model = _actionResult.VerifyReturnsViewModel().WithModel< SelectAddAnotherDraftApprenticeshipJourneyViewModel>();
+        model.ProviderId.Should().Be(_getReservationIdForAddAnotherApprenticeRequest.ProviderId);
+        model.CohortReference.Should().Be(_getReservationIdForAddAnotherApprenticeRequest.CohortReference);
+        model.AccountLegalEntityHashedId.Should().Be(_getReservationIdForAddAnotherApprenticeRequest.AccountLegalEntityHashedId);
+        model.UseLearnerData.Should().Be(true);
 
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectedToGetReservationIdEndpoint()
+    {
+        _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("GetReservationId");
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRouteValueContainsUseLearnerDataAs(bool useLearnerData)
+    {
+        var redirectResult = _actionResult as RedirectToActionResult;
+        redirectResult.RouteValues.Should().Contain("useLearnerData", useLearnerData);
+        return this;
+    }
+    
     public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectDeliveryModelPage()
     {
         _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectDeliveryModel");
