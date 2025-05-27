@@ -4,10 +4,13 @@ using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-    public class ProviderAccountController(ProviderSharedUIConfiguration providerSharedUiConfiguration)
+    public class ProviderAccountController(
+        ProviderSharedUIConfiguration providerSharedUiConfiguration,
+        ILinkGenerator linkGenerator)
         : Controller
     {
         [Route("", Name = RouteNames.ProviderAccountIndex)]
@@ -42,7 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public IActionResult ProviderSignedOut()
         {
             var autoSignOut = TempData["AutoSignOut"] as bool? ?? false;
-            return autoSignOut ? View("AutoSignOut") : RedirectToRoute(RouteNames.ProviderAccountIndex);
+            return autoSignOut ? View("AutoSignOut") : Redirect(linkGenerator.ProviderApprenticeshipServiceLink("/account"));
         }
     }
 }

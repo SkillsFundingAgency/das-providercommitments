@@ -49,7 +49,7 @@ public class SelectLearnerRecordViewModelTests
     public void LastSubmittedOnIsNotBlank_DescIsCorrect()
     {
         _viewModel.LastIlrSubmittedOn = new DateTime(2025,4,10);
-        _viewModel.LastIlrSubmittedOnDesc.Should().Be("Last updated 1:00AM on Thursday 10 April");
+        _viewModel.LastIlrSubmittedOnDesc.Should().Be("Last updated 1:00am on Thursday 10 April");
     }
 
     [TestCase(1, "1 apprentice record")]
