@@ -13,6 +13,7 @@ using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
+using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
 using CreateCohortResponse = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortResponse;
@@ -83,7 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _fixture.WithRedirectAction(AddDraftApprenticeshipRedirectModel.RedirectTarget.SaveApprenticeship);
             _fixture.SetModelStartDate("012023", setActualDate);
             await _fixture.PostDraftApprenticeshipViewModel();
-            _fixture.VerifyUserRedirectedTo("RecognisePriorLearning");
+            _fixture.VerifyUserRedirectedToRouteName(RouteNames.RecognisePriorLearning);
         }
 
         [TestCase(true)]
@@ -281,6 +282,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             public UnapprovedControllerTestFixture VerifyUserRedirectedTo(string page)
             {
                 _actionResult.VerifyReturnsRedirectToActionResult().WithActionName(page);
+                return this;
+            }
+
+            public UnapprovedControllerTestFixture VerifyUserRedirectedToRouteName(string routeName)
+            {
+                _actionResult.VerifyReturnsRedirectToRouteResult().RouteName.Should().Be(routeName);
                 return this;
             }
 

@@ -481,7 +481,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning")]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning", Name = RouteNames.RecognisePriorLearning)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearning(RecognisePriorLearningRequest request)
         {
