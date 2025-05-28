@@ -37,6 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 StartMonthYear = source.StartMonthYear,
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 UseLearnerData = source.UseLearnerData,
+                CourseCode = source.CourseCode,
                 IsOnFlexiPaymentPilot = flexiPaymentsAuthorized ? null : false
             };
             await cacheStorageService.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
