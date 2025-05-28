@@ -45,7 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public IActionResult ProviderSignedOut()
         {
             var autoSignOut = TempData["AutoSignOut"] as bool? ?? false;
-            return autoSignOut ? View("AutoSignOut") : Redirect(linkGenerator.ProviderApprenticeshipServiceLink("/account"));
+            return autoSignOut ? View("AutoSignOut") : Redirect(linkGenerator.ProviderApprenticeshipServiceLink(string.Empty));
         }
     }
 }
