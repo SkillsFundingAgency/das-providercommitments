@@ -112,7 +112,8 @@ public class CohortController : Controller
         {
             CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus => nameof(ChoosePilotStatus),
             CreateCohortRedirectModel.RedirectTarget.SelectLearner => "SelectLearnerRecord",
-            _ => nameof(SelectHowToAddApprentice)
+            CreateCohortRedirectModel.RedirectTarget.SelectHowTo => nameof(SelectHowToAddApprentice),
+            _ => nameof(SelectCourse)
         };
 
         request.CacheKey = redirectModel.CacheKey;
@@ -667,12 +668,12 @@ public class CohortController : Controller
     {
         if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.ExistingCohort)
         {
-            return RedirectToAction(nameof(ChooseCohort), new { ProviderId = viewModel.ProviderId });
+            return RedirectToAction(nameof(ChooseCohort), new { ProviderId = viewModel.ProviderId, viewModel.UseLearnerData });
         }
 
         if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.NewCohort)
         {
-            return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId, UseLearnerData = viewModel.UseLearnerData });
+            return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId, viewModel.UseLearnerData });
         }
         
         throw new InvalidOperationException();
