@@ -116,7 +116,6 @@ public class WhenAddingACohortWithDraftApprenticeFixture
 
         _tempData = new Mock<ITempDataDictionary>();
         _sut.TempData = _tempData.Object;
-
     }
 
     public void VerifyDraftApprenticeshipWasRestoredAndValuesSet(AddDraftApprenticeshipViewModel viewModel)
@@ -137,7 +136,6 @@ public class WhenAddingACohortWithDraftApprenticeFixture
         _redirectModel.RedirectTo = target;
         return this;
     }
-
 
     public void VerifyMapperWasCalled()
     {

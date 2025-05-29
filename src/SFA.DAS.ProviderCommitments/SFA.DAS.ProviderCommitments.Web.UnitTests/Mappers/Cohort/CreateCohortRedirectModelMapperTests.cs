@@ -33,7 +33,6 @@ public class CreateCohortRedirectModelMapperTests
         _configuration = new Mock<IConfiguration>();
         _configuration.Setup(c => c.GetSection("ILRFeaturesEnabled")).Returns(_configurationSection.Object);
 
-
         _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
             .ReturnsAsync(true);
 
