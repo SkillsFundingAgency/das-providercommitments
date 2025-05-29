@@ -137,7 +137,7 @@ public class CohortController : Controller
     [HttpPost]
     [Route("add/select-how")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public ActionResult AddAnotherSelectMethod(SelectHowToAddFirstApprenticeshipJourneyViewModel model)
+    public ActionResult SelectHowToAddApprentice(SelectHowToAddFirstApprenticeshipJourneyViewModel model)
     {
         var redirectModel = new CreateCohortWithDraftApprenticeshipRequest
         {

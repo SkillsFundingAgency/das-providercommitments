@@ -16,6 +16,7 @@ public class CreateCohortRedirectModelMapperTests
     private Mock<IAuthorizationService> _authorizationService;
     private Mock<ICacheStorageService> _cacheStorage;
     private Mock<IConfiguration> _configuration;
+    private Mock<IConfigurationSection> _configurationSection;
     private CreateCohortWithDraftApprenticeshipRequest _request;
 
     [SetUp]
@@ -25,8 +26,13 @@ public class CreateCohortRedirectModelMapperTests
 
         _authorizationService = new Mock<IAuthorizationService>();
         _cacheStorage = new Mock<ICacheStorageService>();
+
+        _configurationSection = new Mock<IConfigurationSection>();
+        _configurationSection.Setup(s => s.Value).Returns("false"); 
+
         _configuration = new Mock<IConfiguration>();
-        //_configuration.Setup(x => x.GetValue<bool>("ILRFeaturesEnabled")).Returns(false);
+        _configuration.Setup(c => c.GetSection("ILRFeaturesEnabled")).Returns(_configurationSection.Object);
+
 
         _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
             .ReturnsAsync(true);
@@ -36,29 +42,42 @@ public class CreateCohortRedirectModelMapperTests
         _request = fixture.Create<CreateCohortWithDraftApprenticeshipRequest>();
     }
 
-    // Needs to be reintroduced
-    //[TestCase(true, CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus)]
-    //[TestCase(false, CreateCohortRedirectModel.RedirectTarget.SelectHowTo)]
-    //public async Task Redirect_Target_Is_Mapped_Correctly(bool isFlexiPaymentsEnabled, CreateCohortRedirectModel.RedirectTarget expectTarget)
-    //{
-    //    _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
-    //        .ReturnsAsync(isFlexiPaymentsEnabled);
-    //    _request.UseLearnerData = false;
+    [TestCase(true, CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus)]
+    [TestCase(false, CreateCohortRedirectModel.RedirectTarget.SelectHowTo)]
+    public async Task Redirect_Target_Is_Mapped_Correctly(bool isFlexiPaymentsEnabled, CreateCohortRedirectModel.RedirectTarget expectTarget)
+    {
+        _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
+            .ReturnsAsync(isFlexiPaymentsEnabled);
+        _request.UseLearnerData = false;
 
-    //    var result = await _mapper.Map(_request);
-    //    result.RedirectTo.Should().Be(expectTarget);
-    //}
+        var result = await _mapper.Map(_request);
+        result.RedirectTo.Should().Be(expectTarget);
+    }
 
-    //[TestCase(true, CreateCohortRedirectModel.RedirectTarget.SelectLearner)]
-    //[TestCase(false, CreateCohortRedirectModel.RedirectTarget.SelectCourse)]
-    //public async Task Redirect_Target_Is_Mapped_Correctly_When_UseLearnerData(bool useLearnerData, CreateCohortRedirectModel.RedirectTarget expectTarget)
-    //{
-    //    _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
-    //        .ReturnsAsync(false);
-    //    _request.UseLearnerData = useLearnerData;
-    //    var result = await _mapper.Map(_request);
-    //    result.RedirectTo.Should().Be(expectTarget);
-    //}
+    [TestCase(true, CreateCohortRedirectModel.RedirectTarget.SelectLearner)]
+    [TestCase(false, CreateCohortRedirectModel.RedirectTarget.SelectHowTo)]
+    [TestCase(null, CreateCohortRedirectModel.RedirectTarget.SelectCourse)]
+    public async Task Redirect_Target_Is_Mapped_Correctly_When_UseLearnerData(bool? useLearnerData, CreateCohortRedirectModel.RedirectTarget expectTarget)
+    {
+        _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
+            .ReturnsAsync(false);
+        _request.UseLearnerData = useLearnerData;
+        var result = await _mapper.Map(_request);
+        result.RedirectTo.Should().Be(expectTarget);
+    }
+
+    [TestCase(true, CreateCohortRedirectModel.RedirectTarget.SelectLearner)]
+    [TestCase(false, CreateCohortRedirectModel.RedirectTarget.SelectHowTo)]
+    [TestCase(null, CreateCohortRedirectModel.RedirectTarget.SelectHowTo)]
+    public async Task Redirect_Target_Is_Mapped_Correctly_When_IlrFeatureIsOn_And_UseLearnerData(bool? useLearnerData, CreateCohortRedirectModel.RedirectTarget expectTarget)
+    {
+        _configurationSection.Setup(s => s.Value).Returns("true");
+        _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
+            .ReturnsAsync(false);
+        _request.UseLearnerData = useLearnerData;
+        var result = await _mapper.Map(_request);
+        result.RedirectTo.Should().Be(expectTarget);
+    }
 
     [Test]
     public async Task UseLearnerData_Is_Added_To_Cache()
