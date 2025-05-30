@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public void PostHowTo_WithValidModel_WithManualOption_ShouldRedirectToSelectCourse()
         {
             var fixture = new WhenIPostSelectHowToAddApprenticeFixture();
-            fixture.ViewModel.Selection = AddFirstDraftApprenticeshipJourneyOptions.Ilr;
+            fixture.ViewModel.Selection = AddFirstDraftApprenticeshipJourneyOptions.Manual;
 
             var result = fixture.Sut.SelectHowToAddApprentice(fixture.ViewModel);
             result.VerifyReturnsRedirectToActionResult().WithActionName("SelectCourse");
