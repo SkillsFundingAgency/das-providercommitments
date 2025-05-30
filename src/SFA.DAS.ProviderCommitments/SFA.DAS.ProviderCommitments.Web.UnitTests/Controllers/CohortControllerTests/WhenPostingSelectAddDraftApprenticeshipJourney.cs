@@ -19,6 +19,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var result = fixture.CreateNewCohort().Act();
 
             result.VerifyReturnsRedirectToActionResult().WithActionName("SelectEmployer");
+            var action = result as RedirectToActionResult;
+            action.RouteValues["providerId"].Should().Be(fixture.ViewModel.ProviderId);
+            action.RouteValues["useLearnerData"].Should().Be(fixture.ViewModel.UseLearnerData);
         }
 
         [Test]
@@ -29,18 +32,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var result = fixture.AddToExistingCohort().Act();
 
             result.VerifyReturnsRedirectToActionResult().WithActionName("ChooseCohort");
+            var action = result as RedirectToActionResult;
+            action.RouteValues["providerId"].Should().Be(fixture.ViewModel.ProviderId);
+            action.RouteValues["useLearnerData"].Should().Be(fixture.ViewModel.UseLearnerData);
         }
     }
 
     public class WhenPostingSelectAddDraftApprenticeshipJourneyFixture
     {
         private readonly CohortController _sut;
-        private readonly SelectAddDraftApprenticeshipJourneyViewModel _viewModel;
+        public readonly SelectAddDraftApprenticeshipJourneyViewModel ViewModel;
         private const long ProviderId = 123;
 
         public WhenPostingSelectAddDraftApprenticeshipJourneyFixture()
         {
-            _viewModel = new SelectAddDraftApprenticeshipJourneyViewModel { ProviderId = ProviderId };
+            var fixture = new Fixture();
+            ViewModel = fixture.Create< SelectAddDraftApprenticeshipJourneyViewModel>();
 
             _sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
                         Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>(), Mock.Of<ILogger<CohortController>>());
@@ -48,16 +55,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public WhenPostingSelectAddDraftApprenticeshipJourneyFixture CreateNewCohort()
         {
-            _viewModel.Selection = AddDraftApprenticeshipJourneyOptions.NewCohort;
+            ViewModel.Selection = AddDraftApprenticeshipJourneyOptions.NewCohort;
             return this;
         }
 
         public WhenPostingSelectAddDraftApprenticeshipJourneyFixture AddToExistingCohort()
         {
-            _viewModel.Selection = AddDraftApprenticeshipJourneyOptions.ExistingCohort;
+            ViewModel.Selection = AddDraftApprenticeshipJourneyOptions.ExistingCohort;
             return this;
         }
 
-        public IActionResult Act() => _sut.SelectAddDraftApprenticeshipJourney(_viewModel);
+        public IActionResult Act() => _sut.SelectAddDraftApprenticeshipJourney(ViewModel);
     }
 }

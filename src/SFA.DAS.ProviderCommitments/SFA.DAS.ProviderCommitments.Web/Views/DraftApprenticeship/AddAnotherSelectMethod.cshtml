@@ -1,0 +1,49 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.SelectAddAnotherDraftApprenticeshipJourneyViewModel
+
+@{
+    ViewBag.Title = "Add Apprentice";
+    ViewBag.GaData.Vpv = "/unapproved/add-another/select-option";
+}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" />
+        <form method="post">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x => x.ProviderId)
+            <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                        <h1 class="govuk-fieldset__heading">
+                            Add apprentice details
+                        </h1>
+                    </legend>
+                    @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input asp-for="Selection" value="ILR" type="radio" class="govuk-radios__input" id="confirm-ILR"/>
+                            <label class="govuk-label govuk-radios__label" for="confirm-ILR">
+                                Select apprentice from ILR
+                            </label>
+                            <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">Add new apprentice details imported from the ILR file you have submitted to Submit Learner Data</div>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input asp-for="Selection" value="Manual" type="radio" class="govuk-radios__input" id="confirm-Manual"/>
+                            <label class="govuk-label govuk-radios__label" for="confirm-Manual">
+                                Manually
+                            </label>
+                            <div id="manual-input-hint" class="govuk-hint govuk-radios__hint">Add new apprentice details</div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <button class="govuk-button" type="submit" data-module="govuk-button">
+                Continue
+            </button>
+        </form>
+    </div>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", "Cohort", new { Model.CohortReference, Model.ProviderId })">Back</a>
+}

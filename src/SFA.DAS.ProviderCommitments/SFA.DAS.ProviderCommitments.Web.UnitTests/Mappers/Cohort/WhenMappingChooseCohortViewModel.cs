@@ -79,6 +79,15 @@ public class WhenMappingChooseCohortViewModel
     }
 
     [Test]
+    public async Task Then_UseLearnerData_IsMapped()
+    {
+        var fixture = new WhenMappingChooseCohortViewModelFixture();
+        await fixture.Map();
+
+        fixture.Verify_UseLearnerData_IsMapped();
+    }
+
+    [Test]
     public async Task Then_AccountLegalEntityPublicHashedId_IsMapped()
     {
         var fixture = new WhenMappingChooseCohortViewModelFixture();
@@ -241,6 +250,11 @@ public class WhenMappingChooseCohortViewModelFixture
     public void Verify_ProviderId_IsMapped()
     {
         _chooseCohortViewModel.ProviderId.Should().Be(ProviderId);
+    }
+
+    public void Verify_UseLearnerData_IsMapped()
+    {
+        _chooseCohortViewModel.UseLearnerData.Should().Be(_chooseCohortViewModel.UseLearnerData);
     }
 
     public void Verify_Ordered_By_DateCreatedDescending()

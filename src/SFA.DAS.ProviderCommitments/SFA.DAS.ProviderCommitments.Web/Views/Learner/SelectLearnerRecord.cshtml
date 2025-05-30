@@ -29,7 +29,7 @@
                 }
                 else
                 {
-                    <a href="@Url.Action("AddNewDraftApprenticeship", "Cohort", new {Model.ProviderId, Model.CohortReference, Model.ReservationId})" class="govuk-link">
+                    <a href="@Url.Action("SelectCourse", "Cohort", new {Model.ProviderId, Model.CacheKey, Model.ReservationId})" class="govuk-link">
                         manually adding your apprentice
                     </a>
                 }

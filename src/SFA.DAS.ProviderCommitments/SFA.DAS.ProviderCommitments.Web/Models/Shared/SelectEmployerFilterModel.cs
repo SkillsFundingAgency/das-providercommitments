@@ -7,10 +7,12 @@
 
         public string CurrentlySortedByField { get; set; }
         public bool ReverseSort { get; set; }
+        public bool UseLearnerData { get; set; }
 
         public Dictionary<string, string> BuildSortRouteData(string sortByThisField)
         {
             var routeData = new Dictionary<string, string>();
+            routeData.Add(nameof(UseLearnerData), UseLearnerData.ToString());
 
             var reverseSort = !string.IsNullOrEmpty(CurrentlySortedByField)
                               && CurrentlySortedByField.ToLower() == sortByThisField.ToLower()

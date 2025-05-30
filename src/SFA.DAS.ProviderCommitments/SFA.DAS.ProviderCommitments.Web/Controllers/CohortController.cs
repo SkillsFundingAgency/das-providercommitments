@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Routing;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -113,12 +112,48 @@ public class CohortController : Controller
         {
             CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus => nameof(ChoosePilotStatus),
             CreateCohortRedirectModel.RedirectTarget.SelectLearner => "SelectLearnerRecord",
+            CreateCohortRedirectModel.RedirectTarget.SelectHowTo => nameof(SelectHowToAddApprentice),
             _ => nameof(SelectCourse)
         };
 
         request.CacheKey = redirectModel.CacheKey;
         return RedirectToAction(action, (action == "SelectLearnerRecord" ? "Learner" : "Cohort"), request.CloneBaseValues());
     }
+
+    [HttpGet]
+    [Route("add/select-how")]
+    public IActionResult SelectHowToAddApprentice(CreateCohortWithDraftApprenticeshipRequest request)
+    {
+        var model = new SelectHowToAddFirstApprenticeshipJourneyViewModel
+        {
+            ProviderId = request.ProviderId,
+            EmployerAccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId,
+            CacheKey = request.CacheKey
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [Route("add/select-how")]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public ActionResult SelectHowToAddApprentice(SelectHowToAddFirstApprenticeshipJourneyViewModel model)
+    {
+        var redirectModel = new CreateCohortWithDraftApprenticeshipRequest
+        {
+            ProviderId = model.ProviderId,
+            EmployerAccountLegalEntityPublicHashedId = model.EmployerAccountLegalEntityPublicHashedId,
+            CacheKey = model.CacheKey,
+            UseLearnerData = (model.Selection == AddFirstDraftApprenticeshipJourneyOptions.Ilr)
+        };
+
+        if (model.Selection == AddFirstDraftApprenticeshipJourneyOptions.Ilr)
+        {
+            return RedirectToAction("SelectLearnerRecord", "Learner", redirectModel);
+        }
+        return RedirectToAction("SelectCourse", redirectModel);
+    }
+
 
     [HttpGet]
     [Route("choose-cohort", Name = RouteNames.ChooseCohort)]
@@ -633,12 +668,12 @@ public class CohortController : Controller
     {
         if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.ExistingCohort)
         {
-            return RedirectToAction(nameof(ChooseCohort), new { ProviderId = viewModel.ProviderId });
+            return RedirectToAction(nameof(ChooseCohort), new { ProviderId = viewModel.ProviderId, viewModel.UseLearnerData });
         }
 
         if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.NewCohort)
         {
-            return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId, UseLearnerData = viewModel.UseLearnerData });
+            return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId, viewModel.UseLearnerData });
         }
         
         throw new InvalidOperationException();
