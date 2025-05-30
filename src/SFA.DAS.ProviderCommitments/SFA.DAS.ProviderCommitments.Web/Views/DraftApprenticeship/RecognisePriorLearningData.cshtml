@@ -112,5 +112,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("RecognisePriorLearning", "DraftApprenticeship", @Model)">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("RecognisePriorLearning", "DraftApprenticeship",  new { Model.ProviderId, Model.CohortReference, Model.DraftApprenticeshipHashedId})">Back</a>
 }
