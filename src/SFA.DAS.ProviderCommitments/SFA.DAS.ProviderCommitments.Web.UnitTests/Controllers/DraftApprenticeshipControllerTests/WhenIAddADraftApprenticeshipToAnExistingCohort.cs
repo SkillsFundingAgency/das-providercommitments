@@ -97,7 +97,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenApprenticeshipStartsBeforeMandatoryRplAndThereAreNoStandardOptionsThenRedirectToCohort()
+        public async Task AndWhenApprenticeshipStartsBeforeMandatoryRplThenRedirectToRplQuestion()
         {
             _fixture
                 .SetApprenticeshipStarting(DateBeforeRplRequired)
@@ -107,11 +107,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _fixture.VerifyMappingToApiTypeIsCalled()
                 .VerifyApiAddMethodIsCalled()
-                .VerifyRedirectedBackToCohortDetailsPage();
+                .VerifyRedirectedToRplQuestion();
         }
 
         [Test]
-        public async Task AndWhenApprenticeshipStartDateIsNotSetThenRedirectToCohort()
+        public async Task AndWhenApprenticeshipStartDateIsNotSetThenStillRedirectToSetRplQuestion()
         {
             _fixture
                 .SetApprenticeshipStarting(null)
@@ -121,7 +121,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _fixture.VerifyMappingToApiTypeIsCalled()
                 .VerifyApiAddMethodIsCalled()
-                .VerifyRedirectedBackToCohortDetailsPage();
+                .VerifyRedirectedToRplQuestion();
         }
 
         [Test]

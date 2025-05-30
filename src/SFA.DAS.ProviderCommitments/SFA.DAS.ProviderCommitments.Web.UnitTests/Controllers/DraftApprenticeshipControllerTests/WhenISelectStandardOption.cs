@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             
             _fixture
                 .VerifyApiUpdateWithStandardOptionSet()
-                .VerifyRedirectedBackToCohortDetailsPage();
+                .VerifyRedirectedToRplQuestion();
         }
     }
 }

@@ -69,20 +69,5 @@
 
 @section breadcrumb
 {
-    @if (Model.HasSelectedRpl == true)
-    {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">Back</a>
-    }
-    else if (Model.HasSelectedRpl == false)
-    {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearning)">Back</a>
-    }
-    else if (Model.ApprenticeshipStartDate.GetValueOrDefault() < new DateTime(2022, 8, 1) || Model.ApprenticeshipStartDate == null)
-    {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeDetail)">Back</a>
-    }
-    else if (Model.HasSelectedRpl == null)
-    {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeDetail)">Back</a>
-    }
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortReference, Model.DraftApprenticeshipHashedId})">Back</a>
 }
