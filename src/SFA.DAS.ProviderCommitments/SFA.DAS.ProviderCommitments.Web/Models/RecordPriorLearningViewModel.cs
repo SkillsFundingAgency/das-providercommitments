@@ -7,6 +7,7 @@
     public class RecognisePriorLearningViewModel : DraftApprenticeshipRequest
     {
         public bool? IsTherePriorLearning { get; set; }
+        public bool IsRplRequired { get; set; }
     }
     
     public class PriorLearningDataViewModel : DraftApprenticeshipRequest

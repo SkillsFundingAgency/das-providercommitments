@@ -493,6 +493,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> RecognisePriorLearning(RecognisePriorLearningRequest request)
         {
             var model = await _modelMapper.Map<RecognisePriorLearningViewModel>(request);
+            
+            if (!model.IsRplRequired)
+            {
+                model.IsTherePriorLearning = false;
+                return await RecognisePriorLearning(model);
+            }
+            
             return View("RecognisePriorLearning", model);
         }
 
@@ -754,6 +761,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 model.StartDate.Date.Value.ToString("dd-MM-yyyy"),
                 model.EndDate.Date.Value.ToString("dd-MM-yyyy")
             );
+        }
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/foundation-rpl-skipped")]
+        public IActionResult FoundationRplSkipped(long providerId, string cohortReference, string draftApprenticeshipHashedId)
+        {
+            // Dummy view for now
+            return Content("RPL is not required for this training type. (Foundation RPL Skipped)");
         }
     }
 }
