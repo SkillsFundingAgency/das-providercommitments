@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -46,5 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<bool> HasRelationshipWithPermission(long? ukprn);
         Task<bool> CanAccessCohort(long providerId, long cohortId);
         Task<bool> CanAccessApprenticeship(long providerId, long apprenticeshipId);
+        Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, long? accountLegalEntityId, long? cohortId, string searchTerm, string sortColumn, bool sortDesc, int page);
+        Task<GetLearnerSelectedResponse> GetLearnerSelected(long providerId, long learnerId);
     }
 }

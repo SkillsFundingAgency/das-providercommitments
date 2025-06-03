@@ -94,6 +94,16 @@ public class WhenIMapCreateCohortWithDraftApprenticeshipRequestToAddDraftApprent
         result.ReservationId.Should().Be(_cacheItem.ReservationId);
     }
 
+    [TestCase(null)]
+    [TestCase(98798)]
+    public async Task ThenLearnerDataIdIsMappedCorrectly(long? id)
+    {
+        _cacheItem.LearnerDataId = id;
+        var result = await _mapper.Map(_source);
+        result.LearnerDataId.Should().Be(_cacheItem.LearnerDataId);
+    }
+
+
     [Test]
     public async Task ThenHasMultipleDeliveryModelOptionsIsMappedCorrectly()
     {
@@ -126,7 +136,7 @@ public class WhenIMapCreateCohortWithDraftApprenticeshipRequestToAddDraftApprent
     public async Task Then_EndDate_IsMappedCorrectly()
     {
         var result = await _mapper.Map(_source);
-        result.EndDate.Date.Value.Date.Should().Be(_cacheItem.EndDate.Value.Date);
+        result.EndDate.Date.Value.Date.Should().Be(_cacheItem.EndDate.GetFirstDayOfMonth());
     }
 
     [Test]
@@ -149,7 +159,6 @@ public class WhenIMapCreateCohortWithDraftApprenticeshipRequestToAddDraftApprent
         var result = await _mapper.Map(_source);
         result.EmploymentPrice.Should().Be(_cacheItem.EmploymentPrice);
     }
-
 
     [Test]
     public async Task Then_Cost_IsMappedCorrectly()

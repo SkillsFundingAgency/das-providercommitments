@@ -7,20 +7,28 @@ using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
- public class CreateCohortRedirectModelMapper : IMapper<CreateCohortWithDraftApprenticeshipRequest, CreateCohortRedirectModel>
-    {
-        private readonly IAuthorizationService _authorizationService;
-        private readonly ICacheStorageService _cacheStorageService;
-
-        public CreateCohortRedirectModelMapper(IAuthorizationService authorizationService, ICacheStorageService cacheStorageService)
+ public class CreateCohortRedirectModelMapper(
+     IAuthorizationService authorizationService,
+     ICacheStorageService cacheStorageService,
+     ILogger<CreateCohortRedirectModelMapper> logger)
+     : IMapper<CreateCohortWithDraftApprenticeshipRequest, CreateCohortRedirectModel>
+ {
+     public async Task<CreateCohortRedirectModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
-            _authorizationService = authorizationService;
-            _cacheStorageService = cacheStorageService;
-        }
+            CreateCohortRedirectModel.RedirectTarget RedirectTo(bool isOnFlexiPaymentPiolt)
+            {
+                if (isOnFlexiPaymentPiolt)
+                {
+                    return CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus;
+                }
 
-        public async Task<CreateCohortRedirectModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
-        {
-            var flexiPaymentsAuthorized = await _authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot);
+                return source.UseLearnerData == true
+                    ? CreateCohortRedirectModel.RedirectTarget.SelectLearner
+                    : CreateCohortRedirectModel.RedirectTarget.SelectCourse;
+            }
+
+            var flexiPaymentsAuthorized = await authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot);
+            logger.LogInformation("Returning CreateCohortRedirectModel, isOnFlexiPaymentPilot {0}, UseLearnerData {1}", flexiPaymentsAuthorized, source.UseLearnerData);
 
             var cacheKey = Guid.NewGuid();
             var cacheItem = new CreateCohortCacheItem(cacheKey)
@@ -28,16 +36,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ReservationId = source.ReservationId.Value,
                 StartMonthYear = source.StartMonthYear,
                 AccountLegalEntityId = source.AccountLegalEntityId,
+                UseLearnerData = source.UseLearnerData,
                 IsOnFlexiPaymentPilot = flexiPaymentsAuthorized ? null : false
             };
-            await _cacheStorageService.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
+            await cacheStorageService.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
 
             return new CreateCohortRedirectModel
             {
                 CacheKey = cacheKey,
-                RedirectTo = flexiPaymentsAuthorized
-                    ? CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus
-                    : CreateCohortRedirectModel.RedirectTarget.SelectCourse
+                RedirectTo = RedirectTo(flexiPaymentsAuthorized)
             };
         }
     }
