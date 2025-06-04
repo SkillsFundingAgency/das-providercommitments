@@ -490,6 +490,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 return RedirectToAction("Details", "Cohort", new { request.ProviderId, request.CohortReference });
             }
+            
+            if (!model.IsRplRequired)
+            {
+                model.IsTherePriorLearning = false;
+                return await RecognisePriorLearning(model);
+            }
+            
             return View("RecognisePriorLearning", model);
         }
 
@@ -498,7 +505,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearning(RecognisePriorLearningViewModel request)
         {
-            var result = await _modelMapper.Map<RecognisePriorLearningResult>(request);
+            _ = await _modelMapper.Map<RecognisePriorLearningResult>(request);
 
             if (request.IsTherePriorLearning == true)
             {
