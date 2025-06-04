@@ -6,6 +6,10 @@
 @{
     ViewData["Title"] = Model.PageTitle;
     ViewBag.GaData.Vpv = "/add/ilrs/select";
+    var routeValues = Context.Request.Query.ToDictionary(
+        q => q.Key,
+        q => q.Key == "searchTerm" ? string.Empty : q.Value.ToString()
+    );
 }
 
 <div class="govuk-grid-row">
@@ -50,6 +54,11 @@
                     </div>
                 </div>
             </div>
+            
+            @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm))
+            {
+                <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.SelectLearnerRecord" asp-all-route-data="@routeValues">Clear search</a></p>
+            }
         </div>
     </div>
     <input type="hidden" value="@Model.FilterModel.SortField" name="SortField" />
