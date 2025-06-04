@@ -6,8 +6,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Helpers
     {
         public static bool DoesDraftApprenticeshipRequireRpl(DraftApprenticeshipViewModel model)
         {
-            var startDate = model.ActualStartDate.Date ?? model.StartDate.Date;
+            return DoesDraftApprenticeshipRequireRpl(model.ActualStartDate.Date, model.StartDate.Date);
+        }
+
+        public static bool DoesDraftApprenticeshipRequireRpl(DateTime? actualStartDate, DateTime? plannedStartDate)
+        {
+            var startDate = actualStartDate.HasValue ? actualStartDate.Value : plannedStartDate;
             return startDate?.Date >= new DateTime(2022, 08, 01);
         }
+
     }
 }

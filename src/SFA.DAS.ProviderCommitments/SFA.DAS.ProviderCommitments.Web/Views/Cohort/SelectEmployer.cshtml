@@ -12,6 +12,9 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Choose an employer</h1>
         <p class="govuk-body">Choose the employer you want to add apprentice details for.</p>
+        <div class="govuk-body">
+            You can <a asp-external-subdomain="relationships" asp-external-id="@Model.ProviderId" asp-external-controller="employers" class="govuk-link">Manage your employers</a> if you cannot see the employer you need.
+        </div>
 
         <form method="get">
             <div class="govuk-form-group">

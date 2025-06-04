@@ -18,7 +18,6 @@ using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Filters;
-using SFA.DAS.ProviderCommitments.Web.Helpers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
@@ -396,10 +395,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
                 {
                     OverlapApprenticeshipHashedId = hashedApprenticeshipId,
-                    ReservationId = model.ReservationId,
+                    model.ReservationId,
                     StartMonthYear = model.StartDate.MonthYear,
-                    CourseCode = model.CourseCode,
-                    DeliveryModel = model.DeliveryModel,
+                    model.CourseCode,
+                    model.DeliveryModel,
                     model.ProviderId,
                 });
             }
@@ -411,33 +410,25 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var response = await _outerApiService.AddDraftApprenticeship(model.CohortId.Value, request);
 
-            if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
-            {
-                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
-
-                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
-                {
-                    model.ProviderId,
-                    model.CohortReference,
-                    draftApprenticeshipHashedId
-                });
-            }
-
             if (string.IsNullOrEmpty(model.CourseCode))
             {
                 return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
             }
 
             var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, response.DraftApprenticeshipId);
+            var draftApprenticeshipHashedId = _encodingService.Encode(draftApprenticeship.Id, EncodingType.ApprenticeshipId);
 
             if (draftApprenticeship.HasStandardOptions)
             {
-                var draftApprenticeshipHashedId = _encodingService.Encode(draftApprenticeship.Id, EncodingType.ApprenticeshipId);
-
-                return RedirectToAction("SelectOptions", "DraftApprenticeship", new { model.ProviderId, draftApprenticeshipHashedId, model.CohortReference });
+                return RedirectToAction("SelectOptions", new { model.ProviderId, draftApprenticeshipHashedId, model.CohortReference });
             }
 
-            return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
+            return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
+            {
+                model.ProviderId,
+                model.CohortReference,
+                draftApprenticeshipHashedId
+            });
         }
 
         [HttpPost]
@@ -472,22 +463,24 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipApimRequest>(model);
             await _outerApiService.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
 
-            if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
+            
+            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value);
+
+            if (draftApprenticeship.HasStandardOptions)
             {
-                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
-                {
+                return RedirectToOptionalPages(
+                    draftApprenticeship.HasStandardOptions,
                     model.ProviderId,
-                    model.CohortReference,
                     model.DraftApprenticeshipHashedId,
-                });
+                    model.CohortReference);
             }
 
-            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value);
-            return RedirectToOptionalPages(
-                draftApprenticeship.HasStandardOptions,
+            return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
+            {
                 model.ProviderId,
+                model.CohortReference,
                 model.DraftApprenticeshipHashedId,
-                model.CohortReference);
+            });
         }
 
         private static void SetStartDatesBasedOnFlexiPaymentPilotRules(DraftApprenticeshipViewModel model)
@@ -522,11 +515,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning")]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning", Name = RouteNames.RecognisePriorLearning)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearning(RecognisePriorLearningRequest request)
         {
             var model = await _modelMapper.Map<RecognisePriorLearningViewModel>(request);
+            if (!model.RplNeedsToBeConsidered)
+            {
+                return RedirectToAction("Details", "Cohort", new { request.ProviderId, request.CohortReference });
+            }
             return View("RecognisePriorLearning", model);
         }
 
@@ -547,11 +544,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 });
             }
 
-            return RedirectToOptionalPages(
-                result.HasStandardOptions,
-                request.ProviderId,
-                request.DraftApprenticeshipHashedId,
-                request.CohortReference);
+            return RedirectToAction("Details", "Cohort", new {request.ProviderId, request.CohortReference } );
         }
 
         [HttpGet]
@@ -575,12 +568,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction(nameof(RecognisePriorLearningSummary), "DraftApprenticeship",
                     new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
             }
-
-            return RedirectToOptionalPages(
-                result.HasStandardOptions,
-                model.ProviderId,
-                model.DraftApprenticeshipHashedId,
-                model.CohortReference);
+            return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 
         [HttpGet]
@@ -595,11 +583,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return View("RecognisePriorLearningSummary", model);
             }
 
-            return RedirectToOptionalPages(
-                model.HasStandardOptions,
-                model.ProviderId,
-                model.DraftApprenticeshipHashedId,
-                model.CohortReference);
+            return RedirectToAction("Details", "Cohort", new { request.ProviderId, request.CohortReference });
         }
 
         [HttpPost]
@@ -607,11 +591,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult RecognisePriorLearningSummary(PriorLearningSummaryViewModel model)
         {
-            return RedirectToOptionalPages(
-                model.HasStandardOptions,
-                model.ProviderId,
-                model.DraftApprenticeshipHashedId,
-                model.CohortReference);
+            return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 
         [HttpGet]
@@ -623,7 +603,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (!model.Options.Any())
             {
-                return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
+                return RedirectToAction("RecognisePriorLearning", new { model.ProviderId, model.CohortReference, model.DraftApprenticeshipHashedId });
             }
 
             return View("SelectStandardOption", model);
@@ -637,7 +617,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             await _outerApiService.UpdateDraftApprenticeship(model.CohortId, model.DraftApprenticeshipId, request);
 
-            return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
+            return RedirectToAction("RecognisePriorLearning", new { model.ProviderId, model.CohortReference, model.DraftApprenticeshipHashedId });
         }
 
         [HttpGet]
