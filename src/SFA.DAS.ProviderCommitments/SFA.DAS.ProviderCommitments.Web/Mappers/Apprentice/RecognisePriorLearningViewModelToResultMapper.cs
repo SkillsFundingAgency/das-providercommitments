@@ -15,7 +15,7 @@ public class RecognisePriorLearningViewModelToResultMapper : IMapper<RecognisePr
 
     public async Task<RecognisePriorLearningResult> Map(RecognisePriorLearningViewModel source)
     {
-        var update = _commitmentsApiClient.RecognisePriorLearning(
+        await _commitmentsApiClient.RecognisePriorLearning(
             source.CohortId,
             source.DraftApprenticeshipId,
             new CommitmentsV2.Api.Types.Requests.RecognisePriorLearningRequest
@@ -23,16 +23,9 @@ public class RecognisePriorLearningViewModelToResultMapper : IMapper<RecognisePr
                 RecognisePriorLearning = source.IsTherePriorLearning
             });
 
-        var apprenticeship = _commitmentsApiClient.GetDraftApprenticeship(
-            source.CohortId,
-            source.DraftApprenticeshipId,
-            CancellationToken.None);
-
-        await Task.WhenAll(update, apprenticeship);
 
         return new RecognisePriorLearningResult
         {
-            HasStandardOptions = apprenticeship.Result.HasStandardOptions
         };
     }
 }
@@ -64,7 +57,6 @@ public class PriorLearningDataViewModelToResultMapper : IMapper<PriorLearningDat
 
         if (update != null)
         {
-            result.HasStandardOptions = update.HasStandardOptions;
             result.RplPriceReductionError = update.RplPriceReductionError;
         }
 
