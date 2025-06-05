@@ -67,13 +67,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add")]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request, IConfiguration configuration)
         {
             var redirectModel = await _modelMapper.Map<AddAnotherApprenticeshipRedirectModel>(request);
 
             request.CacheKey = redirectModel.CacheKey;
 
-            var route = redirectModel.UseLearnerData
+            var route = redirectModel.UseLearnerData && configuration.GetValue<bool>("ILRFeaturesEnabled") == true
                 ? RouteNames.SelectLearnerRecord
                 : RouteNames.SelectCourse;
             return RedirectToRoute(route, request.CloneBaseValues());

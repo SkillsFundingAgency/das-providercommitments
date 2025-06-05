@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -57,7 +58,10 @@ public class DraftApprenticeshipControllerTestFixture
     private readonly Mock<IOuterApiService> _outerApiService;
     private readonly ValidateUlnOverlapResult _validateUlnOverlapResult;
     private Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult _validateUlnOverlapOnStartDateResult;
-        
+
+    private Mock<IConfiguration> _configuration;
+    private Mock<IConfigurationSection> _configurationSection;
+
     public DraftApprenticeshipControllerTestFixture()
     {
         var autoFixture = new Fixture();
@@ -213,6 +217,12 @@ public class DraftApprenticeshipControllerTestFixture
                 DraftApprenticeshipId = _draftApprenticeshipId
             });
 
+        _configurationSection = new Mock<IConfigurationSection>();
+        SetupIlrConfigurationSection(false);
+ 
+        _configuration = new Mock<IConfiguration>();
+        _configuration.Setup(c => c.GetSection("ILRFeaturesEnabled")).Returns(_configurationSection.Object);
+
         _controller = new DraftApprenticeshipController(
             _mediator.Object,
             _commitmentsApiClient.Object,
@@ -227,6 +237,12 @@ public class DraftApprenticeshipControllerTestFixture
         _linkGenerator = new Mock<ILinkGenerator>();
         _linkGenerator.Setup(x => x.ReservationsLink(It.IsAny<string>()))
             .Returns((string url) => "http://reservations/" + url);
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupIlrConfigurationSection(bool status)
+    {
+        _configurationSection.Setup(s => s.Value).Returns(status.ToString().ToLower);
+        return this;
     }
 
     public DraftApprenticeshipControllerTestFixture SetupStartDateOverlap(bool overlapStartDate, bool overlapEndDate)
@@ -272,7 +288,7 @@ public class DraftApprenticeshipControllerTestFixture
 
     public async Task<DraftApprenticeshipControllerTestFixture> AddNewDraftApprenticeshipWithReservation()
     {
-        _actionResult = await _controller.AddNewDraftApprenticeship(_reservationsAddDraftApprenticeshipRequest);
+        _actionResult = await _controller.AddNewDraftApprenticeship(_reservationsAddDraftApprenticeshipRequest, _configuration.Object);
         return this;
     }
 
@@ -439,7 +455,6 @@ public class DraftApprenticeshipControllerTestFixture
         _cohortResponse.LevyStatus = status;
         return this;
     }
-
 
     public DraftApprenticeshipControllerTestFixture SetupTempDraftApprenticeship()
     {

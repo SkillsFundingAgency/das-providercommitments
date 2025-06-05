@@ -75,11 +75,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithUseLearnerDataAsTrueRedirectsToSelectLearner()
+        public async Task AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithIlrFeatureOnAndUseLearnerDataAsTrueRedirectsToSelectLearner()
         {
             _fixture.SetupUseLearnerData(true);
+            _fixture.SetupIlrConfigurationSection(true);
             await _fixture.AddNewDraftApprenticeshipWithReservation();
             _fixture.VerifyRedirectedToSelectLearnerPage();
+        }
+
+        [Test]
+        public async Task AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithIlrFeatureOnAndUseLearnerDataAsFalseRedirectsToSelectCourse()
+        {
+            _fixture.SetupUseLearnerData(true);
+            _fixture.SetupIlrConfigurationSection(false);
+            await _fixture.AddNewDraftApprenticeshipWithReservation();
+            _fixture.VerifyRedirectedToSelectCoursePage();
+        }
+
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithILRFeatureOffRedirectsToSelectCourse(bool useLearnerData)
+        {
+            _fixture.SetupUseLearnerData(useLearnerData);
+            _fixture.SetupIlrConfigurationSection(false);
+            await _fixture.AddNewDraftApprenticeshipWithReservation();
+            _fixture.VerifyRedirectedToSelectCoursePage();
         }
 
         [Test]

@@ -23,15 +23,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     return CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus;
                 }
 
-                if (configuration.GetValue<bool>("ILRFeaturesEnabled") == false &&
-                    source.UseLearnerData.HasValue == false)
+                if (configuration.GetValue<bool>("ILRFeaturesEnabled") == false)
                 {
                     return CreateCohortRedirectModel.RedirectTarget.SelectCourse;
                 }
 
+                if(source.UseLearnerData.HasValue == false)
+                {
+                    return CreateCohortRedirectModel.RedirectTarget.SelectHowTo;
+                }
+
                 return source.UseLearnerData == true
                     ? CreateCohortRedirectModel.RedirectTarget.SelectLearner
-                    : CreateCohortRedirectModel.RedirectTarget.SelectHowTo;
+                    : CreateCohortRedirectModel.RedirectTarget.SelectCourse;
             }
 
             var flexiPaymentsAuthorized = await authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot);
