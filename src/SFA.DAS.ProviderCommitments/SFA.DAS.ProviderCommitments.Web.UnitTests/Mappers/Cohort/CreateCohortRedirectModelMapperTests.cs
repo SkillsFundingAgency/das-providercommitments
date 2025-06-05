@@ -42,7 +42,7 @@ public class CreateCohortRedirectModelMapperTests
     }
 
     [TestCase(true, CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus)]
-    [TestCase(false, CreateCohortRedirectModel.RedirectTarget.SelectHowTo)]
+    [TestCase(false, CreateCohortRedirectModel.RedirectTarget.SelectCourse)]
     public async Task Redirect_Target_Is_Mapped_Correctly(bool isFlexiPaymentsEnabled, CreateCohortRedirectModel.RedirectTarget expectTarget)
     {
         _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
@@ -54,10 +54,11 @@ public class CreateCohortRedirectModelMapperTests
     }
 
     [TestCase(true, CreateCohortRedirectModel.RedirectTarget.SelectLearner)]
-    [TestCase(false, CreateCohortRedirectModel.RedirectTarget.SelectHowTo)]
-    [TestCase(null, CreateCohortRedirectModel.RedirectTarget.SelectCourse)]
-    public async Task Redirect_Target_Is_Mapped_Correctly_When_UseLearnerData(bool? useLearnerData, CreateCohortRedirectModel.RedirectTarget expectTarget)
+    [TestCase(false, CreateCohortRedirectModel.RedirectTarget.SelectCourse)]
+    [TestCase(null, CreateCohortRedirectModel.RedirectTarget.SelectHowTo)]
+    public async Task Redirect_Target_Is_Mapped_Correctly_When_IlrFeatureIsOn_And_UseLearnerData(bool? useLearnerData, CreateCohortRedirectModel.RedirectTarget expectTarget)
     {
+        _configurationSection.Setup(s => s.Value).Returns("true");
         _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
             .ReturnsAsync(false);
         _request.UseLearnerData = useLearnerData;
@@ -65,12 +66,12 @@ public class CreateCohortRedirectModelMapperTests
         result.RedirectTo.Should().Be(expectTarget);
     }
 
-    [TestCase(true, CreateCohortRedirectModel.RedirectTarget.SelectLearner)]
-    [TestCase(false, CreateCohortRedirectModel.RedirectTarget.SelectHowTo)]
-    [TestCase(null, CreateCohortRedirectModel.RedirectTarget.SelectHowTo)]
-    public async Task Redirect_Target_Is_Mapped_Correctly_When_IlrFeatureIsOn_And_UseLearnerData(bool? useLearnerData, CreateCohortRedirectModel.RedirectTarget expectTarget)
+    [TestCase(true, CreateCohortRedirectModel.RedirectTarget.SelectCourse)]
+    [TestCase(false, CreateCohortRedirectModel.RedirectTarget.SelectCourse)]
+    [TestCase(null, CreateCohortRedirectModel.RedirectTarget.SelectCourse)]
+    public async Task Redirect_Target_Is_Mapped_Correctly_When_IlrFeatureIsOff_And_UseLearnerData(bool? useLearnerData, CreateCohortRedirectModel.RedirectTarget expectTarget)
     {
-        _configurationSection.Setup(s => s.Value).Returns("true");
+        _configurationSection.Setup(s => s.Value).Returns("false");
         _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
             .ReturnsAsync(false);
         _request.UseLearnerData = useLearnerData;
