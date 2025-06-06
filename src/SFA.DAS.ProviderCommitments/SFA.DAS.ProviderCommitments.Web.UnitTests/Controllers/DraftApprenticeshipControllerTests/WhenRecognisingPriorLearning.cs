@@ -9,7 +9,6 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -19,13 +18,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 public class WhenRecognisingPriorLearning
 {
     [Test]
-    public async Task When_Get_Recognise_Prior_Learning()
+    public async Task When_Get_Recognise_Prior_Learning_And_Rpl_Required_Return_View()
     {
         var fixture = new WhenRecognisingPriorLearningFixture();
 
         var result = await fixture.Sut.RecognisePriorLearning(fixture.Request);
 
         result.VerifyReturnsViewModel().ViewName.Should().Be("RecognisePriorLearning");
+    }
+    
+    [Test]
+    public async Task When_Get_Recognise_Prior_Learning_And_Rpl_Not_Required_Redirect()
+    {
+        var fixture = new WhenRecognisingPriorLearningFixture()
+            .WithRplNotRequired();
+
+        var result = await fixture.Sut.RecognisePriorLearning(fixture.Request);
+
+        result.VerifyReturnsRedirectToActionResult();
     }
 
     [Test]
@@ -385,13 +395,8 @@ public class WhenRecognisingPriorLearningFixture
     public PriorLearningDataViewModel DataViewModel;
     public CreatePriorLearningDataResponse RplCreatePriorLearningDataResponse;
     public GetPriorLearningDataQueryResult PriorLearningDataQueryResult;
-    public CreatePriorLearningDataRequest CreatePriorLearningDataRequest;
 
     public Mock<IOuterApiService> OuterApiService;
-    public Mock<IOuterApiClient> OuterApiClient;
-
-    public GetApprenticeshipResponse ApprenticeshipResponse { get; set; }
-    public EditApprenticeshipRequest _request;
 
     public RecognisePriorLearningResult RplDataResult;
 
@@ -411,15 +416,13 @@ public class WhenRecognisingPriorLearningFixture
         RplDataResult = fixture.Create<RecognisePriorLearningResult>();
         PriorLearningDataQueryResult = fixture.Create<GetPriorLearningDataQueryResult>();
         RplCreatePriorLearningDataResponse = fixture.Create<CreatePriorLearningDataResponse>();
-        CreatePriorLearningDataRequest = fixture.Create<CreatePriorLearningDataRequest>();
+        fixture.Create<CreatePriorLearningDataRequest>();
 
         ApiClient = new Mock<ICommitmentsApiClient>();
         ApiClient.Setup(x =>
                 x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Apprenticeship);
-
-        OuterApiClient = new Mock<IOuterApiClient>();
-
+        
         OuterApiService = new Mock<IOuterApiService>();
         OuterApiService.Setup(x => x.GetPriorLearningSummary(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>()))
             .ReturnsAsync(RplSummary);
@@ -435,7 +438,7 @@ public class WhenRecognisingPriorLearningFixture
             Mock.Of<IMediator>(),
             ApiClient.Object,
             new SimpleModelMapper(
-                new RecognisePriorLearningRequestToViewModelMapper(ApiClient.Object),
+                new RecognisePriorLearningRequestToViewModelMapper(ApiClient.Object, OuterApiService.Object),
                 new RecognisePriorLearningRequestToDataViewModelMapper(OuterApiService.Object),
                 new RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(OuterApiService.Object),
                 new RecognisePriorLearningViewModelToResultMapper(ApiClient.Object),
@@ -551,6 +554,14 @@ public class WhenRecognisingPriorLearningFixture
         DataViewModel.DurationReducedBy = model.DurationReducedBy;
         DataViewModel.CostBeforeRpl = model.CostBeforeRpl;
         DataViewModel.PriceReduced = model.PriceReduced;
+        return this;
+    }
+
+    internal WhenRecognisingPriorLearningFixture WithRplNotRequired()
+    {
+        Apprenticeship.CourseCode = "123";
+        OuterApiService.Setup(x => x.GetRplRequirements(Request.ProviderId, Request.CohortId, Request.DraftApprenticeshipId, "123"))
+            .ReturnsAsync(new GetRplRequirementsResponse { IsRequired = false });
         return this;
     }
 }

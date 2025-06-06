@@ -286,5 +286,11 @@ public class OuterApiService : IOuterApiService
         }
 
         return null;
-    }  
+    }
+
+    public async Task<GetRplRequirementsResponse> GetRplRequirements(long providerId, long cohortId, long draftApprenticeshipId, string courseCode)
+    {
+        var request = new GetRplRequirementsRequest(providerId, cohortId, draftApprenticeshipId, courseCode);
+        return await _outerApiClient.Get<GetRplRequirementsResponse>(request);
+    }
 }
