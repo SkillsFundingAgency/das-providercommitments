@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -21,7 +20,6 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
@@ -69,16 +67,52 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add")]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request, [FromServices] IConfiguration configuration)
         {
             var redirectModel = await _modelMapper.Map<AddAnotherApprenticeshipRedirectModel>(request);
 
             request.CacheKey = redirectModel.CacheKey;
 
-            var route = redirectModel.UseLearnerData
+            var route = redirectModel.UseLearnerData && configuration.GetValue<bool>("ILRFeaturesEnabled") == true
                 ? RouteNames.SelectLearnerRecord
                 : RouteNames.SelectCourse;
             return RedirectToRoute(route, request.CloneBaseValues());
+        }
+
+        [HttpGet]
+        [Route("add/select-how")]
+        public IActionResult AddAnotherSelectMethod(GetReservationIdForAddAnotherApprenticeRequest request)
+        {
+            if (request.UseLearnerData == false)
+            {
+                return RedirectToAction("GetReservationId", request);
+            }
+
+            var model = new SelectAddAnotherDraftApprenticeshipJourneyViewModel
+            {
+                ProviderId = request.ProviderId,
+                CohortReference = request.CohortReference,
+                AccountLegalEntityHashedId = request.AccountLegalEntityHashedId,
+                UseLearnerData = request.UseLearnerData
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("add/select-how")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public ActionResult AddAnotherSelectMethod(SelectAddAnotherDraftApprenticeshipJourneyViewModel model)
+        {
+            var redirectModel = new GetReservationIdForAddAnotherApprenticeRequest
+            {
+                ProviderId = model.ProviderId,
+                CohortReference = model.CohortReference,
+                AccountLegalEntityHashedId = model.AccountLegalEntityHashedId,
+                UseLearnerData = (model.Selection == AddAnotherDraftApprenticeshipJourneyOptions.Ilr)
+            };
+
+            return RedirectToAction("GetReservationId", redirectModel);
         }
 
         [HttpGet]
