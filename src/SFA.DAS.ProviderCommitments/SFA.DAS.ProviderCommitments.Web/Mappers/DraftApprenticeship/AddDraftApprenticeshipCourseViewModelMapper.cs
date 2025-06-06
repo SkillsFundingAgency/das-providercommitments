@@ -9,23 +9,22 @@ using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.DraftAppren
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
 
-public class AddDraftApprenticeshipCourseViewModelMapper : IMapper<ReservationsAddDraftApprenticeshipRequest, SelectCourseViewModel>
+public class AddDraftApprenticeshipCourseViewModelMapper(
+    IOuterApiClient apiClient,
+    ICacheStorageService cacheStorage,
+    IAuthorizationService authorizationService)
+    : IMapper<ReservationsAddDraftApprenticeshipRequest, SelectCourseViewModel>
 {
-    private readonly IOuterApiClient _apiClient;
-    private readonly IAuthorizationService _authorizationService;
-
-    public AddDraftApprenticeshipCourseViewModelMapper(
-        IOuterApiClient apiClient,
-        IAuthorizationService authorizationService)
-    {
-        _apiClient = apiClient;
-        _authorizationService = authorizationService;
-    }
-
     public async Task<SelectCourseViewModel> Map(ReservationsAddDraftApprenticeshipRequest source)
     {
+        if (source.CacheKey.HasValue && string.IsNullOrWhiteSpace(source.CourseCode))
+        {
+            var cacheItem = await cacheStorage.RetrieveFromCache<ReservationsAddDraftApprenticeshipRequest>(source.CacheKey.Value);
+            source.CourseCode = cacheItem.CourseCode;
+        }
+
         var apiRequest = new GetAddDraftApprenticeshipCourseRequest(source.ProviderId, source.CohortId.Value);
-        var apiResponse = await _apiClient.Get<GetAddDraftApprenticeshipCourseResponse>(apiRequest);
+        var apiResponse = await apiClient.Get<GetAddDraftApprenticeshipCourseResponse>(apiRequest);
 
         var result = new SelectCourseViewModel
         {
@@ -38,7 +37,7 @@ public class AddDraftApprenticeshipCourseViewModelMapper : IMapper<ReservationsA
             Standards = apiResponse.Standards.Select(x => new Standard { CourseCode = x.CourseCode, Name = x.Name })
         };
 
-        if (!await _authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
+        if (!await authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
         {
             result.IsOnFlexiPaymentPilot = false;
         }

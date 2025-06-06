@@ -2,7 +2,6 @@
 @using SFA.DAS.ProviderCommitments.Web.Models.Shared 
 @using Newtonsoft.Json;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
-@inject ILinkGenerator LinkGenerator
 
 @{
     ViewData["Title"] = "Choose an employer";
@@ -27,7 +26,8 @@
                     </div>
                 </div>
             </div>
-
+            
+            @Html.HiddenFor(m=>m.UseLearnerData)
             <input type="hidden" value="@Model.SelectEmployerFilterModel.CurrentlySortedByField" name="SortField" />
             <input type="hidden" value="@Model.SelectEmployerFilterModel.ReverseSort.ToString()" name="ReverseSort" />
 
