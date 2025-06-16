@@ -312,6 +312,41 @@ public class BulkUploadFileParserTests
             TrainingHoursReduction = (string)null,
         });
     }
+    
+    [Test]
+    public void VerifyAllFieldsAreTrimmed()
+    {
+        //Arrange          
+        _fileContent = Headers + Environment.NewLine +
+                       " P9DD4P , XEGE5X , 8652496047 , Jones , Louise , 2000-01-01 , abc1@abc.com , 57 , 2017-05-03 , 2018-05 , 2000 , EPA0001 , CX768 , true , 12 , 99 , 1000 , TRUE , 100 ";
+
+        CreateFile();
+
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        
+        using (new AssertionScope())
+        {
+            result.First().CohortRef.Should().Be("P9DD4P");
+            result.First().AgreementId.Should().Be("XEGE5X");
+            result.First().ULN.Should().Be("8652496047");
+            result.First().FamilyName.Should().Be("Jones");
+            result.First().GivenNames.Should().Be("Louise");
+            result.First().DateOfBirth.Should().Be("2000-01-01");
+            result.First().EmailAddress.Should().Be("abc1@abc.com");
+            result.First().StdCode.Should().Be("57");
+            result.First().StartDate.Should().Be("2017-05-03");
+            result.First().EndDate.Should().Be("2018-05");
+            result.First().TotalPrice.Should().Be("2000");
+            result.First().EPAOrgID.Should().Be("EPA0001");
+            result.First().ProviderRef.Should().Be("CX768");
+            result.First().RecognisePriorLearning.Should().Be("true");
+            result.First().DurationReducedBy.Should().Be("12");
+            result.First().PriceReducedBy.Should().Be("99");
+            result.First().TrainingTotalHours.Should().Be("1000");
+            result.First().IsDurationReducedByRPL.Should().Be("TRUE");
+            result.First().TrainingHoursReduction.Should().Be("100");
+        }
+    }
 
     private void CreateFile()
     {
