@@ -49,5 +49,6 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<bool> CanAccessApprenticeship(long providerId, long apprenticeshipId);
         Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, long? accountLegalEntityId, long? cohortId, string searchTerm, string sortColumn, bool sortDesc, int page);
         Task<GetLearnerSelectedResponse> GetLearnerSelected(long providerId, long learnerId);
+        Task<GetRplRequirementsResponse> GetRplRequirements(long providerId, long cohortId, long draftApprenticeshipId, string courseCode);
     }
 }
