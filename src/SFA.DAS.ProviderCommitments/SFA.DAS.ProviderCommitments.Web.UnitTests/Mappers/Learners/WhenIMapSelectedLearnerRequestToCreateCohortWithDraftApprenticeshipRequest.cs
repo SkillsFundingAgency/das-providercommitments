@@ -7,7 +7,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort;
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Learners;
 
 [TestFixture]
 public class WhenIMapSelectedLearnerRequestToCreateCohortWithDraftApprenticeshipRequest
