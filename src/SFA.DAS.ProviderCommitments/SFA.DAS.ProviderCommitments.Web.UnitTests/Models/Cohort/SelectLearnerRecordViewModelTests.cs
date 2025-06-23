@@ -83,8 +83,8 @@ public class SelectLearnerRecordViewModelTests
         sort["ReverseSort"].Should().Be((!reverse).ToString());
     }
 
-    [TestCase("", 4)]
-    [TestCase(null, 4)]
+    [TestCase("", 5)]
+    [TestCase(null, 5)]
     public void BuildRouteData_IsCorrect(string searchTerm, int expectedCount)
     {
         _viewModel.FilterModel.SearchTerm = searchTerm;
@@ -97,6 +97,7 @@ public class SelectLearnerRecordViewModelTests
         routeData["CacheKey"].Should().Be(_viewModel.FilterModel.CacheKey.ToString());
         routeData["ReservationId"].Should().Be(_viewModel.FilterModel.ReservationId.ToString());
         routeData["EmployerAccountLegalEntityPublicHashedId"].Should().Be(_viewModel.FilterModel.EmployerAccountLegalEntityPublicHashedId);
+        routeData["CohortReference"].Should().Be(_viewModel.FilterModel.CohortReference);
     }
 
     [Test]
@@ -107,7 +108,7 @@ public class SelectLearnerRecordViewModelTests
         var routeData = _viewModel.FilterModel.RouteData;
 
         routeData.Should().NotBeNull();
-        routeData.Count.Should().Be(5);
+        routeData.Count.Should().Be(6);
         routeData["SearchTerm"].Should().Be(_viewModel.FilterModel.SearchTerm);
     }
 

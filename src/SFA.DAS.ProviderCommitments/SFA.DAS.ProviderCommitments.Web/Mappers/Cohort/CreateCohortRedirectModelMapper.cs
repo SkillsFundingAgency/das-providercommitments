@@ -10,6 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
  public class CreateCohortRedirectModelMapper(
      IAuthorizationService authorizationService,
      ICacheStorageService cacheStorageService,
+     IConfiguration configuration,
      ILogger<CreateCohortRedirectModelMapper> logger)
      : IMapper<CreateCohortWithDraftApprenticeshipRequest, CreateCohortRedirectModel>
  {
@@ -20,6 +21,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 if (isOnFlexiPaymentPiolt)
                 {
                     return CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus;
+                }
+
+                if (configuration.GetValue<bool>("ILRFeaturesEnabled") == false)
+                {
+                    return CreateCohortRedirectModel.RedirectTarget.SelectCourse;
+                }
+
+                if(source.UseLearnerData.HasValue == false)
+                {
+                    return CreateCohortRedirectModel.RedirectTarget.SelectHowTo;
                 }
 
                 return source.UseLearnerData == true
@@ -37,10 +48,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 StartMonthYear = source.StartMonthYear,
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 UseLearnerData = source.UseLearnerData,
+                CourseCode = source.CourseCode,
                 IsOnFlexiPaymentPilot = flexiPaymentsAuthorized ? null : false
             };
             await cacheStorageService.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
-
 
             return new CreateCohortRedirectModel
             {

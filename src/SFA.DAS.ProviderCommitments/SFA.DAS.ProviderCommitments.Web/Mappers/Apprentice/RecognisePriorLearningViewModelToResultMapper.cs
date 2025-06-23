@@ -6,16 +6,12 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 
-public class RecognisePriorLearningViewModelToResultMapper : IMapper<RecognisePriorLearningViewModel, RecognisePriorLearningResult>
+public class RecognisePriorLearningViewModelToResultMapper(ICommitmentsApiClient commitmentsApiClient)
+    : IMapper<RecognisePriorLearningViewModel, RecognisePriorLearningResult>
 {
-    private readonly ICommitmentsApiClient _commitmentsApiClient;
-
-    public RecognisePriorLearningViewModelToResultMapper(ICommitmentsApiClient commitmentsApiClient)
-        => _commitmentsApiClient = commitmentsApiClient;
-
     public async Task<RecognisePriorLearningResult> Map(RecognisePriorLearningViewModel source)
     {
-        var update = _commitmentsApiClient.RecognisePriorLearning(
+        await commitmentsApiClient.RecognisePriorLearning(
             source.CohortId,
             source.DraftApprenticeshipId,
             new CommitmentsV2.Api.Types.Requests.RecognisePriorLearningRequest
@@ -23,34 +19,21 @@ public class RecognisePriorLearningViewModelToResultMapper : IMapper<RecognisePr
                 RecognisePriorLearning = source.IsTherePriorLearning
             });
 
-        var apprenticeship = _commitmentsApiClient.GetDraftApprenticeship(
-            source.CohortId,
-            source.DraftApprenticeshipId,
-            CancellationToken.None);
-
-        await Task.WhenAll(update, apprenticeship);
 
         return new RecognisePriorLearningResult
         {
-            HasStandardOptions = apprenticeship.Result.HasStandardOptions
         };
     }
 }
 
-public class PriorLearningDataViewModelToResultMapper : IMapper<PriorLearningDataViewModel, RecognisePriorLearningResult>
+public class PriorLearningDataViewModelToResultMapper(IOuterApiService outerApiService)
+    : IMapper<PriorLearningDataViewModel, RecognisePriorLearningResult>
 {
-    private readonly IOuterApiService _outerApiService;
-
-    public PriorLearningDataViewModelToResultMapper(IOuterApiService outerApiService)
-    {
-        _outerApiService = outerApiService;
-    }
-
     public async Task<RecognisePriorLearningResult> Map(PriorLearningDataViewModel source)
     {
         var result = new RecognisePriorLearningResult();
 
-        var update = await _outerApiService.UpdatePriorLearningData(source.ProviderId, source.CohortId, source.DraftApprenticeshipId,
+        var update = await outerApiService.UpdatePriorLearningData(source.ProviderId, source.CohortId, source.DraftApprenticeshipId,
             new CreatePriorLearningDataRequest
             {
                 DurationReducedBy = source.IsDurationReducedByRpl == false ? null : source.DurationReducedBy,
@@ -64,7 +47,6 @@ public class PriorLearningDataViewModelToResultMapper : IMapper<PriorLearningDat
 
         if (update != null)
         {
-            result.HasStandardOptions = update.HasStandardOptions;
             result.RplPriceReductionError = update.RplPriceReductionError;
         }
 

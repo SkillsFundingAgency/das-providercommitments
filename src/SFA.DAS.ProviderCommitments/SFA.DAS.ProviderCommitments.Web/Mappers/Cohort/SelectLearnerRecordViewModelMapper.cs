@@ -9,13 +9,14 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
 {
     public async Task<SelectLearnerRecordViewModel> Map(SelectLearnerRecordRequest source)
     {
-        var response = await client.GetLearnerDetailsForProvider(source.ProviderId, source.AccountLegalEntityId,
+        var response = await client.GetLearnerDetailsForProvider(source.ProviderId, source.AccountLegalEntityId, source.CohortId,
             source.SearchTerm, source.SortField, source.ReverseSort, source.Page);
 
         var filterModel = new LearnerRecordsFilterModel()
         {
             ProviderId = source.ProviderId,
             EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
+            CohortReference = source.CohortReference,
             CacheKey = source.CacheKey,
             ReservationId = source.ReservationId,
             TotalNumberOfLearnersFound = response.Total,
@@ -29,6 +30,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
         {
             ProviderId = source.ProviderId,
             EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
+            CohortReference = source.CohortReference,
             CacheKey = source.CacheKey,
             ReservationId = source.ReservationId,
             EmployerAccountName = response.EmployerName,

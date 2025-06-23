@@ -235,9 +235,9 @@ public class OuterApiService : IOuterApiService
         return response.HasApprenticeshipAccess;
     }
 
-    public async Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, long accountLegalEntityId, string searchTerm, string sortColumn, bool sortDesc, int page)
+    public async Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, long? accountLegalEntityId, long? cohortId, string searchTerm, string sortColumn, bool sortDesc, int page)
     {
-        var request = new GetLearnerDetailsForProviderRequest(providerId, accountLegalEntityId, searchTerm, sortColumn, sortDesc, page);
+        var request = new GetLearnerDetailsForProviderRequest(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDesc, page);
 
         var response = await _outerApiClient.Get<GetLearnerDetailsForProviderResponse>(request);
 
@@ -286,5 +286,11 @@ public class OuterApiService : IOuterApiService
         }
 
         return null;
-    }  
+    }
+
+    public async Task<GetRplRequirementsResponse> GetRplRequirements(long providerId, long cohortId, long draftApprenticeshipId, string courseCode)
+    {
+        var request = new GetRplRequirementsRequest(providerId, cohortId, draftApprenticeshipId, courseCode);
+        return await _outerApiClient.Get<GetRplRequirementsResponse>(request);
+    }
 }

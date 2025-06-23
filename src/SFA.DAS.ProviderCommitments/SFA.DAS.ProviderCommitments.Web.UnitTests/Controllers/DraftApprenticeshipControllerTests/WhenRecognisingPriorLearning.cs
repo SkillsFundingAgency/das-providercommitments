@@ -1,4 +1,5 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using System;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
@@ -8,7 +9,6 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -18,13 +18,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 public class WhenRecognisingPriorLearning
 {
     [Test]
-    public async Task When_Get_Recognise_Prior_Learning()
+    public async Task When_Get_Recognise_Prior_Learning_And_Rpl_Required_Return_View()
     {
         var fixture = new WhenRecognisingPriorLearningFixture();
 
         var result = await fixture.Sut.RecognisePriorLearning(fixture.Request);
 
         result.VerifyReturnsViewModel().ViewName.Should().Be("RecognisePriorLearning");
+    }
+    
+    [Test]
+    public async Task When_Get_Recognise_Prior_Learning_And_Rpl_Not_Required_Redirect()
+    {
+        var fixture = new WhenRecognisingPriorLearningFixture()
+            .WithRplNotRequired();
+
+        var result = await fixture.Sut.RecognisePriorLearning(fixture.Request);
+
+        result.VerifyReturnsRedirectToActionResult();
     }
 
     [Test]
@@ -48,6 +59,58 @@ public class WhenRecognisingPriorLearning
 
         result.VerifyReturnsViewModel().WithModel<RecognisePriorLearningViewModel>()
             .IsTherePriorLearning.Should().Be(previousSelection);
+    }
+
+    [Test]
+    public async Task When_before_Aug_2022_then_does_not_require_rpl()
+    {
+        var fixture = new WhenRecognisingPriorLearningFixture().WithActualStartDate(new DateTime(2022, 07, 30));
+
+        var result = await fixture.Sut.RecognisePriorLearning(fixture.Request);
+
+        result.VerifyRedirectsToCohortDetailsPage(fixture.Request.ProviderId, fixture.Request.CohortReference);
+    }
+
+    [Test]
+    public async Task When_startdate_are_null_then_does_not_require_rpl()
+    {
+        var fixture = new WhenRecognisingPriorLearningFixture().WithActualStartDate(null).WithoutStartDate();
+
+        var result = await fixture.Sut.RecognisePriorLearning(fixture.Request);
+
+        result.VerifyRedirectsToCohortDetailsPage(fixture.Request.ProviderId, fixture.Request.CohortReference);
+    }
+
+    [Test]
+    public async Task When_ActualStartDate_after_Aug_2022_then_does_require_rpl()
+    {
+        var fixture = new WhenRecognisingPriorLearningFixture().WithActualStartDate(new DateTime(2022, 08, 30));
+
+        var result = await fixture.Sut.RecognisePriorLearning(fixture.Request);
+
+        result.VerifyReturnsViewModel().WithModel<RecognisePriorLearningViewModel>()
+            .RplNeedsToBeConsidered.Should().Be(true);
+    }
+
+    [Test]
+    public async Task When_StartDate_after_Aug_2022_then_does_require_rpl()
+    {
+        var fixture = new WhenRecognisingPriorLearningFixture().WithActualStartDate(null).WithStartDate(2022,8);
+
+        var result = await fixture.Sut.RecognisePriorLearning(fixture.Request);
+
+        result.VerifyReturnsViewModel().WithModel<RecognisePriorLearningViewModel>()
+            .RplNeedsToBeConsidered.Should().Be(true);
+    }
+
+    [Test]
+    public async Task When_StartDate_before_Aug_2022_then_does_not_require_rpl()
+    {
+        var fixture = new WhenRecognisingPriorLearningFixture().WithActualStartDate(null).WithStartDate(2022, 7);
+
+        var result = await fixture.Sut.RecognisePriorLearning(fixture.Request);
+
+        result.VerifyRedirectsToCohortDetailsPage(fixture.Request.ProviderId, fixture.Request.CohortReference);
     }
 
     [TestCase(true)]
@@ -223,8 +286,7 @@ public class WhenRecognisingPriorLearning
     }
 
     [TestCase, MoqAutoData]
-    public async Task
-        After_submitting_prior_learning_data_and_no_standards_and_no_rpl_error_then_dont_show_RPL_summary_page()
+    public async Task After_submitting_prior_learning_data_and__no_rpl_error_then_dont_show_RPL_summary_page_goto_cohort_overview()
     {
         var fixture = new WhenRecognisingPriorLearningFixture()
             .WithoutStandardOptions()
@@ -233,12 +295,11 @@ public class WhenRecognisingPriorLearning
 
         var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
-        result.VerifyRedirectsToSelectOptionsPage(fixture.DataViewModel.DraftApprenticeshipHashedId);
+        result.VerifyRedirectsToCohortDetailsPage(fixture.DataViewModel.ProviderId, fixture.DataViewModel.CohortReference);
     }
 
     [TestCase, MoqAutoData]
-    public async Task
-        After_submitting_prior_learning_data_with_standards_and_no_rpl_error_then_dont_show_RPL_summary_page()
+    public async Task After_submitting_prior_learning_data_with_no_rpl_error_then_dont_show_RPL_summary_page()
     {
         var fixture = new WhenRecognisingPriorLearningFixture()
             .WithStandardOptions()
@@ -246,7 +307,7 @@ public class WhenRecognisingPriorLearning
 
         var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
-        result.VerifyRedirectsToDetailsPage(fixture.DataViewModel.DraftApprenticeshipHashedId);
+        result.VerifyRedirectsToCohortDetailsPage(fixture.DataViewModel.ProviderId, fixture.DataViewModel.CohortReference);
     }
 
     [TestCase, MoqAutoData]
@@ -334,13 +395,8 @@ public class WhenRecognisingPriorLearningFixture
     public PriorLearningDataViewModel DataViewModel;
     public CreatePriorLearningDataResponse RplCreatePriorLearningDataResponse;
     public GetPriorLearningDataQueryResult PriorLearningDataQueryResult;
-    public CreatePriorLearningDataRequest CreatePriorLearningDataRequest;
 
     public Mock<IOuterApiService> OuterApiService;
-    public Mock<IOuterApiClient> OuterApiClient;
-
-    public GetApprenticeshipResponse ApprenticeshipResponse { get; set; }
-    public EditApprenticeshipRequest _request;
 
     public RecognisePriorLearningResult RplDataResult;
 
@@ -360,15 +416,13 @@ public class WhenRecognisingPriorLearningFixture
         RplDataResult = fixture.Create<RecognisePriorLearningResult>();
         PriorLearningDataQueryResult = fixture.Create<GetPriorLearningDataQueryResult>();
         RplCreatePriorLearningDataResponse = fixture.Create<CreatePriorLearningDataResponse>();
-        CreatePriorLearningDataRequest = fixture.Create<CreatePriorLearningDataRequest>();
+        fixture.Create<CreatePriorLearningDataRequest>();
 
         ApiClient = new Mock<ICommitmentsApiClient>();
         ApiClient.Setup(x =>
                 x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Apprenticeship);
-
-        OuterApiClient = new Mock<IOuterApiClient>();
-
+        
         OuterApiService = new Mock<IOuterApiService>();
         OuterApiService.Setup(x => x.GetPriorLearningSummary(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>()))
             .ReturnsAsync(RplSummary);
@@ -384,7 +438,7 @@ public class WhenRecognisingPriorLearningFixture
             Mock.Of<IMediator>(),
             ApiClient.Object,
             new SimpleModelMapper(
-                new RecognisePriorLearningRequestToViewModelMapper(ApiClient.Object),
+                new RecognisePriorLearningRequestToViewModelMapper(ApiClient.Object, OuterApiService.Object),
                 new RecognisePriorLearningRequestToDataViewModelMapper(OuterApiService.Object),
                 new RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(OuterApiService.Object),
                 new RecognisePriorLearningViewModelToResultMapper(ApiClient.Object),
@@ -398,6 +452,24 @@ public class WhenRecognisingPriorLearningFixture
     internal WhenRecognisingPriorLearningFixture WithoutPreviousSelection()
     {
         Apprenticeship.RecognisePriorLearning = null;
+        return this;
+    }
+
+    internal WhenRecognisingPriorLearningFixture WithActualStartDate(DateTime? date )
+    {
+        Apprenticeship.ActualStartDate = date;
+        return this;
+    }
+
+    internal WhenRecognisingPriorLearningFixture WithStartDate(int year, int month)
+    {
+        Apprenticeship.StartDate = new DateTime(year, month, 1);
+        return this;
+    }
+
+    internal WhenRecognisingPriorLearningFixture WithoutStartDate()
+    {
+        Apprenticeship.StartDate = null;
         return this;
     }
 
@@ -482,6 +554,14 @@ public class WhenRecognisingPriorLearningFixture
         DataViewModel.DurationReducedBy = model.DurationReducedBy;
         DataViewModel.CostBeforeRpl = model.CostBeforeRpl;
         DataViewModel.PriceReduced = model.PriceReduced;
+        return this;
+    }
+
+    internal WhenRecognisingPriorLearningFixture WithRplNotRequired()
+    {
+        Apprenticeship.CourseCode = "123";
+        OuterApiService.Setup(x => x.GetRplRequirements(Request.ProviderId, Request.CohortId, Request.DraftApprenticeshipId, "123"))
+            .ReturnsAsync(new GetRplRequirementsResponse { IsRequired = false });
         return this;
     }
 }

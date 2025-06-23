@@ -7,6 +7,8 @@
     public class RecognisePriorLearningViewModel : DraftApprenticeshipRequest
     {
         public bool? IsTherePriorLearning { get; set; }
+        public bool RplNeedsToBeConsidered { get; set; }
+        public bool IsRplRequired { get; set; }
     }
     
     public class PriorLearningDataViewModel : DraftApprenticeshipRequest
@@ -21,7 +23,6 @@
 
     public class RecognisePriorLearningResult : DraftApprenticeshipRequest
     {
-        public bool HasStandardOptions { get; set; }
         public bool RplPriceReductionError { get; set; }
     }
     public class PriorLearningSummaryRequest : DraftApprenticeshipRequest

@@ -2,7 +2,6 @@
 @using SFA.DAS.ProviderCommitments.Web.Models.Shared 
 @using Newtonsoft.Json;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
-@inject ILinkGenerator LinkGenerator
 
 @{
     ViewData["Title"] = "Choose an employer";
@@ -13,6 +12,9 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Choose an employer</h1>
         <p class="govuk-body">Choose the employer you want to add apprentice details for.</p>
+        <div class="govuk-body">
+            You can <a asp-external-subdomain="relationships" asp-external-id="@Model.ProviderId" asp-external-controller="employers" class="govuk-link">Manage your employers</a> if you cannot see the employer you need.
+        </div>
 
         <form method="get">
             <div class="govuk-form-group">
@@ -24,7 +26,8 @@
                     </div>
                 </div>
             </div>
-
+            
+            @Html.HiddenFor(m=>m.UseLearnerData)
             <input type="hidden" value="@Model.SelectEmployerFilterModel.CurrentlySortedByField" name="SortField" />
             <input type="hidden" value="@Model.SelectEmployerFilterModel.ReverseSort.ToString()" name="ReverseSort" />
 

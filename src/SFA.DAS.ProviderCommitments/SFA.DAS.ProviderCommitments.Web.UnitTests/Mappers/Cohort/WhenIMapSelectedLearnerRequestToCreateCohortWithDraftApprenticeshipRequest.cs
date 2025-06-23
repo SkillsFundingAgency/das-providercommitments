@@ -2,7 +2,7 @@
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
@@ -88,7 +88,7 @@ public class WhenIMapSelectedLearnerRequestToCreateCohortWithDraftApprenticeship
 
     [TestCase(true, DeliveryModel.FlexiJobAgency)]
     [TestCase(false, DeliveryModel.Regular)]
-    public async Task ThenVerifyCacheUpdatedWithPersonalDetailsCorrectly(bool isFlexiJob, DeliveryModel? expected)
+    public async Task ThenVerifyCacheUpdatedWithTheseDetailsCorrectly(bool isFlexiJob, DeliveryModel? expected)
     {
         _response.IsFlexiJob = isFlexiJob;
         var result = await _act();
@@ -106,7 +106,8 @@ public class WhenIMapSelectedLearnerRequestToCreateCohortWithDraftApprenticeship
                i.Uln == _response.Uln.ToString() &&
                i.LearnerDataId == _source.LearnerDataId &&
                i.EndPointAssessmentPrice == _response.EpaoPrice &&
+               i.TrainingPrice == _response.TrainingPrice &&
                i.CourseCode == _response.StandardCode.ToString() &&
-               i.Cost == _response.TrainingPrice;
+               i.Cost == _response.TrainingPrice + _response.EpaoPrice;
     }
 }

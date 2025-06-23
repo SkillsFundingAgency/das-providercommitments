@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -14,8 +16,10 @@ public class AddDraftApprenticeshipCourseViewModelMapperTests
     private AddDraftApprenticeshipCourseViewModelMapper _mapper;
     private Mock<IOuterApiClient> _apiClient;
     private Mock<IAuthorizationService> _authorizationService;
+    private Mock<ICacheStorageService> _cacheService;
     private ReservationsAddDraftApprenticeshipRequest _request;
     private GetAddDraftApprenticeshipCourseResponse _apiResponse;
+    private ReservationsAddDraftApprenticeshipRequest _cacheItem;
     private readonly Fixture _fixture = new();
 
     [SetUp]
@@ -23,6 +27,7 @@ public class AddDraftApprenticeshipCourseViewModelMapperTests
     {
         _request = _fixture.Create<ReservationsAddDraftApprenticeshipRequest>();
         _apiResponse = _fixture.Create<GetAddDraftApprenticeshipCourseResponse>();
+        _cacheItem = _fixture.Create<ReservationsAddDraftApprenticeshipRequest>();
 
         _apiClient = new Mock<IOuterApiClient>();
         _apiClient.Setup(x => x.Get<GetAddDraftApprenticeshipCourseResponse>(It.Is<GetAddDraftApprenticeshipCourseRequest>(r =>
@@ -34,7 +39,10 @@ public class AddDraftApprenticeshipCourseViewModelMapperTests
         _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
             .ReturnsAsync(false);
 
-        _mapper = new AddDraftApprenticeshipCourseViewModelMapper(_apiClient.Object, _authorizationService.Object);
+        _cacheService = new Mock<ICacheStorageService>();
+        _cacheService.Setup(x => x.RetrieveFromCache<ReservationsAddDraftApprenticeshipRequest>(_request.CacheKey.Value)).ReturnsAsync(_cacheItem);
+
+        _mapper = new AddDraftApprenticeshipCourseViewModelMapper(_apiClient.Object, _cacheService.Object, _authorizationService.Object);
     }
 
     [Test]
@@ -84,5 +92,13 @@ public class AddDraftApprenticeshipCourseViewModelMapperTests
     {
         var result = await _mapper.Map(_request);
         result.CourseCode.Should().Be(_request.CourseCode);
+    }
+
+    [Test]
+    public async Task CourseCode_Is_Mapped_From_Cache_If_CourseCode_Is_Null()
+    {
+        _request.CourseCode = null;
+        var result = await _mapper.Map(_request);
+        result.CourseCode.Should().Be(_cacheItem.CourseCode);
     }
 }
