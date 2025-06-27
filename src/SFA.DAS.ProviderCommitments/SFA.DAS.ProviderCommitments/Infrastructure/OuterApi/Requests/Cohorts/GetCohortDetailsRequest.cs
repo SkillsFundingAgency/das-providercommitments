@@ -53,6 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
         public IReadOnlyCollection<DraftApprenticeshipDto> DraftApprenticeships { get; set; }
         public IEnumerable<ApprenticeshipEmailOverlap> ApprenticeshipEmailOverlaps { get; set; }
         public IEnumerable<long> RplErrorDraftApprenticeshipIds { get; set; }
+        public bool HasFoundationApprenticeships { get; set; }
     }
 
     public class ApprenticeshipEmailOverlap
