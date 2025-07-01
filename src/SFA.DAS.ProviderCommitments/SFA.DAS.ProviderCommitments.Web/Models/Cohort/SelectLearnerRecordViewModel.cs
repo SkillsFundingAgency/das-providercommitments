@@ -17,7 +17,7 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
     public Guid? ReservationId { get; set; }
 
     public List<LearnerSummary> Learners { get; set; } = new();
-    public string PageTitle => $"Select apprentice from ILR for {EmployerAccountName}";
+    public string PageTitle => $"Select apprentices from ILR for {EmployerAccountName}";
 
     public string SortedByHeaderClassName { get; set; }
     public const string HeaderClassName = "das-table__sort";
