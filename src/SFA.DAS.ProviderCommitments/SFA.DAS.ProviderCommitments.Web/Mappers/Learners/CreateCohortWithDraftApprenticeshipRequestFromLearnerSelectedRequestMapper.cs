@@ -21,6 +21,7 @@ public class CreateCohortWithDraftApprenticeshipRequestFromLearnerSelectedReques
         cacheItem.Email = learner.Email;
         cacheItem.DateOfBirth = learner.Dob;
         cacheItem.StartDate = learner.StartDate;
+        cacheItem.ActualStartDate = learner.StartDate;
         cacheItem.EndDate = learner.PlannedEndDate;
         cacheItem.DeliveryModel = learner.IsFlexiJob ? DeliveryModel.FlexiJobAgency : DeliveryModel.Regular;
         cacheItem.Uln = learner.Uln.ToString();

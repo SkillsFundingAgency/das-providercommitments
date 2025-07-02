@@ -864,6 +864,15 @@ public class DetailsViewModelMapperTests
 
         result.UseLearnerData.Should().BeTrue();
     }
+
+    [TestCase(true, true)]
+    [TestCase(false, false)]
+    public async Task HasFoundationApprenticeshipsIsMappedCorrectly(bool hasFoundationApprenticeships, bool expectedHasFoundationApprenticeships)
+    {
+        var fixture = new DetailsViewModelMapperTestsFixture().SetHasFoundationApprenticeships(hasFoundationApprenticeships);
+        var result = await fixture.Map();
+        result.HasFoundationApprenticeships.Should().Be(expectedHasFoundationApprenticeships);
+    }
 }
 
 public class DetailsViewModelMapperTestsFixture
@@ -1231,6 +1240,12 @@ public class DetailsViewModelMapperTestsFixture
     public DetailsViewModelMapperTestsFixture SetHasInvalidCourse(bool hasInvalidCourse)
     {
         CohortDetails.InvalidProviderCourseCodes = hasInvalidCourse ? new List<string> { "test-invalid-course-code" } : Enumerable.Empty<string>();
+        return this;
+    }
+
+    public DetailsViewModelMapperTestsFixture SetHasFoundationApprenticeships(bool hasFoundationApprenticeships)
+    {
+        CohortDetails.HasFoundationApprenticeships = hasFoundationApprenticeships;
         return this;
     }
 }
