@@ -17,15 +17,6 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
     }
 
     [Test, MoqAutoData]
-    public async Task ApprenticeshipId_IsMapped(
-        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
-    {
-        var result = await mapper.Map(_request);
-
-        result.ApprenticeshipId.Should().Be(_request.ApprenticeshipId);
-    }
-
-    [Test, MoqAutoData]
     public async Task FirstName_IsMapped(EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
     {
         var result = await mapper.Map(_request);
@@ -65,15 +56,6 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
         var result = await mapper.Map(_request);
 
         result.ULN.Should().Be(_request.ULN);
-    }
-
-    [Test, MoqAutoData]
-    public async Task ProviderId_IsMapped(
-        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
-    {
-        var result = await mapper.Map(_request);
-
-        result.ProviderId.Should().Be(_request.ProviderId);
     }
 
     [Test, MoqAutoData]
@@ -118,7 +100,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
     {
         var result = await mapper.Map(_request);
 
-        result.DeliveryModel.Should().Be(_request.DeliveryModel);
+        result.DeliveryModel.Should().Be((int)_request.DeliveryModel);
     }
 
     [Test, MoqAutoData]
@@ -127,7 +109,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
     {
         var result = await mapper.Map(_request);
 
-        result.TrainingCode.Should().Be(_request.CourseCode);
+        result.CourseCode.Should().Be(_request.CourseCode);
     }
 
     [Test, MoqAutoData]

@@ -21,6 +21,4 @@ public class ValidateEditApprenticeshipRequest
     public string ProviderReference { get; set; }
     public DateTime? EmploymentEndDate { get; set; }
     public int? EmploymentPrice { get; set; }
-    public string ChangeCourse { get; set; }
-    public string ChangeDeliveryModel { get; set; }
 }
