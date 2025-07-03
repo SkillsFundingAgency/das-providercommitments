@@ -421,6 +421,11 @@ public class ApprenticeController(
 
 
         viewModel.HasOptions = response.HasOptions;
+        viewModel.Version = response.Version;
+
+        viewModel.Option = response.CourseOrStartDateChange ? null : viewModel.Option;
+
+        
         TempData.Put("EditApprenticeshipRequestViewModel", viewModel);
         if (response.HasOptions)
         {

@@ -190,8 +190,7 @@ public class WhenPostingEditApprenticeshipDetailsFixture : ApprenticeControllerT
         _editApprenticeshipResponse = new ValidateEditApprenticeshipResponse
         {
             ApprenticeshipId = 123,
-            HasOptions = false,
-            NeedReapproval = false
+            HasOptions = false
         };
     }
 
@@ -221,8 +220,7 @@ public class WhenPostingEditApprenticeshipDetailsFixture : ApprenticeControllerT
         var response = new ValidateEditApprenticeshipResponse
         {
             ApprenticeshipId = 123,
-            HasOptions = hasOptions,
-            NeedReapproval = false
+            HasOptions = hasOptions
         };
             
         MockOuterApiService.Setup(x => x.EditApprenticeship(
