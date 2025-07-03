@@ -423,47 +423,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction(changeCourse == "Edit" ? nameof(EditApprenticeshipCourse) : nameof(SelectDeliveryModelForEdit), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
             }
 
-            var apprenticeship = await _commitmentsApiClient.GetApprenticeship(viewModel.ApprenticeshipId);
-            var triggerCalculate = viewModel.CourseCode != apprenticeship.CourseCode || 
-                                   apprenticeship.StartDate < viewModel.StartDate.Date.Value;
+            var editRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.Apprentices.ValidateEditApprenticeshipRequest>(
+                    viewModel);
+            
+            var response = await _outerApiService.EditApprenticeship(
+                viewModel.ProviderId,
+                viewModel.ApprenticeshipId,
+                editRequest);
 
-            if (triggerCalculate)
-            {
-                TrainingProgramme trainingProgramme;
 
-                if (int.TryParse(viewModel.CourseCode, out var standardId))
-                {
-                    var standardVersionResponse = await _commitmentsApiClient.GetCalculatedTrainingProgrammeVersion(standardId,
-                        viewModel.StartDate.Date.Value);
-
-                    trainingProgramme = standardVersionResponse.TrainingProgramme;
-                }
-                else
-                {
-                    var frameworkResponse = await _commitmentsApiClient.GetTrainingProgramme(viewModel.CourseCode);
-
-                    trainingProgramme = frameworkResponse.TrainingProgramme;
-                }
-
-                viewModel.Version = trainingProgramme.Version;
-                viewModel.HasOptions = trainingProgramme.Options.Any();
-            }
-
-            var validationRequest = await _modelMapper.Map<ValidateApprenticeshipForEditRequest>(viewModel);
-            await _commitmentsApiClient.ValidateApprenticeshipForEdit(validationRequest);
-
-            if (triggerCalculate)
-            {
-                viewModel.Option = null;
-            }
-
+            viewModel.HasOptions = response.HasOptions;
             TempData.Put("EditApprenticeshipRequestViewModel", viewModel);
-
-            if (viewModel.HasOptions)
+            if (response.HasOptions)
             {
                 return RedirectToAction(nameof(ChangeOption), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
             }
-
+            
             return RedirectToAction(nameof(ConfirmEditApprenticeship), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
         }
 
