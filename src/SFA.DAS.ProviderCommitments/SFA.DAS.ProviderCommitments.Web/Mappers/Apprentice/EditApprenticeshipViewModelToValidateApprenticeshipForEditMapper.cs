@@ -1,31 +1,29 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Types.Requests;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper : IMapper<EditApprenticeshipRequestViewModel, ValidateApprenticeshipForEditRequest>
+    public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper : IMapper<EditApprenticeshipRequestViewModel, ValidateEditApprenticeshipRequest>
     {
-        public Task<ValidateApprenticeshipForEditRequest> Map(EditApprenticeshipRequestViewModel source)
+        public Task<ValidateEditApprenticeshipRequest> Map(EditApprenticeshipRequestViewModel source)
         {
-            var result = new ValidateApprenticeshipForEditRequest
+            var result = new ValidateEditApprenticeshipRequest
             {
-                ApprenticeshipId = source.ApprenticeshipId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
                 Email = source.Email,
-                DateOfBirth = source.DateOfBirth.Date,
+                DateOfBirth = source.DateOfBirth?.Date,
                 ULN = source.ULN,
-                Cost = source.Cost,
-                ProviderReference = source.ProviderReference,
-                StartDate = source.StartDate.Date,
-                EndDate = source.EndDate.Date,
-                DeliveryModel = source.DeliveryModel,
-                TrainingCode = source.CourseCode,
-                ProviderId = source.ProviderId,
+                CourseCode = source.CourseCode,
                 Version = source.Version,
                 Option = source.Option == "TBC" ? string.Empty : source.Option,
-                EmploymentEndDate = source.EmploymentEndDate.Date,
+                Cost = source.Cost,
+                StartDate = source.StartDate.Date.Value,
+                EndDate = source.EndDate.Date.Value,
+                DeliveryModel = (int)source.DeliveryModel,
+                ProviderReference = source.ProviderReference,
+                EmploymentEndDate = source.EmploymentEndDate?.Date,
                 EmploymentPrice = source.EmploymentPrice
             };
             return Task.FromResult(result);
