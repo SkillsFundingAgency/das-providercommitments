@@ -4,7 +4,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice;
 
-public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTests
+public class EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapperTests
 {
     private EditApprenticeshipRequestViewModel _request;
 
@@ -17,7 +17,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
     }
 
     [Test, MoqAutoData]
-    public async Task FirstName_IsMapped(EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+    public async Task FirstName_IsMapped(EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -25,7 +25,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
     }
 
     [Test, MoqAutoData]
-    public async Task LastName_IsMapped(EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+    public async Task LastName_IsMapped(EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -33,7 +33,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
     }
 
     [Test, MoqAutoData]
-    public async Task Email_IsMapped(EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+    public async Task Email_IsMapped(EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -42,7 +42,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
 
     [Test, MoqAutoData]
     public async Task DateOfBirth_IsMapped(
-        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -51,7 +51,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
 
     [Test, MoqAutoData]
     public async Task ULN_IsMapped(
-        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -60,7 +60,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
 
     [Test, MoqAutoData]
     public async Task Cost_IsMapped(
-        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -69,7 +69,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
 
     [Test, MoqAutoData]
     public async Task ProviderReference_IsMapped(
-        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -78,7 +78,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
 
     [Test, MoqAutoData]
     public async Task StartDate_IsMapped(
-        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -87,7 +87,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
 
     [Test, MoqAutoData]
     public async Task EndDate_IsMapped(
-        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -96,7 +96,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
 
     [Test, MoqAutoData]
     public async Task DeliveryModel_IsMapped(
-        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -105,7 +105,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
 
     [Test, MoqAutoData]
     public async Task CourseCode_IsMapped(
-        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -114,7 +114,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
 
     [Test, MoqAutoData]
     public async Task Version_IsMapped(
-        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -123,7 +123,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
 
     [Test, MoqAutoData]
     public async Task Option_IsMapped(
-        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -132,7 +132,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
 
     [Test, MoqAutoData]
     public async Task WhenOptionIsTBC_OptionIsMappedToEmptyString(
-        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         _request.Option = "TBC";
 
@@ -142,7 +142,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
     }
 
     [Test, MoqAutoData]
-    public async Task EmploymentEndDate_IsMapped(EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+    public async Task EmploymentEndDate_IsMapped(EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 
@@ -150,7 +150,7 @@ public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTes
     }
 
     [Test, MoqAutoData]
-    public async Task EmploymentPrice_IsMapped(EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+    public async Task EmploymentPrice_IsMapped(EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper mapper)
     {
         var result = await mapper.Map(_request);
 

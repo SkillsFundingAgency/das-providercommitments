@@ -4,7 +4,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper : IMapper<EditApprenticeshipRequestViewModel, ValidateEditApprenticeshipRequest>
+    public class EditApprenticeshipViewModelToValidateEditApprenticeshipRequestMapper : IMapper<EditApprenticeshipRequestViewModel, ValidateEditApprenticeshipRequest>
     {
         public Task<ValidateEditApprenticeshipRequest> Map(EditApprenticeshipRequestViewModel source)
         {
@@ -26,6 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EmploymentEndDate = source.EmploymentEndDate?.Date,
                 EmploymentPrice = source.EmploymentPrice
             };
+            
             return Task.FromResult(result);
         }
     }
