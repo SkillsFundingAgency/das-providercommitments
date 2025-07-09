@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
@@ -13,6 +14,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTr
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderRelationships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -292,5 +294,15 @@ public class OuterApiService : IOuterApiService
     {
         var request = new GetRplRequirementsRequest(providerId, cohortId, draftApprenticeshipId, courseCode);
         return await _outerApiClient.Get<GetRplRequirementsResponse>(request);
+    }
+
+    public async Task<ValidateEditApprenticeshipResponse> EditApprenticeship(long providerId, long apprenticeshipId, ValidateEditApprenticeshipRequest request)
+    {
+        var apiRequest = new PutEditApprenticeshipRequest(providerId, apprenticeshipId)
+        {
+            Data = request
+        };
+        
+        return await _outerApiClient.Put<ValidateEditApprenticeshipResponse>(apiRequest);
     }
 }
