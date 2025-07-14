@@ -12,7 +12,7 @@
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.13" />
         <PackageReference Include="Scrutor" Version="5.0.1" />
-        <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.48" />
+        <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.49" />
         <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
 
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.13" />
@@ -22,7 +22,7 @@
 
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
-        <PackageReference Include="SFA.DAS.DfESignIn.Auth" Version="17.1.89" />
+        <PackageReference Include="SFA.DAS.DfESignIn.Auth" Version="17.1.142" />
         <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="17267.0.559" />
         <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="17267.0.559" />
         <PackageReference Include="SFA.DAS.Validation.Mvc" Version="6.0.30" />

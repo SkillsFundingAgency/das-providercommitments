@@ -1,0 +1,19 @@
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@{
+    ViewBag.Title = "Signed out automatically";
+    ViewBag.PageId = "auto-sign-out";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">We signed you out</h1>
+
+        <p>
+            To keep your account secure, we signed you out because you did not do anything for 20 minutes.
+        </p>
+
+        <a class="govuk-button" id="sign-in-again" asp-route="@RouteNames.ProviderAccountIndex">Sign in again</a>
+
+    </div>
+</div>
