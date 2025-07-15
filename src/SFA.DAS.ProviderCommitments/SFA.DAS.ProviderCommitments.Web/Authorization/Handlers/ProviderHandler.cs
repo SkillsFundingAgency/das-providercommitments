@@ -14,19 +14,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 /// <remarks>
 ///     This only checks route parameters. Query parameters are not inspected.
 /// </remarks>
-public class ProviderHandler : AuthorizationHandler<ProviderRequirement>
+public class ProviderHandler(IActionContextAccessor actionContextAccessor) : AuthorizationHandler<ProviderRequirement>
 {
-    private readonly IActionContextAccessor _actionContextAccessor;
-
-    public ProviderHandler(IActionContextAccessor actionContextAccessor)
-    {
-        _actionContextAccessor = actionContextAccessor;
-    }
-
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ProviderRequirement requirement)
     {
-        var actionContext = _actionContextAccessor.ActionContext;
-
+        var actionContext = actionContextAccessor.ActionContext;
+        
         if (!HasServiceAuthorization(context))
         {
             context.Fail();
@@ -49,6 +42,8 @@ public class ProviderHandler : AuthorizationHandler<ProviderRequirement>
             }
         }
 
+        context.Succeed(requirement);
+        
         return Task.CompletedTask;
     }
 
