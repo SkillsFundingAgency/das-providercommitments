@@ -1,13 +1,13 @@
-﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+﻿using System;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.Testing.AutoFixture;
-using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice;
 
-public class ConfirmEditApprenticeshipViewModelToEditApiRequestMapperTests
+public class ConfirmEditApprenticeshipViewModelToConfirmEditRequestMapperTests
 {
-    private ConfirmEditApprenticeshipViewModelToEditApiRequestMapper _mapper;
+    private ConfirmEditApprenticeshipViewModelToConfirmEditRequestMapper _mapper;
     private ConfirmEditApprenticeshipViewModel _viewModel;
 
     [SetUp]
@@ -27,7 +27,7 @@ public class ConfirmEditApprenticeshipViewModelToEditApiRequestMapperTests
             .With(x => x.BirthDay, DateTime.Now.Day)
             .Create();
 
-        _mapper = new ConfirmEditApprenticeshipViewModelToEditApiRequestMapper();
+        _mapper = new ConfirmEditApprenticeshipViewModelToConfirmEditRequestMapper();
     }
 
     [Test]
@@ -66,7 +66,7 @@ public class ConfirmEditApprenticeshipViewModelToEditApiRequestMapperTests
     {
         var result = await _mapper.Map(_viewModel);
 
-        result.DateOfBirth.Should().Be(_viewModel.DateOfBirth);
+        result.DateOfBirth.Should().Be(_viewModel.DateOfBirth ?? DateTime.MinValue);
     }
 
     [Test]
@@ -74,16 +74,15 @@ public class ConfirmEditApprenticeshipViewModelToEditApiRequestMapperTests
     {
         var result = await _mapper.Map(_viewModel);
 
-        result.StartDate.Should().Be(_viewModel.StartDate);
+        result.StartDate.Should().Be(_viewModel.StartDate ?? DateTime.MinValue);
     }
-
 
     [Test]
     public async Task EndDate_IsMapped()
     {
         var result = await _mapper.Map(_viewModel);
 
-        result.EndDate.Should().Be(_viewModel.EndDate);
+        result.EndDate.Should().Be(_viewModel.EndDate ?? DateTime.MinValue);
     }
 
     [Test, MoqAutoData]
@@ -91,7 +90,7 @@ public class ConfirmEditApprenticeshipViewModelToEditApiRequestMapperTests
     {
         var result = await _mapper.Map(_viewModel);
 
-        result.DeliveryModel.Should().Be(_viewModel.DeliveryModel);
+        result.DeliveryModel.Should().Be(_viewModel.DeliveryModel?.ToString() ?? string.Empty);
     }
 
     [Test, MoqAutoData]
@@ -123,7 +122,7 @@ public class ConfirmEditApprenticeshipViewModelToEditApiRequestMapperTests
     {
         var result = await _mapper.Map(_viewModel);
 
-        result.Cost.Should().Be(_viewModel.Cost);
+        result.Cost.Should().Be((int)(_viewModel.Cost ?? 0));
     }
 
     [Test]
@@ -139,7 +138,7 @@ public class ConfirmEditApprenticeshipViewModelToEditApiRequestMapperTests
     {
         var result = await _mapper.Map(_viewModel);
 
-        result.Option.Should().Be(_viewModel.Option);
+        result.Option.Should().Be(_viewModel.Option == "TBC" ? string.Empty : _viewModel.Option);
     }
 
     [Test]

@@ -569,8 +569,8 @@ public class ApprenticeController(
     {
         if (viewModel.ConfirmChanges.Value)
         {
-            var request = await modelMapper.Map<EditApprenticeshipApiRequest>(viewModel);
-            var result = await commitmentsApiClient.EditApprenticeship(request);
+            var request = await modelMapper.Map<ConfirmEditApprenticeshipRequest>(viewModel);
+            var result = await outerApiService.ConfirmEditApprenticeship(viewModel.ProviderId, viewModel.ApprenticeshipId, request);
 
             if (result.NeedReapproval)
             {

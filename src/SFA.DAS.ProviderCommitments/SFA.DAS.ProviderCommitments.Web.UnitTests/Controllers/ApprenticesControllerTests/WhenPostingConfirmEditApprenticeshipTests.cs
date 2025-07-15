@@ -1,8 +1,8 @@
 ﻿using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -62,7 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test, MoqAutoData]
-        public async Task AndTheEditApprenticeship_IsConfirmed_CommitmentApi_IsCalled(ConfirmEditApprenticeshipViewModel viewModel)
+        public async Task AndTheEditApprenticeship_IsConfirmed_OuterApi_IsCalled(ConfirmEditApprenticeshipViewModel viewModel)
         {
             //Arrange
             viewModel.ConfirmChanges = true;
@@ -71,11 +71,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             await _fixture.ConfirmEditApprenticeship(viewModel);
 
             //Assert
-            _fixture.VerifyEditApprenticeshipApiCalled();
+            _fixture.VerifyConfirmEditApprenticeshipApiCalled();
         }
 
         [Test, MoqAutoData]
-        public async Task AndTheEditApprenticeship_IsNotConfirmed_CommitmentApi_IsNotCalled(ConfirmEditApprenticeshipViewModel viewModel)
+        public async Task AndTheEditApprenticeship_IsNotConfirmed_OuterApi_IsNotCalled(ConfirmEditApprenticeshipViewModel viewModel)
         {
             //Arrange
             viewModel.ConfirmChanges = false;
@@ -84,7 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             await _fixture.ConfirmEditApprenticeship(viewModel);
 
             //Assert
-            _fixture.VerifyEditApprenticeshipApiNeverCalled();
+            _fixture.VerifyConfirmEditApprenticeshipApiNeverCalled();
         }
 
         [Test, MoqAutoData]
@@ -97,7 +97,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             await _fixture.ConfirmEditApprenticeship(viewModel);
 
             //Assert
-            _fixture.EditApprenticeshipApiRequestMapperIsCalled(viewModel);
+            _fixture.ConfirmEditApprenticeshipRequestMapperIsCalled(viewModel);
         }
 
         [Test, MoqAutoData]
@@ -110,7 +110,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             await _fixture.ConfirmEditApprenticeship(viewModel);
 
             //Assert
-            _fixture.EditApprenticeshipApiRequestMapperIsNeverCalled(viewModel);
+            _fixture.ConfirmEditApprenticeshipRequestMapperIsNeverCalled(viewModel);
         }
 
         [Test, MoqAutoData]
@@ -131,27 +131,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     {
         private const string FlashMessage = "FlashMessage";
         private const string FlashMessageLevel = "FlashMessageLevel";
-        private readonly EditApprenticeshipResponse _apiResponse;
-        private readonly EditApprenticeshipApiRequest _apiRequest;
+        private readonly ConfirmEditApprenticeshipResponse _apiResponse;
+        private readonly ConfirmEditApprenticeshipRequest _apiRequest;
         private const string InfoLevel = "Info";
 
         public WhenPostingConfirmEditApprenticeshipTestsFixture()
         {
-            _apiRequest = new EditApprenticeshipApiRequest();
-            _apiResponse = new EditApprenticeshipResponse { NeedReapproval = true };
-            SetUpMockCommitmentClientApi();
+            _apiRequest = new ConfirmEditApprenticeshipRequest();
+            _apiResponse = new ConfirmEditApprenticeshipResponse { NeedReapproval = true };
+            SetUpMockOuterApiService();
             SetupModelMapper();
             Controller.TempData = new TempDataDictionary(new Mock<HttpContext>().Object, new Mock<ITempDataProvider>().Object);
         }
 
-        private void SetUpMockCommitmentClientApi()
+        private void SetUpMockOuterApiService()
         {
-            MockCommitmentsApiClient.Setup(x => x.EditApprenticeship(It.IsAny<EditApprenticeshipApiRequest>(), It.IsAny<CancellationToken>())).Returns(() => Task.FromResult(_apiResponse));
+            MockOuterApiService.Setup(x => x.ConfirmEditApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<ConfirmEditApprenticeshipRequest>())).Returns(() => Task.FromResult(_apiResponse));
         }
 
         private void SetupModelMapper()
         {
-            MockMapper.Setup(x => x.Map<EditApprenticeshipApiRequest>(It.IsAny<ConfirmEditApprenticeshipViewModel>())).ReturnsAsync(_apiRequest);
+            MockMapper.Setup(x => x.Map<ConfirmEditApprenticeshipRequest>(It.IsAny<ConfirmEditApprenticeshipViewModel>())).ReturnsAsync(_apiRequest);
         }
 
         public Task<IActionResult> ConfirmEditApprenticeship(ConfirmEditApprenticeshipViewModel viewModel)
@@ -192,24 +192,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _apiResponse.NeedReapproval = value;
         }
 
-        internal void VerifyEditApprenticeshipApiCalled()
+        internal void VerifyConfirmEditApprenticeshipApiCalled()
         {
-            MockCommitmentsApiClient.Verify(x => x.EditApprenticeship(It.IsAny<EditApprenticeshipApiRequest>(), CancellationToken.None), Times.Once);
+            MockOuterApiService.Verify(x => x.ConfirmEditApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<ConfirmEditApprenticeshipRequest>()), Times.Once);
         }
 
-        internal void VerifyEditApprenticeshipApiNeverCalled()
+        internal void VerifyConfirmEditApprenticeshipApiNeverCalled()
         {
-            MockCommitmentsApiClient.Verify(x => x.EditApprenticeship(It.IsAny<EditApprenticeshipApiRequest>(), CancellationToken.None), Times.Never);
+            MockOuterApiService.Verify(x => x.ConfirmEditApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<ConfirmEditApprenticeshipRequest>()), Times.Never);
         }
 
-        internal void EditApprenticeshipApiRequestMapperIsCalled(ConfirmEditApprenticeshipViewModel viewModel)
+        internal void ConfirmEditApprenticeshipRequestMapperIsCalled(ConfirmEditApprenticeshipViewModel viewModel)
         {
-            MockMapper.Verify(x => x.Map<EditApprenticeshipApiRequest>(viewModel), Times.Once);
+            MockMapper.Verify(x => x.Map<ConfirmEditApprenticeshipRequest>(viewModel), Times.Once);
         }
 
-        internal void EditApprenticeshipApiRequestMapperIsNeverCalled(ConfirmEditApprenticeshipViewModel viewModel)
+        internal void ConfirmEditApprenticeshipRequestMapperIsNeverCalled(ConfirmEditApprenticeshipViewModel viewModel)
         {
-            MockMapper.Verify(x => x.Map<EditApprenticeshipApiRequest>(viewModel), Times.Never);
+            MockMapper.Verify(x => x.Map<ConfirmEditApprenticeshipRequest>(viewModel), Times.Never);
         }
     }
 }
