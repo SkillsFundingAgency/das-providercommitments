@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+﻿@using System.Globalization
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectLearnerRecordViewModel
@@ -135,7 +136,7 @@
                         @apprenticeship.CourseName
                     </td>
                     <td class="govuk-table__cell" data-label="StartDate">
-                        @apprenticeship.StartDate
+                        @apprenticeship.StartDate.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture)
                     </td>
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
                         @if (string.IsNullOrWhiteSpace(Model.CohortReference))
