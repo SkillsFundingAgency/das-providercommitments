@@ -196,6 +196,7 @@ public class LearnerSummary
     public string Name => $"{FirstName} {LastName}";
     public long Uln { get; set; }
     public string CourseName { get; set; }
+    public DateTime StartDate { get; set; }
 
     public static explicit operator LearnerSummary(GetLearnerSummary v)
     {
@@ -205,7 +206,8 @@ public class LearnerSummary
             FirstName = v.FirstName,
             LastName = v.LastName,
             Uln = v.Uln,
-            CourseName = v.Course
+            CourseName = v.Course,
+            StartDate = v.StartDate
         };
     }
 }
