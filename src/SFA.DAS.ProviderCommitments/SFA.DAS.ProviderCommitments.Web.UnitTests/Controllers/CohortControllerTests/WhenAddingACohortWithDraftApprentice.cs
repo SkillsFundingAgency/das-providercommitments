@@ -16,26 +16,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 public class WhenAddingACohortWithDraftApprentice
 {
     [Test]
-    public void AndRedirectTargetIsCourse_ThenRedirectedToSelectCourse()
-    {
-        var fixture = new WhenAddingACohortWithDraftApprenticeFixture().SetRedirectTarget(CreateCohortRedirectModel.RedirectTarget.SelectCourse);
-
-        var result = fixture.Act() as RedirectToActionResult;
-
-        result.ActionName.Should().Be("SelectCourse");
-    }
-
-    [Test]
-    public void AndRedirectTargetIsHowTo_ThenRedirectedToHowTo()
-    {
-        var fixture = new WhenAddingACohortWithDraftApprenticeFixture().SetRedirectTarget(CreateCohortRedirectModel.RedirectTarget.SelectHowTo);
-
-        var result = fixture.Act() as RedirectToActionResult;
-
-        result.ActionName.Should().Be("SelectHowToAddApprentice");
-    }
-
-    [Test]
     public void AndRedirectTargetIsSelectLearner_ThenRedirectedToSelectLearner()
     {
         var fixture = new WhenAddingACohortWithDraftApprenticeFixture().SetRedirectTarget(CreateCohortRedirectModel.RedirectTarget.SelectLearner);
@@ -93,7 +73,7 @@ public class WhenAddingACohortWithDraftApprenticeFixture
             CourseCode = "ABC123"
         };
 
-        _redirectModel = new CreateCohortRedirectModel { RedirectTo = CreateCohortRedirectModel.RedirectTarget.SelectCourse };
+        _redirectModel = new CreateCohortRedirectModel { RedirectTo = CreateCohortRedirectModel.RedirectTarget.SelectLearner };
         var viewModel = new AddDraftApprenticeshipViewModel
         {
             DeliveryModel = DeliveryModel.Regular,

@@ -49,7 +49,7 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
             var britishTimeZone = TimeZoneInfo.FindSystemTimeZoneById("GMT Standard Time");
             var britishDateTime = TimeZoneInfo.ConvertTimeFromUtc(LastIlrSubmittedOn.Value, britishTimeZone);
 
-            return $"Last updated {britishDateTime:h:mmtt} on {britishDateTime:dddd d MMMM}";
+            return $"Last updated {britishDateTime.ToString("h:mmtt", System.Globalization.CultureInfo.InvariantCulture)} on {britishDateTime.ToString("dddd d MMMM", System.Globalization.CultureInfo.InvariantCulture)}";
         }
     }
     public bool ShowPageLinks => FilterModel.TotalNumberOfLearnersFound > Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage;

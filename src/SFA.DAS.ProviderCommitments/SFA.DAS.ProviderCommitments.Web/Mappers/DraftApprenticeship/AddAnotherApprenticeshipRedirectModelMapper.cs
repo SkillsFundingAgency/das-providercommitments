@@ -7,13 +7,11 @@ using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
 {
  public class AddAnotherApprenticeshipRedirectModelMapper(
-     ICacheStorageService cacheStorageService,
-     ILogger<AddAnotherApprenticeshipRedirectModelMapper> logger)
+     ICacheStorageService cacheStorageService)
      : IMapper<BaseReservationsAddDraftApprenticeshipRequest, AddAnotherApprenticeshipRedirectModel>
  {
      public async Task<AddAnotherApprenticeshipRedirectModel> Map(BaseReservationsAddDraftApprenticeshipRequest source)
         {
-            logger.LogInformation("Returning AddAnotherApprenticeshipRedirectModel UseLearnerData {1}", source.UseLearnerData);
 
             var cacheKey = Guid.NewGuid();
             var cacheItem = new AddAnotherApprenticeshipCacheItem(cacheKey)
@@ -21,14 +19,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
                 ReservationId = source.ReservationId,
                 StartMonthYear = source.StartMonthYear,
                 CohortReference = source.CohortReference,
-                UseLearnerData = source.UseLearnerData
             };
             await cacheStorageService.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
 
             return new AddAnotherApprenticeshipRedirectModel
             {
-                CacheKey = cacheKey,
-                UseLearnerData = source.UseLearnerData
+                CacheKey = cacheKey
             };
         }
     }

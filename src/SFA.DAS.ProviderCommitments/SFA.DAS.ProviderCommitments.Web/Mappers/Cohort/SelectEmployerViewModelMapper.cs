@@ -21,7 +21,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 SearchTerm = source.SearchTerm,
                 ReverseSort = source.ReverseSort,
                 CurrentlySortedByField = source.SortField,
-                UseLearnerData = source.UseLearnerData,
                 Employers = accountProviderLegalEntities.SelectMany(x => (new List<string> { x.EmployerAccountLegalEntityName, x.EmployerAccountName }).Distinct()).ToList()
             };
 
@@ -33,8 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 AccountProviderLegalEntities = accountProviderLegalEntities,
                 ProviderId = source.ProviderId,
-                SelectEmployerFilterModel = filterModel,
-                UseLearnerData = source.UseLearnerData
+                SelectEmployerFilterModel = filterModel
             };
         }
 

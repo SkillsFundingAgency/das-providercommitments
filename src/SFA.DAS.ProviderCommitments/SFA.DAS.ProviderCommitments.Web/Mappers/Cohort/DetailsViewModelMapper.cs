@@ -83,7 +83,6 @@ public class DetailsViewModelMapper(
             ShowRofjaaRemovalBanner = cohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel,
             InvalidProviderCourseCodes = cohortDetails.InvalidProviderCourseCodes.ToList(),
             RplErrorDraftApprenticeshipIds = cohortDetails.RplErrorDraftApprenticeshipIds.ToList(),
-            UseLearnerData = configuration.GetValue<bool>("ILRFeaturesEnabled"),
             HasFoundationApprenticeships = cohortDetails.HasFoundationApprenticeships
         };
 
