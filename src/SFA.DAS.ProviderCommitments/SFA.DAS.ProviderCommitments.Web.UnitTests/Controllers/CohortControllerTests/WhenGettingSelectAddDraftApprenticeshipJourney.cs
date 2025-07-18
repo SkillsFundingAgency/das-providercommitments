@@ -37,7 +37,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             ViewModel.ProviderId = ProviderId;
             ViewModel.HasExistingCohort = true;
             ViewModel.HasCreateCohortPermission = true;
-            ViewModel.UseLearnerData = true;
 
             var modelMapperMock = new Mock<IModelMapper>();
             modelMapperMock

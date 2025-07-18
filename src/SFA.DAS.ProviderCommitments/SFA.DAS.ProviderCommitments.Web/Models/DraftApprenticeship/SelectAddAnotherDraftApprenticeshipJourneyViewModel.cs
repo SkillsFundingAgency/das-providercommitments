@@ -18,6 +18,5 @@ public class SelectAddAnotherDraftApprenticeshipJourneyViewModel : IAuthorizatio
 
 public enum AddAnotherDraftApprenticeshipJourneyOptions
 {
-    Ilr,
-    Manual
+    Ilr
 }

@@ -21,7 +21,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             result.VerifyReturnsRedirectToActionResult().WithActionName("SelectEmployer");
             var action = result as RedirectToActionResult;
             action.RouteValues["providerId"].Should().Be(fixture.ViewModel.ProviderId);
-            action.RouteValues["useLearnerData"].Should().Be(fixture.ViewModel.UseLearnerData);
         }
 
         [Test]
@@ -34,7 +33,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             result.VerifyReturnsRedirectToActionResult().WithActionName("ChooseCohort");
             var action = result as RedirectToActionResult;
             action.RouteValues["providerId"].Should().Be(fixture.ViewModel.ProviderId);
-            action.RouteValues["useLearnerData"].Should().Be(fixture.ViewModel.UseLearnerData);
         }
     }
 

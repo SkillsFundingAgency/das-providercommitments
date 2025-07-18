@@ -21,28 +21,17 @@ public class AddAnotherApprenticeshipRedirectModelMapperTests
 
         _cacheStorage = new Mock<ICacheStorageService>();
 
-        _mapper = new AddAnotherApprenticeshipRedirectModelMapper(_cacheStorage.Object, Mock.Of<ILogger<AddAnotherApprenticeshipRedirectModelMapper>>());
+        _mapper = new AddAnotherApprenticeshipRedirectModelMapper(_cacheStorage.Object);
 
         _request = fixture.Create<BaseReservationsAddDraftApprenticeshipRequest>();
-    }
-
-    [TestCase(true)]
-    [TestCase(false)]
-    public async Task Redirect_Target_Is_Mapped_Correctly(bool useLearnerData)
-    {
-        _request.UseLearnerData = useLearnerData;
-
-        var result = await _mapper.Map(_request);
-        result.UseLearnerData.Should().Be(useLearnerData);
     }
 
     [Test]
     public async Task UseLearnerData_Is_Added_To_Cache()
     {
-        _request.UseLearnerData = true;
         var result = await _mapper.Map(_request);
         _cacheStorage.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
-                It.Is<AddAnotherApprenticeshipCacheItem>(m => m.UseLearnerData == _request.UseLearnerData),
+                It.IsAny<AddAnotherApprenticeshipCacheItem>(),
                 1),
             Times.Once);
     }
