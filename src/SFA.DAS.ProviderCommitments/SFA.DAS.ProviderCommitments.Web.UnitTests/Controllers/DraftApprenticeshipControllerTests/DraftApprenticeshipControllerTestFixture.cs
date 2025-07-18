@@ -153,11 +153,8 @@ public class DraftApprenticeshipControllerTestFixture
             ULN = "XXXX"
         };
 
-        _redirectToAddAnotherModelWithCourse = autoFixture.Build<AddAnotherApprenticeshipRedirectModel>()
-            .With(x => x.UseLearnerData, false).Create();
-
         _redirectToAddAnotherModelWithLearner = autoFixture.Build<AddAnotherApprenticeshipRedirectModel>()
-            .With(x => x.UseLearnerData, true).Create();
+            .Create();
 
         _viewSelectOptionsViewModel = autoFixture.Build<ViewSelectOptionsViewModel>().Create();
 
@@ -166,8 +163,7 @@ public class DraftApprenticeshipControllerTestFixture
             .With(x => x.ChangeOfPartyRequestId, default(long?))
             .Create();
 
-        _apiModelException = new CommitmentsApiModelException(new List<ErrorDetail>()
-            {new("Name", "Cannot be more than...")});
+        _apiModelException = new CommitmentsApiModelException([new("Name", "Cannot be more than...")]);
 
         _mediator = new Mock<IMediator>();
         _mediator.Setup(x => x.Send(It.IsAny<GetTrainingCoursesQueryRequest>(), It.IsAny<CancellationToken>()))
@@ -607,7 +603,6 @@ public class DraftApprenticeshipControllerTestFixture
         model.ProviderId.Should().Be(_getReservationIdForAddAnotherApprenticeRequest.ProviderId);
         model.CohortReference.Should().Be(_getReservationIdForAddAnotherApprenticeRequest.CohortReference);
         model.AccountLegalEntityHashedId.Should().Be(_getReservationIdForAddAnotherApprenticeRequest.AccountLegalEntityHashedId);
-        model.UseLearnerData.Should().Be(true);
 
         return this;
     }

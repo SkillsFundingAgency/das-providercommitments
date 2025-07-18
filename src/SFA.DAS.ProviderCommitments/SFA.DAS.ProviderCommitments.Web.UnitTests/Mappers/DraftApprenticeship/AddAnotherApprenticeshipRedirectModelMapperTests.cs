@@ -27,16 +27,6 @@ public class AddAnotherApprenticeshipRedirectModelMapperTests
     }
 
     [Test]
-    public async Task UseLearnerData_Is_Added_To_Cache()
-    {
-        var result = await _mapper.Map(_request);
-        _cacheStorage.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
-                It.IsAny<AddAnotherApprenticeshipCacheItem>(),
-                1),
-            Times.Once);
-    }
-
-    [Test]
     public async Task ReservationId_Is_Added_To_Cache()
     {
         var result = await _mapper.Map(_request);
