@@ -11,7 +11,6 @@ public class SelectAddAnotherDraftApprenticeshipJourneyViewModelValidatorTests
 {
     [TestCase(null, false)]
     [TestCase(AddAnotherDraftApprenticeshipJourneyOptions.Ilr, true)]
-    [TestCase(AddAnotherDraftApprenticeshipJourneyOptions.Manual, true)]
     public void Validate_Selection_ShouldBeValidated(AddAnotherDraftApprenticeshipJourneyOptions? selection, bool expectedValid)
     {
         var model = new SelectAddAnotherDraftApprenticeshipJourneyViewModel { Selection = selection };

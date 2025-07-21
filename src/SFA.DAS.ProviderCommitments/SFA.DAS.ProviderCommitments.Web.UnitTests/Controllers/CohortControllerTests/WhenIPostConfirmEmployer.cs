@@ -25,18 +25,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrueAndUseLearnerDataTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
-        {
-            var fixture = new PostConfirmEmployerFixture()
-                .WithConfirmTrue()
-                .WithUseLearnerDataTrue()
-                .WithHasNoDeclaredStandards(false);
-
-            var result = await fixture.Act();
-            fixture.VerifyReturnsRedirect(result, true);
-        }
-
-        [Test]
         public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
         {
             var fixture = new PostConfirmEmployerFixture()
@@ -44,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .WithHasNoDeclaredStandards(false);
 
             var result = await fixture.Act();
-            fixture.VerifyReturnsRedirect(result, false);
+            fixture.VerifyReturnsRedirect(result);
         }
 
         [Test]
@@ -92,7 +80,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .Setup(x => x.CreateCohort(emptyCohortRequest, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(emptyCohortResponse);
 
-            _redirectUrl = $"{providerId}/reservations/{_viewModel.EmployerAccountLegalEntityPublicHashedId}/select?useLearnerData=";
+            _redirectUrl = $"{providerId}/reservations/{_viewModel.EmployerAccountLegalEntityPublicHashedId}/select";
             var linkGenerator = new Mock<ILinkGenerator>();
             linkGenerator.Setup(x => x.ReservationsLink(It.Is<string>(p=>p.StartsWith(_redirectUrl)))).Returns(_redirectUrl);
 
@@ -117,15 +105,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _viewModel.Confirm = true;
             return this;
         }
-        public PostConfirmEmployerFixture WithUseLearnerDataTrue()
-        {
-            _viewModel.UseLearnerData = true;
-            return this;
-        }
 
-        public void VerifyReturnsRedirect(IActionResult redirectResult, bool useLearnerData)
+        public void VerifyReturnsRedirect(IActionResult redirectResult)
         {
-            var equals = redirectResult.VerifyReturnsRedirect().Url.Equals(_redirectUrl + useLearnerData);
+            var equals = redirectResult.VerifyReturnsRedirect().Url.Equals(_redirectUrl);
         }
 
         public static void VerifyNoDeclaredStandardsRedirect(IActionResult redirectResult)
