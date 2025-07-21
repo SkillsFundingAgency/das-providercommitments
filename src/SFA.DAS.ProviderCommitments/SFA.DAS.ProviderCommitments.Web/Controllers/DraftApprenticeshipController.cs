@@ -93,6 +93,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 ProviderId = request.ProviderId,
                 CohortReference = request.CohortReference,
                 AccountLegalEntityHashedId = request.AccountLegalEntityHashedId,
+                TransferSenderHashedId = request.TransferSenderHashedId,
+                EncodedPledgeApplicationId = request.EncodedPledgeApplicationId,
                 UseLearnerData = request.UseLearnerData
             };
 
@@ -109,6 +111,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 ProviderId = model.ProviderId,
                 CohortReference = model.CohortReference,
                 AccountLegalEntityHashedId = model.AccountLegalEntityHashedId,
+                TransferSenderHashedId = model.TransferSenderHashedId,
+                EncodedPledgeApplicationId = model.EncodedPledgeApplicationId,
                 UseLearnerData = (model.Selection == AddAnotherDraftApprenticeshipJourneyOptions.Ilr)
             };
 
