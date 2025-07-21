@@ -121,14 +121,14 @@ public class CohortController : Controller
     [Route("add/select-how")]
     public IActionResult SelectHowToAddApprentice(CreateCohortWithDraftApprenticeshipRequest request)
     {
-        var model = new SelectHowToAddFirstApprenticeshipJourneyViewModel
+        var redirectModel = new CreateCohortWithDraftApprenticeshipRequest
         {
             ProviderId = request.ProviderId,
             EmployerAccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId,
             CacheKey = request.CacheKey
         };
 
-        return View(model);
+        return RedirectToAction("SelectCourse", redirectModel);
     }
 
     [HttpPost]
