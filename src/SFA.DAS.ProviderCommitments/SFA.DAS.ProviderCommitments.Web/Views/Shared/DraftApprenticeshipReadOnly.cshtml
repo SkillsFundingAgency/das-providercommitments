@@ -1,0 +1,227 @@
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.CommitmentsV2.Api.Client
+@using SFA.DAS.ProviderCommitments.Extensions
+@using SFA.DAS.ProviderCommitments.Interfaces
+@using SFA.DAS.ProviderCommitments.Web.Models
+@inject IAuthorizationService AuthorizationService
+@inject ICommitmentsApiClient CommitmentsApiClient
+@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
+
+@Html.HiddenFor(x => x.ReservationId)
+@Html.HiddenFor(x => x.IsContinuation)
+@Html.HiddenFor(x => x.IsOnFlexiPaymentPilot)
+@Html.HiddenFor(x => x.Employer)
+@Html.HiddenFor(x => x.LearnerDataId)
+<input type="hidden" asp-for="HasStandardOptions" />
+<input type="hidden" asp-for="TrainingCourseOption" />
+<input type="hidden" asp-for="HasUnavailableFlexiJobAgencyDeliveryModel" />
+
+@{
+    string editCourseLabel = "Add";
+    string editDeliveryModelLabel = "Change";
+    var startDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training start date" : "Planned apprenticeship training start date";
+    var endDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training end date" : "Planned apprenticeship training end date";
+
+    ViewBag.ValidationOrder = "FirstName,LastName,Email,DateOfBirth,IsOnFlexiPaymentPilot,Uln,StartDate,EndDate,EmploymentEndDate,Cost,EmploymentPrice,Reference";
+
+    Model.CourseCode = ViewData.ModelState[nameof(Model.CourseCode)]?.AttemptedValue ?? Model.CourseCode;
+    Model.DeliveryModel = ViewData.ModelState[nameof(Model.DeliveryModel)]?.AttemptedValue.ToEnum<DeliveryModel>() ?? Model.DeliveryModel;
+
+    if (!string.IsNullOrWhiteSpace(Model.CourseCode))
+    {
+        Model.CourseName = (await CommitmentsApiClient.GetTrainingProgramme(Model.CourseCode)).TrainingProgramme.Name;
+    }
+}
+
+<input type="hidden" asp-for="CourseCode" value="@Model.CourseCode">
+<input type="hidden" asp-for="DeliveryModel" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
+
+@if (Model is EditDraftApprenticeshipViewModel)
+{
+    <h1 class="govuk-heading-xl">Edit apprentice details</h1>
+}
+else
+{
+    <h1 class="govuk-heading-xl">Check apprentice details</h1>
+}
+
+<div class="govuk-inset-text">
+    <p class="govuk-body">You can only receive payments for this apprentice if all the fields have been completed by yourself for the employer.</p>
+</div>
+
+<div class="govuk-form-group">
+    <details class="govuk-details govuk-!-margin-top-2" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                I need to change some apprentice details
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            You will need to amend most details in the ILR. It can take up to 15 minutes to update here and you might need to refresh your browser.
+        </div>
+    </details>
+</div>
+
+<h2 class="govuk-heading-l">Apprentice personal details</h2>
+
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset">
+
+        <div class="govuk-form-group govuk-!-margin-bottom-0 @Html.AddClassIfPropertyInError(x => x.Uln, "govuk-form-group--error")">
+            @Html.ValidationMessageFor(m => m.Uln, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Uln) })
+            <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+                <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                    <dt class="govuk-summary-list__key" id="uln-label">
+                        Unique learner number
+                    </dt>
+                    <dd class="govuk-summary-list__value" id="uln-value">
+                        @Model.Uln
+                        @Html.HiddenFor(x => x.Uln)
+                    </dd>
+                </div>
+            </dl>
+        </div>
+        <div class="govuk-form-group govuk-!-margin-bottom-0 @Html.AddClassIfPropertyInError(x => x.FirstName, "govuk-form-group--error")">
+            @Html.ValidationMessageFor(m => m.FirstName, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.FirstName) })
+            <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+                <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                    <dt class="govuk-summary-list__key" id="firstname-label">
+                        First name
+                    </dt>
+                    <dd class="govuk-summary-list__value" id="firstname-value">
+                        @Model.FirstName
+                        @Html.HiddenFor(x => x.FirstName)
+                    </dd>
+                </div>
+            </dl>
+        </div>
+        <div class="govuk-form-group govuk-!-margin-bottom-0 @Html.AddClassIfPropertyInError(x => x.LastName, "govuk-form-group--error")">
+            @Html.ValidationMessageFor(m => m.LastName, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.LastName) })
+            <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+                <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                    <dt class="govuk-summary-list__key" id="lastname-label">
+                        Last name
+                    </dt>
+                    <dd class="govuk-summary-list__value" id="lastname-value">
+                        @Model.LastName
+                        @Html.HiddenFor(x => x.LastName)
+                    </dd>
+                </div>
+            </dl>
+        </div>
+        <div class="govuk-form-group govuk-!-margin-bottom-0 @Html.AddClassIfPropertyInError(x => x.DateOfBirth, "govuk-form-group--error")">
+            @Html.ValidationMessageFor(m => m.DateOfBirth, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DateOfBirth) })
+            <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+                <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                    <dt class="govuk-summary-list__key" id="dateofbirth-label">
+                        Date of birth
+                    </dt>
+                    <dd class="govuk-summary-list__value" id="dateofbirth-value">
+                        @(Model.DateOfBirth.HasValue ? Model.DateOfBirth.Date.Value.ToString("dd MMM yyyy") : "")
+                        @Html.HiddenFor(x => x.BirthDay)
+                        @Html.HiddenFor(x => x.BirthMonth)
+                        @Html.HiddenFor(x => x.BirthYear)
+                    </dd>
+                </div>
+            </dl>
+        </div>
+        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Email, "govuk-form-group--error")">
+            <label asp-for="Email" class="govuk-label govuk-!-font-weight-bold">Email address</label>
+            @Html.ValidationMessageFor(m => m.Email, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email) })
+            <input asp-for="Email" class="govuk-input" />
+            <details class="govuk-details govuk-!-margin-top-4" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Why do we need an email address?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    Your apprentice will receive an email alert inviting them to the My apprenticeship service. On
+                    the service, your apprentice will be able to:
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>review and confirm their apprenticeship details</li>
+                        <li>
+                            understand the roles and responsibilities of an apprentice, an employer and a training
+                            provider
+                        </li>
+                        <li>find help and support during their apprenticeship</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+    </fieldset>
+</div>
+
+<h1 class="govuk-heading-l  govuk-!-margin-top-9">Apprentice training details</h1>
+
+<div class="govuk-form-group govuk-!-margin-bottom-0 @Html.AddClassIfPropertyInError(x => x.DateOfBirth, "govuk-form-group--error")">
+    @Html.ValidationMessageFor(m => m.DateOfBirth, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.StartDate) })
+    <dl class="govuk-summary-list govuk-!-margin-bottom-0 )">
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+            <dt class="govuk-summary-list__key" id="startdate-label">
+                @startDateLabel
+            </dt>
+            <dd class="govuk-summary-list__value" id="startdate-value">
+                @(Model.StartDate.HasValue && Model.StartDate.Date.HasValue ? Model.StartDate.Date.Value.ToString("MMM yyyy") : "")
+                @Html.HiddenFor(x => x.StartMonth)
+                @Html.HiddenFor(x => x.StartYear)
+            </dd>
+        </div>
+    </dl>
+</div>
+
+<div class="govuk-form-group govuk-!-margin-bottom-0 @Html.AddClassIfPropertyInError(x => x.EndDate, "govuk-form-group--error")">
+    @Html.ValidationMessageFor(m => m.DateOfBirth, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndDate) })
+    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+            <dt class="govuk-summary-list__key" id="enddate-label">
+                @endDateLabel
+            </dt>
+            <dd class="govuk-summary-list__value" id="enddate-value">
+                @(Model.EndDate.HasValue && Model.EndDate.Date.HasValue ? Model.EndDate.Date.Value.ToString("MMM yyyy") : "")
+                @Html.HiddenFor(x => x.EndMonth)
+                @Html.HiddenFor(x => x.EndYear)
+            </dd>
+        </div>
+    </dl>
+</div>
+
+<div class="govuk-form-group govuk-!-margin-bottom-0 @Html.AddClassIfPropertyInError(x => x.Cost, "govuk-form-group--error")">
+    @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+            <dt class="govuk-summary-list__key" id="cost-label">
+                Total agreed apprenticeship price (excluding VAT)
+            </dt>
+            <dd class="govuk-summary-list__value" id="cost-value">
+                @Model.Cost
+                @Html.HiddenFor(x => x.Cost)
+            </dd>
+        </div>
+    </dl>
+</div>
+
+<div class="govuk-character-count" data-module="character-count" data-maxlength="20">
+    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Reference, "govuk-form-group--error")">
+        <label asp-for="Reference" class="govuk-label govuk-!-font-weight-bold">Reference (optional)</label>
+        <span id="reference-hint" class="govuk-hint">
+            Add a reference, such as employee number or location - this won’t be seen by the employer
+        </span>
+        @Html.ValidationMessageFor(m => m.Reference, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Reference) })
+
+        <input maxlength="20" asp-for="Reference" class="govuk-input govuk-!-width-three-quarters js-character-count" />
+    </div>
+</div>
+
+<div class="govuk-inset-text">
+    <p class="govuk-body govuk-!-font-weight-bold">End-point assessments</p>
+    <p class="govuk-body">
+        We'll ask the employer to confirm the <a class="govuk-link"
+                                                 href="https://www.gov.uk/government/publications/using-the-register-of-apprentice-assessment-organisations"
+                                                 target="_blank" title="Opens in a new window">
+            apprentice
+            assessment organisation
+        </a> for this apprentice. We'll do this before the end of the apprenticeship.
+    </p>
+</div>
