@@ -18,6 +18,9 @@
 <input type="hidden" asp-for="HasUnavailableFlexiJobAgencyDeliveryModel" />
 
 @{
+
+    string DisplayCost(int? value) => value.HasValue ? value.Value.ToGdsCostFormat() : "--";
+
     string editCourseLabel = "Add";
     string editDeliveryModelLabel = "Change";
     var startDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training start date" : "Planned apprenticeship training start date";
@@ -37,14 +40,7 @@
 <input type="hidden" asp-for="CourseCode" value="@Model.CourseCode">
 <input type="hidden" asp-for="DeliveryModel" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
 
-@if (Model is EditDraftApprenticeshipViewModel)
-{
-    <h1 class="govuk-heading-xl">Edit apprentice details</h1>
-}
-else
-{
-    <h1 class="govuk-heading-xl">Check apprentice details</h1>
-}
+<h1 class="govuk-heading-xl">Check apprentice details</h1>
 
 <div class="govuk-inset-text">
     <p class="govuk-body">You can only receive payments for this apprentice if all the fields have been completed by yourself for the employer.</p>
@@ -195,7 +191,7 @@ else
                 Total agreed apprenticeship price (excluding VAT)
             </dt>
             <dd class="govuk-summary-list__value" id="cost-value">
-                @Model.Cost
+                @DisplayCost(Model.Cost)
                 @Html.HiddenFor(x => x.Cost)
             </dd>
         </div>
