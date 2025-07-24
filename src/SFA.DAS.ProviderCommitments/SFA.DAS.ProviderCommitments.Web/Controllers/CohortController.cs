@@ -128,28 +128,8 @@ public class CohortController : Controller
             CacheKey = request.CacheKey
         };
 
-        return RedirectToAction("SelectCourse", redirectModel);
+        return RedirectToAction("SelectLearnerRecord", "Learner", redirectModel);
     }
-
-    [HttpPost]
-    [Route("add/select-how")]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public ActionResult SelectHowToAddApprentice(SelectHowToAddFirstApprenticeshipJourneyViewModel model)
-    {
-        var redirectModel = new CreateCohortWithDraftApprenticeshipRequest
-        {
-            ProviderId = model.ProviderId,
-            EmployerAccountLegalEntityPublicHashedId = model.EmployerAccountLegalEntityPublicHashedId,
-            CacheKey = model.CacheKey
-        };
-
-        if (model.Selection == AddFirstDraftApprenticeshipJourneyOptions.Ilr)
-        {
-            return RedirectToAction("SelectLearnerRecord", "Learner", redirectModel);
-        }
-        return RedirectToAction("SelectCourse", redirectModel);
-    }
-
 
     [HttpGet]
     [Route("choose-cohort", Name = RouteNames.ChooseCohort)]
