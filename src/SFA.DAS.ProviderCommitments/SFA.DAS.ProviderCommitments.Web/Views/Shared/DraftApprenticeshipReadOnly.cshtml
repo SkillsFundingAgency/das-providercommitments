@@ -40,7 +40,14 @@
 <input type="hidden" asp-for="CourseCode" value="@Model.CourseCode">
 <input type="hidden" asp-for="DeliveryModel" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
 
-<h1 class="govuk-heading-xl">Check apprentice details</h1>
+@if (Model is EditDraftApprenticeshipViewModel)
+{
+    <h1 class="govuk-heading-xl">Edit apprentice details</h1>
+}
+else
+{
+    <h1 class="govuk-heading-xl">Check apprentice details</h1>
+}
 
 <div class="govuk-inset-text">
     <p class="govuk-body">You can only receive payments for this apprentice if all the fields have been completed by yourself for the employer.</p>
