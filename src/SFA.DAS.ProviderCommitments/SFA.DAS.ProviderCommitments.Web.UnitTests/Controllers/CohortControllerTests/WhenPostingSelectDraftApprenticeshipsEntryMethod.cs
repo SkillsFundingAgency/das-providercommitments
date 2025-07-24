@@ -11,15 +11,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 [TestFixture]
 public class WhenPostingSelectDraftApprenticeshipsEntryMethod
 {
-    [Test]
-    public void Then_RedirectTo_SelectJourney_When_Selected_Option_Is_Manual()
-    {
-        var fixture = new WhenPostingSelectDraftApprenticeshipsEntryMethodFixture();
-
-        var result = fixture.Manual().Act();
-
-        result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(CohortController.SelectAddDraftApprenticeshipJourney));
-    }
 
     [Test]
     public void Then_RedirectTo_FileUploadInform_When_Selected_Option_Is_BulkCsv()
@@ -39,7 +30,6 @@ public class WhenPostingSelectDraftApprenticeshipsEntryMethod
         var result = fixture.ILR().Act();
 
         result.VerifyReturnsRedirectToActionResult()
-            .WithRouteValue("UseLearnerData", true)
             .WithActionName(nameof(CohortController.SelectAddDraftApprenticeshipJourney));
     }
 }
@@ -56,12 +46,6 @@ public class WhenPostingSelectDraftApprenticeshipsEntryMethodFixture
 
         _sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
             Mock.Of<IEncodingService>(),Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>(), Mock.Of<ILogger<CohortController>>());
-    }
-
-    public WhenPostingSelectDraftApprenticeshipsEntryMethodFixture Manual()
-    {
-        _viewModel.Selection = AddDraftApprenticeshipEntryMethodOptions.Manual;
-        return this;
     }
 
     public WhenPostingSelectDraftApprenticeshipsEntryMethodFixture BulkCsv()

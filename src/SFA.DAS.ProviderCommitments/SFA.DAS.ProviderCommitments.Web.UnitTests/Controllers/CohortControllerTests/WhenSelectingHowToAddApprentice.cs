@@ -4,7 +4,6 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests;
@@ -13,19 +12,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 public class WhenSelectingHowToAddApprentice
 {
     [Test]
-    public void ThenReturnsView()
+    public void ThenReturnsRedirectToSelectFromIlr()
     {
         var fixture = new WhenSelectingHowToAddApprenticeFixture();
 
-        var result = fixture.Act() as ViewResult;
+        var result = fixture.Act() as RedirectToActionResult;
 
         result.Should().NotBeNull();
-        result.Model.GetType().Should().Be(typeof(SelectHowToAddFirstApprenticeshipJourneyViewModel));
-        var model = result.Model as SelectHowToAddFirstApprenticeshipJourneyViewModel;
-        model.Should().NotBeNull();
-        model.ProviderId.Should().Be(fixture.Request.ProviderId);
-        model.EmployerAccountLegalEntityPublicHashedId.Should().Be(fixture.Request.EmployerAccountLegalEntityPublicHashedId);
-        model.CacheKey.Should().Be(fixture.Request.CacheKey);
+
+        result.RouteValues["ProviderId"].Should().Be(fixture.Request.ProviderId);
+        result.RouteValues["EmployerAccountLegalEntityPublicHashedId"].Should().Be(fixture.Request.EmployerAccountLegalEntityPublicHashedId);
+        result.RouteValues["CacheKey"].Should().Be(fixture.Request.CacheKey);
     }
 }
 

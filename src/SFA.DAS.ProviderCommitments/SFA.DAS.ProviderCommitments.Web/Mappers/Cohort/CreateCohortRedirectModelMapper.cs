@@ -10,7 +10,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
  public class CreateCohortRedirectModelMapper(
      IAuthorizationService authorizationService,
      ICacheStorageService cacheStorageService,
-     IConfiguration configuration,
      ILogger<CreateCohortRedirectModelMapper> logger)
      : IMapper<CreateCohortWithDraftApprenticeshipRequest, CreateCohortRedirectModel>
  {
@@ -18,28 +17,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         {
             CreateCohortRedirectModel.RedirectTarget RedirectTo(bool isOnFlexiPaymentPiolt)
             {
-                if (isOnFlexiPaymentPiolt)
-                {
-                    return CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus;
-                }
-
-                if (configuration.GetValue<bool>("ILRFeaturesEnabled") == false)
-                {
-                    return CreateCohortRedirectModel.RedirectTarget.SelectCourse;
-                }
-
-                if(source.UseLearnerData.HasValue == false)
-                {
-                    return CreateCohortRedirectModel.RedirectTarget.SelectHowTo;
-                }
-
-                return source.UseLearnerData == true
-                    ? CreateCohortRedirectModel.RedirectTarget.SelectLearner
-                    : CreateCohortRedirectModel.RedirectTarget.SelectCourse;
+                return isOnFlexiPaymentPiolt ? CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus : CreateCohortRedirectModel.RedirectTarget.SelectLearner;
             }
 
             var flexiPaymentsAuthorized = await authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot);
-            logger.LogInformation("Returning CreateCohortRedirectModel, isOnFlexiPaymentPilot {0}, UseLearnerData {1}", flexiPaymentsAuthorized, source.UseLearnerData);
 
             var cacheKey = Guid.NewGuid();
             var cacheItem = new CreateCohortCacheItem(cacheKey)
@@ -47,7 +28,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ReservationId = source.ReservationId.Value,
                 StartMonthYear = source.StartMonthYear,
                 AccountLegalEntityId = source.AccountLegalEntityId,
-                UseLearnerData = source.UseLearnerData,
                 CourseCode = source.CourseCode,
                 IsOnFlexiPaymentPilot = flexiPaymentsAuthorized ? null : false
             };

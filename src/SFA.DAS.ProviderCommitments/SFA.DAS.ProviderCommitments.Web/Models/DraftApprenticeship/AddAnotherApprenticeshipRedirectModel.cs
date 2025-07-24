@@ -3,6 +3,5 @@
     public class AddAnotherApprenticeshipRedirectModel
     {
         public Guid CacheKey { get; set; }
-        public bool UseLearnerData { get; set; }
     }
 }
