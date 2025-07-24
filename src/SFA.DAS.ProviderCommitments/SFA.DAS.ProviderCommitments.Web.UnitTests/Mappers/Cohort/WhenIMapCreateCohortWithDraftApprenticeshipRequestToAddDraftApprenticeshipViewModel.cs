@@ -136,7 +136,7 @@ public class WhenIMapCreateCohortWithDraftApprenticeshipRequestToAddDraftApprent
     public async Task Then_EndDate_IsMappedCorrectly()
     {
         var result = await _mapper.Map(_source);
-        result.EndDate.Date.Value.Date.Should().Be(_cacheItem.EndDate.GetFirstDayOfMonth());
+        result.EndDate.Date.Value.Date.Should().Be(_cacheItem.EndDate.Value.Date);
     }
 
     [Test]

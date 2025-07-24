@@ -855,16 +855,6 @@ public class DetailsViewModelMapperTests
         result.ShowRofjaaRemovalBanner.Should().Be(expectShowBanner);
     }
 
-    [Test]
-    public async Task UseLearningDataMappedCorrectly()
-    {
-        var fixture = new DetailsViewModelMapperTestsFixture();
-
-        var result = await fixture.Map();
-
-        result.UseLearnerData.Should().BeTrue();
-    }
-
     [TestCase(true, true)]
     [TestCase(false, false)]
     public async Task HasFoundationApprenticeshipsIsMappedCorrectly(bool hasFoundationApprenticeships, bool expectedHasFoundationApprenticeships)

@@ -7,6 +7,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public long ProviderId { get; set; }
         public string SortField { get; set; } = nameof(ChooseCohortSummaryViewModel.CreatedOn);
         public bool ReverseSort { get; set; } = true;
-        public bool UseLearnerData { get; set; }
     }
 }

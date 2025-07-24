@@ -3,7 +3,6 @@
     public class ChooseCohortViewModel
     {
         public long ProviderId { get; set; }
-        public bool UseLearnerData { get; set; }
 
         public string SortedByHeaderClassName
         {

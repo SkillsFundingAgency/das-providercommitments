@@ -12,12 +12,10 @@ public class SelectAddAnotherDraftApprenticeshipJourneyViewModel : IAuthorizatio
     public string AccountLegalEntityHashedId { get; set; }
     public string EncodedPledgeApplicationId { get; set; }
     public string TransferSenderHashedId { get; set; }
-    public bool UseLearnerData { get; set; }
     public AddAnotherDraftApprenticeshipJourneyOptions? Selection { get; set; }
 }
 
 public enum AddAnotherDraftApprenticeshipJourneyOptions
 {
-    Ilr,
-    Manual
+    Ilr
 }
