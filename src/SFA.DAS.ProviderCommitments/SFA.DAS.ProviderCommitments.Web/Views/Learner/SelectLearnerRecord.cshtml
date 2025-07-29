@@ -114,7 +114,7 @@
                        asp-route="@RouteNames.SelectLearnerRecord"
                        asp-all-route-data="@Model.FilterModel.BuildSortRouteData("StartDate")"
                        title="Sort the table by StartDate">
-                        StartDate
+                        Start date
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
@@ -136,7 +136,7 @@
                         @apprenticeship.CourseName
                     </td>
                     <td class="govuk-table__cell" data-label="StartDate">
-                        @apprenticeship.StartDate.ToString("dd-MMM-yyyy")
+                        @apprenticeship.StartDate.ToString("dd MM yyyy")
                     </td>
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
                         @if (string.IsNullOrWhiteSpace(Model.CohortReference))
