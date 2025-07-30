@@ -7,8 +7,6 @@
 
         public enum RedirectTarget
         {
-            SelectCourse,
-            SelectHowTo,
             SelectLearner,
             ChooseFlexiPaymentPilotStatus
         }

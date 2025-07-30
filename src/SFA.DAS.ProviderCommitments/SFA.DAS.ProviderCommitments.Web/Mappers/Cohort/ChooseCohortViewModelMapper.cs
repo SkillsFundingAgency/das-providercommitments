@@ -29,8 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var filterModel = new ChooseCohortFilterModel
             {
                 ReverseSort = source.ReverseSort,
-                SortField = source.SortField,
-                UseLearnerData = source.UseLearnerData
+                SortField = source.SortField
             };
 
             var cohorts = cohortsResponse.Cohorts
@@ -51,7 +50,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 ProviderId = source.ProviderId,
                 Cohorts = sortedCohorts,
-                UseLearnerData = source.UseLearnerData,
                 FilterModel = filterModel
             };
 

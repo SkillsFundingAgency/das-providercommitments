@@ -67,40 +67,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithDeliveryModelToggleWeRedirectToSelectCourse()
+        public async Task AndWhenCallingTheAddNewDraftApprenticeshipEndpointRedirectsToSelectLearner()
         {
-            _fixture.SetupUseLearnerData(false);
-            await _fixture.AddNewDraftApprenticeshipWithReservation();
-            _fixture.VerifyRedirectedToSelectCoursePage();
-        }
-
-        [Test]
-        public async Task AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithIlrFeatureOnAndUseLearnerDataAsTrueRedirectsToSelectLearner()
-        {
-            _fixture.SetupUseLearnerData(true);
-            _fixture.SetupIlrConfigurationSection(true);
             await _fixture.AddNewDraftApprenticeshipWithReservation();
             _fixture.VerifyRedirectedToSelectLearnerPage();
-        }
-
-        [Test]
-        public async Task AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithIlrFeatureOnAndUseLearnerDataAsFalseRedirectsToSelectCourse()
-        {
-            _fixture.SetupUseLearnerData(true);
-            _fixture.SetupIlrConfigurationSection(false);
-            await _fixture.AddNewDraftApprenticeshipWithReservation();
-            _fixture.VerifyRedirectedToSelectCoursePage();
-        }
-
-
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithILRFeatureOffRedirectsToSelectCourse(bool useLearnerData)
-        {
-            _fixture.SetupUseLearnerData(useLearnerData);
-            _fixture.SetupIlrConfigurationSection(false);
-            await _fixture.AddNewDraftApprenticeshipWithReservation();
-            _fixture.VerifyRedirectedToSelectCoursePage();
         }
 
         [Test]
@@ -108,31 +78,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             _fixture.GetReservationId();
             _fixture.VerifyRedirectedToReservationsPage();
-        }
-
-        [Test]
-        public void AndWhenGoingToSelectHowPageWithUseLearnerDataAsFalseThenRedirectToGetReservationIdEndpoint()
-        {
-            _fixture.SetupUseLearnerData(false);
-            _fixture.GotoSelectHowPage();
-            _fixture.VerifyRedirectedToGetReservationIdEndpoint();
-        }
-
-        [Test]
-        public void AndWhenGoingToSelectHowPageWithUseLearnerDataAsTrueThenReturnSelectHowView()
-        {
-            _fixture.SetupUseLearnerData(true);
-            var result = _fixture.GotoSelectHowPage();
-            result.VerifyReturnsSelectHowViewModelWithCorrectValues(); 
-        }
-
-        [TestCase(AddAnotherDraftApprenticeshipJourneyOptions.Ilr, true)]
-        [TestCase(AddAnotherDraftApprenticeshipJourneyOptions.Manual, false)]
-        public async Task AndWhenAddApprenticeshipViaIlrThenRedirectToSelectFromIlrPage(AddAnotherDraftApprenticeshipJourneyOptions option, bool expected)
-        {
-            _fixture.PostToAddAnotherSelectionMethod(option);
-            _fixture.VerifyRedirectedToGetReservationIdEndpoint();
-            _fixture.VerifyRouteValueContainsUseLearnerDataAs(expected);
         }
 
         [Test]

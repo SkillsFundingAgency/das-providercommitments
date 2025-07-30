@@ -9,7 +9,6 @@ public class SelectDraftApprenticeshipsEntryMethodViewModel
 
 public enum AddDraftApprenticeshipEntryMethodOptions
 {
-    Manual,
     BulkCsv,
     ILR
 }
