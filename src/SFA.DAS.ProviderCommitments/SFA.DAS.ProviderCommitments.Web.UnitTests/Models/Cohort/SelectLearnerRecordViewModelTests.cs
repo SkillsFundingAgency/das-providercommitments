@@ -21,7 +21,7 @@ public class SelectLearnerRecordViewModelTests
     {
         _viewModel.EmployerAccountName = employerName;
         //Assert
-        _viewModel.PageTitle.Should().EndWith(employerName);
+        _viewModel.PageTitle.Should().Be("Select learner from ILR");
     }
 
     [TestCase(true, "das-table__sort--desc")]
