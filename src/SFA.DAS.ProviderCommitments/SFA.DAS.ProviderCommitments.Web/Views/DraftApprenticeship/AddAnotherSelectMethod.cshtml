@@ -10,6 +10,8 @@
         <form method="post">
             @Html.AntiForgeryToken()
             @Html.HiddenFor(x => x.ProviderId)
+            @Html.HiddenFor(x => x.TransferSenderHashedId)
+            @Html.HiddenFor(x => x.EncodedPledgeApplicationId)
             <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
