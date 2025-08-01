@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.Testing.AutoFixture;
@@ -9,11 +10,16 @@ public class ConfirmEditApprenticeshipViewModelToConfirmEditRequestMapperTests
 {
     private ConfirmEditApprenticeshipViewModelToConfirmEditRequestMapper _mapper;
     private ConfirmEditApprenticeshipViewModel _viewModel;
+    private Mock<IAuthenticationService> _mockAuthenticationService;
 
     [SetUp]
     public void SetUp()
     {
         var fixture = new Fixture();
+        _mockAuthenticationService = new Mock<IAuthenticationService>();
+        _mockAuthenticationService.Setup(x => x.UserId).Returns("TestUserId");
+        _mockAuthenticationService.Setup(x => x.UserName).Returns("TestUserName");
+        _mockAuthenticationService.Setup(x => x.UserEmail).Returns("test@example.com");
 
         _viewModel = fixture.Build<ConfirmEditApprenticeshipViewModel>()
             .With(x => x.StartMonth, DateTime.Now.Month)
@@ -27,7 +33,7 @@ public class ConfirmEditApprenticeshipViewModelToConfirmEditRequestMapperTests
             .With(x => x.BirthDay, DateTime.Now.Day)
             .Create();
 
-        _mapper = new ConfirmEditApprenticeshipViewModelToConfirmEditRequestMapper();
+        _mapper = new ConfirmEditApprenticeshipViewModelToConfirmEditRequestMapper(_mockAuthenticationService.Object);
     }
 
     [Test]
@@ -156,5 +162,18 @@ public class ConfirmEditApprenticeshipViewModelToConfirmEditRequestMapperTests
         var result = await _mapper.Map(_viewModel);
 
         result.ProviderReference.Should().Be(_viewModel.ProviderReference);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Maps_UserInfo_Correctly()
+    {
+        // Act
+        var result = await _mapper.Map(_viewModel);
+
+        // Assert
+        result.UserInfo.Should().NotBeNull();
+        result.UserInfo.UserId.Should().Be("TestUserId");
+        result.UserInfo.UserDisplayName.Should().Be("TestUserName");
+        result.UserInfo.UserEmail.Should().Be("test@example.com");
     }
 }

@@ -2,7 +2,7 @@ using System;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 
-public class ConfirmEditApprenticeshipRequest
+public class ConfirmEditApprenticeshipRequest : ApimSaveDataRequest
 {
     public long ApprenticeshipId { get; set; }
     public long? ProviderId { get; set; }
