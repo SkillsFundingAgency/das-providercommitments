@@ -153,11 +153,8 @@ public class DraftApprenticeshipControllerTestFixture
             ULN = "XXXX"
         };
 
-        _redirectToAddAnotherModelWithCourse = autoFixture.Build<AddAnotherApprenticeshipRedirectModel>()
-            .With(x => x.UseLearnerData, false).Create();
-
         _redirectToAddAnotherModelWithLearner = autoFixture.Build<AddAnotherApprenticeshipRedirectModel>()
-            .With(x => x.UseLearnerData, true).Create();
+            .Create();
 
         _viewSelectOptionsViewModel = autoFixture.Build<ViewSelectOptionsViewModel>().Create();
 
@@ -166,8 +163,7 @@ public class DraftApprenticeshipControllerTestFixture
             .With(x => x.ChangeOfPartyRequestId, default(long?))
             .Create();
 
-        _apiModelException = new CommitmentsApiModelException(new List<ErrorDetail>()
-            {new("Name", "Cannot be more than...")});
+        _apiModelException = new CommitmentsApiModelException([new("Name", "Cannot be more than...")]);
 
         _mediator = new Mock<IMediator>();
         _mediator.Setup(x => x.Send(It.IsAny<GetTrainingCoursesQueryRequest>(), It.IsAny<CancellationToken>()))
@@ -189,10 +185,7 @@ public class DraftApprenticeshipControllerTestFixture
         _modelMapper.Setup(x => x.Map<UpdateDraftApprenticeshipApimRequest>(It.IsAny<ViewSelectOptionsViewModel>()))
             .ReturnsAsync(_updateDraftApprenticeshipRequest);
 
-        _modelMapper.Setup(x => x.Map<AddAnotherApprenticeshipRedirectModel>(It.Is<BaseReservationsAddDraftApprenticeshipRequest>(p=>p.UseLearnerData == false)))
-            .ReturnsAsync(_redirectToAddAnotherModelWithCourse);
-
-        _modelMapper.Setup(x => x.Map<AddAnotherApprenticeshipRedirectModel>(It.Is<BaseReservationsAddDraftApprenticeshipRequest>(p => p.UseLearnerData == true)))
+        _modelMapper.Setup(x => x.Map<AddAnotherApprenticeshipRedirectModel>(It.IsAny<BaseReservationsAddDraftApprenticeshipRequest>()))
             .ReturnsAsync(_redirectToAddAnotherModelWithLearner);
 
         _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
@@ -218,7 +211,6 @@ public class DraftApprenticeshipControllerTestFixture
             });
 
         _configurationSection = new Mock<IConfigurationSection>();
-        SetupIlrConfigurationSection(false);
  
         _configuration = new Mock<IConfiguration>();
         _configuration.Setup(c => c.GetSection("ILRFeaturesEnabled")).Returns(_configurationSection.Object);
@@ -237,12 +229,6 @@ public class DraftApprenticeshipControllerTestFixture
         _linkGenerator = new Mock<ILinkGenerator>();
         _linkGenerator.Setup(x => x.ReservationsLink(It.IsAny<string>()))
             .Returns((string url) => "http://reservations/" + url);
-    }
-
-    public DraftApprenticeshipControllerTestFixture SetupIlrConfigurationSection(bool status)
-    {
-        _configurationSection.Setup(s => s.Value).Returns(status.ToString().ToLower);
-        return this;
     }
 
     public DraftApprenticeshipControllerTestFixture SetupStartDateOverlap(bool overlapStartDate, bool overlapEndDate)
@@ -292,12 +278,6 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
-    public DraftApprenticeshipControllerTestFixture SetUseLearnerData(bool useLearnerData)
-    {
-        _getReservationIdForAddAnotherApprenticeRequest.UseLearnerData = useLearnerData;
-        return this;
-    }
-
     public DraftApprenticeshipControllerTestFixture GetReservationId(string transferSenderId = null)
     {
         if (transferSenderId != null)
@@ -311,13 +291,6 @@ public class DraftApprenticeshipControllerTestFixture
     public DraftApprenticeshipControllerTestFixture GotoSelectHowPage()
     {
         _actionResult = _controller.AddAnotherSelectMethod(_getReservationIdForAddAnotherApprenticeRequest);
-        return this;
-    }
-
-    public DraftApprenticeshipControllerTestFixture PostToAddAnotherSelectionMethod(AddAnotherDraftApprenticeshipJourneyOptions? option)
-    {
-        _selectAddAnotherApprenticeshipJourneyViewModel.Selection = option;
-        _actionResult = _controller.AddAnotherSelectMethod(_selectAddAnotherApprenticeshipJourneyViewModel);
         return this;
     }
 
@@ -460,13 +433,6 @@ public class DraftApprenticeshipControllerTestFixture
     {
         object addModelAsString = JsonConvert.SerializeObject(_addModel);
         _tempData.Setup(x => x.TryGetValue(nameof(AddDraftApprenticeshipViewModel), out addModelAsString));
-        return this;
-    }
-
-    public DraftApprenticeshipControllerTestFixture SetupUseLearnerData(bool useLearnerData)
-    {
-        _getReservationIdForAddAnotherApprenticeRequest.UseLearnerData = useLearnerData;
-        _reservationsAddDraftApprenticeshipRequest.UseLearnerData = useLearnerData;
         return this;
     }
 
@@ -637,7 +603,6 @@ public class DraftApprenticeshipControllerTestFixture
         model.ProviderId.Should().Be(_getReservationIdForAddAnotherApprenticeRequest.ProviderId);
         model.CohortReference.Should().Be(_getReservationIdForAddAnotherApprenticeRequest.CohortReference);
         model.AccountLegalEntityHashedId.Should().Be(_getReservationIdForAddAnotherApprenticeRequest.AccountLegalEntityHashedId);
-        model.UseLearnerData.Should().Be(true);
 
         return this;
     }
@@ -645,13 +610,6 @@ public class DraftApprenticeshipControllerTestFixture
     public DraftApprenticeshipControllerTestFixture VerifyRedirectedToGetReservationIdEndpoint()
     {
         _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("GetReservationId");
-        return this;
-    }
-
-    public DraftApprenticeshipControllerTestFixture VerifyRouteValueContainsUseLearnerDataAs(bool useLearnerData)
-    {
-        var redirectResult = _actionResult as RedirectToActionResult;
-        redirectResult.RouteValues.Should().Contain("useLearnerData", useLearnerData);
         return this;
     }
     

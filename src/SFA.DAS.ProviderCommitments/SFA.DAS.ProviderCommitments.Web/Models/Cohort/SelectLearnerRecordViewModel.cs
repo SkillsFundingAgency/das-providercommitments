@@ -17,7 +17,7 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
     public Guid? ReservationId { get; set; }
 
     public List<LearnerSummary> Learners { get; set; } = new();
-    public string PageTitle => $"Select apprentices from ILR for {EmployerAccountName}";
+    public string PageTitle => "Select learner from ILR";
 
     public string SortedByHeaderClassName { get; set; }
     public const string HeaderClassName = "das-table__sort";
@@ -49,7 +49,7 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
             var britishTimeZone = TimeZoneInfo.FindSystemTimeZoneById("GMT Standard Time");
             var britishDateTime = TimeZoneInfo.ConvertTimeFromUtc(LastIlrSubmittedOn.Value, britishTimeZone);
 
-            return $"Last updated {britishDateTime:h:mmtt} on {britishDateTime:dddd d MMMM}";
+            return $"Last updated {britishDateTime.ToString("h:mmtt", System.Globalization.CultureInfo.InvariantCulture)} on {britishDateTime.ToString("dddd d MMMM", System.Globalization.CultureInfo.InvariantCulture)}";
         }
     }
     public bool ShowPageLinks => FilterModel.TotalNumberOfLearnersFound > Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage;

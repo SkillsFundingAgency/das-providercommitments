@@ -73,45 +73,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             request.CacheKey = redirectModel.CacheKey;
 
-            var route = redirectModel.UseLearnerData && configuration.GetValue<bool>("ILRFeaturesEnabled") == true
-                ? RouteNames.SelectLearnerRecord
-                : RouteNames.SelectCourse;
-            return RedirectToRoute(route, request.CloneBaseValues());
+            return RedirectToRoute(RouteNames.SelectLearnerRecord, request.CloneBaseValues());
         }
 
         [HttpGet]
         [Route("add/select-how")]
         public IActionResult AddAnotherSelectMethod(GetReservationIdForAddAnotherApprenticeRequest request)
         {
-            if (request.UseLearnerData == false)
-            {
-                return RedirectToAction("GetReservationId", request);
-            }
-
-            var model = new SelectAddAnotherDraftApprenticeshipJourneyViewModel
+            var redirectModel = new GetReservationIdForAddAnotherApprenticeRequest
             {
                 ProviderId = request.ProviderId,
                 CohortReference = request.CohortReference,
-                AccountLegalEntityHashedId = request.AccountLegalEntityHashedId,
-                UseLearnerData = request.UseLearnerData
+                AccountLegalEntityHashedId = request.AccountLegalEntityHashedId
             };
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [Route("add/select-how")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public ActionResult AddAnotherSelectMethod(SelectAddAnotherDraftApprenticeshipJourneyViewModel model)
-        {
-            var redirectModel = new GetReservationIdForAddAnotherApprenticeRequest
-            {
-                ProviderId = model.ProviderId,
-                CohortReference = model.CohortReference,
-                AccountLegalEntityHashedId = model.AccountLegalEntityHashedId,
-                UseLearnerData = (model.Selection == AddAnotherDraftApprenticeshipJourneyOptions.Ilr)
-            };
-
+            
             return RedirectToAction("GetReservationId", redirectModel);
         }
 
@@ -119,7 +94,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/reservation")]
         public IActionResult GetReservationId(GetReservationIdForAddAnotherApprenticeRequest request, [FromServices] ILinkGenerator urlHelper)
         {
-            var reservationUrl = $"{request.ProviderId}/reservations/{request.AccountLegalEntityHashedId}/select?cohortReference={request.CohortReference}&encodedPledgeApplicationId={request.EncodedPledgeApplicationId}&useLearnerData={request.UseLearnerData}";
+            var reservationUrl = $"{request.ProviderId}/reservations/{request.AccountLegalEntityHashedId}/select?cohortReference={request.CohortReference}&encodedPledgeApplicationId={request.EncodedPledgeApplicationId}";
             if (!string.IsNullOrWhiteSpace(request.TransferSenderHashedId))
             {
                 reservationUrl += $"&transferSenderId={request.TransferSenderHashedId}";

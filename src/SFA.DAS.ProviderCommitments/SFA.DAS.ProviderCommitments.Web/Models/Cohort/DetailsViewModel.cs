@@ -67,11 +67,10 @@ public class DetailsViewModel : IAuthorizationContextModel
     public bool IsLinkedToChangeOfPartyRequest { get; set; }
     public string Status { get; set; }
     public bool ShowRofjaaRemovalBanner { get; set; }
-    public bool ShowInvalidProviderCoursesBanner => InvalidProviderCourseCodes == null? false : InvalidProviderCourseCodes.Any();
+    public bool ShowInvalidProviderCoursesBanner => InvalidProviderCourseCodes?.Any() ?? false;
     public List<string> InvalidProviderCourseCodes { get; set; }
     public List<long> RplErrorDraftApprenticeshipIds { get; set; }
     public int NumberOfRplErrors => RplErrorDraftApprenticeshipIds?.Count ?? 0;
-    public bool UseLearnerData { get; set; }
     public bool HasFoundationApprenticeships { get; set; }
 }
 

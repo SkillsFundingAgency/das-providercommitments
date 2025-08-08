@@ -19,27 +19,21 @@
         <h1 class="govuk-heading-xl">@Model.PageTitle</h1>
 
         <p class="govuk-body">
-            If you cannot find the apprentice you're looking for, try:
+            These are learners you’ve submitted an ILR for.
         </p>
 
-        <ul class="govuk-list govuk-list--bullet xgovuk-list--spaced">
-            <li>refreshing this page</li>
-            <li>updating the ILR</li>
-            <li>
-                @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
-                {
-                    <a href="@Url.Action("AddDraftApprenticeshipCourse", "DraftApprenticeship", new {Model.ProviderId, Model.CohortReference, Model.ReservationId, Model.CacheKey})" class="govuk-link">
-                        manually adding your apprentice
-                    </a>
-                }
-                else
-                {
-                    <a href="@Url.Action("SelectCourse", "Cohort", new {Model.ProviderId, Model.CacheKey, Model.ReservationId})" class="govuk-link">
-                        manually adding your apprentice
-                    </a>
-                }
-            </li>
-        </ul>
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    I can't find the learner I need
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+              <p class="govuk-body">
+                 It can take up to 15 minutes for these records to update after an ILR file is submitted. Try refreshing this page after 15 minutes.
+              </p>
+            </div>
+        </details>
     </div>
 </div>
 
@@ -190,6 +184,6 @@ else
     }
     else
     {
-        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", "Cohort", new { @Model.ProviderId, UseLearnerData = true })>Back</a>
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", "Cohort", new { @Model.ProviderId })>Back</a>
     }
 }
