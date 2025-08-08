@@ -14,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public Guid? CacheKey { get; set; }
         public string CohortReference { get; set; }
         public long ProviderId { get; set; }
-        public Guid ReservationId { get; set; }
+        public Guid? ReservationId { get; set; }
         public string StartMonthYear { get; set; }
         public string CourseCode { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
