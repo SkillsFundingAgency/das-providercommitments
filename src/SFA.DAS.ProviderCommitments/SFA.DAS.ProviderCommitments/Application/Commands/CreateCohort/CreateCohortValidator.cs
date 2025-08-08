@@ -8,6 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
         {
             RuleFor(x => x.ProviderId).NotEmpty();
             RuleFor(x => x.AccountLegalEntityId).NotEmpty();
+            RuleFor(x => x.ReservationId).NotEmpty();
         }
     }
 }

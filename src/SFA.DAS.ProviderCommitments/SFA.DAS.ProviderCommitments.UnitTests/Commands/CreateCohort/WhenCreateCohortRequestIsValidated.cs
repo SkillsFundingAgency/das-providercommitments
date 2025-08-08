@@ -43,6 +43,15 @@ public class WhenCreateCohortRequestIsValidated
     }
 
     [Test]
+    public void ThenReservationIdIsRequired()
+    {
+        _validRequest.ReservationId = Guid.Empty;
+        var result = _act();
+        result.IsValid.Should().BeFalse();
+    }
+
+
+    [Test]
     public void ThenEmployerAccountIdIsRequired()
     {
         _validRequest.AccountLegalEntityId = 0;
