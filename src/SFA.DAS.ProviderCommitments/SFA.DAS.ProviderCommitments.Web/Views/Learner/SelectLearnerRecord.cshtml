@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+﻿@using System.Globalization
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectLearnerRecordViewModel
@@ -109,6 +110,14 @@
                     Course
                 </th>
                 <th scope="col" class="govuk-table__header">
+                    <a class="@(Model.FilterModel.SortField == "StartDate" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
+                       asp-route="@RouteNames.SelectLearnerRecord"
+                       asp-all-route-data="@Model.FilterModel.BuildSortRouteData("StartDate")"
+                       title="Sort the table by StartDate">
+                        Start date
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
 
                 </th>
             </tr>
@@ -125,6 +134,9 @@
                     </td>
                     <td class="govuk-table__cell" data-label="Apprenticeship training course">
                         @apprenticeship.CourseName
+                    </td>
+                    <td class="govuk-table__cell" data-label="StartDate">
+                        @apprenticeship.StartDate.ToString("dd MMM yyyy")
                     </td>
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
                         @if (string.IsNullOrWhiteSpace(Model.CohortReference))
