@@ -2,6 +2,7 @@
 @using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.CommitmentsV2.Api.Client
 @using SFA.DAS.ProviderCommitments.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models
 @inject ICommitmentsApiClient CommitmentsApiClient
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
@@ -40,7 +41,7 @@
 
 @if (Model is EditDraftApprenticeshipViewModel)
 {
-    <h1 class="govuk-heading-xl">Edit apprentice details</h1>
+    <h1 class="govuk-heading-xl">View apprentice details</h1>
 }
 else
 {
@@ -49,6 +50,39 @@ else
 
 <div class="govuk-inset-text">
     <p class="govuk-body">You can only receive payments for this apprentice if all the fields have been completed by yourself for the employer.</p>
+</div>
+
+<div>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+            <dt class="govuk-summary-list__key" id="employer-label">
+                Employer
+            </dt>
+            <dd class="govuk-summary-list__value" id="employer-value">
+                @Model.Employer
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key" id="course-label">
+                Training course
+            </dt>
+            <dd class="govuk-summary-list__value" id="course-value">
+                @Model.CourseName
+            </dd>
+        </div>
+
+        @if (Model.HasMultipleDeliveryModelOptions || Model.HasUnavailableFlexiJobAgencyDeliveryModel || Model.HasChangedDeliveryModel || Model.DeliveryModel != DeliveryModel.Regular)
+        {
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key" id="delivery-model-label">
+                    Delivery model
+                </dt>
+                <dd class="govuk-summary-list__value" id="delivery-model-value">
+                    @Model.DeliveryModel.ToDescription()
+                </dd>
+            </div>
+        }
+    </dl>
 </div>
 
 <div class="govuk-form-group">
