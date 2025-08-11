@@ -13,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 CohortReference = source.CohortReference,
                 CourseCode = source.CourseCode,
                 DeliveryModel = source.DeliveryModel,
-                ReservationId = source.ReservationId.Value,
+                ReservationId = source.ReservationId,
                 StartMonthYear = source.StartMonthYear,
                 IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
             });
