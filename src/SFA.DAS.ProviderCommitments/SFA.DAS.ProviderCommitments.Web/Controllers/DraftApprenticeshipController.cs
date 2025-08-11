@@ -157,7 +157,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/choose-pilot-status")]
-        [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ChoosePilotStatus(ReservationsAddDraftApprenticeshipRequest request)
         {
@@ -184,7 +183,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/choose-pilot-status-draft-change")]
-        [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ChoosePilotStatusForDraftChange(ReservationsAddDraftApprenticeshipRequest request)
         {
@@ -211,7 +209,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/select-delivery-model")]
-        [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectDeliveryModel(ReservationsAddDraftApprenticeshipRequest request)
         {
@@ -228,7 +225,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/select-delivery-model")]
-        [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SetDeliveryModel(SelectDeliveryModelViewModel model)
         {
