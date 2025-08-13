@@ -76,6 +76,8 @@ public class LearnerRecordsFilterModel
     public Guid? ReservationId { get; set; }
     public bool ShowPageLinks => TotalNumberOfLearnersFound > LearnerRecordSearch.NumberOfLearnersPerSearchPage;
     public Dictionary<string, string> RouteData => BuildRouteData();
+    public int? StartMonth { get; set; }
+    public int StartYear { get; set; } = DateTime.UtcNow.Year;
 
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
