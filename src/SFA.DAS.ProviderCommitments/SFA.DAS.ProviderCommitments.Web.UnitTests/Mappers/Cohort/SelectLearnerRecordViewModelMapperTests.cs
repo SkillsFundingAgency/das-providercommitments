@@ -24,7 +24,7 @@ public class SelectLearnerRecordViewModelMapperTests
 
         _outerApiService = new Mock<IOuterApiService>();
 
-        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.CohortId, _request.SearchTerm, _request.SortField, _request.ReverseSort, _request.Page))
+        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.CohortId, _request.SearchTerm, _request.SortField, _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear))
             .ReturnsAsync(_apiResponse);
 
         _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
