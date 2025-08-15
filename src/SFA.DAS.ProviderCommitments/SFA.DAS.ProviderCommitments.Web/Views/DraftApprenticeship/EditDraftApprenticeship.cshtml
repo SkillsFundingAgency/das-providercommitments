@@ -37,7 +37,7 @@
 
             <button type="submit" id="defaultButton" aria-hidden="true" class="govuk-visually-hidden" tabindex="-1"></button>
             
-            @if (Model.IsContinuation)
+            @if (Model.IsContinuation || Model.LearnerDataId == null)
             {
                 <partial name="DraftApprenticeship" for="@Model"/>
             }
