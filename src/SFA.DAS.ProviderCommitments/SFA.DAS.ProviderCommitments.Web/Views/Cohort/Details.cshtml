@@ -361,7 +361,7 @@
                 }
                 <td class="govuk-table__cell govuk-table__cell--numeric">
                     <a class="govuk-link edit-apprentice" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { draftApprenticeship.DraftApprenticeshipHashedId, Model.CohortReference, Model.ProviderId })">
-                        @(Model.IsReadOnly ? "View" : "View")
+                        @(Model.IsReadOnly ? "View" : "Edit")
                         <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName's details</span>
                     </a>
                     @if (!Model.IsReadOnly && !Model.IsLinkedToChangeOfPartyRequest)
