@@ -16,6 +16,6 @@ public class SelectLearnerRecordRequest : IAuthorizationContextModel
     public string CohortReference { get; set; }
     public long? CohortId { get; set; }
     public int? StartMonth { get; set; }
-    public int StartYear { get; set; }
+    public int StartYear { get; set; } = 2025;
 }
 
