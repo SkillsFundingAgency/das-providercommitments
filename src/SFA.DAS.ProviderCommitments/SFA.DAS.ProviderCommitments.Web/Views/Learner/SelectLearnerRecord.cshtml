@@ -1,5 +1,4 @@
-﻿@using System.Globalization
-@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+﻿@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectLearnerRecordViewModel
@@ -55,11 +54,6 @@
                     </div>
                 </div>
             </div>
-            
-            @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm))
-            {
-                <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.SelectLearnerRecord" asp-all-route-data="@routeValues">Clear search</a></p>
-            }
         </div>
     </div>
     <input type="hidden" value="@Model.FilterModel.SortField" name="SortField" />
@@ -74,6 +68,66 @@
     {
         <input type="hidden" value="@Model.CohortReference" name="CohortReference"/>
     }
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <div class="das-pane govuk-!-margin-bottom-3">
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-third">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="selectedMonth">Start month</label>
+
+                            <select class="govuk-select govuk-!-width-full" id="startMonth" name="startMonth">
+                                @foreach(var month in Model.FilterModel.MonthNames)
+                                {
+                                    if (Model.FilterModel.StartMonth == month.Value)
+                                    {
+                                        <option label="@month.Key" aria-label="@month.Key" value="@month.Value" selected="selected" >@month.Key</option>
+                                    }
+                                    else
+                                    {
+                                        <option label="@month.Key" aria-label="@month.Key" value="@month.Value" >@month.Key</option>
+                                    }
+                                })
+                            </select>
+                     </div>
+                    </div>
+                    <div class="govuk-grid-column-one-third">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="selectedYear">Start year</label>
+                            <select class="govuk-select govuk-!-width-full" id="startYear" name="startYear">
+                                @foreach (var year in Model.FilterModel.YearNames)
+                                {
+                                    if (Model.FilterModel.StartYear == year)
+                                    {
+                                        <option label="@year" aria-label="@year" value="@year" selected="selected">@year</option>
+                                    }
+                                    else
+                                    {
+                                        <option label="@year" aria-label="@year" value="@year">@year</option>
+                                    }
+                                })
+                            </select>
+                        </div>
+                    </div>
+                    <div class="govuk-grid-column-one-third">
+                        <div class="govuk-form-group">
+                        </div>
+                    </div>
+                </div>
+
+
+                <button class="govuk-button govuk-!-margin-0" type="submit">Apply filters</button>
+            </div>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm))
+        {
+            <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.SelectLearnerRecord" asp-all-route-data="@routeValues">Clear search</a></p>
+        }
+    </div>
+
+    
+
+
 </form>
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">

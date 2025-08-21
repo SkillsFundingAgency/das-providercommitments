@@ -79,7 +79,26 @@ public class LearnerRecordsFilterModel
     public int? StartMonth { get; set; }
     public int StartYear { get; set; } = DateTime.UtcNow.Year;
 
+    public List<KeyValuePair<string, int?>> MonthNames { get; set; }
+    public List<int> YearNames { get; set; }
+
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
+
+    public LearnerRecordsFilterModel()
+    {
+        MonthNames =
+        [
+            new("All", null), new("January", 1), new("February", 2), new("March", 3), new("April", 4),
+            new("May", 5), new("June", 6), new("July", 7), new("August", 8), new("September", 9), new("October", 10),
+            new("November", 11), new("December", 12)
+        ];
+
+        YearNames = new List<int> { 2024 };
+        for (var i = 2025; i <= DateTime.UtcNow.Year + 1; i++)
+        {
+            YearNames.Add(i);
+        }
+    }
 
     private Dictionary<string, string> BuildRouteData()
     {
