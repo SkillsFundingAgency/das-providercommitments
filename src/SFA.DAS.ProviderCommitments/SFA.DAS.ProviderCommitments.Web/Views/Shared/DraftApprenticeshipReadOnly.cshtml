@@ -93,7 +93,7 @@ else
             </span>
         </summary>
         <div class="govuk-details__text">
-            You will need to amend most details in the ILR. It can take up to 15 minutes to update here and you might need to refresh your browser.
+            You will need to remove the apprentice from the cohort or delete the cohort. Then update the apprentice details in the ILR and add the apprentice again.
         </div>
     </details>
 </div>
@@ -162,9 +162,17 @@ else
             </dl>
         </div>
         <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Email, "govuk-form-group--error")">
-            <label asp-for="Email" class="govuk-label govuk-!-font-weight-bold">Email address</label>
             @Html.ValidationMessageFor(m => m.Email, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email) })
-            <input asp-for="Email" class="govuk-input" />
+            <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+                <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                    <dt class="govuk-summary-list__key" id="email-label">
+                        <label asp-for="Email" class="govuk-label govuk-!-font-weight-bold">Email address</label>
+                    </dt>
+                    <dd class="govuk-summary-list__value" id="email-value">
+                        <input asp-for="Email" class="govuk-input"/>
+                    </dd>
+                </div>
+            </dl>
             <details class="govuk-details govuk-!-margin-top-4" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
