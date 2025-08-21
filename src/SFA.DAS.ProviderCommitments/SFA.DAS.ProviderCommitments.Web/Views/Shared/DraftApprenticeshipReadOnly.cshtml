@@ -169,7 +169,7 @@ else
                         <label asp-for="Email" class="govuk-label govuk-!-font-weight-bold">Email address</label>
                     </dt>
                     <dd class="govuk-summary-list__value" id="email-value">
-                        <input asp-for="Email" class="govuk-input"/>
+                        <input asp-for="Email" class="govuk-input" size="100"/>
                     </dd>
                 </div>
             </dl>
@@ -247,13 +247,20 @@ else
 
 <div class="govuk-character-count" data-module="character-count" data-maxlength="20">
     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Reference, "govuk-form-group--error")">
-        <label asp-for="Reference" class="govuk-label govuk-!-font-weight-bold">Reference (optional)</label>
+        @Html.ValidationMessageFor(m => m.Reference, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Reference) })
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                <dt class="govuk-summary-list__key" id="email-label">
+                    <label asp-for="Reference" class="govuk-label govuk-!-font-weight-bold">Reference (optional)</label>
+                </dt>
+                <dd class="govuk-summary-list__value" id="email-value">
+                    <input maxlength="20" asp-for="Reference" class="govuk-input govuk-!-width-three-quarters js-character-count"/>
+                </dd>
+            </div>
+        </dl>
         <span id="reference-hint" class="govuk-hint">
             Add a reference, such as employee number or location - this won’t be seen by the employer
         </span>
-        @Html.ValidationMessageFor(m => m.Reference, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Reference) })
-
-        <input maxlength="20" asp-for="Reference" class="govuk-input govuk-!-width-three-quarters js-character-count" />
     </div>
 </div>
 
