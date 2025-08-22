@@ -36,10 +36,17 @@
             <input type="hidden" asp-for="HasMultipleDeliveryModelOptions"/>
 
             <button type="submit" id="defaultButton" aria-hidden="true" class="govuk-visually-hidden" tabindex="-1"></button>
-
-            <partial name="DraftApprenticeship" for="@Model" />
-
-            <button type="submit" class="govuk-button" id="submitAddDraftApprenticeship">Save</button>
+            
+            @if (Model.IsContinuation || Model.LearnerDataId == null)
+            {
+                <partial name="DraftApprenticeship" for="@Model"/>
+                <button type="submit" class="govuk-button" id="submitAddDraftApprenticeship">Save</button>
+            }
+            else
+            {
+                <partial name="DraftApprenticeshipReadOnly" for="@Model"/>
+                <button type="submit" class="govuk-button" id="submitAddDraftApprenticeship">Continue</button>
+            }
 
             @if (!Model.IsContinuation)
             {
