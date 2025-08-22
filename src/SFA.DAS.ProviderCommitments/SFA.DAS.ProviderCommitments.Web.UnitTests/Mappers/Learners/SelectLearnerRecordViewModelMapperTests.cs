@@ -35,6 +35,8 @@ public class SelectLearnerRecordViewModelMapperTests
     {
         var result = await _mapper.Map(_request);
         result.FilterModel.ProviderId.Should().Be(_request.ProviderId);
+        result.FilterModel.StartYear.Should().Be(_request.StartYear);
+        result.FilterModel.StartMonth.Should().Be(_request.StartMonth);
         result.FilterModel.EmployerAccountLegalEntityPublicHashedId.Should().Be(_request.EmployerAccountLegalEntityPublicHashedId);
         result.FilterModel.CohortReference.Should().Be(_request.CohortReference);
         result.FilterModel.TotalNumberOfLearnersFound.Should().Be(_apiResponse.Total);
