@@ -1,4 +1,6 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using static SFA.DAS.ProviderCommitments.Constants;
 using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ApprenticesFilterModel;
@@ -76,11 +78,10 @@ public class LearnerRecordsFilterModel
     public Guid? ReservationId { get; set; }
     public bool ShowPageLinks => TotalNumberOfLearnersFound > LearnerRecordSearch.NumberOfLearnersPerSearchPage;
     public Dictionary<string, string> RouteData => BuildRouteData();
-    public int? StartMonth { get; set; }
-    public int StartYear { get; set; } = DateTime.UtcNow.Year;
-
-    public List<KeyValuePair<string, int?>> MonthNames { get; set; }
-    public List<int> YearNames { get; set; }
+    public string StartMonth { get; set; }
+    public string StartYear { get; set; } = DateTime.UtcNow.Year.ToString();
+    public List<SelectListItem> MonthNames { get; set; }
+    public List<SelectListItem> YearNames { get; set; }
 
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
@@ -88,16 +89,21 @@ public class LearnerRecordsFilterModel
     {
         MonthNames =
         [
-            new("All", null), new("January", 1), new("February", 2), new("March", 3), new("April", 4),
-            new("May", 5), new("June", 6), new("July", 7), new("August", 8), new("September", 9), new("October", 10),
-            new("November", 11), new("December", 12)
+            new SelectListItem("All", ""),
+            .. Enumerable.Range(1, 12)
+                .Select(m => new SelectListItem
+                {
+                    Text = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m),
+                    Value = m.ToString()
+                })
         ];
 
-        YearNames = new List<int> { 2024 };
-        for (var i = 2025; i <= DateTime.UtcNow.Year + 1; i++)
-        {
-            YearNames.Add(i);
-        }
+        YearNames = Enumerable.Range(2024, DateTime.UtcNow.Year - 2022)
+                .Select(m => new SelectListItem
+                {
+                    Text = m.ToString(),
+                    Value = m.ToString()
+                }).ToList();
     }
 
     private Dictionary<string, string> BuildRouteData()
@@ -123,6 +129,9 @@ public class LearnerRecordsFilterModel
         {
             routeData.Add(nameof(SearchTerm), SearchTerm);
         }
+
+        routeData.Add(nameof(StartMonth), StartMonth);
+        routeData.Add(nameof(StartYear), StartYear);
 
         return routeData;
     }

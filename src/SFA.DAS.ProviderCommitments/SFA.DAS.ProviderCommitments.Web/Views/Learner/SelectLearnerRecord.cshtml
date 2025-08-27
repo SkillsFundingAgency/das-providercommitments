@@ -74,38 +74,14 @@
                 <div class="govuk-grid-row">
                     <div class="govuk-grid-column-one-third">
                         <div class="govuk-form-group">
-                            <label class="govuk-label" for="selectedMonth">Start month</label>
-
-                            <select class="govuk-select govuk-!-width-full" id="startMonth" name="startMonth">
-                                @foreach(var month in Model.FilterModel.MonthNames)
-                                {
-                                    if (Model.FilterModel.StartMonth == month.Value)
-                                    {
-                                        <option label="@month.Key" aria-label="@month.Key" value="@month.Value" selected="selected" >@month.Key</option>
-                                    }
-                                    else
-                                    {
-                                        <option label="@month.Key" aria-label="@month.Key" value="@month.Value" >@month.Key</option>
-                                    }
-                                })
-                            </select>
-                     </div>
+                            <label class="govuk-label" for="FilterModel.StartMonth">Start month</label>
+                            <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.StartMonth" name="StartMonth" asp-items="Model.FilterModel.MonthNames">
+                            </select></div>
                     </div>
                     <div class="govuk-grid-column-one-third">
                         <div class="govuk-form-group">
-                            <label class="govuk-label" for="selectedYear">Start year</label>
-                            <select class="govuk-select govuk-!-width-full" id="startYear" name="startYear">
-                                @foreach (var year in Model.FilterModel.YearNames)
-                                {
-                                    if (Model.FilterModel.StartYear == year)
-                                    {
-                                        <option label="@year" aria-label="@year" value="@year" selected="selected">@year</option>
-                                    }
-                                    else
-                                    {
-                                        <option label="@year" aria-label="@year" value="@year">@year</option>
-                                    }
-                                })
+                            <label class="govuk-label" for="StartYear">Start year</label>
+                            <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.StartYear" name="StartYear" asp-items="Model.FilterModel.YearNames">
                             </select>
                         </div>
                     </div>

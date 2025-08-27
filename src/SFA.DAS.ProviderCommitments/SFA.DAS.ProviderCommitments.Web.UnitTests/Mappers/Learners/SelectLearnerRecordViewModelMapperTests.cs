@@ -24,7 +24,9 @@ public class SelectLearnerRecordViewModelMapperTests
 
         _outerApiService = new Mock<IOuterApiService>();
 
-        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.CohortId, _request.SearchTerm, _request.SortField, _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear))
+        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId,
+                _request.CohortId, _request.SearchTerm, _request.SortField,
+                _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear))
             .ReturnsAsync(_apiResponse);
 
         _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
@@ -35,8 +37,8 @@ public class SelectLearnerRecordViewModelMapperTests
     {
         var result = await _mapper.Map(_request);
         result.FilterModel.ProviderId.Should().Be(_request.ProviderId);
-        result.FilterModel.StartYear.Should().Be(_request.StartYear);
-        result.FilterModel.StartMonth.Should().Be(_request.StartMonth);
+        result.FilterModel.StartYear.Should().Be(_request.StartYear.ToString());
+        result.FilterModel.StartMonth.Should().Be(_request.StartMonth.ToString());
         result.FilterModel.EmployerAccountLegalEntityPublicHashedId.Should().Be(_request.EmployerAccountLegalEntityPublicHashedId);
         result.FilterModel.CohortReference.Should().Be(_request.CohortReference);
         result.FilterModel.TotalNumberOfLearnersFound.Should().Be(_apiResponse.Total);
