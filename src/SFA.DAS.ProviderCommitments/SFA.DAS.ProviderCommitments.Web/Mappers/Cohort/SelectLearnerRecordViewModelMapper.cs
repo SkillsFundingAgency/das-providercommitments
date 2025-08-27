@@ -24,8 +24,8 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
             SortField = source.SortField,
             ReverseSort = source.ReverseSort,
             SearchTerm = source.SearchTerm,
-            StartMonth = source.StartMonth,
-            StartYear = source.StartYear
+            StartMonth = source.StartMonth.ToString(),
+            StartYear = source.StartYear.ToString()
         };
 
         var model = new SelectLearnerRecordViewModel
