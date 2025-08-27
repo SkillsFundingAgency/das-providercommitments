@@ -11,7 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
         }
 
         public Guid CacheKey { get; set; }
-        public Guid ReservationId { get; set; }
+        public Guid? ReservationId { get; set; }
         public string StartMonthYear { get; set; }
         public string CohortReference { get; set; }
         public string CourseCode { get; set; }
