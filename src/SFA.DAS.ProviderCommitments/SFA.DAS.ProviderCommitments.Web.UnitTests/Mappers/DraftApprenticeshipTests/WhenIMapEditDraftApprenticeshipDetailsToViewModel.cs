@@ -337,4 +337,11 @@ public class WhenIMapEditDraftApprenticeshipDetailsToViewModel
         var result = await _act();
         result.HasChangedDeliveryModel.Should().Be(expectedResult);
     }
+
+    [Test]
+    public async Task ThenLearnerDataIdIsMappedCorrectly()
+    {
+        var result = await _act();
+        result.LearnerDataId.Should().Be(_apiResponse.LearnerDataId);
+    }
 }

@@ -17,9 +17,15 @@
             @Html.HiddenFor(x => x.HasMultipleDeliveryModelOptions)            
 
             <button type="submit" id="defaultButton" aria-hidden="true" class="govuk-visually-hidden" tabindex="-1"></button>
-
-            <partial name="DraftApprenticeship" for="@Model" />
-
+            
+            @if(Model.LearnerDataId == null)
+            {
+                <partial name="DraftApprenticeship" for="@Model" />
+            }
+            else
+            {
+                <partial name="DraftApprenticeshipReadOnly" for="@Model" />
+            }
             <button type="submit" class="govuk-button" id="submitAddDraftApprenticeship">Add</button>
 
             @if (Model.CohortReference != null)

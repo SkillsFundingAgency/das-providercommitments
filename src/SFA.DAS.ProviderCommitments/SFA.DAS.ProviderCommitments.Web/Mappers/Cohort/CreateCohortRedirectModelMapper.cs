@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var cacheKey = Guid.NewGuid();
             var cacheItem = new CreateCohortCacheItem(cacheKey)
             {
-                ReservationId = source.ReservationId.Value,
+                ReservationId = source.ReservationId,
                 StartMonthYear = source.StartMonthYear,
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 UseLearnerData = source.UseLearnerData,
