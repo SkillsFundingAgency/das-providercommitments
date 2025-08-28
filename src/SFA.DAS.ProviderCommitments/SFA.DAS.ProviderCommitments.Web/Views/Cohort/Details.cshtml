@@ -118,18 +118,13 @@
     <dd class="das-definition-list__definition">@Model.Status</dd>
 </dl>
 
-<h2 class="govuk-heading-s">Message:</h2>
-<div class="govuk-inset-text">
-    @if (string.IsNullOrWhiteSpace(Model.Message))
-    {
-        <span>No message added.</span>
-    }
-    else
-    {
+@if (!string.IsNullOrWhiteSpace(Model.Message))
+{
+    <h2 class="govuk-heading-s">Message:</h2>
+    <div class="govuk-inset-text">
         @Model.Message
-    }
-</div>
-
+    </div>
+}
 
 <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
