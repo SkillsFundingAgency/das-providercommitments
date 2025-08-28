@@ -144,6 +144,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
+        public void AndWhenPostingToSelectHowPageWithTransferSenderIdThenTransferSenderIdIsPreserved()
+        {
+            // Arrange
+            _fixture.SetupSelectHowViewModelWithTransferSenderId("ABCD");
+
+            // Act
+            _fixture.PostToAddAnotherSelectionMethod();
+
+            // Assert
+            _fixture.VerifyRouteValueContainsTransferSenderId("ABCD");
+        }
+
+        [Test]
+        public void AndWhenPostingToSelectHowPageWithEncodedPledgeApplicationIdThenEncodedPledgeApplicationIdIsPreserved()
+        {
+            // Arrange
+            _fixture.SetupSelectHowViewModelWithEncodedPledgeApplicationId("PLEDGE123");
+
+            // Act
+            _fixture.PostToAddAnotherSelectionMethod();
+
+            // Assert
+            _fixture.VerifyRouteValueContainsEncodedPledgeApplicationId("PLEDGE123");
+        }
+
+        [Test]
         public async Task AndWhenApprenticeshipStartsBeforeMandatoryRplThenRedirectToRplQuestion()
         {
             _fixture
