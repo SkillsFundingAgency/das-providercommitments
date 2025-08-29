@@ -1,4 +1,6 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using static SFA.DAS.ProviderCommitments.Constants;
 using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ApprenticesFilterModel;
@@ -76,8 +78,33 @@ public class LearnerRecordsFilterModel
     public Guid? ReservationId { get; set; }
     public bool ShowPageLinks => TotalNumberOfLearnersFound > LearnerRecordSearch.NumberOfLearnersPerSearchPage;
     public Dictionary<string, string> RouteData => BuildRouteData();
+    public string StartMonth { get; set; }
+    public string StartYear { get; set; } = DateTime.UtcNow.Year.ToString();
+    public List<SelectListItem> MonthNames { get; set; }
+    public List<SelectListItem> YearNames { get; set; }
 
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
+
+    public LearnerRecordsFilterModel()
+    {
+        MonthNames =
+        [
+            new SelectListItem("All", ""),
+            .. Enumerable.Range(1, 12)
+                .Select(m => new SelectListItem
+                {
+                    Text = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m),
+                    Value = m.ToString()
+                })
+        ];
+
+        YearNames = Enumerable.Range(2024, DateTime.UtcNow.Year - 2022)
+                .Select(m => new SelectListItem
+                {
+                    Text = m.ToString(),
+                    Value = m.ToString()
+                }).ToList();
+    }
 
     private Dictionary<string, string> BuildRouteData()
     {
@@ -102,6 +129,9 @@ public class LearnerRecordsFilterModel
         {
             routeData.Add(nameof(SearchTerm), SearchTerm);
         }
+
+        routeData.Add(nameof(StartMonth), StartMonth);
+        routeData.Add(nameof(StartYear), StartYear);
 
         return routeData;
     }
