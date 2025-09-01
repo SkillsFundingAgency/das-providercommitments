@@ -72,7 +72,7 @@ public class LearnerRecordsFilterModel
     public string SearchTerm { get; set; }
     public int TotalNumberOfLearnersFound { get; set; }
     public HtmlString TotalNumberOfApprenticeshipsFoundDescription =>
-        new HtmlString($"{TotalNumberOfLearnersFound} apprentice records " + GetFiltersUsedMessage());
+        new HtmlString($"{TotalNumberOfLearnersFound} apprentice records found " + GetFiltersUsedMessage());
 
     public string SortField { get; set; }
     public bool ReverseSort { get; set; }
