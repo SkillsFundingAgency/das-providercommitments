@@ -3,7 +3,7 @@ using System.Linq;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Learners
 {
     public class WhenGettingPageLinksForSelectLearnerRecord
     {

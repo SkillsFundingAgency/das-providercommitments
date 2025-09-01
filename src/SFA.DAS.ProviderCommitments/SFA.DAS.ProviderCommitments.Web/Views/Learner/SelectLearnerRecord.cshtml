@@ -111,14 +111,9 @@
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-one-half">
-        @if (Model.Learners.Count > 0)
-        {
-            <p class="govuk-body">@Model.FilterModel.TotalNumberOfApprenticeshipsFoundDescription</p>
-        }
-        else
-        {
-            <p class="govuk-body">No results found matching <b>@Model.FilterModel.MonthNames.First(x => x.Value == Model.FilterModel.StartMonth).Text</b> and <b>@Model.FilterModel.StartYear</b></p>
-        }
+        <p class="govuk-body">
+            @Model.FilterModel.TotalNumberOfApprenticeshipsFoundDescription
+        </p>
     </div>
     <div class="govuk-grid-column-one-half das-!-text-align-right--from-tablet">
         <p class="govuk-body">@Model.LastIlrSubmittedOnDesc</p>
