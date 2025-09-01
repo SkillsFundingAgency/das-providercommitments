@@ -10,12 +10,12 @@
         q => q.Key,
         q =>
         {
-            return q.Key switch
+            return q.Key.ToLower() switch
             {
-                "searchTerm" => "",
-                "startMonth" => "",
-                "startYear" => "",
-                _ => q.Key
+                "searchterm" => "",
+                "startmonth" => "",
+                "startyear" => "",
+                _ => q.Value.ToString()
             };
         });
 }
