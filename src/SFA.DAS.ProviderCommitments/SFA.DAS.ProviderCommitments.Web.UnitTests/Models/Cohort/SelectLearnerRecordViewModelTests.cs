@@ -1,6 +1,8 @@
 ﻿using System;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using System.Globalization;
+using System.Threading;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort;
 
@@ -48,8 +50,20 @@ public class SelectLearnerRecordViewModelTests
     [Test]
     public void LastSubmittedOnIsNotBlank_DescIsCorrect()
     {
-        _viewModel.LastIlrSubmittedOn = new DateTime(2025,4,10);
-        _viewModel.LastIlrSubmittedOnDesc.Should().Be("Last updated 1:00AM on Thursday 10 April");
+        // Set culture to en-GB to ensure consistent formatting across systems
+        var originalCulture = Thread.CurrentThread.CurrentCulture;
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
+        
+        try
+        {
+            _viewModel.LastIlrSubmittedOn = new DateTime(2025,4,10);
+            _viewModel.LastIlrSubmittedOnDesc.Should().Be("Last updated 1:00am on Thursday 10 April");
+        }
+        finally
+        {
+            // Restore original culture
+            Thread.CurrentThread.CurrentCulture = originalCulture;
+        }
     }
 
     [TestCase(1, "1 apprentice record")]

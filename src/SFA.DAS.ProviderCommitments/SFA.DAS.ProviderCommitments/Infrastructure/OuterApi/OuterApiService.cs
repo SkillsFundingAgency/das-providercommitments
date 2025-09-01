@@ -9,6 +9,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
@@ -243,6 +244,15 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         var request = new GetLearnerSelectedRequest(providerId, learnerId);
 
         var response = await outerApiClient.Get<GetLearnerSelectedResponse>(request);
+
+        return response;
+    }
+
+    public async Task<SyncLearnerDataResponse> SyncLearnerData(long providerId, long cohortId, long draftApprenticeshipId)
+    {
+        var request = new SyncLearnerDataRequest(providerId, cohortId, draftApprenticeshipId);
+
+        var response = await outerApiClient.Post<SyncLearnerDataResponse>(request);
 
         return response;
     }

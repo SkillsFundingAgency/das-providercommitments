@@ -192,5 +192,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public bool? EmailAddressConfirmed { get; set; }
         public bool? EmployerHasEditedCost { get; set; }
         public long? LearnerDataId { get; set; }
+        public bool HasLearnerDataChanges { get; set; }
+        public DateTime? LastLearnerDataSync { get; set; }
     }
 }

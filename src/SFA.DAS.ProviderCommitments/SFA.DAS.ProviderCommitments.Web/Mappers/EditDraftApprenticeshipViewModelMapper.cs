@@ -59,7 +59,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     EmployerHasEditedCost = apiResponse.EmployerHasEditedCost,
                     HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && apiResponse.DeliveryModel == Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency,
                     EmailAddressConfirmed = apiResponse.EmailAddressConfirmed,
-                    LearnerDataId = apiResponse.LearnerDataId
+                    LearnerDataId = apiResponse.LearnerDataId,
+                    HasLearnerDataChanges = apiResponse.HasLearnerDataChanges,
+                    LastLearnerDataSync = apiResponse.LastLearnerDataSync
                 };
 
                 if (cachedModel != null)

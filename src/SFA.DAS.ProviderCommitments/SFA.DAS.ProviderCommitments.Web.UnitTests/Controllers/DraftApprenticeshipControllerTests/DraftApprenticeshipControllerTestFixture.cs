@@ -13,6 +13,7 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -325,7 +326,7 @@ public class DraftApprenticeshipControllerTestFixture
     {
         _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
             .ReturnsAsync(_editModel);
-        _actionResult = await _controller.EditDraftApprenticeship(_draftApprenticeshipRequest);
+        _actionResult = await _controller.EditDraftApprenticeship(null, null, null, _editModel);
         return this;
     }
 
@@ -333,7 +334,7 @@ public class DraftApprenticeshipControllerTestFixture
     {
         _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
             .ReturnsAsync(_viewModel);
-        _actionResult = await _controller.EditDraftApprenticeship(_draftApprenticeshipRequest);
+        _actionResult = await _controller.EditDraftApprenticeship(null, null, null, _editModel);
         return this;
     }
 
@@ -712,6 +713,47 @@ public class DraftApprenticeshipControllerTestFixture
     public DraftApprenticeshipControllerTestFixture VerifyUserRedirectedTo(string page)
     {
         _actionResult.VerifyReturnsRedirectToActionResult().WithActionName(page);
+        return this;
+    }
+
+    public async Task<DraftApprenticeshipControllerTestFixture> SyncLearnerData()
+    {
+        _actionResult = await _controller.SyncLearnerData(_draftApprenticeshipRequest);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupOuterApiServiceToReturnSyncResponse(SyncLearnerDataResponse response)
+    {
+        _outerApiService
+            .Setup(x => x.SyncLearnerData(_draftApprenticeshipRequest.ProviderId, _draftApprenticeshipRequest.CohortId, _draftApprenticeshipRequest.DraftApprenticeshipId))
+            .ReturnsAsync(response);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupOuterApiServiceToThrowException()
+    {
+        _outerApiService
+            .Setup(x => x.SyncLearnerData(_draftApprenticeshipRequest.ProviderId, _draftApprenticeshipRequest.CohortId, _draftApprenticeshipRequest.DraftApprenticeshipId))
+            .ThrowsAsync(new Exception("Test exception"));
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyOuterApiServiceSyncLearnerDataCalled()
+    {
+        _outerApiService.Verify(
+            x => x.SyncLearnerData(_draftApprenticeshipRequest.ProviderId, _draftApprenticeshipRequest.CohortId, _draftApprenticeshipRequest.DraftApprenticeshipId), Times.Once);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyTempDataContains(string key, string expectedValue)
+    {
+        _tempData.Verify(x => x.Add(key, expectedValue), Times.Once);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectedToEditDraftApprenticeshipPage()
+    {
+        _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("EditDraftApprenticeship");
         return this;
     }
 }

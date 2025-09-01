@@ -424,6 +424,31 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/edit", Name = RouteNames.DraftApprenticeshipEdit)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [ServiceFilter(typeof(UseCacheForValidationAttribute))]
+        public async Task<IActionResult> EditDraftApprenticeship(DraftApprenticeshipRequest request)
+        {
+            try
+            {
+                var model = await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);
+
+                if (model is EditDraftApprenticeshipViewModel editModel)
+                {
+                    await AddLegalEntityAndCoursesToModel(editModel);
+                    PrePopulateDates(editModel);
+                    return View("EditDraftApprenticeship", editModel);
+                }
+
+                return View("ViewDraftApprenticeship", model as ViewDraftApprenticeshipViewModel);
+            }
+            catch (Exception e) when (e is DraftApprenticeshipNotFoundException)
+            {
+                return RedirectToAction("Details", "Cohort", new { request.ProviderId, request.CohortReference });
+            }
+        }
+
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
@@ -482,29 +507,30 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             else if (model.IsOnFlexiPaymentPilot is true) model.StartDate = new MonthYearModel("");
         }
 
-        [HttpGet]
-        [Route("{DraftApprenticeshipHashedId}/edit", Name = RouteNames.DraftApprenticeshipEdit)]
+        [HttpPost]
+        [Route("{DraftApprenticeshipHashedId}/sync-learner-data", Name = RouteNames.DraftApprenticeshipSyncLearnerData)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> EditDraftApprenticeship(DraftApprenticeshipRequest request)
+        public async Task<IActionResult> SyncLearnerData(DraftApprenticeshipRequest request)
         {
             try
             {
-                var model = await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);
-
-                if (model is EditDraftApprenticeshipViewModel editModel)
+                var response = await _outerApiService.SyncLearnerData(request.ProviderId, request.CohortId, request.DraftApprenticeshipId);
+                
+                if (response.Success)
                 {
-                    await AddLegalEntityAndCoursesToModel(editModel);
-                    PrePopulateDates(editModel);
-                    return View("EditDraftApprenticeship", editModel);
+                    TempData["LearnerDataSyncSuccess"] = "Learner data has been successfully updated.";
                 }
-
-                return View("ViewDraftApprenticeship", model as ViewDraftApprenticeshipViewModel);
+                else
+                {
+                    TempData["LearnerDataSyncError"] = response.Message ?? "Failed to sync learner data.";
+                }
             }
-            catch (Exception e) when (e is DraftApprenticeshipNotFoundException)
+            catch (Exception)
             {
-                return RedirectToAction("Details", "Cohort", new { request.ProviderId, request.CohortReference });
+                TempData["LearnerDataSyncError"] = "An error occurred while syncing learner data.";
             }
+
+            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", request);
         }
 
         [HttpGet]
