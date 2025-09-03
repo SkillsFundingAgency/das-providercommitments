@@ -2,7 +2,7 @@
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort;
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Learners;
 
 public class SelectLearnerRecordViewModelTests
 {
@@ -13,7 +13,7 @@ public class SelectLearnerRecordViewModelTests
     public void Arrange()
     {
         _fixture = new Fixture();
-        _viewModel  = _fixture.Create<SelectLearnerRecordViewModel>();
+        _viewModel = _fixture.Create<SelectLearnerRecordViewModel>();
     }
 
     [TestCase("Test Name")]
@@ -48,16 +48,38 @@ public class SelectLearnerRecordViewModelTests
     [Test]
     public void LastSubmittedOnIsNotBlank_DescIsCorrect()
     {
-        _viewModel.LastIlrSubmittedOn = new DateTime(2025,4,10);
+        _viewModel.LastIlrSubmittedOn = new DateTime(2025, 4, 10);
         _viewModel.LastIlrSubmittedOnDesc.Should().Be("Last updated 1:00AM on Thursday 10 April");
     }
 
-    [TestCase(1, "1 apprentice record")]
+    [TestCase(1, "1 apprentice records")]
     [TestCase(100, "100 apprentice records")]
     public void TotalNumberOfApprenticesDescription_IsCorrect(int count, string expected)
     {
         _viewModel.FilterModel.TotalNumberOfLearnersFound = count;
-        _viewModel.FilterModel.TotalNumberOfApprenticeshipsFoundDescription.Should().Be(expected);
+        _viewModel.FilterModel.TotalNumberOfApprenticeshipsFoundDescription.ToString().Should().StartWith(expected);
+    }
+
+    [Test]
+    public void GettingFiltersUsed_IsJustYearWhenBlank()
+    {
+        _viewModel.FilterModel.SearchTerm = "";
+        _viewModel.FilterModel.StartMonth = "";
+        _viewModel.FilterModel.StartYear = "2025";
+        _viewModel.FilterModel.TotalNumberOfApprenticeshipsFoundDescription.ToString().Should().EndWith("<strong>2025</strong>");
+    }
+
+    [TestCase("", "", "<strong>2025</strong>")]
+    [TestCase("XXX", "", "<strong>‘XXX’</strong> and <strong>2025</strong>")]
+    [TestCase("XXX", "1", "<strong>‘XXX’</strong>, <strong>January</strong> and <strong>2025</strong>")]
+    [TestCase(null, "5", "<strong>May</strong> and <strong>2025</strong>")]
+    public void GettingFiltersUsed_MatchesExpected(string searchTerm, string startMonth, string expected)
+    {
+        _viewModel.FilterModel = new LearnerRecordsFilterModel();
+        _viewModel.FilterModel.SearchTerm = searchTerm;
+        _viewModel.FilterModel.StartMonth = startMonth;
+        _viewModel.FilterModel.StartYear = "2025";
+        _viewModel.FilterModel.TotalNumberOfApprenticeshipsFoundDescription.ToString().Should().EndWith(expected);
     }
 
     [TestCase("field1", true)]
@@ -83,8 +105,8 @@ public class SelectLearnerRecordViewModelTests
         sort["ReverseSort"].Should().Be((!reverse).ToString());
     }
 
-    [TestCase("", 5)]
-    [TestCase(null, 5)]
+    [TestCase("", 7)]
+    [TestCase(null, 7)]
     public void BuildRouteData_IsCorrect(string searchTerm, int expectedCount)
     {
         _viewModel.FilterModel.SearchTerm = searchTerm;
@@ -98,6 +120,8 @@ public class SelectLearnerRecordViewModelTests
         routeData["ReservationId"].Should().Be(_viewModel.FilterModel.ReservationId.ToString());
         routeData["EmployerAccountLegalEntityPublicHashedId"].Should().Be(_viewModel.FilterModel.EmployerAccountLegalEntityPublicHashedId);
         routeData["CohortReference"].Should().Be(_viewModel.FilterModel.CohortReference);
+        routeData["StartMonth"].Should().Be(_viewModel.FilterModel.StartMonth);
+        routeData["StartYear"].Should().Be(_viewModel.FilterModel.StartYear);
     }
 
     [Test]
@@ -108,7 +132,7 @@ public class SelectLearnerRecordViewModelTests
         var routeData = _viewModel.FilterModel.RouteData;
 
         routeData.Should().NotBeNull();
-        routeData.Count.Should().Be(6);
+        routeData.Count.Should().Be(8);
         routeData["SearchTerm"].Should().Be(_viewModel.FilterModel.SearchTerm);
     }
 
@@ -116,7 +140,7 @@ public class SelectLearnerRecordViewModelTests
     public void MapsIlrLearnerSummary_ToIlrApprenticeshipSummary()
     {
         var ilrLearner = _fixture.Create<GetLearnerSummary>();
-        var apprenticeship = (LearnerSummary) ilrLearner;
+        var apprenticeship = (LearnerSummary)ilrLearner;
 
         apprenticeship.Should().NotBeNull();
         apprenticeship.Id.Should().Be(ilrLearner.Id);
