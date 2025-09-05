@@ -135,11 +135,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeshipCourse(ReservationsAddDraftApprenticeshipRequest request)
         {
-            if (_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && request.IsOnFlexiPaymentPilot == null)
-            {
-                return RedirectToAction("ChoosePilotStatus", "DraftApprenticeship", request);
-            }
-
             var model = await _modelMapper.Map<Models.DraftApprenticeship.SelectCourseViewModel>(request);
             return View(model);
         }
@@ -157,58 +152,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
             return RedirectToAction(nameof(SelectDeliveryModel), "DraftApprenticeship", request);
-        }
-
-        [HttpGet]
-        [Route("add/choose-pilot-status")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatus(ReservationsAddDraftApprenticeshipRequest request)
-        {
-            var draft = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
-            await AddLegalEntityAndCoursesToModel(draft);
-
-            return View("ChoosePilotStatus", new ChoosePilotStatusViewModel { Selection = draft.IsOnFlexiPaymentPilot == null ? null : draft.IsOnFlexiPaymentPilot.Value ? ChoosePilotStatusOptions.Pilot : ChoosePilotStatusOptions.NonPilot });
-        }
-
-        [HttpPost]
-        [Route("add/choose-pilot-status")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> ChoosePilotStatus(ChoosePilotStatusViewModel model)
-        {
-            if (model.Selection == null)
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
-            }
-
-            var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
-            return RedirectToAction(nameof(AddDraftApprenticeshipCourse), "DraftApprenticeship", request);
-        }
-
-        [HttpGet]
-        [Route("add/choose-pilot-status-draft-change")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatusForDraftChange(ReservationsAddDraftApprenticeshipRequest request)
-        {
-            var draft = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
-            await AddLegalEntityAndCoursesToModel(draft);
-
-            return View("ChoosePilotStatus", new ChoosePilotStatusViewModel { Selection = draft.IsOnFlexiPaymentPilot == null ? null : draft.IsOnFlexiPaymentPilot.Value ? ChoosePilotStatusOptions.Pilot : ChoosePilotStatusOptions.NonPilot });
-        }
-
-        [HttpPost]
-        [Route("add/choose-pilot-status-draft-change")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> ChoosePilotStatusForDraftChange(ChoosePilotStatusViewModel model)
-        {
-            if (model.Selection == null)
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
-            }
-
-            var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
-            return RedirectToAction("AddDraftApprenticeship", "DraftApprenticeship", request);
         }
 
         [HttpGet]
@@ -258,46 +201,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var request = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
             return RedirectToAction(nameof(SelectDeliveryModelForEdit), "DraftApprenticeship", request);
-        }
-
-        [HttpGet]
-        [Route("{DraftApprenticeshipHashedId}/edit/choose-pilot-status")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatusForEdit(BaseDraftApprenticeshipRequest request)
-        {
-            var draft = PeekStoredEditDraftApprenticeshipState();
-            await AddLegalEntityAndCoursesToModel(draft);
-            var model = new ChoosePilotStatusViewModel
-            {
-                Selection = draft.IsOnFlexiPaymentPilot == null ? null : draft.IsOnFlexiPaymentPilot.Value ? ChoosePilotStatusOptions.Pilot : ChoosePilotStatusOptions.NonPilot
-            };
-
-            return View("ChoosePilotStatus", model);
-        }
-
-        [HttpPost]
-        [Route("{DraftApprenticeshipHashedId}/edit/choose-pilot-status")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult ChoosePilotStatusForEdit(ChoosePilotStatusViewModel model)
-        {
-            if (model.Selection == null)
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
-            }
-
-            var draft = PeekStoredEditDraftApprenticeshipState();
-            draft.IsOnFlexiPaymentPilot = model.Selection == ChoosePilotStatusOptions.Pilot;
-            StoreEditDraftApprenticeshipState(draft);
-
-            var request = new BaseDraftApprenticeshipRequest
-            {
-                CohortReference = draft.CohortReference,
-                DraftApprenticeshipHashedId = draft.DraftApprenticeshipHashedId,
-                ProviderId = draft.ProviderId,
-            };
-
-            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", request);
         }
 
         [HttpGet]
@@ -360,7 +263,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 model.CourseCode = request.CourseCode;
                 model.DeliveryModel = request.DeliveryModel;
                 model.CohortId = request.CohortId;
-                model.IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot;
             }
 
             await AddLegalEntityAndCoursesToModel(model);
@@ -371,13 +273,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/details")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> AddDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, AddDraftApprenticeshipViewModel model)
+        public async Task<IActionResult> AddDraftApprenticeship(string changeCourse, string changeDeliveryModel, AddDraftApprenticeshipViewModel model)
         {
-            if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
+            if (changeCourse == "Edit" || changeDeliveryModel == "Edit")
             {
                 StoreAddDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
-                var redirectAction = changeCourse == "Edit" ? nameof(AddDraftApprenticeshipCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
+                var redirectAction = changeCourse == "Edit" ? nameof(AddDraftApprenticeshipCourse) : nameof(SelectDeliveryModel);
 
                 return RedirectToAction(redirectAction, "DraftApprenticeship", req);
             }
@@ -432,14 +334,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, EditDraftApprenticeshipViewModel model)
+        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, EditDraftApprenticeshipViewModel model)
         {
-            if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
+            if (changeCourse == "Edit" || changeDeliveryModel == "Edit")
             {
                 StoreEditDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
 
-                var redirectAction = changeCourse == "Edit" ? nameof(EditDraftApprenticeshipCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModelForEdit) : nameof(ChoosePilotStatusForEdit);
+                var redirectAction = changeCourse == "Edit" ? nameof(EditDraftApprenticeshipCourse) : nameof(SelectDeliveryModelForEdit);
                 return RedirectToAction(redirectAction, "DraftApprenticeship", req);
             }
 
@@ -482,8 +384,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private static void SetStartDatesBasedOnFlexiPaymentPilotRules(DraftApprenticeshipViewModel model)
         {
-            if (model.IsOnFlexiPaymentPilot is null or false) model.ActualStartDate = new DateModel();
-            else if (model.IsOnFlexiPaymentPilot is true) model.StartDate = new MonthYearModel("");
+            model.ActualStartDate = new DateModel();
         }
 
         [HttpGet]
@@ -676,24 +577,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private static void PrePopulateDates(EditDraftApprenticeshipViewModel model)
         {
-            if (model.IsOnFlexiPaymentPilot.GetValueOrDefault())
-            {
-                EnsureActualStartDatePrePopulation(model);
-            }
-            else
-            {
-                EnsurePlannedStartDatePrePopulation(model);
-            }
-        }
-
-        private static void EnsureActualStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
-        {
-            if (model.ActualStartYear.HasValue && model.ActualStartMonth.HasValue)
-                return;
-
-
-            model.ActualStartYear = model.StartYear;
-            model.ActualStartMonth = model.StartMonth;
+            EnsurePlannedStartDatePrePopulation(model);
         }
 
         private static void EnsurePlannedStartDatePrePopulation(EditDraftApprenticeshipViewModel model)

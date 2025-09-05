@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -16,13 +15,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
  {
      public async Task<CreateCohortRedirectModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
-            CreateCohortRedirectModel.RedirectTarget RedirectTo(bool isOnFlexiPaymentPiolt)
+            CreateCohortRedirectModel.RedirectTarget RedirectTo()
             {
-                if (isOnFlexiPaymentPiolt)
-                {
-                    return CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus;
-                }
-
                 if (configuration.GetValue<bool>("ILRFeaturesEnabled") == false)
                 {
                     return CreateCohortRedirectModel.RedirectTarget.SelectCourse;
@@ -38,8 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     : CreateCohortRedirectModel.RedirectTarget.SelectCourse;
             }
 
-            var flexiPaymentsAuthorized = await authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot);
-            logger.LogInformation("Returning CreateCohortRedirectModel, isOnFlexiPaymentPilot {0}, UseLearnerData {1}", flexiPaymentsAuthorized, source.UseLearnerData);
+            logger.LogInformation("Returning CreateCohortRedirectModel, UseLearnerData {1}", source.UseLearnerData);
 
             var cacheKey = Guid.NewGuid();
             var cacheItem = new CreateCohortCacheItem(cacheKey)
@@ -48,15 +41,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 StartMonthYear = source.StartMonthYear,
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 UseLearnerData = source.UseLearnerData,
-                CourseCode = source.CourseCode,
-                IsOnFlexiPaymentPilot = flexiPaymentsAuthorized ? null : false
+                CourseCode = source.CourseCode
             };
             await cacheStorageService.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
 
             return new CreateCohortRedirectModel
             {
                 CacheKey = cacheKey,
-                RedirectTo = RedirectTo(flexiPaymentsAuthorized)
+                RedirectTo = RedirectTo()
             };
         }
     }

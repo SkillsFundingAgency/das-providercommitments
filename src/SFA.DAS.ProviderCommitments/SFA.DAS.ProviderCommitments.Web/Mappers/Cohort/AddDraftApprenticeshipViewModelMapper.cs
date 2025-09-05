@@ -40,7 +40,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
                 Employer = apiResponse.LegalEntityName,
                 AccountLegalEntityId = cacheItem.AccountLegalEntityId,
-                IsOnFlexiPaymentPilot = cacheItem.IsOnFlexiPaymentPilot,
                 FirstName = cacheItem.FirstName,
                 LastName = cacheItem.LastName,
                 Email = cacheItem.Email,
@@ -84,11 +83,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 result.EmploymentEndMonth = cacheItem.EmploymentEndDate.Value.Month;
                 result.EmploymentEndYear = cacheItem.EmploymentEndDate.Value.Year;
-            }
-
-            if (cacheItem.IsOnFlexiPaymentPilot.GetValueOrDefault())
-            {
-                result.Cost = cacheItem.TrainingPrice + cacheItem.EndPointAssessmentPrice;
             }
 
             return result;

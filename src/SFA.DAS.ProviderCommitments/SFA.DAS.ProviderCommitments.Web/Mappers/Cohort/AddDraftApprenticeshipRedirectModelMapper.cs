@@ -56,9 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ProviderId = source.ProviderId,
                 RedirectTo = source.IsChangeCourse
                     ? AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectCourse
-                    : source.IsChangeDeliveryModel
-                        ? AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectDeliveryModel
-                        : AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectPilotStatus
+                    : AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectDeliveryModel
             };
 
             return result;
@@ -82,8 +80,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             cacheItem.Reference = source.Reference;
             cacheItem.TrainingPrice = source.TrainingPrice;
             cacheItem.EndPointAssessmentPrice = source.EndPointAssessmentPrice;
-
-            if (source.IsOnFlexiPaymentPilot.GetValueOrDefault()) cacheItem.Cost = source.TrainingPrice + source.EndPointAssessmentPrice;
 
             await _cacheStorage.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
         }

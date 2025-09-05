@@ -110,7 +110,6 @@ public class CohortController : Controller
 
         string action = redirectModel.RedirectTo switch
         {
-            CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus => nameof(ChoosePilotStatus),
             CreateCohortRedirectModel.RedirectTarget.SelectLearner => "SelectLearnerRecord",
             CreateCohortRedirectModel.RedirectTarget.SelectHowTo => nameof(SelectHowToAddApprentice),
             _ => nameof(SelectCourse)
@@ -182,25 +181,6 @@ public class CohortController : Controller
     }
 
     [HttpGet]
-    [Route("add/choose-pilot-status")]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> ChoosePilotStatus(SelectPilotStatusRequest request)
-    {
-        var model = await _modelMapper.Map<SelectPilotStatusViewModel>(request);
-        return View("SelectPilotStatus", model);
-    }
-
-    [HttpPost]
-    [Route("add/choose-pilot-status")]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> ChoosePilotStatus(SelectPilotStatusViewModel model)
-    {
-        var redirectModel = await _modelMapper.Map<SelectPilotStatusRedirectModel>(model);
-        var redirectAction = model.IsEdit ? nameof(AddDraftApprenticeship) : nameof(SelectCourse);
-        return RedirectToAction(redirectAction, redirectModel);
-    }
-
-    [HttpGet]
     [Route("add/select-delivery-model")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> SelectDeliveryModel(CreateCohortWithDraftApprenticeshipRequest request)
@@ -252,12 +232,6 @@ public class CohortController : Controller
         if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectDeliveryModel)
         {
             return RedirectToAction(nameof(SelectDeliveryModel),
-                new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
-        }
-
-        if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectPilotStatus)
-        {
-            return RedirectToAction(nameof(ChoosePilotStatus),
                 new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
         }
 
