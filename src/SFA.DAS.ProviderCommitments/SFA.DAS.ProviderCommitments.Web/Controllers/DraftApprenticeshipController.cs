@@ -13,7 +13,6 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTr
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
-using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -436,6 +435,38 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 if (model is EditDraftApprenticeshipViewModel editModel)
                 {
+                    // TODO: to clean up
+                    var updatedDraftApprenticeship = TempData.Get<GetDraftApprenticeshipResponse>("LearnerDataSyncDraftApprenticeship");
+                    if (updatedDraftApprenticeship != null)
+                    {
+                        editModel.FirstName = updatedDraftApprenticeship.FirstName;
+                        editModel.LastName = updatedDraftApprenticeship.LastName;
+                        
+                        if (updatedDraftApprenticeship.DateOfBirth.HasValue)
+                        {
+                            editModel.BirthDay = updatedDraftApprenticeship.DateOfBirth.Value.Day;
+                            editModel.BirthMonth = updatedDraftApprenticeship.DateOfBirth.Value.Month;
+                            editModel.BirthYear = updatedDraftApprenticeship.DateOfBirth.Value.Year;
+                        }
+                        
+                        if (updatedDraftApprenticeship.StartDate.HasValue)
+                        {
+                            editModel.StartMonth = updatedDraftApprenticeship.StartDate.Value.Month;
+                            editModel.StartYear = updatedDraftApprenticeship.StartDate.Value.Year;
+                        }
+                        
+                        if (updatedDraftApprenticeship.EndDate.HasValue)
+                        {
+                            editModel.EndDay = updatedDraftApprenticeship.EndDate.Value.Day;
+                            editModel.EndMonth = updatedDraftApprenticeship.EndDate.Value.Month;
+                            editModel.EndYear = updatedDraftApprenticeship.EndDate.Value.Year;
+                        }
+                        
+                        editModel.Cost = updatedDraftApprenticeship.Cost;
+                        editModel.HasLearnerDataChanges = false;
+                        editModel.LastLearnerDataSync = DateTime.Now;
+                    }
+
                     await AddLegalEntityAndCoursesToModel(editModel);
                     PrePopulateDates(editModel);
                     return View("EditDraftApprenticeship", editModel);
@@ -453,8 +484,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, EditDraftApprenticeshipViewModel model)
+        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, EditDraftApprenticeshipViewModel model, string operation = null)
         {
+            if (operation == "SyncLearnerData")
+            {
+                return await HandleLearnerDataSync(model);
+            }
+            
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
             {
                 StoreEditDraftApprenticeshipState(model);
@@ -501,23 +537,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             });
         }
 
-        private static void SetStartDatesBasedOnFlexiPaymentPilotRules(DraftApprenticeshipViewModel model)
-        {
-            if (model.IsOnFlexiPaymentPilot is null or false) model.ActualStartDate = new DateModel();
-            else if (model.IsOnFlexiPaymentPilot is true) model.StartDate = new MonthYearModel("");
-        }
-
-        [HttpPost]
-        [Route("{DraftApprenticeshipHashedId}/sync-learner-data", Name = RouteNames.DraftApprenticeshipSyncLearnerData)]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SyncLearnerData(DraftApprenticeshipRequest request)
+        private async Task<IActionResult> HandleLearnerDataSync(EditDraftApprenticeshipViewModel model)
         {
             try
             {
-                var response = await _outerApiService.SyncLearnerData(request.ProviderId, request.CohortId, request.DraftApprenticeshipId);
+                var response = await _outerApiService.SyncLearnerData(model.ProviderId, model.CohortId.Value, model.DraftApprenticeshipId.Value);
                 
                 if (response.Success)
                 {
+                    TempData.Put("LearnerDataSyncDraftApprenticeship", response.UpdatedDraftApprenticeship);
                     TempData["LearnerDataSyncSuccess"] = "Learner data has been successfully updated.";
                 }
                 else
@@ -525,12 +553,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     TempData["LearnerDataSyncError"] = response.Message ?? "Failed to sync learner data.";
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 TempData["LearnerDataSyncError"] = "An error occurred while syncing learner data.";
             }
 
-            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", request);
+            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", model);
+        }
+
+        private static void SetStartDatesBasedOnFlexiPaymentPilotRules(DraftApprenticeshipViewModel model)
+        {
+            if (model.IsOnFlexiPaymentPilot is null or false) model.ActualStartDate = new DateModel();
+            else if (model.IsOnFlexiPaymentPilot is true) model.StartDate = new MonthYearModel("");
         }
 
         [HttpGet]

@@ -56,21 +56,18 @@
                 </div>
                 <div class="govuk-notification-banner__content">
                     <p class="govuk-notification-banner__heading">
-                        Learner data has been updated
+                        Apprentice details have been changed in the ILR. To continue you need to 
+                        <form method="post" asp-route="@RouteNames.DraftApprenticeshipEdit" asp-route-providerId="@Model.ProviderId" style="display: inline;">
+                            <input type="hidden" name="CohortId" value="@Model.CohortId" />
+                            <input type="hidden" name="DraftApprenticeshipId" value="@Model.DraftApprenticeshipId" />
+                            <input type="hidden" name="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
+                            <input type="hidden" name="CohortReference" value="@Model.CohortReference" />
+                            <input type="hidden" name="Operation" value="SyncLearnerData" />
+                            <button type="submit" class="govuk-link" style="background: none; border: none; padding: 0; font: inherit; color: #1d70b8; text-decoration: underline; cursor: pointer;">
+                                update now
+                            </button>
+                        </form>
                     </p>
-                    <p class="govuk-body">
-                        The individual learner record (ILR) data for this apprentice has been updated since this apprenticeship was created. 
-                        You should review and update the apprenticeship details to match the latest ILR data.
-                    </p>
-                    <form method="post" asp-route="@RouteNames.DraftApprenticeshipSyncLearnerData" asp-route-providerId="@Model.ProviderId" style="display: inline;">
-                        <input type="hidden" name="CohortId" value="@Model.CohortId" />
-                        <input type="hidden" name="DraftApprenticeshipId" value="@Model.DraftApprenticeshipId" />
-                        <input type="hidden" name="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
-                        <input type="hidden" name="CohortReference" value="@Model.CohortReference" />
-                        <button type="submit" class="govuk-button govuk-button--secondary">
-                            Update from learner record
-                        </button>
-                    </form>
                 </div>
             </div>
         }

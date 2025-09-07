@@ -64,7 +64,7 @@ public class WhenISyncLearnerData
         await _fixture.SyncLearnerData();
 
         // Assert
-        _fixture.VerifyTempDataContains("LearnerDataSyncError", "Failed to sync learner data");
+        _fixture.VerifyTempDataContains("LearnerDataSyncError", "Failed to sync learner data.");
     }
 
     [Test]

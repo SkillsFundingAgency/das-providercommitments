@@ -326,7 +326,7 @@ public class DraftApprenticeshipControllerTestFixture
     {
         _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
             .ReturnsAsync(_editModel);
-        _actionResult = await _controller.EditDraftApprenticeship(null, null, null, _editModel);
+        _actionResult = await _controller.EditDraftApprenticeship(_draftApprenticeshipRequest);
         return this;
     }
 
@@ -334,7 +334,7 @@ public class DraftApprenticeshipControllerTestFixture
     {
         _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
             .ReturnsAsync(_viewModel);
-        _actionResult = await _controller.EditDraftApprenticeship(null, null, null, _editModel);
+        _actionResult = await _controller.EditDraftApprenticeship(_draftApprenticeshipRequest);
         return this;
     }
 
@@ -718,7 +718,17 @@ public class DraftApprenticeshipControllerTestFixture
 
     public async Task<DraftApprenticeshipControllerTestFixture> SyncLearnerData()
     {
-        _actionResult = await _controller.SyncLearnerData(_draftApprenticeshipRequest);
+        // Create a model with the Operation parameter set to "SyncLearnerData"
+        var model = new EditDraftApprenticeshipViewModel
+        {
+            ProviderId = _draftApprenticeshipRequest.ProviderId,
+            CohortId = _draftApprenticeshipRequest.CohortId,
+            DraftApprenticeshipId = _draftApprenticeshipRequest.DraftApprenticeshipId,
+            DraftApprenticeshipHashedId = _draftApprenticeshipRequest.DraftApprenticeshipHashedId,
+            CohortReference = _draftApprenticeshipRequest.CohortReference
+        };
+        
+        _actionResult = await _controller.EditDraftApprenticeship(null, null, null, model, "SyncLearnerData");
         return this;
     }
 
@@ -747,7 +757,7 @@ public class DraftApprenticeshipControllerTestFixture
 
     public DraftApprenticeshipControllerTestFixture VerifyTempDataContains(string key, string expectedValue)
     {
-        _tempData.Verify(x => x.Add(key, expectedValue), Times.Once);
+        _tempData.VerifySet(x => x[key] = expectedValue, Times.Once);
         return this;
     }
 

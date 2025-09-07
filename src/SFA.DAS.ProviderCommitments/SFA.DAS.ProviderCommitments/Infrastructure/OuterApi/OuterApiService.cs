@@ -248,6 +248,15 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         return response;
     }
 
+    public async Task<bool> CanAccessCohort(long providerId, long cohortId)
+    {
+        var content = new GetCohortAccessRequest(SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Party.Provider, providerId, cohortId);
+
+        var response = await outerApiClient.Get<GetCohortAccessResponse>(content);
+
+        return response.HasCohortAccess;
+    }
+
     public async Task<SyncLearnerDataResponse> SyncLearnerData(long providerId, long cohortId, long draftApprenticeshipId)
     {
         var request = new SyncLearnerDataRequest(providerId, cohortId, draftApprenticeshipId);
@@ -255,15 +264,6 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         var response = await outerApiClient.Post<SyncLearnerDataResponse>(request);
 
         return response;
-    }
-
-    public async Task<bool> CanAccessCohort(long providerId, long cohortId)
-    {
-        var content = new GetCohortAccessRequest(Party.Provider, providerId, cohortId);
-
-        var response = await outerApiClient.Get<GetCohortAccessResponse>(content);
-
-        return response.HasCohortAccess;
     }
 
     public static async Task<string> ReadFormFileAsync(IFormFile file)

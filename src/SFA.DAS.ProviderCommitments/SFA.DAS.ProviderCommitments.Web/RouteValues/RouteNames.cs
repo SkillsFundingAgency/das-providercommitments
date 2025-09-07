@@ -44,7 +44,6 @@ public static class RouteNames
     public const string DraftApprenticeshipOverlapAlert = "draft-apprentice-overlap-alert";
     public const string DraftApprenticeshipEdit = "draft-apprenticeship-edit";
     public const string DraftApprenticeshipAddAnother = "draft-apprenticeship-add-another";
-    public const string DraftApprenticeshipSyncLearnerData = "draft-apprenticeship-sync-learner-data";
     public const string CohortAddApprenticeship = "cohort-add-apprenticeship";
     public const string RecognisePriorLearningData = "recognise-prior-learning-data";
     public const string RecognisePriorLearning = "recognise-prior-learning";
