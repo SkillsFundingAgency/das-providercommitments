@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 DateOfBirth = source.DateOfBirth.Date,
                 UniqueLearnerNumber = source.Uln,
                 CourseCode = source.CourseCode,
-                Cost = source.IsOnFlexiPaymentPilot.GetValueOrDefault() ? source.TrainingPrice + source.EndPointAssessmentPrice : source.Cost,
+                Cost = source.Cost,
                 TrainingPrice = source.TrainingPrice,
                 EndPointAssessmentPrice = source.EndPointAssessmentPrice,
                 EmploymentPrice = source.EmploymentPrice,
@@ -53,8 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 EmploymentEndDate = source.EmploymentEndDate.Date,
                 EndDate = source.EndDate.Date,
                 OriginatorReference = source.Reference,
-                DeliveryModel = source.DeliveryModel,
-                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
+                DeliveryModel = source.DeliveryModel
             };
         }
     }

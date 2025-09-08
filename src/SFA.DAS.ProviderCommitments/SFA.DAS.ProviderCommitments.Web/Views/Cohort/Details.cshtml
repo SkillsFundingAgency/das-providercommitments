@@ -1,11 +1,9 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Features
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.TagHelpers
 @using SFA.DAS.ProviderCommitments.Interfaces
 @using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel
-@inject IAuthorizationService AuthorizationService
 @inject ILinkGenerator LinkGenerator;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.DetailsViewModel
 
@@ -255,10 +253,6 @@
             {
                 <th asp-show="@(!course.IsPortableFlexiJob)" scope="col" class="govuk-table__header das-table-cell-width-20">Price</th>
             }
-            @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentPilot.GetValueOrDefault())
-            {
-                <th scope="col" class="govuk-table__header das-table-cell-width-10">Pilot</th>
-            }
             <th scope="col" class="govuk-table__header das-table-cell-width-5">
                 <span class="govuk-visually-hidden">Action</span>
             </th>
@@ -351,12 +345,6 @@
                         {
                             @draftApprenticeship.DisplayCost
                         }
-                    </td>
-                }
-                @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentPilot.GetValueOrDefault())
-                {
-                    <td class="govuk-table__cell" data-label="IsOnFlexiPaymentPilot">
-                        @draftApprenticeship.DisplayIsPilot
                     </td>
                 }
                 <td class="govuk-table__cell govuk-table__cell--numeric">

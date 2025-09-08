@@ -81,9 +81,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string DurationReducedByHoursDisplay => $"{DurationReducedByHours} hours";
         public int? PriceReducedBy { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
-        public bool? IsOnFlexiPaymentPilot { get; set; }
-        public string IsOnFlexiPaymentPilotDisplay =>
-            IsOnFlexiPaymentPilot.HasValue && IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
         public PaymentsStatus PaymentStatus { get; set; }
         public PendingPriceChange PendingPriceChange { get; set; }
         public PendingStartDateChange PendingStartDateChange { get; set; }
