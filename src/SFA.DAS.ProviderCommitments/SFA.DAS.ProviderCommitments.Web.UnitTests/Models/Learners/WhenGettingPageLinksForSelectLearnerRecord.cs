@@ -3,7 +3,7 @@ using System.Linq;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Learners
 {
     public class WhenGettingPageLinksForSelectLearnerRecord
     {
@@ -34,6 +34,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
                     { nameof(filterModel.CacheKey), filterModel.CacheKey.ToString() },
                     { nameof(filterModel.ReservationId), filterModel.ReservationId.ToString() },
                     { nameof(filterModel.SearchTerm), filterModel.SearchTerm },
+                    { nameof(filterModel.StartMonth), filterModel.StartMonth },
+                    { nameof(filterModel.StartYear), filterModel.StartYear },
                     { nameof(filterModel.SortField), filterModel.SortField },
                     { nameof(filterModel.ReverseSort), filterModel.ReverseSort.ToString() },
                     { nameof(filterModel.EmployerAccountLegalEntityPublicHashedId), filterModel.EmployerAccountLegalEntityPublicHashedId },

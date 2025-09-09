@@ -1,7 +1,12 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Html;
+using System.Text;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using static SFA.DAS.ProviderCommitments.Constants;
 using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ApprenticesFilterModel;
+using System.Net;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -66,9 +71,8 @@ public class LearnerRecordsFilterModel
     public int PageNumber { get; set; } = 1;
     public string SearchTerm { get; set; }
     public int TotalNumberOfLearnersFound { get; set; }
-    public string TotalNumberOfApprenticeshipsFoundDescription => TotalNumberOfLearnersFound == 1
-        ? "1 apprentice record"
-        : $"{TotalNumberOfLearnersFound} apprentice records";
+    public HtmlString TotalNumberOfApprenticeshipsFoundDescription =>
+        new HtmlString($"{TotalNumberOfLearnersFound} apprentice records found " + GetFiltersUsedMessage());
 
     public string SortField { get; set; }
     public bool ReverseSort { get; set; }
@@ -76,8 +80,33 @@ public class LearnerRecordsFilterModel
     public Guid? ReservationId { get; set; }
     public bool ShowPageLinks => TotalNumberOfLearnersFound > LearnerRecordSearch.NumberOfLearnersPerSearchPage;
     public Dictionary<string, string> RouteData => BuildRouteData();
+    public string StartMonth { get; set; }
+    public string StartYear { get; set; } = DateTime.UtcNow.Year.ToString();
+    public List<SelectListItem> MonthNames { get; set; }
+    public List<SelectListItem> YearNames { get; set; }
 
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
+
+    public LearnerRecordsFilterModel()
+    {
+        MonthNames =
+        [
+            new SelectListItem("All", ""),
+            .. Enumerable.Range(1, 12)
+                .Select(m => new SelectListItem
+                {
+                    Text = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m),
+                    Value = m.ToString()
+                })
+        ];
+
+        YearNames = Enumerable.Range(2024, DateTime.UtcNow.Year - 2022)
+                .Select(m => new SelectListItem
+                {
+                    Text = m.ToString(),
+                    Value = m.ToString()
+                }).ToList();
+    }
 
     private Dictionary<string, string> BuildRouteData()
     {
@@ -102,6 +131,9 @@ public class LearnerRecordsFilterModel
         {
             routeData.Add(nameof(SearchTerm), SearchTerm);
         }
+
+        routeData.Add(nameof(StartMonth), StartMonth);
+        routeData.Add(nameof(StartYear), StartYear);
 
         return routeData;
     }
@@ -185,6 +217,51 @@ public class LearnerRecordsFilterModel
         routeData.Add(nameof(SortField), sortField);
 
         return routeData;
+    }
+
+    public string GetFiltersUsedMessage()
+    {
+        var filters = BuildUsedFilterList();
+
+        if (filters.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        var message = new StringBuilder();
+
+        message.Append($"matching <strong>{filters[0]}</strong>");
+
+        for (var i = 1; i < filters.Count; i++)
+        {
+            message.Append(i == filters.Count - 1 ? " and " : ", ");
+
+            message.Append($"<strong>{filters[i]}</strong>");
+        }
+
+        return message.ToString();
+    }
+
+    private IList<string> BuildUsedFilterList()
+    {
+        var filters = new List<string>();
+        if (!string.IsNullOrWhiteSpace(SearchTerm))
+        {
+            filters.Add($"‘{WebUtility.HtmlEncode(SearchTerm)}’");
+        }
+
+        if (!string.IsNullOrWhiteSpace(StartMonth))
+        {
+            var item = MonthNames.FirstOrDefault(x=>x.Value == StartMonth);
+            if(item != null)
+            {
+                filters.Add(WebUtility.HtmlEncode(item.Text));
+            }
+        }
+
+        filters.Add(WebUtility.HtmlEncode(StartYear));
+
+        return filters;
     }
 }
 

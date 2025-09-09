@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort;
@@ -24,7 +24,8 @@ public class SelectLearnerRecordViewModelMapperTests
 
         _outerApiService = new Mock<IOuterApiService>();
 
-        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.CohortId, _request.SearchTerm, _request.SortField, _request.ReverseSort, _request.Page))
+        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.CohortId, _request.SearchTerm, _request.SortField, 
+                _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear))
             .ReturnsAsync(_apiResponse);
 
         _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
@@ -35,6 +36,8 @@ public class SelectLearnerRecordViewModelMapperTests
     {
         var result = await _mapper.Map(_request);
         result.FilterModel.ProviderId.Should().Be(_request.ProviderId);
+        result.FilterModel.StartMonth.Should().Be(_request.StartMonth.ToString());
+        result.FilterModel.StartYear.Should().Be(_request.StartYear.ToString());
         result.FilterModel.EmployerAccountLegalEntityPublicHashedId.Should().Be(_request.EmployerAccountLegalEntityPublicHashedId);
         result.FilterModel.CohortReference.Should().Be(_request.CohortReference);
         result.FilterModel.TotalNumberOfLearnersFound.Should().Be(_apiResponse.Total);
