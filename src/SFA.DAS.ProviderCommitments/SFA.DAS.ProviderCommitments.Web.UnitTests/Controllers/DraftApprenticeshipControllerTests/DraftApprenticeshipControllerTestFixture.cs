@@ -752,7 +752,6 @@ public class DraftApprenticeshipControllerTestFixture
 
     public async Task<DraftApprenticeshipControllerTestFixture> SyncLearnerData()
     {
-        // Create a model with the Operation parameter set to "SyncLearnerData"
         var model = new EditDraftApprenticeshipViewModel
         {
             ProviderId = _draftApprenticeshipRequest.ProviderId,

@@ -297,7 +297,7 @@
         <tbody class="govuk-table__body">
         @foreach (var draftApprenticeship in course.DraftApprenticeships)
         {
-            <tr class="govuk-table__row @(draftApprenticeship.HasLearnerDataChanges ? "das-table-row--learner-data-changes" : "")">
+            <tr class="govuk-table__row">
                 <td class="govuk-table__cell" data-label="Name">
                     @if (draftApprenticeship.HasOverlappingEmail || draftApprenticeship.HasOverlappingUln || !draftApprenticeship.IsComplete || Model.RplErrorDraftApprenticeshipIds.Contains(draftApprenticeship.Id))
                     {

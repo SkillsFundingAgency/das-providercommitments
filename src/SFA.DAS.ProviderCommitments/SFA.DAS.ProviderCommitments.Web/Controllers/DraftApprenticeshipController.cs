@@ -35,6 +35,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     [Authorize(Policy = nameof(PolicyNames.AccessCohort))]
     public class DraftApprenticeshipController : Controller
     {
+        private const string LearnerDataSyncDraftApprenticeshipKey = "LearnerDataSyncDraftApprenticeship";
+        private const string LearnerDataSyncSuccessKey = "LearnerDataSyncSuccess";
+        private const string LearnerDataSyncErrorKey = "LearnerDataSyncError";
+        private const string SyncLearnerDataOperation = "SyncLearnerData";
+        
+        private const string LearnerDataSyncSuccessMessage = "Learner data has been successfully updated.";
+        private const string LearnerDataSyncErrorMessage = "Failed to sync learner data.";
+        private const string LearnerDataSyncExceptionMessage = "An error occurred while syncing learner data.";
+        
         private readonly IMediator _mediator;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IModelMapper _modelMapper;
@@ -439,37 +448,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 if (model is EditDraftApprenticeshipViewModel editModel)
                 {
-                    // TODO: to clean up
-                    var updatedDraftApprenticeship = TempData.Get<GetDraftApprenticeshipResponse>("LearnerDataSyncDraftApprenticeship");
-                    if (updatedDraftApprenticeship != null)
-                    {
-                        editModel.FirstName = updatedDraftApprenticeship.FirstName;
-                        editModel.LastName = updatedDraftApprenticeship.LastName;
-                        
-                        if (updatedDraftApprenticeship.DateOfBirth.HasValue)
-                        {
-                            editModel.BirthDay = updatedDraftApprenticeship.DateOfBirth.Value.Day;
-                            editModel.BirthMonth = updatedDraftApprenticeship.DateOfBirth.Value.Month;
-                            editModel.BirthYear = updatedDraftApprenticeship.DateOfBirth.Value.Year;
-                        }
-                        
-                        if (updatedDraftApprenticeship.StartDate.HasValue)
-                        {
-                            editModel.StartMonth = updatedDraftApprenticeship.StartDate.Value.Month;
-                            editModel.StartYear = updatedDraftApprenticeship.StartDate.Value.Year;
-                        }
-                        
-                        if (updatedDraftApprenticeship.EndDate.HasValue)
-                        {
-                            editModel.EndDay = updatedDraftApprenticeship.EndDate.Value.Day;
-                            editModel.EndMonth = updatedDraftApprenticeship.EndDate.Value.Month;
-                            editModel.EndYear = updatedDraftApprenticeship.EndDate.Value.Year;
-                        }
-                        
-                        editModel.Cost = updatedDraftApprenticeship.Cost;
-                        editModel.HasLearnerDataChanges = false;
-                        editModel.LastLearnerDataSync = DateTime.Now;
-                    }
+                    ApplyLearnerDataSyncUpdates(editModel);
 
                     await AddLegalEntityAndCoursesToModel(editModel);
                     PrePopulateDates(editModel);
@@ -490,7 +469,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, EditDraftApprenticeshipViewModel model, string operation = null)
         {
-            if (operation == "SyncLearnerData")
+            if (operation == SyncLearnerDataOperation)
             {
                 return await HandleLearnerDataSync(model);
             }
@@ -539,30 +518,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 model.CohortReference,
                 model.DraftApprenticeshipHashedId,
             });
-        }
-
-        private async Task<IActionResult> HandleLearnerDataSync(EditDraftApprenticeshipViewModel model)
-        {
-            try
-            {
-                var response = await _outerApiService.SyncLearnerData(model.ProviderId, model.CohortId.Value, model.DraftApprenticeshipId.Value);
-                
-                if (response.Success)
-                {
-                    TempData.Put("LearnerDataSyncDraftApprenticeship", response.UpdatedDraftApprenticeship);
-                    TempData["LearnerDataSyncSuccess"] = "Learner data has been successfully updated.";
-                }
-                else
-                {
-                    TempData["LearnerDataSyncError"] = response.Message ?? "Failed to sync learner data.";
-                }
-            }
-            catch (Exception e)
-            {
-                TempData["LearnerDataSyncError"] = "An error occurred while syncing learner data.";
-            }
-
-            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", model);
         }
 
         private static void SetStartDatesBasedOnFlexiPaymentPilotRules(DraftApprenticeshipViewModel model)
@@ -832,6 +787,63 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 model.StartDate.Date.Value.ToString("dd-MM-yyyy"),
                 model.EndDate.Date.Value.ToString("dd-MM-yyyy")
             );
+        }
+
+        private async Task<IActionResult> HandleLearnerDataSync(EditDraftApprenticeshipViewModel model)
+        {
+            try
+            {
+                var response = await _outerApiService.SyncLearnerData(model.ProviderId, model.CohortId.Value, model.DraftApprenticeshipId.Value);
+                
+                if (response.Success)
+                {
+                    TempData.Put(LearnerDataSyncDraftApprenticeshipKey, response.UpdatedDraftApprenticeship);
+                    TempData[LearnerDataSyncSuccessKey] = LearnerDataSyncSuccessMessage;
+                }
+                else
+                {
+                    TempData[LearnerDataSyncErrorKey] = response.Message ?? LearnerDataSyncErrorMessage;
+                }
+            }
+            catch (Exception e)
+            {
+                TempData[LearnerDataSyncErrorKey] = LearnerDataSyncExceptionMessage;
+            }
+
+            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", model);
+        }
+
+        private void ApplyLearnerDataSyncUpdates(EditDraftApprenticeshipViewModel editModel)
+        {
+            var updatedDraftApprenticeship = TempData.Get<GetDraftApprenticeshipResponse>(LearnerDataSyncDraftApprenticeshipKey);
+            if (updatedDraftApprenticeship == null) return;
+
+            editModel.FirstName = updatedDraftApprenticeship.FirstName;
+            editModel.LastName = updatedDraftApprenticeship.LastName;
+            
+            if (updatedDraftApprenticeship.DateOfBirth.HasValue)
+            {
+                editModel.BirthDay = updatedDraftApprenticeship.DateOfBirth.Value.Day;
+                editModel.BirthMonth = updatedDraftApprenticeship.DateOfBirth.Value.Month;
+                editModel.BirthYear = updatedDraftApprenticeship.DateOfBirth.Value.Year;
+            }
+            
+            if (updatedDraftApprenticeship.StartDate.HasValue)
+            {
+                editModel.StartMonth = updatedDraftApprenticeship.StartDate.Value.Month;
+                editModel.StartYear = updatedDraftApprenticeship.StartDate.Value.Year;
+            }
+            
+            if (updatedDraftApprenticeship.EndDate.HasValue)
+            {
+                editModel.EndDay = updatedDraftApprenticeship.EndDate.Value.Day;
+                editModel.EndMonth = updatedDraftApprenticeship.EndDate.Value.Month;
+                editModel.EndYear = updatedDraftApprenticeship.EndDate.Value.Year;
+            }
+            
+            editModel.Cost = updatedDraftApprenticeship.Cost;
+            editModel.HasLearnerDataChanges = false;
+            editModel.LastLearnerDataSync = DateTime.UtcNow;
         }
     }
 }
