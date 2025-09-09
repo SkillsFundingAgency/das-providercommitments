@@ -28,6 +28,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public int? EmploymentPrice { get; set; }
         public DateTime? EmploymentEndDate { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
+        public bool HasLearnerDataChanges { get; set; }
+        public DateTime? LastLearnerDataSync { get; set; }
 
         public bool ExceedsFundingBandCap
         {

@@ -203,7 +203,9 @@ public class DetailsViewModelMapper(
                         IsComplete = IsDraftApprenticeshipComplete(a, cohortResponse),
                         EmploymentPrice = a.EmploymentPrice,
                         EmploymentEndDate = a.EmploymentEndDate,
-                        IsOnFlexiPaymentPilot = a.IsOnFlexiPaymentPilot
+                        IsOnFlexiPaymentPilot = a.IsOnFlexiPaymentPilot,
+                        HasLearnerDataChanges = a.HasLearnerDataChanges,
+                        LastLearnerDataSync = a.LastLearnerDataSync
                     })
                     .ToList()
             })
