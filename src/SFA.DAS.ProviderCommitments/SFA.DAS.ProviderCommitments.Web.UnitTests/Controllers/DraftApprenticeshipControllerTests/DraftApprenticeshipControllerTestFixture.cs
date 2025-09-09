@@ -322,6 +322,12 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
+    public DraftApprenticeshipControllerTestFixture PostToAddAnotherSelectionMethod()
+    {
+        _actionResult = _controller.AddAnotherSelectMethod(_selectAddAnotherApprenticeshipJourneyViewModel);
+        return this;
+    }
+
     public async Task<DraftApprenticeshipControllerTestFixture> EditDraftApprenticeship()
     {
         _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
@@ -653,6 +659,34 @@ public class DraftApprenticeshipControllerTestFixture
     {
         var redirectResult = _actionResult as RedirectToActionResult;
         redirectResult.RouteValues.Should().Contain("useLearnerData", useLearnerData);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRouteValueContainsTransferSenderId(string transferSenderId)
+    {
+        var redirectResult = _actionResult as RedirectToActionResult;
+        redirectResult.RouteValues.Should().Contain("transferSenderHashedId", transferSenderId);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRouteValueContainsEncodedPledgeApplicationId(string encodedPledgeApplicationId)
+    {
+        var redirectResult = _actionResult as RedirectToActionResult;
+        redirectResult.RouteValues.Should().Contain("encodedPledgeApplicationId", encodedPledgeApplicationId);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupSelectHowViewModelWithTransferSenderId(string transferSenderId)
+    {
+        _selectAddAnotherApprenticeshipJourneyViewModel.TransferSenderHashedId = transferSenderId;
+        _selectAddAnotherApprenticeshipJourneyViewModel.EncodedPledgeApplicationId = "TEST_PLEDGE_ID";
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupSelectHowViewModelWithEncodedPledgeApplicationId(string encodedPledgeApplicationId)
+    {
+        _selectAddAnotherApprenticeshipJourneyViewModel.EncodedPledgeApplicationId = encodedPledgeApplicationId;
+        _selectAddAnotherApprenticeshipJourneyViewModel.TransferSenderHashedId = "TEST_TRANSFER_ID";
         return this;
     }
     

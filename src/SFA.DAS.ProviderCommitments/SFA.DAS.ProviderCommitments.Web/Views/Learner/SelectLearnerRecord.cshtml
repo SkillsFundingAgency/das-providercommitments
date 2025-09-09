@@ -1,5 +1,4 @@
-﻿@using System.Globalization
-@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+﻿@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectLearnerRecordViewModel
@@ -9,8 +8,16 @@
     ViewBag.GaData.Vpv = "/add/ilrs/select";
     var routeValues = Context.Request.Query.ToDictionary(
         q => q.Key,
-        q => q.Key == "searchTerm" ? string.Empty : q.Value.ToString()
-    );
+        q =>
+        {
+            return q.Key.ToLower() switch
+            {
+                "searchterm" => "",
+                "startmonth" => "",
+                "startyear" => "",
+                _ => q.Value.ToString()
+            };
+        });
 }
 
 <div class="govuk-grid-row">
@@ -55,11 +62,6 @@
                     </div>
                 </div>
             </div>
-            
-            @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm))
-            {
-                <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.SelectLearnerRecord" asp-all-route-data="@routeValues">Clear search</a></p>
-            }
         </div>
     </div>
     <input type="hidden" value="@Model.FilterModel.SortField" name="SortField" />
@@ -74,13 +76,46 @@
     {
         <input type="hidden" value="@Model.CohortReference" name="CohortReference"/>
     }
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <div class="das-pane govuk-!-margin-bottom-3">
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-third">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="FilterModel.StartMonth">Start month</label>
+                            <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.StartMonth" name="StartMonth" asp-items="Model.FilterModel.MonthNames">
+                            </select></div>
+                    </div>
+                    <div class="govuk-grid-column-one-third">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="StartYear">Start year</label>
+                            <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.StartYear" name="StartYear" asp-items="Model.FilterModel.YearNames">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="govuk-grid-column-one-third" style="justify-content: flex-end;">
+                        <label class="govuk-label">&nbsp;</label>
+                        <div class="govuk-form-group" >
+                            <button class="govuk-button govuk-!-margin-0" type="submit">Apply filters</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm) || !string.IsNullOrWhiteSpace(Model.FilterModel.StartMonth) || Model.FilterModel.StartYear != DateTime.Now.Year.ToString())
+            {
+                <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.SelectLearnerRecord" asp-all-route-data="@routeValues">Clear search and filters</a></p>
+            }
+        </div>
+    </div>
 </form>
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
-    <div class="govuk-grid-column-one-third">
-        <p class="govuk-body">@Model.FilterModel.TotalNumberOfApprenticeshipsFoundDescription</p>
+    <div class="govuk-grid-column-one-half">
+        <p class="govuk-body">
+            @Model.FilterModel.TotalNumberOfApprenticeshipsFoundDescription
+        </p>
     </div>
-    <div class="govuk-grid-column-two-thirds das-!-text-align-right--from-tablet">
+    <div class="govuk-grid-column-one-half das-!-text-align-right--from-tablet">
         <p class="govuk-body">@Model.LastIlrSubmittedOnDesc</p>
     </div>
 </div>
@@ -111,9 +146,9 @@
                 </th>
                 <th scope="col" class="govuk-table__header">
                     <a class="@(Model.FilterModel.SortField == "StartDate" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                       asp-route="@RouteNames.SelectLearnerRecord"
-                       asp-all-route-data="@Model.FilterModel.BuildSortRouteData("StartDate")"
-                       title="Sort the table by StartDate">
+                    asp-route="@RouteNames.SelectLearnerRecord"
+                    asp-all-route-data="@Model.FilterModel.BuildSortRouteData("StartDate")"
+                    title="Sort the table by StartDate">
                         Start date
                     </a>
                 </th>
@@ -151,17 +186,11 @@
                                 Select
                             </a>
                         }
-                </td>
-            </tr>
-        }
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
-}
-else
-{
-    <div class="govuk-grid-row">
-        <p class="govuk-body">No results found</p>
-    </div>
 }
 @if (Model.ShowPageLinks)
 {

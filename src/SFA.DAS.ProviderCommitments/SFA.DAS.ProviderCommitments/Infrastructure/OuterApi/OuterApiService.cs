@@ -230,9 +230,9 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         return response.HasApprenticeshipAccess;
     }
 
-    public async Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, long? accountLegalEntityId, long? cohortId, string searchTerm, string sortColumn, bool sortDesc, int page)
+    public async Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, long? accountLegalEntityId, long? cohortId, string searchTerm, string sortColumn, bool sortDesc, int page, int? startMonth, int startYear)
     {
-        var request = new GetLearnerDetailsForProviderRequest(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDesc, page);
+        var request = new GetLearnerDetailsForProviderRequest(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDesc, page, startMonth, startYear);
 
         var response = await outerApiClient.Get<GetLearnerDetailsForProviderResponse>(request);
 
