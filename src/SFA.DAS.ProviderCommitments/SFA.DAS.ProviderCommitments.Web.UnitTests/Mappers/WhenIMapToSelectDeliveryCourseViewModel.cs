@@ -15,7 +15,6 @@ public class WhenIMapToSelectDeliveryCourseViewModel
     private ProviderCourseDeliveryModels _response;
     private long _providerId;
     private string _courseCode;
-    private bool? _isOnFlexiPaymentPilot;
 
     [SetUp]
     public void Arrange()
@@ -23,7 +22,6 @@ public class WhenIMapToSelectDeliveryCourseViewModel
         var fixture = new Fixture();
         _providerId = fixture.Create<long>();
         _courseCode = fixture.Create<string>();
-        _isOnFlexiPaymentPilot = fixture.Create<bool?>();
         _response = fixture.Create<ProviderCourseDeliveryModels>();
 
         _outerApiClient = new Mock<IApprovalsOuterApiClient>();

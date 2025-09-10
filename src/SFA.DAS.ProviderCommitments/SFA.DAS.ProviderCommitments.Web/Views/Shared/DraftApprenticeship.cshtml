@@ -21,7 +21,7 @@
     var startDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training start date" : "Planned apprenticeship training start date";
     var endDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training end date" : "Planned apprenticeship training end date";
 
-    ViewBag.ValidationOrder = "FirstName,LastName,Email,DateOfBirth,IsOnFlexiPaymentPilot,Uln,StartDate,EndDate,EmploymentEndDate,Cost,EmploymentPrice,Reference";
+    ViewBag.ValidationOrder = "FirstName,LastName,Email,DateOfBirth,Uln,StartDate,EndDate,EmploymentEndDate,Cost,EmploymentPrice,Reference";
 
     Model.CourseCode = ViewData.ModelState[nameof(Model.CourseCode)]?.AttemptedValue ?? Model.CourseCode;
     Model.DeliveryModel = ViewData.ModelState[nameof(Model.DeliveryModel)]?.AttemptedValue.ToEnum<DeliveryModel>() ?? Model.DeliveryModel;
