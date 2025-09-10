@@ -11,8 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
 
 public class AddDraftApprenticeshipCourseViewModelMapper(
     IOuterApiClient apiClient,
-    ICacheStorageService cacheStorage,
-    IAuthorizationService authorizationService)
+    ICacheStorageService cacheStorage)
     : IMapper<ReservationsAddDraftApprenticeshipRequest, SelectCourseViewModel>
 {
     public async Task<SelectCourseViewModel> Map(ReservationsAddDraftApprenticeshipRequest source)

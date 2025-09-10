@@ -302,7 +302,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 });
             }
 
-            SetStartDatesBasedOnFlexiPaymentPilotRules(model);
+            model.ActualStartDate = new DateModel();
 
             var request = await _modelMapper.Map<AddDraftApprenticeshipApimRequest>(model);
             request.UserId = _authenticationService.UserId;
@@ -358,7 +358,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 });
             }
 
-            SetStartDatesBasedOnFlexiPaymentPilotRules(model);
+            model.ActualStartDate = new DateModel();
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipApimRequest>(model);
             await _outerApiService.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
 
@@ -380,11 +380,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 model.CohortReference,
                 model.DraftApprenticeshipHashedId,
             });
-        }
-
-        private static void SetStartDatesBasedOnFlexiPaymentPilotRules(DraftApprenticeshipViewModel model)
-        {
-            model.ActualStartDate = new DateModel();
         }
 
         [HttpGet]

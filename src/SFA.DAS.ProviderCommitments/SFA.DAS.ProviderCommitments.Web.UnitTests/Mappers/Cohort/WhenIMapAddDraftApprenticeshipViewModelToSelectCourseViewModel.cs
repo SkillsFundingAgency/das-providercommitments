@@ -22,7 +22,7 @@ public class WhenIMapAddDraftApprenticeshipViewModelToSelectCourseViewModel
         _model = fixture.Create<SelectCourseViewModel>();
 
         _helper = new Mock<ISelectCourseViewModelMapperHelper>();
-        _helper.Setup(x => x.Map(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<bool?>())).ReturnsAsync(_model);
+        _helper.Setup(x => x.Map(It.IsAny<string>(), It.IsAny<long>())).ReturnsAsync(_model);
 
         _mapper = new SelectCourseViewModelFromAddDraftApprenticeshipViewModelMapper(_helper.Object);
     }
@@ -31,7 +31,7 @@ public class WhenIMapAddDraftApprenticeshipViewModelToSelectCourseViewModel
     public async Task TheParamsArePassedInCorrectly()
     {
         var result = await _mapper.Map(_request);
-        _helper.Verify(x=>x.Map(_request.CourseCode, _request.AccountLegalEntityId, _request.IsOnFlexiPaymentPilot));
+        _helper.Verify(x=>x.Map(_request.CourseCode, _request.AccountLegalEntityId));
     }
 
     [Test]

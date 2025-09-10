@@ -14,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public Task<SelectCourseViewModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
-            return _selectCourseViewModelHelper.Map(source.CourseCode, source.AccountLegalEntityId, source.IsOnFlexiPaymentPilot) ;
+            return _selectCourseViewModelHelper.Map(source.CourseCode, source.AccountLegalEntityId);
         }
     }
 }

@@ -97,18 +97,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime? LastCensusDateOfLearning { get; set; }
         public DateTime? LastDayOfLearning { get; set; }
 
-        public bool ShowChangeStartDateLink => IsOnFlexiPaymentPilot.GetValueOrDefault() &&
-                                               CanActualStartDateBeChanged.GetValueOrDefault() &&
-                                               LearnerStatus != LearnerStatus.Withdrawn;
-
-        public bool ShowChangePriceLink => IsOnFlexiPaymentPilot.GetValueOrDefault() &&
-                                               LearnerStatus != LearnerStatus.Withdrawn;
-
-        public bool ShowWithdrawnWithinQualifyingPeriodMessage =>
-            IsOnFlexiPaymentPilot.GetValueOrDefault()
-            && (LastDayOfLearning - ActualStartDate).HasValue
-            && (LastDayOfLearning - ActualStartDate).GetValueOrDefault().TotalDays < 42;
-
         public enum DataLockSummaryStatus
         {
             None,

@@ -15,7 +15,6 @@ public class AddDraftApprenticeshipCourseViewModelMapperTests
 {
     private AddDraftApprenticeshipCourseViewModelMapper _mapper;
     private Mock<IOuterApiClient> _apiClient;
-    private Mock<IAuthorizationService> _authorizationService;
     private Mock<ICacheStorageService> _cacheService;
     private ReservationsAddDraftApprenticeshipRequest _request;
     private GetAddDraftApprenticeshipCourseResponse _apiResponse;
@@ -35,14 +34,10 @@ public class AddDraftApprenticeshipCourseViewModelMapperTests
                 && r.ProviderId == _request.ProviderId)))
             .ReturnsAsync(_apiResponse);
 
-        _authorizationService = new Mock<IAuthorizationService>();
-        _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
-            .ReturnsAsync(false);
-
         _cacheService = new Mock<ICacheStorageService>();
         _cacheService.Setup(x => x.RetrieveFromCache<ReservationsAddDraftApprenticeshipRequest>(_request.CacheKey.Value)).ReturnsAsync(_cacheItem);
 
-        _mapper = new AddDraftApprenticeshipCourseViewModelMapper(_apiClient.Object, _cacheService.Object, _authorizationService.Object);
+        _mapper = new AddDraftApprenticeshipCourseViewModelMapper(_apiClient.Object, _cacheService.Object);
     }
 
     [Test]
@@ -78,13 +73,6 @@ public class AddDraftApprenticeshipCourseViewModelMapperTests
     {
         var result = await _mapper.Map(_request);
         _apiResponse.Standards.ToList().Should().BeEquivalentTo(result.Standards.ToList());
-    }
-
-    [Test]
-    public async Task IsOnFlexiPaymentPilot_Is_Mapped_Correctly()
-    {
-        var result = await _mapper.Map(_request);
-        result.IsOnFlexiPaymentPilot.Should().BeFalse();
     }
 
     [Test]

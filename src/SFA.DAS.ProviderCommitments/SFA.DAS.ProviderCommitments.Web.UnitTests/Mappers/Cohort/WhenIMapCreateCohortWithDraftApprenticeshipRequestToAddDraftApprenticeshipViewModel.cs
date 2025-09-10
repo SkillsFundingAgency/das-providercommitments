@@ -112,13 +112,6 @@ public class WhenIMapCreateCohortWithDraftApprenticeshipRequestToAddDraftApprent
     }
 
     [Test]
-    public async Task ThenPilotStatusIsMappedCorrectly()
-    {
-        var result = await _mapper.Map(_source);
-        result.IsOnFlexiPaymentPilot.Should().Be(_cacheItem.IsOnFlexiPaymentPilot);
-    }
-
-    [Test]
     public async Task ThenUlnIsMappedCorrectly()
     {
         var result = await _mapper.Map(_source);
@@ -163,7 +156,6 @@ public class WhenIMapCreateCohortWithDraftApprenticeshipRequestToAddDraftApprent
     [Test]
     public async Task Then_Cost_IsMappedCorrectly()
     {
-        _cacheItem.IsOnFlexiPaymentPilot = false;
         var result = await _mapper.Map(_source);
         result.Cost.Should().Be(_cacheItem.Cost);
     }
@@ -180,14 +172,6 @@ public class WhenIMapCreateCohortWithDraftApprenticeshipRequestToAddDraftApprent
     {
         var result = await _mapper.Map(_source);
         result.EndPointAssessmentPrice.Should().Be(_cacheItem.EndPointAssessmentPrice);
-    }
-
-    [Test]
-    public async Task Then_Calculated_Cost_IsMappedCorrectly_ForPilotProviders()
-    {
-        _cacheItem.IsOnFlexiPaymentPilot = true;
-        var result = await _mapper.Map(_source);
-        result.Cost.Should().Be(_cacheItem.TrainingPrice + _cacheItem.EndPointAssessmentPrice);
     }
 
     [Test]

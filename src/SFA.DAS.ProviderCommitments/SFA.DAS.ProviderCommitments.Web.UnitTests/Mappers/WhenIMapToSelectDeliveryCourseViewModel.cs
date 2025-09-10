@@ -37,31 +37,24 @@ public class WhenIMapToSelectDeliveryCourseViewModel
     [Test]
     public async Task ThenCourseCodeIsMappedCorrectly()
     {
-        var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentPilot);
+        var result = await _mapper.Map(_providerId, _courseCode, 1234, null);
         result.CourseCode.Should().Be(_courseCode);
     }
 
     [Test]
     public async Task ThenDeliveryModelsAreReturnedCorrectly()
     {
-        var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentPilot);
+        var result = await _mapper.Map(_providerId, _courseCode, 1234, null);
         result.DeliveryModels.Should().BeEquivalentTo(_response.DeliveryModels);
     }
 
     [TestCase(DeliveryModel.PortableFlexiJob)]
     [TestCase(DeliveryModel.Regular)]
     [TestCase(null)]
-    public async Task ThenDeliveryModelisMappedCorrectly(DeliveryModel? dm)
+    public async Task ThenDeliveryModelIsMappedCorrectly(DeliveryModel? dm)
     {
-        var result = await _mapper.Map(_providerId, _courseCode, 1234, dm, _isOnFlexiPaymentPilot);
+        var result = await _mapper.Map(_providerId, _courseCode, 1234, dm);
         result.DeliveryModel.Should().Be(dm);
-    }
-
-    [Test]
-    public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
-    {
-        var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentPilot);
-        result.IsOnFlexiPaymentPilot.Should().Be(_isOnFlexiPaymentPilot);
     }
 }
 
