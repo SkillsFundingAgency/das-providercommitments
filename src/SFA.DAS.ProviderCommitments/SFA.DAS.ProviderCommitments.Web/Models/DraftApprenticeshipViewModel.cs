@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             DateOfBirth = new DateModel();
             StartDate = new MonthYearModel("");
             ActualStartDate = new DateModel();
-            EndDate = new DateModel();
+            EndDate = new MonthYearModel("");
             EmploymentEndDate = new MonthYearModel("");
         }
 

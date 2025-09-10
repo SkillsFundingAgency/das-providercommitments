@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -13,7 +12,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort;
 public class CreateCohortRedirectModelMapperTests
 {
     private CreateCohortRedirectModelMapper _mapper;
-    private Mock<IAuthorizationService> _authorizationService;
     private Mock<ICacheStorageService> _cacheStorage;
     private Mock<IConfiguration> _configuration;
     private Mock<IConfigurationSection> _configurationSection;
@@ -31,7 +29,7 @@ public class CreateCohortRedirectModelMapperTests
 
         _configuration = new Mock<IConfiguration>();
         _configuration.Setup(c => c.GetSection("ILRFeaturesEnabled")).Returns(_configurationSection.Object);
-        _mapper = new CreateCohortRedirectModelMapper(_authorizationService.Object, _cacheStorage.Object, _configuration.Object, Mock.Of<ILogger<CreateCohortRedirectModelMapper>>());
+        _mapper = new CreateCohortRedirectModelMapper(_cacheStorage.Object, _configuration.Object, Mock.Of<ILogger<CreateCohortRedirectModelMapper>>());
 
         _request = fixture.Create<CreateCohortWithDraftApprenticeshipRequest>();
     }

@@ -7,7 +7,6 @@ using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
  public class CreateCohortRedirectModelMapper(
-     IAuthorizationService authorizationService,
      ICacheStorageService cacheStorageService,
      IConfiguration configuration,
      ILogger<CreateCohortRedirectModelMapper> logger)
