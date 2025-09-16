@@ -323,6 +323,24 @@ else
     </div>
 }
 
+
+<div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Cost, "govuk-form-group--error")">
+    <label asp-for="Cost" class="govuk-label govuk-!-font-weight-bold">Total agreed apprenticeship price (excluding
+        VAT)</label>
+    <div id="price-hint">
+        <p class="govuk-hint">
+            The total price, including any end-point assessment costs and recognition of prior learning, in whole
+            pounds.
+        </p>
+        <p class="govuk-hint">
+            For example, for £1,500 enter 1500
+        </p>
+    </div>
+    @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
+    <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="Cost" maxlength="7"
+                                                                      class="govuk-input govuk-input--width-5 length-limit"/>
+</div>
+
 @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
 {
     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EmploymentPrice, "govuk-form-group--error")">

@@ -269,6 +269,18 @@
                 <td asp-show="@course.IsPortableFlexiJob" class="govuk-table__cell" data-label="Training price for this employment">
                     @draftApprenticeship.DisplayEmploymentPrice
                 </td>
+                <td class="govuk-table__cell" data-label="Price">
+                    @if (draftApprenticeship.ExceedsFundingBandCap)
+                    {
+                        <span class="das-table-cell--highlight">
+                            @draftApprenticeship.DisplayCost
+                        </span>
+                    }
+                    else
+                    {
+                        @draftApprenticeship.DisplayCost
+                    }
+                </td>
                 <td class="govuk-table__cell govuk-table__cell--numeric">
                     <a class="govuk-link edit-apprentice" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { draftApprenticeship.DraftApprenticeshipHashedId, Model.CohortReference, Model.ProviderId })">
                         @(Model.IsReadOnly ? "View" : "Edit")
