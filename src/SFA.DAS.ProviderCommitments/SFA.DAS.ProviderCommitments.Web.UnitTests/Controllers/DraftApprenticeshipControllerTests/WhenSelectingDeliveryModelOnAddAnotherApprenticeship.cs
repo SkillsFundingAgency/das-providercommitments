@@ -96,7 +96,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _modelMapperMock.Object,
                 Mock.Of<IEncodingService>(),
                 authorizationServiceMock.Object, Mock.Of<IOuterApiService>(),
-                Mock.Of<IAuthenticationService>());
+                Mock.Of<IAuthenticationService>(),
+            Mock.Of<ICacheStorageService>());
         }
 
         public WhenSelectingDeliveryModelOnAddAnotherApprenticeshipFixture WithDeliveryModels(List<DeliveryModel> list)

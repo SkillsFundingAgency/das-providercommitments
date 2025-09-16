@@ -1,3 +1,5 @@
+using System;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests;
@@ -20,9 +22,11 @@ public class WhenISyncLearnerData
         var syncResponse = new SyncLearnerDataResponse
         {
             Success = true,
-            Message = "Learner data updated successfully"
+            Message = "Learner data updated successfully",
+            UpdatedDraftApprenticeship = new GetDraftApprenticeshipResponse()
         };
         _fixture.SetupOuterApiServiceToReturnSyncResponse(syncResponse);
+        _fixture.SetupCacheStorageServiceToReturnGuid(Guid.NewGuid());
 
         // Act
         await _fixture.SyncLearnerData();
@@ -106,5 +110,45 @@ public class WhenISyncLearnerData
 
         // Assert
         _fixture.VerifyRedirectedToEditDraftApprenticeshipPage();
+    }
+
+    [Test]
+    public async Task AndSyncIsSuccessful_ThenUpdatedDraftApprenticeshipIsStoredInCache()
+    {
+        // Arrange
+        var syncResponse = new SyncLearnerDataResponse
+        {
+            Success = true,
+            Message = "Learner data updated successfully",
+            UpdatedDraftApprenticeship = new GetDraftApprenticeshipResponse()
+        };
+        _fixture.SetupOuterApiServiceToReturnSyncResponse(syncResponse);
+        _fixture.SetupCacheStorageServiceToReturnGuid(Guid.NewGuid());
+
+        // Act
+        await _fixture.SyncLearnerData();
+
+        // Assert
+        _fixture.VerifyCacheStorageServiceSaveToCacheCalled();
+    }
+
+    [Test]
+    public async Task AndSyncIsSuccessful_ThenRedirectContainsLearnerDataSyncKey()
+    {
+        // Arrange
+        var syncResponse = new SyncLearnerDataResponse
+        {
+            Success = true,
+            Message = "Learner data updated successfully",
+            UpdatedDraftApprenticeship = new GetDraftApprenticeshipResponse()
+        };
+        _fixture.SetupOuterApiServiceToReturnSyncResponse(syncResponse);
+        _fixture.SetupCacheStorageServiceToReturnGuid(Guid.NewGuid());
+
+        // Act
+        await _fixture.SyncLearnerData();
+
+        // Assert
+        _fixture.VerifyRedirectContainsLearnerDataSyncKey();
     }
 }
