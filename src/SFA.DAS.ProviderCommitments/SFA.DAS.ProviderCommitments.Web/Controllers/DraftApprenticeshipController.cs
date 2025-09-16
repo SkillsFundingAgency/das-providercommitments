@@ -810,7 +810,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 TempData[LearnerDataSyncErrorKey] = LearnerDataSyncExceptionMessage;
             }
 
-            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", model);
+            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId});
         }
 
         private void ApplyLearnerDataSyncUpdates(EditDraftApprenticeshipViewModel editModel)
