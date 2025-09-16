@@ -17,6 +17,7 @@ using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Filters;
+using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
@@ -431,7 +432,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 if (model is EditDraftApprenticeshipViewModel editModel)
                 {
-                    await ApplyLearnerDataSyncUpdates(editModel, learnerDataSyncKey);
+                    if (!string.IsNullOrEmpty(learnerDataSyncKey) && modelMapper is EditDraftApprenticeshipViewModelMapper editMapper)
+                    {
+                        await editMapper.ApplyLearnerDataSyncUpdates(editModel, learnerDataSyncKey);
+                    }
 
                     await AddLegalEntityAndCoursesToModel(editModel);
                     PrePopulateDates(editModel);
@@ -662,6 +666,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
         }
 
+
         private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)
         {
             var cohortDetail = await commitmentsApiClient.GetCohort(model.CohortId.Value);
@@ -689,18 +694,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (model.ActualStartYear.HasValue && model.ActualStartMonth.HasValue)
                 return;
 
-
-            model.ActualStartYear = model.StartYear;
-            model.ActualStartMonth = model.StartMonth;
+            if (model.StartYear.HasValue && model.StartMonth.HasValue)
+            {
+                model.ActualStartYear = model.StartYear;
+                model.ActualStartMonth = model.StartMonth;
+            }
         }
 
         private static void EnsurePlannedStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
         {
-            if (model.StartDate.HasValue)
+            if (model.StartYear.HasValue && model.StartMonth.HasValue)
                 return;
 
-            model.StartYear = model.ActualStartYear;
-            model.StartMonth = model.ActualStartMonth;
+            if (model.ActualStartYear.HasValue && model.ActualStartMonth.HasValue)
+            {
+                model.StartYear = model.ActualStartYear;
+                model.StartMonth = model.ActualStartMonth;
+            }
         }
 
         private async Task<TrainingProgramme[]> GetCourses(GetCohortResponse cohortDetails)
@@ -802,41 +812,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId});
         }
 
-        private async Task ApplyLearnerDataSyncUpdates(EditDraftApprenticeshipViewModel editModel, string learnerDataSyncKey)
-        {
-            if (string.IsNullOrEmpty(learnerDataSyncKey)) return;
-            
-            var updatedDraftApprenticeship = await cacheStorageService.SafeRetrieveFromCache<GetDraftApprenticeshipResponse>(learnerDataSyncKey);
-            if (updatedDraftApprenticeship == null) return;
-
-            editModel.FirstName = updatedDraftApprenticeship.FirstName;
-            editModel.LastName = updatedDraftApprenticeship.LastName;
-            
-            if (updatedDraftApprenticeship.DateOfBirth.HasValue)
-            {
-                editModel.BirthDay = updatedDraftApprenticeship.DateOfBirth.Value.Day;
-                editModel.BirthMonth = updatedDraftApprenticeship.DateOfBirth.Value.Month;
-                editModel.BirthYear = updatedDraftApprenticeship.DateOfBirth.Value.Year;
-            }
-            
-            if (updatedDraftApprenticeship.StartDate.HasValue)
-            {
-                editModel.StartMonth = updatedDraftApprenticeship.StartDate.Value.Month;
-                editModel.StartYear = updatedDraftApprenticeship.StartDate.Value.Year;
-            }
-            
-            if (updatedDraftApprenticeship.EndDate.HasValue)
-            {
-                editModel.EndDay = updatedDraftApprenticeship.EndDate.Value.Day;
-                editModel.EndMonth = updatedDraftApprenticeship.EndDate.Value.Month;
-                editModel.EndYear = updatedDraftApprenticeship.EndDate.Value.Year;
-            }
-            
-            editModel.Cost = updatedDraftApprenticeship.Cost;
-            editModel.HasLearnerDataChanges = false;
-            editModel.LastLearnerDataSync = DateTime.UtcNow;
-            
-            await cacheStorageService.DeleteFromCache(learnerDataSyncKey);
-        }
     }
 }

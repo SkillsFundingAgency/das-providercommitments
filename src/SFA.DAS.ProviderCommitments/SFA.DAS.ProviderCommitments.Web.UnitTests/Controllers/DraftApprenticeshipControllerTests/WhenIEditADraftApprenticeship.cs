@@ -100,7 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenLearnerDataSyncKeyIsProvided_ThenCacheIsRetrievedAndCleanedUp()
+        public async Task AndWhenLearnerDataSyncKeyIsProvided_ThenViewIsReturned()
         {
             // Arrange
             var cacheKey = Guid.NewGuid().ToString();
@@ -117,8 +117,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             await _fixture.EditDraftApprenticeshipWithLearnerDataSyncKey(cacheKey);
 
             // Assert
-            _fixture.VerifyCacheStorageServiceRetrieveFromCacheCalled(cacheKey)
-                .VerifyCacheStorageServiceDeleteFromCacheCalled(cacheKey);
+            _fixture.VerifyEditDraftApprenticeshipViewModelIsSentToViewResult();
         }
     }
 }
