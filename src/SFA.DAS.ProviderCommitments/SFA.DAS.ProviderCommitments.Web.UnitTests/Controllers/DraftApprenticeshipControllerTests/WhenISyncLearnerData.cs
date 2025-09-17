@@ -26,7 +26,6 @@ public class WhenISyncLearnerData
             UpdatedDraftApprenticeship = new GetDraftApprenticeshipResponse()
         };
         _fixture.SetupOuterApiServiceToReturnSyncResponse(syncResponse);
-        _fixture.SetupCacheStorageServiceToReturnGuid(Guid.NewGuid());
 
         // Act
         await _fixture.SyncLearnerData();
@@ -123,13 +122,12 @@ public class WhenISyncLearnerData
             UpdatedDraftApprenticeship = new GetDraftApprenticeshipResponse()
         };
         _fixture.SetupOuterApiServiceToReturnSyncResponse(syncResponse);
-        _fixture.SetupCacheStorageServiceToReturnGuid(Guid.NewGuid());
 
         // Act
         await _fixture.SyncLearnerData();
 
         // Assert
-        _fixture.VerifyCacheStorageServiceSaveToCacheCalled();
+        _fixture.VerifyOuterApiServiceSyncLearnerDataCalled();
     }
 
     [Test]
@@ -143,7 +141,6 @@ public class WhenISyncLearnerData
             UpdatedDraftApprenticeship = new GetDraftApprenticeshipResponse()
         };
         _fixture.SetupOuterApiServiceToReturnSyncResponse(syncResponse);
-        _fixture.SetupCacheStorageServiceToReturnGuid(Guid.NewGuid());
 
         // Act
         await _fixture.SyncLearnerData();

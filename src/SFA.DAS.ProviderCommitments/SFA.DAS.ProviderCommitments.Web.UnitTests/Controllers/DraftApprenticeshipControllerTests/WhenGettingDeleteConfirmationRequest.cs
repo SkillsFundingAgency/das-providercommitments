@@ -38,9 +38,8 @@ public class WhenGettingDeleteConfirmationRequest
             _modelMapperMock.Object,
             Mock.Of<IEncodingService>(),
             _providerFeatureToggle.Object,
-            Mock.Of<IOuterApiService>(), 
-            Mock.Of<IAuthenticationService>(),
-            Mock.Of<ICacheStorageService>()
+            Mock.Of<IOuterApiService>(),
+            Mock.Of<IAuthenticationService>()
         );
     }
     

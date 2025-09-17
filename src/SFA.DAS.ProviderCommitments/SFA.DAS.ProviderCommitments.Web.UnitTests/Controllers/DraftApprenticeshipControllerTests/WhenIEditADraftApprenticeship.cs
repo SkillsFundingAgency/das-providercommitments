@@ -111,7 +111,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             };
             
             _fixture.SetupCommitmentsApiToReturnADraftApprentice();
-            _fixture.SetupCacheStorageServiceToReturnUpdatedDraftApprenticeship(cacheKey, updatedDraftApprenticeship);
 
             // Act
             await _fixture.EditDraftApprenticeshipWithLearnerDataSyncKey(cacheKey);

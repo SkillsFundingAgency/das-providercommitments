@@ -446,8 +446,7 @@ public class WhenRecognisingPriorLearningFixture
             Mock.Of<IEncodingService>(),
             AuthorizationService.Object,
             OuterApiService.Object,
-            Mock.Of<IAuthenticationService>(),
-            Mock.Of<ICacheStorageService>());
+            Mock.Of<IAuthenticationService>());
     }
 
     internal WhenRecognisingPriorLearningFixture WithoutPreviousSelection()

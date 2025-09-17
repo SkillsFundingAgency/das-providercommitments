@@ -41,17 +41,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         IEncodingService encodingService,
         IAuthorizationService authorizationService,
         IOuterApiService outerApiService,
-        IAuthenticationService authenticationService,
-         ICacheStorageService cacheStorageService)
+        IAuthenticationService authenticationService)
         : Controller
     {
         private const string LearnerDataSyncSuccessKey = "LearnerDataSyncSuccess";
         private const string LearnerDataSyncErrorKey = "LearnerDataSyncError";
         private const string SyncLearnerDataOperation = "SyncLearnerData";
         
-        private const string LearnerDataSyncSuccessMessage = "Learner data has been successfully updated.";
-        private const string LearnerDataSyncErrorMessage = "Failed to sync learner data.";
-        private const string LearnerDataSyncExceptionMessage = "An error occurred while syncing learner data.";
 
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
@@ -784,29 +780,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task<IActionResult> HandleLearnerDataSync(EditDraftApprenticeshipViewModel model)
         {
-            try
+            var result = await modelMapper.Map<LearnerDataSyncResult>(model);
+            
+            if (result.Success)
             {
-                var response = await outerApiService.SyncLearnerData(model.ProviderId, model.CohortId.Value, model.DraftApprenticeshipId.Value);
-                
-                if (response.Success)
-                {
-                    var cacheKey = Guid.NewGuid();
-                    await cacheStorageService.SaveToCache(cacheKey, response.UpdatedDraftApprenticeship, expirationInHours: 1);
-                    TempData[LearnerDataSyncSuccessKey] = LearnerDataSyncSuccessMessage;
-                    return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new 
-                    { 
-                        model.DraftApprenticeshipHashedId,
-                        LearnerDataSyncKey = cacheKey.ToString()
-                    });
-                }
-                else
-                {
-                    TempData[LearnerDataSyncErrorKey] = response.Message ?? LearnerDataSyncErrorMessage;
-                }
+                TempData[LearnerDataSyncSuccessKey] = result.Message;
+                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new 
+                { 
+                    model.DraftApprenticeshipHashedId,
+                    LearnerDataSyncKey = result.CacheKey
+                });
             }
-            catch (Exception e)
+            else
             {
-                TempData[LearnerDataSyncErrorKey] = LearnerDataSyncExceptionMessage;
+                TempData[LearnerDataSyncErrorKey] = result.Message;
             }
 
             return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId});
