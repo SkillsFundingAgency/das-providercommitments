@@ -173,13 +173,12 @@ public class DetailsViewModelMapper(
     private async Task<IReadOnlyCollection<DetailsViewCourseGroupingModel>> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships, List<ApprenticeshipEmailOverlap> emailOverlaps, GetCohortDetailsResponse cohortResponse)
     {
         var groupedByCourse = draftApprenticeships
-            .GroupBy(a => new { a.CourseCode, a.CourseName, a.DeliveryModel, a.IsOnFlexiPaymentPilot })
+            .GroupBy(a => new { a.CourseCode, a.CourseName, a.DeliveryModel })
             .Select(course => new DetailsViewCourseGroupingModel
             {
                 CourseCode = course.Key.CourseCode,
                 CourseName = course.Key.CourseName,
                 DeliveryModel = course.Key.DeliveryModel,
-                IsOnFlexiPaymentPilot = course.Key.IsOnFlexiPaymentPilot,
                 DraftApprenticeships = course
                     // Sort before on raw properties rather than use displayName property post select for performance reasons
                     .OrderBy(a => a.FirstName)
@@ -202,8 +201,7 @@ public class DetailsViewModelMapper(
                         HasOverlappingEmail = emailOverlaps.Any(x => x.Id == a.Id),
                         IsComplete = IsDraftApprenticeshipComplete(a, cohortResponse),
                         EmploymentPrice = a.EmploymentPrice,
-                        EmploymentEndDate = a.EmploymentEndDate,
-                        IsOnFlexiPaymentPilot = a.IsOnFlexiPaymentPilot
+                        EmploymentEndDate = a.EmploymentEndDate
                     })
                     .ToList()
             })
@@ -253,12 +251,6 @@ public class DetailsViewModelMapper(
         }
 
         if (draftApprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered)
-        {
-            return false;
-        }
-
-        if (draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault()
-            && (draftApprenticeship.TrainingPrice == null || draftApprenticeship.EndPointAssessmentPrice == null))
         {
             return false;
         }
@@ -389,9 +381,7 @@ public class DetailsViewModelMapper(
 
         foreach (var draftApprenticeship in draftApprenticeships)
         {
-            draftApprenticeship.FundingBandCap = draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault()
-                ? GetFundingBandCap(course, draftApprenticeship.OriginalStartDate ?? draftApprenticeship.ActualStartDate)
-                : GetFundingBandCap(course, draftApprenticeship.OriginalStartDate ?? draftApprenticeship.StartDate);
+            draftApprenticeship.FundingBandCap = GetFundingBandCap(course, draftApprenticeship.OriginalStartDate ?? draftApprenticeship.StartDate);
         }
     }
 

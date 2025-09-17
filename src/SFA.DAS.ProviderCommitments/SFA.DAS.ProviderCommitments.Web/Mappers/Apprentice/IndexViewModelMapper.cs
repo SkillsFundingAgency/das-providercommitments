@@ -34,8 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EndDate = source.SelectedEndDate,
                 Alert = source.SelectedAlert,
                 ApprenticeConfirmationStatus = source.SelectedApprenticeConfirmation,
-                DeliveryModel = source.SelectedDeliveryModel,
-                IsOnFlexiPaymentPilot = source.SelectedPilotStatus
+                DeliveryModel = source.SelectedDeliveryModel
             });
 
             var statusFilters = new[]
@@ -73,7 +72,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 SelectedAlert = source.SelectedAlert,
                 SelectedApprenticeConfirmation = source.SelectedApprenticeConfirmation,
                 SelectedDeliveryModel = source.SelectedDeliveryModel,
-                SelectedPilotStatus = source.SelectedPilotStatus,
                 StatusFilters = statusFilters,
                 AlertFilters = alertFilters
             };

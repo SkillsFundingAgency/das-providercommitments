@@ -1,5 +1,4 @@
-﻿@using SFA.DAS.Apprenticeships.Types
-@using SFA.DAS.CommitmentsV2.Types
+﻿@using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Enums
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Shared
@@ -99,14 +98,4 @@
 {
     var changeOfPriceRejectedBannerModel = new SuccessBannerModel("change-of-price-rejected-banner", "Price change rejected", "The employer has been notified that you have rejected their change of price request.");
     <partial name="DetailsPartials/_SuccessBanner" model="changeOfPriceRejectedBannerModel" />
-}
-
-@if (Model.PaymentStatus.PaymentsFrozen && Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
-{
-    <partial name="DetailsPartials/_PaymentsFrozenBanner" />
-}
-
-@if (Model.LearnerStatus == LearnerStatus.Withdrawn && Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
-{
-    <partial name="DetailsPartials/_WithdrawnPermanentInformationBanner" />
 }

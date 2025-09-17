@@ -30,7 +30,7 @@ public class WhenIMapSelectCourseViewModelFromEditApprenticeshipRequestViewModel
         _cohortResponse = fixture.Create<GetCohortResponse>();
 
         _helper = new Mock<ISelectCourseViewModelMapperHelper>();
-        _helper.Setup(x => x.Map(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<bool?>())).ReturnsAsync(_model);
+        _helper.Setup(x => x.Map(It.IsAny<string>(), It.IsAny<long>())).ReturnsAsync(_model);
 
         _client = new Mock<ICommitmentsApiClient>();
         _client.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_apprenticeshipResponse);
@@ -45,7 +45,7 @@ public class WhenIMapSelectCourseViewModelFromEditApprenticeshipRequestViewModel
         var result = await _mapper.Map(_request);
         _client.Verify(x => x.GetApprenticeship(_request.ApprenticeshipId, CancellationToken.None));
         _client.Verify(x => x.GetCohort(_apprenticeshipResponse.CohortId, CancellationToken.None));
-        _helper.Verify(x => x.Map(_request.CourseCode, _cohortResponse.AccountLegalEntityId, null));
+        _helper.Verify(x => x.Map(_request.CourseCode, _cohortResponse.AccountLegalEntityId));
     }
 
     [Test]

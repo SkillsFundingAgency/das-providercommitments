@@ -239,13 +239,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndPilotStatusIsToBeChangedThenTheUserIsRedirectedToSelectPilotStatusPage()
-        {
-            await _fixture.PostToAddDraftApprenticeship(changePilotStatus: "Edit");
-            _fixture.VerifyUserRedirectedTo("ChoosePilotStatusForDraftChange");
-        }
-
-        [Test]
         public async Task AndWhenThereIsStartDateOverlap()
         {
             await _fixture.SetupStartDateOverlap(true, false).SetupAddDraftApprenticeshipViewModelForStartDateOverlap().PostToAddDraftApprenticeship();

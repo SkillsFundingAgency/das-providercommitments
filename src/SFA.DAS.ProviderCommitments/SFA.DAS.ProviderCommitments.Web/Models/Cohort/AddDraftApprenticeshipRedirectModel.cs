@@ -13,7 +13,6 @@ public class AddDraftApprenticeshipRedirectModel
     {
         SelectCourse,
         SelectDeliveryModel,
-        SelectPilotStatus,
         OverlapWarning,
         SaveApprenticeship
     }

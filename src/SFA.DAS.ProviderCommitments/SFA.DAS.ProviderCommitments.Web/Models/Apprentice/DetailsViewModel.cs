@@ -81,9 +81,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string DurationReducedByHoursDisplay => $"{DurationReducedByHours} hours";
         public int? PriceReducedBy { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
-        public bool? IsOnFlexiPaymentPilot { get; set; }
-        public string IsOnFlexiPaymentPilotDisplay =>
-            IsOnFlexiPaymentPilot.HasValue && IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
         public PaymentsStatus PaymentStatus { get; set; }
         public PendingPriceChange PendingPriceChange { get; set; }
         public PendingStartDateChange PendingStartDateChange { get; set; }
@@ -99,18 +96,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime? WithdrawalChangedDate { get; set; }
         public DateTime? LastCensusDateOfLearning { get; set; }
         public DateTime? LastDayOfLearning { get; set; }
-
-        public bool ShowChangeStartDateLink => IsOnFlexiPaymentPilot.GetValueOrDefault() &&
-                                               CanActualStartDateBeChanged.GetValueOrDefault() &&
-                                               LearnerStatus != LearnerStatus.Withdrawn;
-
-        public bool ShowChangePriceLink => IsOnFlexiPaymentPilot.GetValueOrDefault() &&
-                                               LearnerStatus != LearnerStatus.Withdrawn;
-
-        public bool ShowWithdrawnWithinQualifyingPeriodMessage =>
-            IsOnFlexiPaymentPilot.GetValueOrDefault()
-            && (LastDayOfLearning - ActualStartDate).HasValue
-            && (LastDayOfLearning - ActualStartDate).GetValueOrDefault().TotalDays < 42;
 
         public enum DataLockSummaryStatus
         {

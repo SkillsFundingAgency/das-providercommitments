@@ -247,7 +247,6 @@ public class DetailsViewModelMapperTests
     public async Task ThenAllowEditApprenticeIsMappedCorrectly(ApprenticeshipStatus status, bool expectedAllowEditApprentice)
     {
         _fixture
-            .WithApprenticeshipFlexiPilotStatus(false)
             .WithApprenticeshipStatus(status);
 
         await _fixture.Map();
@@ -281,8 +280,6 @@ public class DetailsViewModelMapperTests
     [Test]
     public async Task WhenThereAreNoDataLocks_ThenAllowEditApprenticeIsTrue()
     {
-        _fixture.WithApprenticeshipFlexiPilotStatus(false);
-
         await _fixture.Map();
 
         _fixture.Result.AllowEditApprentice.Should().BeTrue();
@@ -298,18 +295,6 @@ public class DetailsViewModelMapperTests
         await _fixture.Map();
 
         _fixture.Result.AllowEditApprentice.Should().BeFalse();
-    }
-
-    [TestCase(true, false)]
-    [TestCase(false, true)]
-    [TestCase(null, true)]
-    public async Task ThenAllowEditApprenticeIsMappedCorrectly(bool? pilotStatus, bool expectedAllowEditApprentice)
-    {
-        _fixture.WithApprenticeshipFlexiPilotStatus(pilotStatus);
-
-        await _fixture.Map();
-
-        _fixture.Result.AllowEditApprentice.Should().Be(expectedAllowEditApprentice);
     }
 
     [TestCase(true)]
@@ -653,17 +638,6 @@ public class DetailsViewModelMapperTests
     }
 
     [Test]
-    public async Task CheckIsOnFlexiPaymentPilotIsMappedCorrectly()
-    {
-        const bool isOnPilot = true;
-        _fixture.WithIsOnFlexiPaymentPilotPopulated(isOnPilot);
-
-        var result = await _fixture.Map();
-
-        _fixture.Result.IsOnFlexiPaymentPilot.Should().Be(isOnPilot);
-    }
-
-    [Test]
     public async Task And_PriceChangeDetailsIsNull_Then_PriceChangeDetailsNotReturned()
     {
         _fixture.WithoutPendingPriceChangePopulated();
@@ -901,13 +875,6 @@ public class DetailsViewModelMapperTests
             return this;
         }
 
-        public DetailsViewModelMapperFixture WithApprenticeshipFlexiPilotStatus(
-            bool? pilotStatus)
-        {
-            ApiResponse.Apprenticeship.IsOnFlexiPaymentPilot = pilotStatus;
-            return this;
-        }
-
         public DetailsViewModelMapperFixture WithPendingUpdatesForProvider()
         {
             ApiResponse.ApprenticeshipUpdates =
@@ -1129,11 +1096,6 @@ public class DetailsViewModelMapperTests
             return this;
         }
 
-        public DetailsViewModelMapperFixture WithIsOnFlexiPaymentPilotPopulated(bool isOnPilot)
-        {
-            ApiResponse.Apprenticeship.IsOnFlexiPaymentPilot = isOnPilot;
-            return this;
-        }
         public DetailsViewModelMapperFixture WithoutPendingPriceChangePopulated()
         {
             ApiResponse.PendingPriceChange = null;

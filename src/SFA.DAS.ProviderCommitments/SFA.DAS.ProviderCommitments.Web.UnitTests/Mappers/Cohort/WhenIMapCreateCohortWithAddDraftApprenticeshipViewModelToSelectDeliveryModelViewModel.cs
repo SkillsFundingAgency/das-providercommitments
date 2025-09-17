@@ -21,7 +21,7 @@ public class WhenIMapCreateCohortWithAddDraftApprenticeshipViewModelToSelectDeli
         _model = fixture.Create<SelectDeliveryModelViewModel>();
 
         _helper = new Mock<ISelectDeliveryModelMapperHelper>();
-        _helper.Setup(x => x.Map(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DeliveryModel?>(), It.IsAny<bool?>())).ReturnsAsync(_model);
+        _helper.Setup(x => x.Map(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DeliveryModel?>())).ReturnsAsync(_model);
 
         _mapper = new SelectDeliveryModelViewModelFromCreateCohortWithDraftApprenticeshipRequestMapper(_helper.Object);
     }
@@ -30,7 +30,7 @@ public class WhenIMapCreateCohortWithAddDraftApprenticeshipViewModelToSelectDeli
     public async Task TheParamsArePassedInCorrectly()
     {
         await _mapper.Map(_request);
-        _helper.Verify(x=>x.Map(_request.ProviderId, _request.CourseCode, _request.AccountLegalEntityId, _request.DeliveryModel, _request.IsOnFlexiPaymentPilot));
+        _helper.Verify(x=>x.Map(_request.ProviderId, _request.CourseCode, _request.AccountLegalEntityId, _request.DeliveryModel));
     }
 
     [Test]

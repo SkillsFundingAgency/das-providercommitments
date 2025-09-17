@@ -29,8 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ConfirmationStatus = source.ConfirmationStatus,
                 Status = source.ApprenticeshipStatus,
                 Alerts = source.Alerts.Select(x => x.GetDescription()),
-                ActualStartDate = source.ActualStartDate,
-                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
+                ActualStartDate = source.ActualStartDate
             };
 
             return Task.FromResult(result);

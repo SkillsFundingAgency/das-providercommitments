@@ -36,8 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 CourseOption = source.SelectedOption == "-1" ? string.Empty : source.SelectedOption,
                 DeliveryModel = apiResponse.DeliveryModel,
                 EmploymentEndDate = apiResponse.EmploymentEndDate,
-                EmploymentPrice = apiResponse.EmploymentPrice,
-                IsOnFlexiPaymentPilot = apiResponse.IsOnFlexiPaymentPilot
+                EmploymentPrice = apiResponse.EmploymentPrice
             };
         }
     }

@@ -9,8 +9,7 @@
         {
             SelectCourse,
             SelectHowTo,
-            SelectLearner,
-            ChooseFlexiPaymentPilotStatus
+            SelectLearner
         }
     }
 }
