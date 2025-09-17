@@ -70,7 +70,18 @@ public class EditDraftApprenticeshipViewModelMapper(
             {
                 cachedModel.HasMultipleDeliveryModelOptions = newModel.HasMultipleDeliveryModelOptions;
                 cachedModel.HasChangedDeliveryModel = cachedModel.DeliveryModel != (DeliveryModel?)apiResponse.DeliveryModel;
+                
+                if (!string.IsNullOrEmpty(source.LearnerDataSyncKey))
+                {
+                    await ApplyLearnerDataSyncUpdates(cachedModel, source.LearnerDataSyncKey);
+                }
+                
                 return cachedModel;
+            }
+            
+            if (!string.IsNullOrEmpty(source.LearnerDataSyncKey))
+            {
+                await ApplyLearnerDataSyncUpdates(newModel, source.LearnerDataSyncKey);
             }
 
             return newModel;

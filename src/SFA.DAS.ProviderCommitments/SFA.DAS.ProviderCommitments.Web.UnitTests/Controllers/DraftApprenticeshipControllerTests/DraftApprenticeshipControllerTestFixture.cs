@@ -330,7 +330,7 @@ public class DraftApprenticeshipControllerTestFixture
 
     public async Task<DraftApprenticeshipControllerTestFixture> EditDraftApprenticeship()
     {
-        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
+        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
             .ReturnsAsync(_editModel);
         _actionResult = await _controller.EditDraftApprenticeship(_draftApprenticeshipRequest);
         return this;
@@ -338,7 +338,7 @@ public class DraftApprenticeshipControllerTestFixture
 
     public async Task<DraftApprenticeshipControllerTestFixture> ViewDraftApprenticeship()
     {
-        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
+        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
             .ReturnsAsync(_viewModel);
         _actionResult = await _controller.EditDraftApprenticeship(_draftApprenticeshipRequest);
         return this;
@@ -830,12 +830,13 @@ public class DraftApprenticeshipControllerTestFixture
             CohortId = _draftApprenticeshipRequest.CohortId,
             DraftApprenticeshipId = _draftApprenticeshipRequest.DraftApprenticeshipId,
             DraftApprenticeshipHashedId = _draftApprenticeshipRequest.DraftApprenticeshipHashedId,
-            CohortReference = _draftApprenticeshipRequest.CohortReference
+            CohortReference = _draftApprenticeshipRequest.CohortReference,
+            LearnerDataSyncKey =  learnerDataSyncKey
         };
         
-        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(request))
+        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
             .ReturnsAsync(_editModel);
-        _actionResult = await _controller.EditDraftApprenticeship(request, learnerDataSyncKey);
+        _actionResult = await _controller.EditDraftApprenticeship(request);
         return this;
     }
 

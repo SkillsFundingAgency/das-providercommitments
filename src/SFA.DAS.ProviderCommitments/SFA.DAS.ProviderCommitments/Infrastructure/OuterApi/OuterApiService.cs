@@ -250,7 +250,7 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
 
     public async Task<bool> CanAccessCohort(long providerId, long cohortId)
     {
-        var content = new GetCohortAccessRequest(SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Party.Provider, providerId, cohortId);
+        var content = new GetCohortAccessRequest(Party.Provider, providerId, cohortId);
 
         var response = await outerApiClient.Get<GetCohortAccessResponse>(content);
 

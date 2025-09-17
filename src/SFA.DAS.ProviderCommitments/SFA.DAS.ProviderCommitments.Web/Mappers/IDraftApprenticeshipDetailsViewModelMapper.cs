@@ -22,7 +22,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             return await modelMapper.Map<IDraftApprenticeshipViewModel>(new EditDraftApprenticeshipRequest
             {
                 Cohort = cohort,
-                Request = source
+                Request = source,
+                LearnerDataSyncKey = source.LearnerDataSyncKey
             });
         }
     }
