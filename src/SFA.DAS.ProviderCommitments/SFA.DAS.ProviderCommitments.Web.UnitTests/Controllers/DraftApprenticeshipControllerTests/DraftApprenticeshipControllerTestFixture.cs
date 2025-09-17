@@ -760,7 +760,7 @@ public class DraftApprenticeshipControllerTestFixture
             CohortReference = _draftApprenticeshipRequest.CohortReference
         };
         
-        _actionResult = await _controller.EditDraftApprenticeship(null, null, null, model, "SyncLearnerData");
+        _actionResult = await _controller.EditDraftApprenticeship(null, null, model, "SyncLearnerData");
         return this;
     }
 

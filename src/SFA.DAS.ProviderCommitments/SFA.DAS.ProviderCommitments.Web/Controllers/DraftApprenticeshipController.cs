@@ -143,58 +143,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("add/choose-pilot-status")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatus(ReservationsAddDraftApprenticeshipRequest request)
-        {
-            var draft = await modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
-            await AddLegalEntityAndCoursesToModel(draft);
-
-            return View("ChoosePilotStatus", new ChoosePilotStatusViewModel { Selection = draft.IsOnFlexiPaymentPilot == null ? null : draft.IsOnFlexiPaymentPilot.Value ? ChoosePilotStatusOptions.Pilot : ChoosePilotStatusOptions.NonPilot });
-        }
-
-        [HttpPost]
-        [Route("add/choose-pilot-status")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> ChoosePilotStatus(ChoosePilotStatusViewModel model)
-        {
-            if (model.Selection == null)
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
-            }
-
-            var request = await modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
-            return RedirectToAction(nameof(AddDraftApprenticeshipCourse), "DraftApprenticeship", request);
-        }
-
-        [HttpGet]
-        [Route("add/choose-pilot-status-draft-change")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatusForDraftChange(ReservationsAddDraftApprenticeshipRequest request)
-        {
-            var draft = await modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
-            await AddLegalEntityAndCoursesToModel(draft);
-
-            return View("ChoosePilotStatus", new ChoosePilotStatusViewModel { Selection = draft.IsOnFlexiPaymentPilot == null ? null : draft.IsOnFlexiPaymentPilot.Value ? ChoosePilotStatusOptions.Pilot : ChoosePilotStatusOptions.NonPilot });
-        }
-
-        [HttpPost]
-        [Route("add/choose-pilot-status-draft-change")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> ChoosePilotStatusForDraftChange(ChoosePilotStatusViewModel model)
-        {
-            if (model.Selection == null)
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
-            }
-
-            var request = await modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
-            return RedirectToAction("AddDraftApprenticeship", "DraftApprenticeship", request);
-        }
-
-        [HttpGet]
         [Route("add/select-delivery-model")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectDeliveryModel(ReservationsAddDraftApprenticeshipRequest request)
