@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             DateOfBirth = new DateModel();
             StartDate = new MonthYearModel("");
             ActualStartDate = new DateModel();
-            EndDate = new DateModel();
+            EndDate = new MonthYearModel("");
             EmploymentEndDate = new MonthYearModel("");
         }
 
@@ -67,33 +67,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         public string CourseCode { get; set; }
         public string CourseName { get; set; }
-
-        private bool? _isOnFlexiPaymentPilot;
-        [Display(Name = "Will this apprentice be part of the Flexible Payments pilot program?")]
-        [SuppressArgumentException(nameof(IsOnFlexiPaymentPilot), "Select whether this apprentice will be on the pilot programme.")]
-        public bool? IsOnFlexiPaymentPilot
-        {
-            get => _isOnFlexiPaymentPilot;
-            set
-            {
-                var nonPilotToPilot = value.GetValueOrDefault() && !_isOnFlexiPaymentPilot.GetValueOrDefault();
-
-                _isOnFlexiPaymentPilot = value;
-                if (_isOnFlexiPaymentPilot.GetValueOrDefault() && EndDate.GetType() != typeof(DateModel))
-                {
-                    EndDate = EndDate.Date.HasValue ? new DateModel(EndDate.Date.Value) : new DateModel();
-                    if (nonPilotToPilot) EndDay = null;
-                }
-                else if (!_isOnFlexiPaymentPilot.GetValueOrDefault() && EndDate.GetType() != typeof(MonthYearModel))
-                {
-                    var endMonth = EndMonth;
-                    var endYear = EndYear;
-                    EndDate = new MonthYearModel("");
-                    EndDate.Year = endYear;
-                    EndDate.Month = endMonth;
-                }
-            }
-        }
 
         [Display(Name = "Planned apprenticeship training start date")]
         public MonthYearModel StartDate { get; set; }
@@ -186,7 +159,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
         public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
-        public string DisplayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
         public bool HasChangedDeliveryModel { get; set; }
         public bool? EmailAddressConfirmed { get; set; }

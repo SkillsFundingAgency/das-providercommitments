@@ -1,13 +1,9 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
-@using SFA.DAS.ProviderCommitments.Features
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@using IAuthorizationService = SFA.DAS.ProviderCommitments.Interfaces.IAuthorizationService
-
-@inject IAuthorizationService AuthorisationService
 
 @{
     ViewData["Title"] = "Apprentice Details";
@@ -30,12 +26,7 @@
         
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
-        @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.None)
-        {
-            <partial name="DetailsPartials/_PaymentsSimplificationPrivateBetaInformation" />
-        }        
-
-        @if (Model.ShowChangeEmployerLink && Model.Status != ApprenticeshipStatus.Completed && !Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+        @if (Model.ShowChangeEmployerLink && Model.Status != ApprenticeshipStatus.Completed)
         {
             <partial name="DetailsPartials/_HelpWithChangeOfCircumstances" />
         }
@@ -77,23 +68,6 @@
 
                 <partial name="DetailsPartials/_ApprenticeshipStatus" />
 
-                @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
-                {
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header das-table-cell-width-45">Simplified payments pilot</th>
-                        <td id="apprenticeship-payment-pilot" class="govuk-table__cell das-table-cell-width-55">
-                            @Model.IsOnFlexiPaymentPilotDisplay</td>
-                    </tr>
-                }
-                @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
-                {
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header das-table-cell-width-45">Provider payments status</th>
-                        <td id="provider-payments-status" class="govuk-table__cell das-table-cell-width-55">
-                            <strong class="govuk-tag @paymentStatusTagClass">@Model.PaymentStatus.Status</strong>
-                        </td>
-                    </tr>
-                }
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice confirmation</th>
                     <td id="apprenticeship-confirmation" class="govuk-table__cell das-table-cell-width-55">
@@ -143,7 +117,7 @@
                     <td id="apprenticeship-employer" class="govuk-table__cell das-table-cell-width-40">@Model.Employer
                     </td>
                     <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
-                        @if (Model.ShowChangeEmployerLink && !Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+                        @if (Model.ShowChangeEmployerLink)
                         {
                             <a id="change-employer-link" class="govuk-link"
                                 href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
@@ -309,12 +283,6 @@
                             <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
                         }
                         <td class="govuk-table__cell">
-                            @if (Model.ShowChangeStartDateLink)
-                            {
-                                <a id="linkChangeStartDate" asp-external-controller=""
-                                   asp-external-subdomain="apprenticeshipdetails"
-                                   asp-external-relativeroute="@Model.ChangeOfStartDateRoute" class="govuk-link">Change</a>
-                            }
                         </td>
                     </tr>
                 }
@@ -327,9 +295,7 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Planned training end date</th>
-                    <td id="apprentice-end-date" class="govuk-table__cell">
-                        @(Model.IsOnFlexiPaymentPilot.GetValueOrDefault() ? Model.EndDate.ToGdsFormat() :
-                            Model.EndDate.ToGdsFormatWithoutDay())</td>
+                    <td id="apprentice-end-date" class="govuk-table__cell">@Model.EndDate.ToGdsFormatWithoutDay())</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
 
@@ -352,46 +318,11 @@
 
                 @if (!Model.HasPendingPriceChange)
                 {
-                    @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
-                    {
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Training price</th>
-                            <td id="training-price" class="govuk-table__cell">
-                                @Model.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()
-                                @if (Model.HasPendingPriceChange)
-                                {
-                                    <strong class="govuk-tag govuk-tag govuk-tag--yellow">Pending</strong>
-                                }
-                            </td>
-                            <td class="govuk-table__cell"></td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">End-point assessment price</th>
-                            <td id="end-point-assessment-price" class="govuk-table__cell">
-                                @Model.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
-                            <td class="govuk-table__cell"></td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Total price</th>
-                            <td id="total-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
-                            <td class="govuk-table__cell">
-                                @if (Model.ShowChangePriceLink)
-                                {
-                                    <a id="linkChangePrice" asp-external-controller=""
-                                       asp-external-subdomain="apprenticeshipdetails"
-                                       asp-external-relativeroute="@Model.ChangeOfPriceRoute" class="govuk-link">Change</a>
-                                }
-                            </td>
-                        </tr>
-                    }
-                    else
-                    {
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
-                            <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
-                            <td class="govuk-table__cell"></td>
-                        </tr>
-                    }
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                        <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                        <td class="govuk-table__cell"></td>
+                    </tr>
                 }
 
                 <tr class="govuk-table__row">

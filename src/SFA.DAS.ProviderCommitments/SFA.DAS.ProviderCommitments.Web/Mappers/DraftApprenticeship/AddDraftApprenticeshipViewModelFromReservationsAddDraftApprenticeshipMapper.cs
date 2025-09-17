@@ -47,13 +47,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
                 ReservationId = source.ReservationId,
                 CourseCode = source.CourseCode,
                 DeliveryModel = source.DeliveryModel,
-                HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
-                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
+                HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions
             };
 
             if (cacheItem != null)
             {
-                model.IsOnFlexiPaymentPilot = false;
                 model.ReservationId = cacheItem.ReservationId;
                 model.FirstName = cacheItem.FirstName;
                 model.LastName = cacheItem.LastName;

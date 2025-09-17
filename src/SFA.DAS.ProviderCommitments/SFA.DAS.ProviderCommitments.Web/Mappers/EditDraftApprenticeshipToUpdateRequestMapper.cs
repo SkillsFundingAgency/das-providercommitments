@@ -10,10 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
         {
             int? GetCost()
             {
-                if (source.IsOnFlexiPaymentPilot is not true) return source.Cost;
-                if (source.TrainingPrice is null && source.EndPointAssessmentPrice is null) return source.Cost ?? null;
-                
-                return source.TrainingPrice.GetValueOrDefault() + source.EndPointAssessmentPrice.GetValueOrDefault();
+                return source.Cost;
             }
 
             return Task.FromResult(new UpdateDraftApprenticeshipApimRequest
@@ -36,7 +33,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 DeliveryModel = source.DeliveryModel.Value,
                 EmploymentEndDate = source.EmploymentEndDate.Date,
                 EmploymentPrice = source.EmploymentPrice,
-                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot,
                 HasLearnerDataChanges = source.HasLearnerDataChanges,
                 LastLearnerDataSync = source.LastLearnerDataSync
             });

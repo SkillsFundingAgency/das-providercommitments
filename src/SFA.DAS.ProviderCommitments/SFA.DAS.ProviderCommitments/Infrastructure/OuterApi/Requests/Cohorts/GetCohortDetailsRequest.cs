@@ -82,7 +82,6 @@ public class DraftApprenticeshipDto
     //TODO These need to be combined
     public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
     public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
-    public bool? IsOnFlexiPaymentPilot { get; set; }
     public bool? EmailAddressConfirmed { get; set; }
     public int? DurationReducedByHours { get; set; }
     public bool HasLearnerDataChanges { get; set; }

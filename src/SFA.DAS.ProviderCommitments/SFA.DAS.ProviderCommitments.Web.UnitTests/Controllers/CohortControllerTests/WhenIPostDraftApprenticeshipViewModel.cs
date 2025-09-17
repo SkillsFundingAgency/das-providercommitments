@@ -69,14 +69,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _fixture.VerifyUserRedirectedTo("SelectDeliveryModel");
         }
 
-        [Test]
-        public async Task AndPilotStatusIsToBeChangedThenTheUserIsRedirectedToSelectPilotStatusPage()
-        {
-            _fixture.WithRedirectAction(AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectPilotStatus);
-            await _fixture.PostDraftApprenticeshipViewModel(changePilotStatus: "Edit");
-            _fixture.VerifyUserRedirectedTo("ChoosePilotStatus");
-        }
-
         [TestCase(true)]
         [TestCase(false)]
         public async Task UserIsRedirectedToRecognisePriorLearningPageWhenStartDateIsAfterActivationDate(bool setActualDate)
@@ -146,8 +138,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                     ProviderId = _autoFixture.Create<int>(),
                     EmployerAccountLegalEntityPublicHashedId = _autoFixture.Create<string>(),
                     AccountLegalEntityId = _autoFixture.Create<long>(),
-                    ReservationId = _autoFixture.Create<Guid>(),
-                    IsOnFlexiPaymentPilot = false
+                    ReservationId = _autoFixture.Create<Guid>()
                 };
 
                 _tempData = new Mock<ITempDataDictionary>();
@@ -246,7 +237,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 return this;
             }
 
-            public async Task<UnapprovedControllerTestFixture> PostDraftApprenticeshipViewModel(string changeCourse = null, string changeDeliveryModel = null, string changePilotStatus = null)
+            public async Task<UnapprovedControllerTestFixture> PostDraftApprenticeshipViewModel(string changeCourse = null, string changeDeliveryModel = null)
             {
                 _actionResult = await _controller.AddDraftApprenticeshipOrRoute(_model);
                 return this;

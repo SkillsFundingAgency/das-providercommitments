@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var apprenticeship = await _client.GetApprenticeship(source.ApprenticeshipId);
             var cohortDetail = await _client.GetCohort(apprenticeship.CohortId);
 
-            return await _helper.Map(source.CourseCode, cohortDetail.AccountLegalEntityId, null);
+            return await _helper.Map(source.CourseCode, cohortDetail.AccountLegalEntityId);
         }
     }
 }

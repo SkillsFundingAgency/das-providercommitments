@@ -27,7 +27,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool IsComplete { get; set; }
         public int? EmploymentPrice { get; set; }
         public DateTime? EmploymentEndDate { get; set; }
-        public bool? IsOnFlexiPaymentPilot { get; set; }
         public bool HasLearnerDataChanges { get; set; }
         public DateTime? LastLearnerDataSync { get; set; }
 
@@ -90,12 +89,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 
         public string DisplayEmploymentPrice => EmploymentPrice?.ToGdsCostFormat() ?? "-";
 
-        public string DisplayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
-
         public DateTime? OriginalStartDate { get; set; }
-
-        public bool EmployerHasEditedPrice =>
-            TrainingPrice == null && EndPointAssessmentPrice == null && Cost != null && IsOnFlexiPaymentPilot.GetValueOrDefault();
 
         public class OverlappingTrainingDateRequestViewModel
         {

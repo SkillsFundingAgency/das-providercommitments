@@ -1,7 +1,8 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.AddDraftApprenticeshipViewModel
 
 @{
-    ViewData["Title"] = "Apprenticeships";
+    ViewBag.Title = "Apprenticeships";
+    ViewBag.ZendeskLabel = "add-apprentice-enter-details";
     ViewBag.GaData.Vpv = "/unapproved/add/apprentice";
     ViewBag.GaData.Org = Model.Employer;
 }

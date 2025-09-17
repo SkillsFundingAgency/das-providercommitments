@@ -21,7 +21,6 @@ public class WhenIMapAddDraftApprenticeshipViewModelToValidateDraftApprenticeshi
             .Without(x => x.StartDate)
             .With(x => x.EndMonth, 1)
             .With(x => x.EndYear, 2022)
-            .With(x => x.IsOnFlexiPaymentPilot, false)
             .With(x => x.StartMonth,2).With(x => x.StartYear, 2020)
             .Create();
     }
@@ -115,13 +114,6 @@ public class WhenIMapAddDraftApprenticeshipViewModelToValidateDraftApprenticeshi
     {
         var result = await _mapper.Map(_source);
         result.DeliveryModel.Should().Be(_source.DeliveryModel);
-    }
-
-    [Test]
-    public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
-    {
-        var result = await _mapper.Map(_source);
-        result.IsOnFlexiPaymentPilot.Should().Be(_source.IsOnFlexiPaymentPilot);
     }
 
     [Test]

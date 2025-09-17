@@ -58,7 +58,6 @@ public class EditDraftApprenticeshipViewModelMapper(
                 RecognisingPriorLearningStillNeedsToBeConsidered = apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered,
                 RecognisingPriorLearningExtendedStillNeedsToBeConsidered = apiResponse.RecognisingPriorLearningExtendedStillNeedsToBeConsidered,
                 HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
-                IsOnFlexiPaymentPilot = apiResponse.IsOnFlexiPaymentPilot,
                 EmployerHasEditedCost = apiResponse.EmployerHasEditedCost,
                 HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && apiResponse.DeliveryModel == Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency,
                 EmailAddressConfirmed = apiResponse.EmailAddressConfirmed,

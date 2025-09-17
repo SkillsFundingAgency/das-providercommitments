@@ -261,7 +261,6 @@ public class DraftApprenticeshipControllerTestFixture
 
     public DraftApprenticeshipControllerTestFixture SetupAddDraftApprenticeshipViewModelForStartDateOverlap()
     {
-        _addModel.IsOnFlexiPaymentPilot = false;
         _addModel.StartMonth = 1;
         _addModel.StartYear = 2022;
         _addModel.EndMonth = 1;
@@ -273,7 +272,6 @@ public class DraftApprenticeshipControllerTestFixture
 
     public DraftApprenticeshipControllerTestFixture SetupEditDraftApprenticeshipViewModelForStartDateOverlap()
     {
-        _editModel.IsOnFlexiPaymentPilot = false;
         _editModel.StartMonth = 1;
         _editModel.StartYear = 2022;
         _editModel.EndMonth = 1;
@@ -379,15 +377,15 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
-    public async Task<DraftApprenticeshipControllerTestFixture> PostToAddDraftApprenticeship(string changeCourse = null, string changeDeliveryModel = null, string changePilotStatus = null)
+    public async Task<DraftApprenticeshipControllerTestFixture> PostToAddDraftApprenticeship(string changeCourse = null, string changeDeliveryModel = null)
     {
-        _actionResult = await _controller.AddDraftApprenticeship(changeCourse, changeDeliveryModel, changePilotStatus, _addModel);
+        _actionResult = await _controller.AddDraftApprenticeship(changeCourse, changeDeliveryModel, _addModel);
         return this;
     }
 
-    public async Task<DraftApprenticeshipControllerTestFixture> PostToEditDraftApprenticeship(string changeCourse = null, string changeDeliveryModel = null, string changePilotStatus = null)
+    public async Task<DraftApprenticeshipControllerTestFixture> PostToEditDraftApprenticeship(string changeCourse = null, string changeDeliveryModel = null)
     {
-        _actionResult = await _controller.EditDraftApprenticeship(changeCourse, changeDeliveryModel, changePilotStatus, _editModel);
+        _actionResult = await _controller.EditDraftApprenticeship(changeCourse, changeDeliveryModel, _editModel);
         return this;
     }
 
@@ -416,7 +414,6 @@ public class DraftApprenticeshipControllerTestFixture
                 _editModel.ActualStartDate = _addModel.ActualStartDate;
                 _viewModel.StartDate = null;
                 _viewModel.ActualStartDate = startDate;
-                _addModel.IsOnFlexiPaymentPilot = _editModel.IsOnFlexiPaymentPilot = _viewModel.IsOnFlexiPaymentPilot = true;
             }
             else
             {

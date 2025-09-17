@@ -29,7 +29,7 @@ public class AddDraftApprenticeshipRedirectModelMapperTests
             .Without(x => x.EndMonth).Without(x => x.EndYear)
             .With(x => x.ChangeDeliveryModel, string.Empty)
             .With(x => x.ChangeCourse, string.Empty)
-            .With(x => x.ChangePilotStatus, string.Empty)
+
             .Create();
         _source.StartDate = new MonthYearModel("092022");
 
@@ -164,7 +164,6 @@ public class AddDraftApprenticeshipRedirectModelMapperTests
     [Test]
     public async Task Then_Cost_Is_Saved_To_Cache()
     {
-        _source.IsOnFlexiPaymentPilot = false;
         var result = await _act();
         _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
             It.Is<CreateCohortCacheItem>(y => y.Cost == _source.Cost),
@@ -186,16 +185,6 @@ public class AddDraftApprenticeshipRedirectModelMapperTests
         var result = await _act();
         _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
             It.Is<CreateCohortCacheItem>(y => y.EndPointAssessmentPrice == _source.EndPointAssessmentPrice),
-            It.IsAny<int>()));
-    }
-
-    [Test]
-    public async Task Then_Calculated_Cost_Is_Saved_To_Cache_For_Pilot_Providers()
-    {
-        _source.IsOnFlexiPaymentPilot = true;
-        var result = await _act();
-        _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
-            It.Is<CreateCohortCacheItem>(y => y.Cost == _source.TrainingPrice + _source.EndPointAssessmentPrice),
             It.IsAny<int>()));
     }
 
@@ -222,14 +211,6 @@ public class AddDraftApprenticeshipRedirectModelMapperTests
         _source.ChangeDeliveryModel = "Edit";
         var result = await _act();
         result.RedirectTo.Should().Be(AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectDeliveryModel);
-    }
-
-    [Test]
-    public async Task When_User_Opts_To_Change_FlexiPayments_Pilot_Status_Then_RedirectTo_Is_SelectPilotStatus()
-    {
-        _source.ChangePilotStatus = "Edit";
-        var result = await _act();
-        result.RedirectTo.Should().Be(AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectPilotStatus);
     }
 
     [Test]

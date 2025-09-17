@@ -80,19 +80,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenSavesRedirectsToSelectOptionsViewIfHasOptionsForOnFlexiPilot()
-        {
-            _fixture
-                .SetApprenticeshipStarting("2022-08-01", true)
-                .SetupCommitmentsApiToReturnADraftApprentice();
-
-            await _fixture.PostToEditDraftApprenticeship();
-            _fixture.VerifyUpdateMappingToApiTypeIsCalled()
-                .VerifyApiUpdateMethodIsCalled()
-                .VerifyRedirectToRecognisePriorLearningPage();
-        }
-
-        [Test]
         public async Task AndWhenThereIsStartDateOverlap()
         {
             await _fixture.SetupStartDateOverlap(true, false).SetupEditDraftApprenticeshipViewModelForStartDateOverlap().PostToEditDraftApprenticeship();
