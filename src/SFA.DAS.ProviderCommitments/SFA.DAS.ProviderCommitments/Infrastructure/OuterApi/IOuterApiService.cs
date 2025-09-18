@@ -4,6 +4,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
@@ -54,4 +55,5 @@ public interface IOuterApiService
     Task<GetRplRequirementsResponse> GetRplRequirements(long providerId, long cohortId, long draftApprenticeshipId, string courseCode);
     Task<ValidateEditApprenticeshipResponse> EditApprenticeship(long providerId, long apprenticeshipId, ValidateEditApprenticeshipRequest request);
     Task<ConfirmEditApprenticeshipResponse> ConfirmEditApprenticeship(long providerId, long apprenticeshipId, ConfirmEditApprenticeshipRequest request);
+    Task<SyncLearnerDataResponse> SyncLearnerData(long providerId, long cohortId, long draftApprenticeshipId);
 }

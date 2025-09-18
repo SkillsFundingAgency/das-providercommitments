@@ -4,6 +4,7 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Services;
@@ -34,7 +35,11 @@ public class WhenIMapEditDraftApprenticeshipDetailsToViewModel
         _tempDataStorageService.Setup(x => x.RetrieveFromCache<EditDraftApprenticeshipViewModel>())
             .Returns(() => null);
 
-        _mapper = new EditDraftApprenticeshipViewModelMapper(Mock.Of<IEncodingService>(), commitmentsApiClient.Object, _tempDataStorageService.Object);
+        _mapper = new EditDraftApprenticeshipViewModelMapper(
+            Mock.Of<IEncodingService>(), 
+            commitmentsApiClient.Object, 
+            _tempDataStorageService.Object,
+            Mock.Of<ICacheStorageService>());
         _source = fixture.Build<EditDraftApprenticeshipRequest>().Create();
 
         _act = async () => (await _mapper.Map(TestHelper.Clone(_source))) as EditDraftApprenticeshipViewModel;

@@ -13,10 +13,12 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
@@ -228,7 +230,8 @@ public class DraftApprenticeshipControllerTestFixture
             _commitmentsApiClient.Object,
             _modelMapper.Object,
             encodingService.Object,
-            providerFeatureToggle.Object, _outerApiService.Object, 
+            providerFeatureToggle.Object, 
+            _outerApiService.Object, 
             Mock.Of<IAuthenticationService>()
         );
             
@@ -327,7 +330,7 @@ public class DraftApprenticeshipControllerTestFixture
 
     public async Task<DraftApprenticeshipControllerTestFixture> EditDraftApprenticeship()
     {
-        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
+        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
             .ReturnsAsync(_editModel);
         _actionResult = await _controller.EditDraftApprenticeship(_draftApprenticeshipRequest);
         return this;
@@ -335,7 +338,7 @@ public class DraftApprenticeshipControllerTestFixture
 
     public async Task<DraftApprenticeshipControllerTestFixture> ViewDraftApprenticeship()
     {
-        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
+        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
             .ReturnsAsync(_viewModel);
         _actionResult = await _controller.EditDraftApprenticeship(_draftApprenticeshipRequest);
         return this;
@@ -745,4 +748,96 @@ public class DraftApprenticeshipControllerTestFixture
         _actionResult.VerifyReturnsRedirectToActionResult().WithActionName(page);
         return this;
     }
+
+    public async Task<DraftApprenticeshipControllerTestFixture> SyncLearnerData()
+    {
+        var model = new EditDraftApprenticeshipViewModel
+        {
+            ProviderId = _draftApprenticeshipRequest.ProviderId,
+            CohortId = _draftApprenticeshipRequest.CohortId,
+            DraftApprenticeshipId = _draftApprenticeshipRequest.DraftApprenticeshipId,
+            DraftApprenticeshipHashedId = _draftApprenticeshipRequest.DraftApprenticeshipHashedId,
+            CohortReference = _draftApprenticeshipRequest.CohortReference
+        };
+        
+        _actionResult = await _controller.EditDraftApprenticeship(null, null, model, "SyncLearnerData");
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupOuterApiServiceToReturnSyncResponse(SyncLearnerDataResponse response)
+    {
+        var learnerDataSyncResult = new LearnerDataSyncResult
+        {
+            Success = response.Success,
+            Message = response.Success ? "Learner data has been successfully updated." : (response.Message ?? "Failed to sync learner data."),
+            CacheKey = response.Success ? Guid.NewGuid().ToString() : null
+        };
+        
+        _modelMapper
+            .Setup(x => x.Map<LearnerDataSyncResult>(It.IsAny<EditDraftApprenticeshipViewModel>()))
+            .ReturnsAsync(learnerDataSyncResult);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupOuterApiServiceToThrowException()
+    {
+        var learnerDataSyncResult = new LearnerDataSyncResult
+        {
+            Success = false,
+            Message = "An error occurred while syncing learner data."
+        };
+        
+        _modelMapper
+            .Setup(x => x.Map<LearnerDataSyncResult>(It.IsAny<EditDraftApprenticeshipViewModel>()))
+            .ReturnsAsync(learnerDataSyncResult);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyOuterApiServiceSyncLearnerDataCalled()
+    {
+        _modelMapper.Verify(
+            x => x.Map<LearnerDataSyncResult>(It.IsAny<EditDraftApprenticeshipViewModel>()), Times.Once);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyTempDataContains(string key, string expectedValue)
+    {
+        _tempData.VerifySet(x => x[key] = expectedValue, Times.Once);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectedToEditDraftApprenticeshipPage()
+    {
+        _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("EditDraftApprenticeship");
+        return this;
+    }
+
+
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectContainsLearnerDataSyncKey()
+    {
+        var redirectResult = _actionResult as RedirectToActionResult;
+        redirectResult.RouteValues.Should().ContainKey("LearnerDataSyncKey");
+        redirectResult.RouteValues["LearnerDataSyncKey"].Should().NotBeNull();
+        return this;
+    }
+
+
+    public async Task<DraftApprenticeshipControllerTestFixture> EditDraftApprenticeshipWithLearnerDataSyncKey(string learnerDataSyncKey)
+    {
+        var request = new DraftApprenticeshipRequest
+        {
+            ProviderId = _draftApprenticeshipRequest.ProviderId,
+            CohortId = _draftApprenticeshipRequest.CohortId,
+            DraftApprenticeshipId = _draftApprenticeshipRequest.DraftApprenticeshipId,
+            DraftApprenticeshipHashedId = _draftApprenticeshipRequest.DraftApprenticeshipHashedId,
+            CohortReference = _draftApprenticeshipRequest.CohortReference,
+            LearnerDataSyncKey =  learnerDataSyncKey
+        };
+        
+        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
+            .ReturnsAsync(_editModel);
+        _actionResult = await _controller.EditDraftApprenticeship(request);
+        return this;
+    }
+
 }

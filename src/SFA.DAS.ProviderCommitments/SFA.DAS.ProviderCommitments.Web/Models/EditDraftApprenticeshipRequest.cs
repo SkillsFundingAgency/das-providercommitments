@@ -6,5 +6,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     {
         public DraftApprenticeshipRequest Request { get; set; }
         public GetCohortResponse Cohort { get; set; }
+        public string LearnerDataSyncKey { get; set; }
     }
 }

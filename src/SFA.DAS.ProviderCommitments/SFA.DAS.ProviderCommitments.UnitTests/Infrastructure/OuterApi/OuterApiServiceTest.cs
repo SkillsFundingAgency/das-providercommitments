@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderRelationships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
@@ -96,5 +97,30 @@ public class OuterApiServiceTest
 
         //Assert
         actual.Should().Be(apiResponse.HasPermission);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_SyncLearnerData_Request_Is_Made_And_Response_Returned(
+        long providerId,
+        long cohortId,
+        long draftApprenticeshipId,
+        SyncLearnerDataResponse apiResponse,
+        [Frozen] Mock<IOuterApiClient> apiClient,
+        OuterApiService service)
+    {
+        //Arrange
+        var request = new SyncLearnerDataRequest(providerId, cohortId, draftApprenticeshipId);
+        apiClient.Setup(x =>
+                x.Post<SyncLearnerDataResponse>(
+                    It.Is<SyncLearnerDataRequest>(c => c.PostUrl == request.PostUrl)))
+            .ReturnsAsync(apiResponse);
+
+        //Act
+        var actual = await service.SyncLearnerData(providerId, cohortId, draftApprenticeshipId);
+
+        //Assert
+        actual.Should().Be(apiResponse);
+        actual.Success.Should().Be(apiResponse.Success);
+        actual.Message.Should().Be(apiResponse.Message);
     }
 }

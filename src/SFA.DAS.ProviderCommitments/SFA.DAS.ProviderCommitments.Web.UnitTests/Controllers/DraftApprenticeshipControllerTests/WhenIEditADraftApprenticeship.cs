@@ -1,4 +1,6 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+﻿using System;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -82,6 +84,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             await _fixture.SetupStartDateOverlap(true, false).SetupEditDraftApprenticeshipViewModelForStartDateOverlap().PostToEditDraftApprenticeship();
             _fixture.VerifyUserRedirectedTo("DraftApprenticeshipOverlapAlert");
+        }
+
+        [Test]
+        public async Task AndWhenLearnerDataSyncKeyIsProvided_ThenViewIsReturned()
+        {
+            // Arrange
+            var cacheKey = Guid.NewGuid().ToString();
+            var updatedDraftApprenticeship = new GetDraftApprenticeshipResponse
+            {
+                FirstName = "Updated",
+                LastName = "Name"
+            };
+            
+            _fixture.SetupCommitmentsApiToReturnADraftApprentice();
+
+            // Act
+            await _fixture.EditDraftApprenticeshipWithLearnerDataSyncKey(cacheKey);
+
+            // Assert
+            _fixture.VerifyEditDraftApprenticeshipViewModelIsSentToViewResult();
         }
     }
 }
