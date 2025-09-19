@@ -61,6 +61,7 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
 
     public LearnerRecordsFilterModel FilterModel { get; set; }
     public int FutureMonths { get; set; }
+    public bool IsLevy => FutureMonths > 0;
 }
 
 public class LearnerRecordsFilterModel

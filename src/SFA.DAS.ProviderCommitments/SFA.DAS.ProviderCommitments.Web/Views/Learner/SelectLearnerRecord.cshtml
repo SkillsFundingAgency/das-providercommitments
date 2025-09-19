@@ -47,7 +47,7 @@
                 }
             </li>
         </ul>
-        @if(Model.FutureMonths > 0)
+        @if (Model.IsLevy)
         {
             <p class="govuk-body">
                 You will not see apprentices with non-levy employers that have a future start date outside of the @Model.FutureMonths month reservation window.
