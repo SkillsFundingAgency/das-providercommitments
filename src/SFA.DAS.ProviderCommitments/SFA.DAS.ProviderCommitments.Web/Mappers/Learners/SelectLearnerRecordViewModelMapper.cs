@@ -38,7 +38,8 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
             EmployerAccountName = response.EmployerName,
             Learners = response.Learners.ConvertAll(x => (LearnerSummary)x),
             LastIlrSubmittedOn = response.LastSubmissionDate,
-            FilterModel = filterModel
+            FilterModel = filterModel,
+            FutureMonths = response.FutureMonths
         };
         model.SortedByHeader();
         return model;
