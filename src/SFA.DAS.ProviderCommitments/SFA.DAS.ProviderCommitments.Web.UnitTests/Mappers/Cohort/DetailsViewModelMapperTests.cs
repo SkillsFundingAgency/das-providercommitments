@@ -226,21 +226,6 @@ public class DetailsViewModelMapperTests
     }
 
     [Test]
-    public async Task FundingBandCapsAreMappedCorrectlyForPilotApprenticeships()
-    {
-        var fixture = new DetailsViewModelMapperTestsFixture();
-        var result = await fixture.Map();
-
-        foreach (var draftApprenticeship in fixture.CohortDetails.DraftApprenticeships.Where(x => x.IsOnFlexiPaymentPilot.GetValueOrDefault()))
-        {
-            var draftApprenticeshipResult =
-                result.Courses.SelectMany(c => c.DraftApprenticeships).Single(x => x.Id == draftApprenticeship.Id);
-
-            draftApprenticeshipResult.FundingBandCap.Should().Be(1000);
-        }
-    }
-
-    [Test]
     public async Task Then_Funding_Cap_Is_Null_When_No_Course_Found()
     {
         var fixture = new DetailsViewModelMapperTestsFixture().SetNoCourse();
@@ -751,18 +736,6 @@ public class DetailsViewModelMapperTests
         result.Courses.First().DraftApprenticeships.First().IsComplete.Should().BeFalse();
     }
 
-    [TestCase(nameof(DraftApprenticeshipDto.TrainingPrice))]
-    [TestCase(nameof(DraftApprenticeshipDto.EndPointAssessmentPrice))]
-    public async Task IsCompleteIsFalseWhenPilotApprenticeshipMissingEitherPriceComponent(string propertyName)
-    {
-        var fixture = new DetailsViewModelMapperTestsFixture()
-            .CreateDraftApprenticeship()
-            .SetIsOnFlexiPaymentPilotFlag(true)
-            .SetValueOfDraftApprenticeshipProperty(propertyName, null);
-        var result = await fixture.Map();
-        result.Courses.First().DraftApprenticeships.First().IsComplete.Should().BeFalse();
-    }
-
     [Test]
     public async Task IsCompleteIsFalseWhenStartDatesAreBothNull()
     {
@@ -1003,13 +976,6 @@ public class DetailsViewModelMapperTestsFixture
         return this;
     }
 
-    public DetailsViewModelMapperTestsFixture SetIsOnFlexiPaymentPilotFlag(bool? flag)
-    {
-        var draftApprenticeship = CohortDetails.DraftApprenticeships.First();
-        draftApprenticeship.IsOnFlexiPaymentPilot = flag;
-        return this;
-    }
-
     public DetailsViewModelMapperTestsFixture CreateThisNumberOfApprenticeships(int numberOfApprenticeships)
     {
         var draftApprenticeships = _autoFixture.CreateMany<DraftApprenticeshipDto>(numberOfApprenticeships).ToArray();
@@ -1099,7 +1065,6 @@ public class DetailsViewModelMapperTestsFixture
             result.ActualStartDate.Should().Be(source.ActualStartDate);
             result.EndDate.Should().Be(source.EndDate);
             result.DraftApprenticeshipHashedId.Should().Be($"X{source.Id}X");
-            result.IsOnFlexiPaymentPilot.Should().Be(source.IsOnFlexiPaymentPilot);
         }
     }
 
@@ -1141,7 +1106,6 @@ public class DetailsViewModelMapperTestsFixture
         draftApprenticeship.StartDate = startDate;
         draftApprenticeship.OriginalStartDate = originalStartDate;
         draftApprenticeship.DeliveryModel = dm;
-        draftApprenticeship.IsOnFlexiPaymentPilot = false;
     }
 
     public DetailsViewModelMapperTestsFixture SetProviderComplete(bool providerComplete)

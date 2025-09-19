@@ -30,8 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 CourseCode = source.CourseCode,
                 StartMonthYear = source.StartMonthYear,
-                DeliveryModel = source.DeliveryModel,
-                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
+                DeliveryModel = source.DeliveryModel
             };
         }
     }

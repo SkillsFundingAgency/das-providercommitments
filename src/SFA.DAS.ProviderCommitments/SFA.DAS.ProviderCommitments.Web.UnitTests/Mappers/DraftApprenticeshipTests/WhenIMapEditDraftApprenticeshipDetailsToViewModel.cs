@@ -302,13 +302,6 @@ public class WhenIMapEditDraftApprenticeshipDetailsToViewModel
     }
 
     [Test]
-    public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
-    {
-        var result = await _act();
-        result.IsOnFlexiPaymentPilot.Should().Be(_apiResponse.IsOnFlexiPaymentPilot);
-    }
-
-    [Test]
     public async Task ThenEmployerHasEditedCostIsMappedCorrectly()
     {
         var result = await _act();

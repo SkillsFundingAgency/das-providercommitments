@@ -66,8 +66,7 @@ public class WhenGettingApprenticeships
                     apiRequest.DeliveryModel == webRequest.SelectedDeliveryModel &&
                     apiRequest.Status == webRequest.SelectedStatus &&
                     apiRequest.StartDate == webRequest.SelectedStartDate &&
-                    apiRequest.EndDate == webRequest.SelectedEndDate &&
-                    apiRequest.IsOnFlexiPaymentPilot == webRequest.SelectedPilotStatus),
+                    apiRequest.EndDate == webRequest.SelectedEndDate),
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }
@@ -176,7 +175,6 @@ public class WhenGettingApprenticeships
             viewModel.FilterModel.SelectedEndDate.Should().Be(request.SelectedEndDate);
             viewModel.FilterModel.SelectedApprenticeConfirmation.Should().Be(request.SelectedApprenticeConfirmation);
             viewModel.FilterModel.SelectedDeliveryModel.Should().Be(request.SelectedDeliveryModel);
-            viewModel.FilterModel.SelectedPilotStatus.Should().Be(request.SelectedPilotStatus);
         }
     }
 

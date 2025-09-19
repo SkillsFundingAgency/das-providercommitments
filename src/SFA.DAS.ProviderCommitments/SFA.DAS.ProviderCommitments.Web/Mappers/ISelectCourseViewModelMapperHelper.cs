@@ -4,6 +4,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public interface ISelectCourseViewModelMapperHelper
     {
-        Task<SelectCourseViewModel> Map(string courseCode, long accountLegalEntityId, bool? isOnFlexiPaymentPilot);
+        Task<SelectCourseViewModel> Map(string courseCode, long accountLegalEntityId);
     }
 }

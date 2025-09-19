@@ -64,11 +64,4 @@ public class WhenIMapSelectCourseViewModelToReservationsAddDraftApprenticeshipRe
         var result = await _act();
         result.StartMonthYear.Should().Be(_source.StartMonthYear);
     }
-
-    [Test]
-    public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
-    {
-        var result = await _act();
-        result.IsOnFlexiPaymentPilot.Should().Be(_source.IsOnFlexiPaymentPilot);
-    }
 }

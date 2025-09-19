@@ -1,10 +1,8 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Features;
 @using SFA.DAS.ProviderCommitments.Interfaces
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@inject IAuthorizationService AuthorizationService
 @inject ILinkGenerator LinkGenerator
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.IndexViewModel
 
@@ -198,29 +196,6 @@ else
                                     </select>
                                 </div>
                             </div>
-
-                            @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
-                            {
-                                <div class="govuk-grid-column-one-third">
-                                    <div class="govuk-form-group">
-                                        <label class="govuk-label" for="selectedPilotStatus">Simplified payments pilot</label>
-                                        <select class="govuk-select govuk-!-width-full" id="selectedPilotStatus" name="selectedPilotStatus">
-                                            <option label="All" aria-label="All statuses" value="">All</option>
-                                            @foreach (var yesNoOption in Model.FilterModel.YesNoFilters)
-                                            {
-                                                @if (Model.FilterModel.SelectedPilotStatus.HasValue && yesNoOption.Key == Model.FilterModel.SelectedPilotStatus.Value)
-                                                {
-                                                    <option label="@yesNoOption.Value" value="@yesNoOption.Key" selected="selected">@yesNoOption.Value</option>
-                                                }
-                                                else
-                                                {
-                                                    <option label="@yesNoOption.Value" value="@yesNoOption.Key">@yesNoOption.Value</option>
-                                                }
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                            }
                         </div>
 
                         <button class="govuk-button govuk-!-margin-0" type="submit">Apply filters</button>
@@ -370,17 +345,10 @@ else
                         @apprenticeship.CourseName
                     </td>
                     <td class="govuk-table__cell" data-label="Planned start date">
-                        @if (apprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault() && apprenticeship.ActualStartDate.HasValue)
-                        {
-                            @apprenticeship.ActualStartDate.GetValueOrDefault().ToGdsFormat();
-                        }
-                        else if(!apprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault())
-                        {
-                            @apprenticeship.PlannedStartDate.ToGdsFormatWithoutDay();
-                        }
+                        @apprenticeship.PlannedStartDate.ToGdsFormatWithoutDay()
                     </td>
                     <td class="govuk-table__cell" data-label="Planned end date">
-                        @(apprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault() ? apprenticeship.PlannedEndDate.ToGdsFormat() : apprenticeship.PlannedEndDate.ToGdsFormatWithoutDay())
+                        @apprenticeship.PlannedEndDate.ToGdsFormatWithoutDay()
                     </td>
                     <td class="govuk-table__cell" data-label="Apprentice confirmation">
                         @apprenticeship.ConfirmationStatus.ToDisplayString()

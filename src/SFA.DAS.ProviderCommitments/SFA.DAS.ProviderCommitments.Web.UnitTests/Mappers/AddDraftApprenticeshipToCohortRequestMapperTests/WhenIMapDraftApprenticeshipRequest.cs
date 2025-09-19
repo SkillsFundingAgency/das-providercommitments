@@ -46,7 +46,6 @@ public class WhenIMapDraftApprenticeshipRequest
             .With(x => x.ActualStartYear, actualStartDate?.Year)
             .With(x => x.DeliveryModel, deliveryModel)
             .With(x => x.EmploymentPrice, employmentPrice)
-            .With(x => x.IsOnFlexiPaymentPilot, true)
             .Without(x => x.StartDate)
             .Without(x => x.Courses)
             .Create();
@@ -99,7 +98,6 @@ public class WhenIMapDraftApprenticeshipRequest
     [Test]
     public async Task ThenCostIsMappedCorrectly()
     {
-        _source.IsOnFlexiPaymentPilot = false;
         var result = await _act();
         result.Cost.Should().Be(_source.Cost);
     }
@@ -116,42 +114,6 @@ public class WhenIMapDraftApprenticeshipRequest
     {
         var result = await _act();
         result.EndPointAssessmentPrice.Should().Be(_source.EndPointAssessmentPrice);
-    }
-
-    [Test]
-    public async Task ThenCalculatedCostIsMappedCorrectlyForPilotProviders()
-    {
-        _source.IsOnFlexiPaymentPilot = true;
-        var result = await _act();
-        result.Cost.Should().Be(_source.TrainingPrice + _source.EndPointAssessmentPrice);
-    }
-
-    [Test]
-    public async Task ThenCalculatedCostIsMappedCorrectlyForPilotProvidersWhenTrainingPriceMissing()
-    {
-        _source.IsOnFlexiPaymentPilot = true;
-        _source.TrainingPrice = null;
-        var result = await _act();
-        result.Cost.Should().Be(_source.EndPointAssessmentPrice);
-    }
-
-    [Test]
-    public async Task ThenCalculatedCostIsMappedCorrectlyForPilotProvidersWhenEPAMissing()
-    {
-        _source.IsOnFlexiPaymentPilot = true;
-        _source.EndPointAssessmentPrice = null;
-        var result = await _act();
-        result.Cost.Should().Be(_source.TrainingPrice);
-    }
-
-    [Test]
-    public async Task ThenCostIsNullWhenBothTrainingPriceAndEndPointAssessmentPriceAreMissingForPilotProviders()
-    {
-        _source.IsOnFlexiPaymentPilot = true;
-        _source.TrainingPrice = null;
-        _source.EndPointAssessmentPrice = null;
-        var result = await _act();
-        result.Cost.Should().Be(null);
     }
 
     [Test]
@@ -208,12 +170,5 @@ public class WhenIMapDraftApprenticeshipRequest
     {
         var result = await _act();
         result.EmploymentPrice.Should().Be(_source.EmploymentPrice);
-    }
-
-    [Test]
-    public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
-    {
-        var result = await _act();
-        result.IsOnFlexiPaymentPilot.Should().Be(_source.IsOnFlexiPaymentPilot);
     }
 }

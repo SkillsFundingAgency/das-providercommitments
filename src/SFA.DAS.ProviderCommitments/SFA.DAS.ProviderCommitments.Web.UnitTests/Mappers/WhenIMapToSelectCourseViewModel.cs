@@ -16,7 +16,6 @@ public class WhenIMapToSelectCourseViewModel
     private GetTrainingCoursesQueryResponse _trainingCourses;
     private int _accountLegalEntityId;
     private string _courseCode;
-    private bool? _isOnFlexiPaymentPilot;
 
     [SetUp]
     public void Arrange()
@@ -24,7 +23,6 @@ public class WhenIMapToSelectCourseViewModel
         var fixture = new Fixture();
         _accountLegalEntityId = fixture.Create<int>();
         _courseCode = fixture.Create<string>();
-        _isOnFlexiPaymentPilot = fixture.Create<bool?>();
 
         _ale = fixture.Create<AccountLegalEntityResponse>();
         _trainingCourses = fixture.Create<GetTrainingCoursesQueryResponse>();
@@ -45,21 +43,14 @@ public class WhenIMapToSelectCourseViewModel
     [Test]
     public async Task ThenCourseCodeIsMappedCorrectly()
     {
-        var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentPilot);
+        var result = await _mapper.Map(_courseCode, _accountLegalEntityId);
         result.CourseCode.Should().Be(_courseCode);
     }
 
     [Test]
     public async Task ThenCoursesAreReturnedCorrectly()
     {
-        var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentPilot);
+        var result = await _mapper.Map(_courseCode, _accountLegalEntityId);
         result.Courses.Should().BeEquivalentTo(_trainingCourses.TrainingCourses);
-    }
-
-    [Test]
-    public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
-    {
-        var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentPilot);
-        result.IsOnFlexiPaymentPilot.Should().Be(_isOnFlexiPaymentPilot);
     }
 }

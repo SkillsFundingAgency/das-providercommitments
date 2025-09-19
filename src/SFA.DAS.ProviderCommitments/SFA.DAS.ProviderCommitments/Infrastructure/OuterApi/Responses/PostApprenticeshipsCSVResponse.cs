@@ -68,8 +68,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
 
             public DateTime? ActualStartDate { get; set; }
 
-            public bool? IsOnFlexiPaymentPilot { get; set; }
-
             public bool? EmployerHasEditedCost { get; set; }
             public string TrainingCourseVersion { get; set; }
 

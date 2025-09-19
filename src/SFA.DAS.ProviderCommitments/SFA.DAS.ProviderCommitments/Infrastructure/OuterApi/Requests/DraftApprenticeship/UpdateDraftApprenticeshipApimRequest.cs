@@ -25,6 +25,5 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
         public string Reference { get; set; }
         public Guid? ReservationId { get; set; }
         public bool IgnoreStartDateOverlap { get; set; }
-        public bool? IsOnFlexiPaymentPilot { get; set; }
     }
 }

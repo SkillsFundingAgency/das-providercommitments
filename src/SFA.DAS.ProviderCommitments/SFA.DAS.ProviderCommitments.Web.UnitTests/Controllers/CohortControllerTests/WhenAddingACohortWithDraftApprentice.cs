@@ -47,16 +47,6 @@ public class WhenAddingACohortWithDraftApprentice
     }
 
     [Test]
-    public void AndRedirectTargetIsFlexiPayment_ThenRedirectedToFlexiPaymentPilot()
-    {
-        var fixture = new WhenAddingACohortWithDraftApprenticeFixture().SetRedirectTarget(CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus);
-
-        var result = fixture.Act() as RedirectToActionResult;
-
-        result.ActionName.Should().Be("ChoosePilotStatus");
-    }
-
-    [Test]
     public async Task AndOnAddApprenticeshipPage_ThenReturnsView()
     {
         var fixture = new WhenAddingACohortWithDraftApprenticeFixture();

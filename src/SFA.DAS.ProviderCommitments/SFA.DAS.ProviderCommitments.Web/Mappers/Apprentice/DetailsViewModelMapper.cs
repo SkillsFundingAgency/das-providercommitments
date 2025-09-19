@@ -45,8 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                      data.Apprenticeship.Status == ApprenticeshipStatus.Paused) &&
                     !hasProviderUpdates && 
                     !hasEmployerUpdates &&
-                    dataLockSummaryStatus == DetailsViewModel.DataLockSummaryStatus.None &&
-                    !data.Apprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault();
+                    dataLockSummaryStatus == DetailsViewModel.DataLockSummaryStatus.None;
 
                 // If It's completed or stopped and option is null, dont show options as it could predate standard versioning
                 // even if the version has options
@@ -119,7 +118,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     DurationReducedBy = data.Apprenticeship.DurationReducedBy,
                     PriceReducedBy = data.Apprenticeship.PriceReducedBy,
                     HasMultipleDeliveryModelOptions = data.HasMultipleDeliveryModelOptions,
-                    IsOnFlexiPaymentPilot = data.Apprenticeship.IsOnFlexiPaymentPilot,
                     PendingPriceChange = Map(data.PendingPriceChange),
                     PendingStartDateChange = MapPendingStartDateChange(data.PendingStartDateChange),
                     CanActualStartDateBeChanged = data.CanActualStartDateBeChanged,

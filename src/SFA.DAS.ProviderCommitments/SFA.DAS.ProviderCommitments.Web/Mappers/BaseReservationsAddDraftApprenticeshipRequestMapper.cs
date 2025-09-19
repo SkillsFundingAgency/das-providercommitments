@@ -13,8 +13,7 @@ public class BaseReservationsAddDraftApprenticeshipRequestMapper : IMapper<AddDr
             CourseCode = source.CourseCode,
             DeliveryModel = source.DeliveryModel,
             ReservationId = source.ReservationId,
-            StartMonthYear = source.StartDate.MonthYear,
-            IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot,
+            StartMonthYear = source.StartDate.MonthYear
         });
     }
 }

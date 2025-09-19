@@ -22,8 +22,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string CourseCode { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
-        public bool? IsOnFlexiPaymentPilot { get; set; }
-
         public string ChangeURLRoute => string.IsNullOrEmpty(this.DraftApprenticeshipHashedId)
             ? (string.IsNullOrEmpty(this.CohortReference) ? RouteNames.CohortAddApprenticeship : RouteNames.DraftApprenticeshipAddAnother)
             : RouteNames.DraftApprenticeshipEdit;

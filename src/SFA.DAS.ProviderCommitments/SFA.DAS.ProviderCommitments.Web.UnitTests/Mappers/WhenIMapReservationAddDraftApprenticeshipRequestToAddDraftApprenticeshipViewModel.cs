@@ -116,23 +116,6 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
     }
 
     [Test]
-    public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
-    {
-        _source.CacheKey = null;
-        var result = await _mapper.Map(_source);
-        result.IsOnFlexiPaymentPilot.Should().Be(_source.IsOnFlexiPaymentPilot);
-    }
-
-    [TestCase(true)]
-    [TestCase(false)]
-    public async Task AndHasCacheKeyThenIsOnFlexiPaymentPilotIsAlwaysFalse(bool isFlexiPayment)
-    {
-        _source.IsOnFlexiPaymentPilot = isFlexiPayment;
-        var result = await _mapper.Map(_source);
-        result.IsOnFlexiPaymentPilot.Should().BeFalse();
-    }
-
-    [Test]
     public async Task AndHasCacheKeyThenReservationIdIsMappedFromCache()
     {
         var result = await _mapper.Map(_source);

@@ -247,8 +247,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 StartMonthYear = request.StartMonthYear,
                 CourseCode = request.CourseCode,
                 DeliveryModel = request.DeliveryModel,
-                EmployerAccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId,
-                IsOnFlexiPaymentPilot = model.IsOnFlexiPaymentPilot
+                EmployerAccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId
             };
 
             if (request.DraftApprenticeshipHashedId == null && request.CacheKey.HasValue)
