@@ -90,5 +90,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
         public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
         public int? DurationReducedByHours { get; set; }
+        public long? LearnerDataId { get; set; }
     }
 }
