@@ -79,7 +79,7 @@ public class DetailsViewModelMapperTests
     [TestCase(false, false, "Yes, send to employer to review or add details")]
     public async Task SendBackToEmployerOptionMessageIsMappedCorrectly(bool isAgreementSigned, bool providerComplete, string expected)
     {
-        var fixture = new DetailsViewModelMapperTestsFixture().SetIsAgreementSigned(isAgreementSigned).SetProviderComplete(providerComplete).SetRplErrorsToNone();
+        var fixture = new DetailsViewModelMapperTestsFixture().SetIsAgreementSigned(isAgreementSigned).SetProviderComplete(providerComplete).SetRplErrorsToNone().SetHasLearnerDataChanges(false);
         var result = await fixture.Map();
         result.SendBackToEmployerOptionMessage.Should().Be(expected);
     }
@@ -388,7 +388,7 @@ public class DetailsViewModelMapperTests
     public async Task OptionsTitleIsMappedCorrectlyWithATransfer(bool isAgreementSigned, string expectedOptionsTitle)
     {
         var fixture = new DetailsViewModelMapperTestsFixture();
-        fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
+        fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone().SetHasLearnerDataChanges(false);
         var result = await fixture.Map();
         result.OptionsTitle.Should().Be(expectedOptionsTitle);
     }
@@ -398,7 +398,7 @@ public class DetailsViewModelMapperTests
     public async Task OptionsTitleIsMappedCorrectlyWithoutATransfer(bool isAgreementSigned, string expectedOptionsTitle)
     {
         var fixture = new DetailsViewModelMapperTestsFixture();
-        fixture.SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
+        fixture.SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone().SetHasLearnerDataChanges(false);
         var result = await fixture.Map();
         result.OptionsTitle.Should().Be(expectedOptionsTitle);
     }
@@ -418,7 +418,7 @@ public class DetailsViewModelMapperTests
     public async Task ShowApprovalOptionIsMappedCorrectlyWithATransfer(bool isAgreementSigned, bool expectedShowApprovalOption)
     {
         var fixture = new DetailsViewModelMapperTestsFixture();
-        fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
+        fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone().SetHasLearnerDataChanges(false);
         var result = await fixture.Map();
         result.ProviderCanApprove.Should().Be(expectedShowApprovalOption);
     }
@@ -438,7 +438,7 @@ public class DetailsViewModelMapperTests
     public async Task ShowApprovalOptionIsMappedCorrectlyWithoutATransfer(bool isAgreementSigned, bool expectedShowApprovalOption)
     {
         var fixture = new DetailsViewModelMapperTestsFixture();
-        fixture.SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
+        fixture.SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone().SetHasLearnerDataChanges(false);
         var result = await fixture.Map();
         result.ProviderCanApprove.Should().Be(expectedShowApprovalOption);
     }
@@ -448,7 +448,7 @@ public class DetailsViewModelMapperTests
     public async Task ShowApprovalOptionIsMappedCorrectlyWithAnInvalidCourse(bool hasInvalidCourse, bool expectedShowApprovalOption)
     {
         var fixture = new DetailsViewModelMapperTestsFixture();
-        fixture.SetHasInvalidCourse(hasInvalidCourse).SetRplErrorsToNone();
+        fixture.SetHasInvalidCourse(hasInvalidCourse).SetRplErrorsToNone().SetHasLearnerDataChanges(false);
         var result = await fixture.Map();
         result.ProviderCanApprove.Should().Be(expectedShowApprovalOption);
     }
@@ -458,7 +458,7 @@ public class DetailsViewModelMapperTests
     public async Task ShowApprovalOptionIsMappedCorrectlyWhenOverlap(bool hasOverlap, bool expectedShowApprovalOption)
     {
         var fixture = new DetailsViewModelMapperTestsFixture();
-        fixture.SetUlnOverlap(hasOverlap).SetRplErrorsToNone();
+        fixture.SetUlnOverlap(hasOverlap).SetRplErrorsToNone().SetHasLearnerDataChanges(false);
         var result = await fixture.Map();
 
         result.ProviderCanApprove.Should().Be(expectedShowApprovalOption);
@@ -471,7 +471,7 @@ public class DetailsViewModelMapperTests
     public async Task ShowApprovalOptionMessageIsMappedCorrectlyWithATransfer(bool isAgreementSigned, bool showApprovalOption,
         bool isApprovedByEmployer, bool expectedShowApprovalOptionMessage)
     {
-        var fixture = new DetailsViewModelMapperTestsFixture().SetRplErrorsToNone();
+        var fixture = new DetailsViewModelMapperTestsFixture().SetRplErrorsToNone().SetHasLearnerDataChanges(false);
         fixture.CohortDetails.IsApprovedByEmployer = isApprovedByEmployer;
         fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned);
         var result = await fixture.Map();
@@ -483,7 +483,7 @@ public class DetailsViewModelMapperTests
     [TestCase(true, true, false, false)]
     [TestCase(false, false, false, false)]
     public async Task ShowApprovalOptionMessageIsMappedCorrectlyWithoutATransfer(bool isAgreementSigned, bool showApprovalOption,
-        bool isApprovedByEmployer, bool expectedShowApprovalOptionMessage)
+bool isApprovedByEmployer, bool expectedShowApprovalOptionMessage)
     {
         var fixture = new DetailsViewModelMapperTestsFixture
         {
@@ -492,7 +492,7 @@ public class DetailsViewModelMapperTests
                 IsApprovedByEmployer = isApprovedByEmployer
             }
         };
-        fixture.SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
+        fixture.SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone().SetHasLearnerDataChanges(false);
         var result = await fixture.Map();
         result.ShowApprovalOptionMessage.Should().Be(expectedShowApprovalOptionMessage);
     }
@@ -500,7 +500,7 @@ public class DetailsViewModelMapperTests
     [Test]
     public async Task ShowApprovalOfCohortAsTrueWhenNoRplErrors()
     {
-        var fixture = new DetailsViewModelMapperTestsFixture().SetRplErrorsToNone();
+        var fixture = new DetailsViewModelMapperTestsFixture().SetRplErrorsToNone().SetHasLearnerDataChanges(false);
         fixture.CohortDetails.IsApprovedByEmployer = true;
         fixture.SetTransferSender().SetIsAgreementSigned(true);
         var result = await fixture.Map();
@@ -533,7 +533,7 @@ public class DetailsViewModelMapperTests
                 IsApprovedByEmployer = true
             }
         };
-        fixture.SetTransferSender().SetIsAgreementSigned(true);
+        fixture.SetTransferSender().SetIsAgreementSigned(true).SetHasLearnerDataChanges(false);
         var result = await fixture.Map();
         result.ShowApprovalOptionMessage.Should().BeTrue();
     }
@@ -1123,6 +1123,15 @@ public class DetailsViewModelMapperTestsFixture
     public DetailsViewModelMapperTestsFixture SetRplErrorsToNone()
     {
         CohortDetails.RplErrorDraftApprenticeshipIds = new List<long>();
+        return this;
+    }
+
+    public DetailsViewModelMapperTestsFixture SetHasLearnerDataChanges(bool hasLearnerDataChanges)
+    {
+        foreach (var draftApprenticeship in CohortDetails.DraftApprenticeships)
+        {
+            draftApprenticeship.HasLearnerDataChanges = hasLearnerDataChanges;
+        }
         return this;
     }
 
