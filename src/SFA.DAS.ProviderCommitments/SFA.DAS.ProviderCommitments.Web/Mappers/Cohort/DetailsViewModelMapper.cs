@@ -5,11 +5,12 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.Http;
 using SFA.DAS.PAS.Account.Api.ClientV2;
-using SFA.DAS.PAS.Account.Api.Types;
+using SFA.DAS.ProviderCommitments.Enums;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -41,18 +42,19 @@ public class DetailsViewModelMapper(
 
         var cohortId = encodingService.Decode(source.CohortReference, EncodingType.CohortReference);
         var cohortDetailsTask = outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(source.ProviderId, cohortId));
-        var agreementStatusTask = pasAccountApiClient.GetAgreement(source.ProviderId);
+       
+        var providerStatusTask = outerApiClient.Get<GetProviderDetailsResponse>(new GetProviderDetailsRequest(source.ProviderId));
 
-        await Task.WhenAll(cohortDetailsTask, agreementStatusTask);
+        await Task.WhenAll(cohortDetailsTask, providerStatusTask);
 
-        var agreementStatus = await agreementStatusTask;
-        var cohortDetails = await cohortDetailsTask;
+        var providerStatus = await providerStatusTask;
+        var cohortDetails = await cohortDetailsTask;        
 
         var emailOverlaps = cohortDetails.ApprenticeshipEmailOverlaps.ToList();
 
         var courses = await GroupCourses(cohortDetails.DraftApprenticeships, emailOverlaps, cohortDetails);
         var viewOrApprove = cohortDetails.WithParty == Party.Provider ? "Approve" : "View";
-        var isAgreementSigned = agreementStatus.Status == ProviderAgreementStatus.Agreed;
+        var isAgreementSigned = providerStatus.ProviderStatus == ProviderStatusType.Active;
 
         return new DetailsViewModel
         {
