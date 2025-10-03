@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider
             _ukprn = ukprn;
         }
 
-        public string GetUrl => $"provideraccounts/provider/{_ukprn}";
+        public string GetUrl => $"provideraccounts/providerStatus/{_ukprn}";
     }
 
     public class GetProviderDetailsResponse
