@@ -18,7 +18,7 @@
     "SFA.DAS.ProviderCommitments.Web": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "10005760/unapproved/add/entry-method",
+      "launchUrl": "10005077/unapproved/review",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "APPSETTING_EnvironmentName": "LOCAL"
