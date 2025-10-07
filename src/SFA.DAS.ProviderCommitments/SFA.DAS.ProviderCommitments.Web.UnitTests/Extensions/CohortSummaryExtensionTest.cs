@@ -3,7 +3,6 @@ using System.Linq;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.PAS.Account.Api.Types;
 using SFA.DAS.ProviderCommitments.Enums;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;

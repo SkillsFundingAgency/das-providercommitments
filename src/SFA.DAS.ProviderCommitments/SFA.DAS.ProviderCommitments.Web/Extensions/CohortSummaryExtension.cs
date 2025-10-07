@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.PAS.Account.Api.Types;
 using SFA.DAS.ProviderCommitments.Enums;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
