@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 var providerStatusTask = _outerApiClient.Get<GetProviderDetailsResponse>(new GetProviderDetailsRequest(source.ProviderId));
 
                 await Task.WhenAll(getCohortsTask, hasRelationshipTask, providerStatusTask);
-                return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result.HasPermission, providerStatusTask.Result.ProviderStatus);
+                return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result.HasPermission,(ProviderStatusType) providerStatusTask.Result.ProviderStatusTypeId);
             }
 
             var (cohorts, hasRelationship, providerAgreementStatus) = await GetData();

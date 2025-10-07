@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider
 
     public class GetProviderDetailsResponse
     {
-        public ProviderStatusType ProviderStatus { get; set; }
+        public int ProviderStatusTypeId { get; set; }
     }
 
 }

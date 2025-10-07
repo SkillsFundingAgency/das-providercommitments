@@ -4,7 +4,6 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.Http;
-using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.ProviderCommitments.Enums;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
@@ -28,7 +27,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 public class DetailsViewModelMapper(
     ICommitmentsApiClient commitmentsApiClient,
     IEncodingService encodingService,
-    IPasAccountApiClient pasAccountApiClient,
     IOuterApiClient outerApiClient,
     ITempDataStorageService storageService,
     IConfiguration configuration)
@@ -54,7 +52,7 @@ public class DetailsViewModelMapper(
 
         var courses = await GroupCourses(cohortDetails.DraftApprenticeships, emailOverlaps, cohortDetails);
         var viewOrApprove = cohortDetails.WithParty == Party.Provider ? "Approve" : "View";
-        var isAgreementSigned = providerStatus.ProviderStatus == ProviderStatusType.Active;
+        var isAgreementSigned = (ProviderStatusType) providerStatus.ProviderStatusTypeId == ProviderStatusType.Active;
 
         return new DetailsViewModel
         {
