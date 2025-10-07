@@ -898,7 +898,7 @@ public class DetailsViewModelMapperTestsFixture
         _outerApiClient = new Mock<IOuterApiClient>();
         _outerApiClient.Setup(x => x.Get<GetCohortDetailsResponse>(It.IsAny<GetCohortDetailsRequest>()))
             .ReturnsAsync(CohortDetails);
-        _outerApiClient.Setup(x => x.Get<GetProviderDetailsResponse>(It.IsAny<GetProviderDetailsRequest>())).ReturnsAsync(new GetProviderDetailsResponse() { ProviderStatusTypeId = (int)Enums.ProviderStatusType.Active });
+        _outerApiClient.Setup(x => x.Get<GetProviderDetailsResponse>(It.IsAny<GetProviderDetailsRequest>())).ReturnsAsync(new GetProviderDetailsResponse((int)ProviderStatusType.Active));
 
 
         var providerFeatureToggle = new Mock<IAuthorizationService>();
@@ -1188,7 +1188,7 @@ public class DetailsViewModelMapperTestsFixture
         var providerStatus = isAgreementSigned ? ProviderStatusType.Active : ProviderStatusType.Onboarding;
         _outerApiClient
             .Setup(x => x.Get<GetProviderDetailsResponse>(It.IsAny<GetProviderDetailsRequest>()))
-            .ReturnsAsync(new GetProviderDetailsResponse {  ProviderStatusTypeId = (int)providerStatus });
+            .ReturnsAsync(new GetProviderDetailsResponse((int)providerStatus));
         return this;
     }   
 
