@@ -4,7 +4,7 @@ public class GetProviderDetailsRequest(long ukprn) : IGetApiRequest
 {
     public long _ukprn { get; } = ukprn;
 
-    public string GetUrl => $"provideraccounts/providerStatus/{_ukprn}";
+    public string GetUrl => $"provideraccounts/{_ukprn}/status";
 }
 
 public class GetProviderDetailsResponse(int providerStatusTypeId)
