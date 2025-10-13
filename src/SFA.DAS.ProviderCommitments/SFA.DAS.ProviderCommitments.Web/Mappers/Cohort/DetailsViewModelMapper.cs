@@ -201,7 +201,8 @@ public class DetailsViewModelMapper(
                         HasOverlappingEmail = emailOverlaps.Any(x => x.Id == a.Id),
                         IsComplete = IsDraftApprenticeshipComplete(a, cohortResponse),
                         EmploymentPrice = a.EmploymentPrice,
-                        EmploymentEndDate = a.EmploymentEndDate
+                        EmploymentEndDate = a.EmploymentEndDate,
+                        IsEditable = a.LearnerDataId == null
                     })
                     .ToList()
             })
