@@ -88,6 +88,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string DisplayEmploymentPrice => EmploymentPrice?.ToGdsCostFormat() ?? "-";
 
         public DateTime? OriginalStartDate { get; set; }
+        public bool IsEditable { get; set; }
 
         public class OverlappingTrainingDateRequestViewModel
         {
