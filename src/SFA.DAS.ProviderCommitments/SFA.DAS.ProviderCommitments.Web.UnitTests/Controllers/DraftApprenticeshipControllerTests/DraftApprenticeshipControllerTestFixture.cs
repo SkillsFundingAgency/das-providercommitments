@@ -58,6 +58,7 @@ public class DraftApprenticeshipControllerTestFixture
     private readonly ViewSelectOptionsViewModel _selectOptionsViewModel;
     private readonly Mock<ITempDataDictionary> _tempData;
     private readonly Mock<IOuterApiService> _outerApiService;
+    private readonly Mock<ICacheStorageService> _cacheStorageService;
     private readonly ValidateUlnOverlapResult _validateUlnOverlapResult;
     private Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult _validateUlnOverlapOnStartDateResult;
 
@@ -205,6 +206,7 @@ public class DraftApprenticeshipControllerTestFixture
         providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
         _tempData = new Mock<ITempDataDictionary>();
+        _cacheStorageService = new Mock<ICacheStorageService>();
 
         var encodingService = new Mock<IEncodingService>();
         encodingService.Setup(x => x.Encode(_draftApprenticeshipId, EncodingType.ApprenticeshipId))
@@ -232,7 +234,8 @@ public class DraftApprenticeshipControllerTestFixture
             encodingService.Object,
             providerFeatureToggle.Object, 
             _outerApiService.Object, 
-            Mock.Of<IAuthenticationService>()
+            Mock.Of<IAuthenticationService>(),
+            _cacheStorageService.Object
         );
             
         _controller.TempData = _tempData.Object;
@@ -330,7 +333,7 @@ public class DraftApprenticeshipControllerTestFixture
 
     public async Task<DraftApprenticeshipControllerTestFixture> EditDraftApprenticeship()
     {
-        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
+        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
             .ReturnsAsync(_editModel);
         _actionResult = await _controller.EditDraftApprenticeship(_draftApprenticeshipRequest);
         return this;
@@ -338,7 +341,7 @@ public class DraftApprenticeshipControllerTestFixture
 
     public async Task<DraftApprenticeshipControllerTestFixture> ViewDraftApprenticeship()
     {
-        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
+        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
             .ReturnsAsync(_viewModel);
         _actionResult = await _controller.EditDraftApprenticeship(_draftApprenticeshipRequest);
         return this;
@@ -812,6 +815,20 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
+    public DraftApprenticeshipControllerTestFixture SetupCacheStorageServiceToReturnGuid(Guid cacheKey)
+    {
+        _cacheStorageService
+            .Setup(x => x.SaveToCache(It.IsAny<Guid>(), It.IsAny<object>(), It.IsAny<int>()))
+            .Returns(Task.CompletedTask);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyCacheStorageServiceSaveToCacheCalled()
+    {
+        _cacheStorageService.Verify(
+            x => x.SaveToCache(It.IsAny<Guid>(), It.IsAny<object>(), It.IsAny<int>()), Times.Once);
+        return this;
+    }
 
     public DraftApprenticeshipControllerTestFixture VerifyRedirectContainsLearnerDataSyncKey()
     {
@@ -821,6 +838,16 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
+    public DraftApprenticeshipControllerTestFixture SetupCacheStorageServiceToReturnUpdatedDraftApprenticeship(string cacheKey, GetDraftApprenticeshipResponse response)
+    {
+        _cacheStorageService
+            .Setup(x => x.SafeRetrieveFromCache<GetDraftApprenticeshipResponse>(cacheKey))
+            .ReturnsAsync(response);
+        _cacheStorageService
+            .Setup(x => x.DeleteFromCache(cacheKey))
+            .Returns(Task.CompletedTask);
+        return this;
+    }
 
     public async Task<DraftApprenticeshipControllerTestFixture> EditDraftApprenticeshipWithLearnerDataSyncKey(string learnerDataSyncKey)
     {
@@ -830,14 +857,26 @@ public class DraftApprenticeshipControllerTestFixture
             CohortId = _draftApprenticeshipRequest.CohortId,
             DraftApprenticeshipId = _draftApprenticeshipRequest.DraftApprenticeshipId,
             DraftApprenticeshipHashedId = _draftApprenticeshipRequest.DraftApprenticeshipHashedId,
-            CohortReference = _draftApprenticeshipRequest.CohortReference,
-            LearnerDataSyncKey =  learnerDataSyncKey
+            CohortReference = _draftApprenticeshipRequest.CohortReference
         };
         
-        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
+        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(request))
             .ReturnsAsync(_editModel);
-        _actionResult = await _controller.EditDraftApprenticeship(request);
+        _actionResult = await _controller.EditDraftApprenticeship(request, learnerDataSyncKey);
         return this;
     }
 
+    public DraftApprenticeshipControllerTestFixture VerifyCacheStorageServiceRetrieveFromCacheCalled(string cacheKey)
+    {
+        _cacheStorageService.Verify(
+            x => x.SafeRetrieveFromCache<GetDraftApprenticeshipResponse>(cacheKey), Times.Once);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyCacheStorageServiceDeleteFromCacheCalled(string cacheKey)
+    {
+        _cacheStorageService.Verify(
+            x => x.DeleteFromCache(cacheKey), Times.Once);
+        return this;
+    }
 }

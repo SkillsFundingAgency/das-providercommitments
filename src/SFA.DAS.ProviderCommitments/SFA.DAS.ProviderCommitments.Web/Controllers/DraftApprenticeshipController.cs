@@ -41,13 +41,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         IEncodingService encodingService,
         IAuthorizationService authorizationService,
         IOuterApiService outerApiService,
-        IAuthenticationService authenticationService)
+        IAuthenticationService authenticationService,
+        ICacheStorageService cacheStorageService)
         : Controller
     {
         private const string LearnerDataSyncSuccessKey = "LearnerDataSyncSuccess";
         private const string LearnerDataSyncErrorKey = "LearnerDataSyncError";
         private const string SyncLearnerDataOperation = "SyncLearnerData";
         
+        private const string LearnerDataSyncSuccessMessage = "Learner data has been successfully updated.";
+        private const string LearnerDataSyncErrorMessage = "Failed to sync learner data.";
+        private const string LearnerDataSyncExceptionMessage = "An error occurred while syncing learner data.";
 
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
@@ -322,7 +326,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit", Name = RouteNames.DraftApprenticeshipEdit)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> EditDraftApprenticeship(DraftApprenticeshipRequest request)
+        public async Task<IActionResult> EditDraftApprenticeship(DraftApprenticeshipRequest request, string learnerDataSyncKey = null)
         {
             try
             {
@@ -330,6 +334,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 if (model is EditDraftApprenticeshipViewModel editModel)
                 {
+                    if (!string.IsNullOrEmpty(learnerDataSyncKey) && modelMapper is EditDraftApprenticeshipViewModelMapper editMapper)
+                    {
+                        await editMapper.ApplyLearnerDataSyncUpdates(editModel, learnerDataSyncKey);
+                    }
+
                     await AddLegalEntityAndCoursesToModel(editModel);
                     PrePopulateDates(editModel);
                     return View("EditDraftApprenticeship", editModel);
@@ -552,7 +561,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
         }
-
+        
         private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)
         {
             var cohortDetail = await commitmentsApiClient.GetCohort(model.CohortId.Value);
