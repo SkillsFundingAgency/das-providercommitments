@@ -838,6 +838,18 @@ bool isApprovedByEmployer, bool expectedShowApprovalOptionMessage)
         result.UseLearnerData.Should().BeTrue();
     }
 
+    [TestCase(null, true)]
+    [TestCase(1234, false)]
+    public async Task IsEditable_is_mapped_correctly_when_LearnerDataIs(long? learnerDataId, bool expected)
+    {
+        var fixture = new DetailsViewModelMapperTestsFixture()
+            .CreateDraftApprenticeship(build => build
+                .With(x => x.LearnerDataId, learnerDataId));
+        var result = await fixture.Map();
+        result
+            .Courses.First().DraftApprenticeships.Single().IsEditable.Should().Be(expected);
+    }
+
     [TestCase(true, true)]
     [TestCase(false, false)]
     public async Task HasFoundationApprenticeshipsIsMappedCorrectly(bool hasFoundationApprenticeships, bool expectedHasFoundationApprenticeships)
