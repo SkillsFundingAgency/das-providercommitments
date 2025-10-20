@@ -35,6 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 Courses = null,
                 ReservationId = cacheItem.ReservationId,
                 StartDate = new MonthYearModel(cacheItem.StartMonthYear),
+                ActualStartDate = cacheItem.ActualStartDate.HasValue ? new DateModel(cacheItem.ActualStartDate.Value) : new DateModel(), 
                 CourseCode = cacheItem.CourseCode,
                 DeliveryModel = (DeliveryModel) cacheItem.DeliveryModel.Value,
                 HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
@@ -70,13 +71,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 result.BirthDay = cacheItem.DateOfBirth.Value.Day;
                 result.BirthMonth = cacheItem.DateOfBirth.Value.Month;
                 result.BirthYear = cacheItem.DateOfBirth.Value.Year;
-            }
-
-            if (cacheItem.ActualStartDate.HasValue)
-            {
-                result.ActualStartDay = cacheItem.ActualStartDate.Value.Day;
-                result.ActualStartMonth = cacheItem.ActualStartDate.Value.Month;
-                result.ActualStartYear = cacheItem.ActualStartDate.Value.Year;
             }
 
             if (cacheItem.EmploymentEndDate.HasValue)
