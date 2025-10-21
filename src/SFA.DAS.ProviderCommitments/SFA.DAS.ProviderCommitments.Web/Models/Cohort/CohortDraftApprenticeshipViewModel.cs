@@ -49,14 +49,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         {
             get
             {
+                if (ActualStartDate.HasValue && EndDate.HasValue)
+                {
+                    return $"{ActualStartDate.Value.ToGdsFormat()} to {EndDate.Value.ToGdsFormatWithoutDay()}";
+                }
+
                 if (StartDate.HasValue && EndDate.HasValue)
                 {
                     return $"{StartDate.Value.ToGdsFormatWithoutDay()} to {EndDate.Value.ToGdsFormatWithoutDay()}";
-                }
-
-                if (ActualStartDate.HasValue && EndDate.HasValue)
-                {
-                    return $"{ActualStartDate.Value.ToGdsFormat()} to {EndDate.Value.ToGdsFormat()}";
                 }
 
                 return "-";
