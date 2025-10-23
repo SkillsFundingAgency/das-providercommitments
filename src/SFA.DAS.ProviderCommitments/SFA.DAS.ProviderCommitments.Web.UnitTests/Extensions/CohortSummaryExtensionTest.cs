@@ -3,7 +3,7 @@ using System.Linq;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.PAS.Account.Api.Types;
+using SFA.DAS.ProviderCommitments.Enums;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -120,12 +120,12 @@ public class CohortSummaryExtensionTest
         GetCohortCardLinkViewModelTestsFixture.VerifySelectedCohortStatusIsCorrect(result, selectedCohortStatus);
     }
 
-    [TestCase(ProviderAgreementStatus.Agreed, true)]
-    [TestCase(ProviderAgreementStatus.NotAgreed, false)]
-    public void TheIsAgreementSignedIsPopulatedCorrectly(ProviderAgreementStatus providerAgreementStatus, bool expectedIsAgreementSigned)
+    [TestCase(ProviderStatusType.Active, true)]
+    [TestCase(ProviderStatusType.ActiveButNotTakingOnApprentices, false)]
+    public void TheIsAgreementSignedIsPopulatedCorrectly(ProviderStatusType providerStatus, bool expectedIsAgreementSigned)
     {
         var fixture = new GetCohortCardLinkViewModelTestsFixture();
-        var result = fixture.GetCohortCardLinkViewModel(CohortStatus.Unknown, true, providerAgreementStatus);
+        var result = fixture.GetCohortCardLinkViewModel(CohortStatus.Unknown, true, providerStatus);
 
         GetCohortCardLinkViewModelTestsFixture.VerifyIsSignedAgreementIsCorrect(result, expectedIsAgreementSigned);
     }
@@ -209,9 +209,9 @@ public class CohortSummaryExtensionTest
             result.ShowDrafts.Should().Be(expectedShowDrafts);
         }
 
-        public ApprenticeshipRequestsHeaderViewModel GetCohortCardLinkViewModel(CohortStatus selectedCohortStatus = CohortStatus.Draft, bool hasRelationship = true, ProviderAgreementStatus providerAgreementStatus = ProviderAgreementStatus.Agreed)
+        public ApprenticeshipRequestsHeaderViewModel GetCohortCardLinkViewModel(CohortStatus selectedCohortStatus = CohortStatus.Draft, bool hasRelationship = true, ProviderStatusType providerStatus = ProviderStatusType.Active)
         {
-            return _cohortSummaries.GetCohortCardLinkViewModel(_urlHelper.Object, ProviderId, selectedCohortStatus, hasRelationship, providerAgreementStatus);
+            return _cohortSummaries.GetCohortCardLinkViewModel(_urlHelper.Object, ProviderId, selectedCohortStatus, hasRelationship, providerStatus);
         }
 
         private static void PopulateWith(IEnumerable<CohortSummary> list, bool draft, Party withParty)

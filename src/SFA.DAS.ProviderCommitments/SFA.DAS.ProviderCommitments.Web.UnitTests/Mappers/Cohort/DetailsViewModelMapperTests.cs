@@ -14,18 +14,20 @@ using SFA.DAS.Encoding;
 using SFA.DAS.Http;
 using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.PAS.Account.Api.Types;
+using SFA.DAS.ProviderCommitments.Enums;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services;
+using ApprenticeshipEmailOverlap = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts.ApprenticeshipEmailOverlap;
+using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
+using DraftApprenticeshipDto = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts.DraftApprenticeshipDto;
+using LastAction = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.LastAction;
 using Party = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Party;
 using TransferApprovalStatus = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.TransferApprovalStatus;
-using LastAction = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.LastAction;
-using DraftApprenticeshipDto = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts.DraftApprenticeshipDto;
-using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
-using ApprenticeshipEmailOverlap = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts.ApprenticeshipEmailOverlap;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort;
 
@@ -870,6 +872,7 @@ public class DetailsViewModelMapperTestsFixture
     private readonly List<TrainingProgrammeFundingPeriod> _fundingPeriods;
     private readonly DateTime _startFundingPeriod = new(2019, 10, 1);
     private readonly DateTime _endFundingPeriod = new(2019, 10, 30);
+    private readonly Mock<IOuterApiClient> _outerApiClient;
 
     public DetailsRequest Source { get; }
     public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; }
@@ -904,9 +907,11 @@ public class DetailsViewModelMapperTestsFixture
         _pasAccountApiClient = new Mock<IPasAccountApiClient>();
         _pasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), CancellationToken.None)).ReturnsAsync(ProviderAgreement);
 
-        var outerApiClient = new Mock<IOuterApiClient>();
-        outerApiClient.Setup(x => x.Get<GetCohortDetailsResponse>(It.IsAny<GetCohortDetailsRequest>()))
+        _outerApiClient = new Mock<IOuterApiClient>();
+        _outerApiClient.Setup(x => x.Get<GetCohortDetailsResponse>(It.IsAny<GetCohortDetailsRequest>()))
             .ReturnsAsync(CohortDetails);
+        _outerApiClient.Setup(x => x.Get<GetProviderDetailsResponse>(It.IsAny<GetProviderDetailsRequest>())).ReturnsAsync(new GetProviderDetailsResponse((int)ProviderStatusType.Active));
+
 
         var providerFeatureToggle = new Mock<IAuthorizationService>();
         providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
@@ -945,7 +950,7 @@ public class DetailsViewModelMapperTestsFixture
         SetEncodingOfApprenticeIds();
 
         _mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, _encodingService.Object,
-            _pasAccountApiClient.Object, outerApiClient.Object, Mock.Of<ITempDataStorageService>(),
+            _outerApiClient.Object, Mock.Of<ITempDataStorageService>(),
             Configuration);
         Source = _autoFixture.Create<DetailsRequest>();
     }
@@ -1192,12 +1197,12 @@ public class DetailsViewModelMapperTestsFixture
 
     internal DetailsViewModelMapperTestsFixture SetIsAgreementSigned(bool isAgreementSigned)
     {
-        var agreementStatus = isAgreementSigned ? ProviderAgreementStatus.Agreed : ProviderAgreementStatus.NotAgreed;
-        _pasAccountApiClient
-            .Setup(x => x.GetAgreement(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ProviderAgreement { Status = agreementStatus });
+        var providerStatus = isAgreementSigned ? ProviderStatusType.Active : ProviderStatusType.Onboarding;
+        _outerApiClient
+            .Setup(x => x.Get<GetProviderDetailsResponse>(It.IsAny<GetProviderDetailsRequest>()))
+            .ReturnsAsync(new GetProviderDetailsResponse((int)providerStatus));
         return this;
-    }
+    }   
 
     internal DetailsViewModelMapperTestsFixture SetUlnOverlap(bool hasOverlap)
     {
