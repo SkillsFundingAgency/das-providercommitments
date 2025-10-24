@@ -202,6 +202,8 @@ public class DetailsViewModelMapper(
                         IsComplete = IsDraftApprenticeshipComplete(a, cohortResponse),
                         EmploymentPrice = a.EmploymentPrice,
                         EmploymentEndDate = a.EmploymentEndDate,
+                        HasLearnerDataChanges = a.HasLearnerDataChanges,
+                        LastLearnerDataSync = a.LastLearnerDataSync,
                         IsEditable = a.LearnerDataId == null
                     })
                     .ToList()
