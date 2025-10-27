@@ -15,6 +15,7 @@ using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Filters;
+using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
@@ -31,41 +32,33 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/unapproved/{cohortReference}/apprentices")]
     [Authorize(Policy = nameof(PolicyNames.AccessCohort))]
-    public class DraftApprenticeshipController : Controller
+    public class DraftApprenticeshipController(
+        IMediator mediator,
+        ICommitmentsApiClient commitmentsApiClient,
+        IModelMapper modelMapper,
+        IEncodingService encodingService,
+        IAuthorizationService authorizationService,
+        IOuterApiService outerApiService,
+        IAuthenticationService authenticationService,
+        ICacheStorageService cacheStorageService)
+        : Controller
     {
-        private readonly IMediator _mediator;
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IModelMapper _modelMapper;
-        private readonly IEncodingService _encodingService;
-        private readonly IAuthorizationService _authorizationService;
-        private readonly IOuterApiService _outerApiService;
-        private readonly IAuthenticationService _authenticationService;
+        private const string LearnerDataSyncSuccessKey = "LearnerDataSyncSuccess";
+        private const string LearnerDataSyncErrorKey = "LearnerDataSyncError";
+        private const string SyncLearnerDataOperation = "SyncLearnerData";
+        
+        private const string LearnerDataSyncSuccessMessage = "Learner data has been successfully updated.";
+        private const string LearnerDataSyncErrorMessage = "Failed to sync learner data.";
+        private const string LearnerDataSyncExceptionMessage = "An error occurred while syncing learner data.";
 
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
-
-        public DraftApprenticeshipController(IMediator mediator,
-            ICommitmentsApiClient commitmentsApiClient,
-            IModelMapper modelMapper,
-            IEncodingService encodingService,
-            IAuthorizationService authorizationService,
-            IOuterApiService outerApiService,
-            IAuthenticationService authenticationService)
-        {
-            _mediator = mediator;
-            _commitmentsApiClient = commitmentsApiClient;
-            _modelMapper = modelMapper;
-            _encodingService = encodingService;
-            _authorizationService = authorizationService;
-            _outerApiService = outerApiService;
-            _authenticationService = authenticationService;
-        }
 
         [HttpGet]
         [Route("add")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request, [FromServices] IConfiguration configuration)
         {
-            var redirectModel = await _modelMapper.Map<AddAnotherApprenticeshipRedirectModel>(request);
+            var redirectModel = await modelMapper.Map<AddAnotherApprenticeshipRedirectModel>(request);
 
             request.CacheKey = redirectModel.CacheKey;
 
@@ -132,7 +125,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeshipCourse(ReservationsAddDraftApprenticeshipRequest request)
         {
-            var model = await _modelMapper.Map<Models.DraftApprenticeship.SelectCourseViewModel>(request);
+            var model = await modelMapper.Map<Models.DraftApprenticeship.SelectCourseViewModel>(request);
             return View(model);
         }
 
@@ -147,7 +140,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     {new ErrorDetail(nameof(model.CourseCode), "You must select a training course")});
             }
 
-            var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
+            var request = await modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
             return RedirectToAction(nameof(SelectDeliveryModel), "DraftApprenticeship", request);
         }
 
@@ -156,7 +149,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectDeliveryModel(ReservationsAddDraftApprenticeshipRequest request)
         {
-            var model = await _modelMapper.Map<SelectDeliveryModelViewModel>(request);
+            var model = await modelMapper.Map<SelectDeliveryModelViewModel>(request);
 
             if (model.DeliveryModels.Length > 1)
             {
@@ -178,7 +171,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     {new ErrorDetail("DeliveryModel", "You must select the apprenticeship delivery model")});
             }
 
-            var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
+            var request = await modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
             return RedirectToAction("AddDraftApprenticeship", "DraftApprenticeship", request);
         }
 
@@ -187,7 +180,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> EditDraftApprenticeshipCourse(DraftApprenticeshipRequest request)
         {
-            var model = await _modelMapper.Map<EditDraftApprenticeshipCourseViewModel>(request);
+            var model = await modelMapper.Map<EditDraftApprenticeshipCourseViewModel>(request);
             return View(model);
         }
 
@@ -196,7 +189,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> EditDraftApprenticeshipCourse(EditDraftApprenticeshipCourseViewModel model)
         {
-            var request = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
+            var request = await modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
             return RedirectToAction(nameof(SelectDeliveryModelForEdit), "DraftApprenticeship", request);
         }
 
@@ -206,7 +199,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> SelectDeliveryModelForEdit(DraftApprenticeshipRequest request)
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
-            var model = await _modelMapper.Map<SelectDeliveryModelForEditViewModel>(request);
+            var model = await modelMapper.Map<SelectDeliveryModelForEditViewModel>(request);
             model.DeliveryModel = (DeliveryModel?)draft.DeliveryModel;
 
             if (model.DeliveryModels.Count > 1 || model.HasUnavailableFlexiJobAgencyDeliveryModel)
@@ -253,7 +246,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var model = GetStoredAddDraftApprenticeshipState();
             if (model == null)
             {
-                model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
+                model = await modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
             }
             else
             {
@@ -275,7 +268,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit")
             {
                 StoreAddDraftApprenticeshipState(model);
-                var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
+                var req = await modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
                 var redirectAction = changeCourse == "Edit" ? nameof(AddDraftApprenticeshipCourse) : nameof(SelectDeliveryModel);
 
                 return RedirectToAction(redirectAction, "DraftApprenticeship", req);
@@ -286,7 +279,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (overlapResult != null && overlapResult.HasStartDateOverlap && overlapResult.HasOverlapWithApprenticeshipId.HasValue)
             {
                 StoreAddDraftApprenticeshipState(model);
-                var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
+                var hashedApprenticeshipId = encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
 
                 return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
                 {
@@ -299,18 +292,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 });
             }
 
-            var request = await _modelMapper.Map<AddDraftApprenticeshipApimRequest>(model);
-            request.UserId = _authenticationService.UserId;
+            var request = await modelMapper.Map<AddDraftApprenticeshipApimRequest>(model);
+            request.UserId = authenticationService.UserId;
 
-            var response = await _outerApiService.AddDraftApprenticeship(model.CohortId.Value, request);
+            var response = await outerApiService.AddDraftApprenticeship(model.CohortId.Value, request);
 
             if (string.IsNullOrEmpty(model.CourseCode))
             {
                 return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
             }
 
-            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, response.DraftApprenticeshipId);
-            var draftApprenticeshipHashedId = _encodingService.Encode(draftApprenticeship.Id, EncodingType.ApprenticeshipId);
+            var draftApprenticeship = await commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, response.DraftApprenticeshipId);
+            var draftApprenticeshipHashedId = encodingService.Encode(draftApprenticeship.Id, EncodingType.ApprenticeshipId);
 
             if (draftApprenticeship.HasStandardOptions)
             {
@@ -325,16 +318,51 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/edit", Name = RouteNames.DraftApprenticeshipEdit)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [ServiceFilter(typeof(UseCacheForValidationAttribute))]
+        public async Task<IActionResult> EditDraftApprenticeship(DraftApprenticeshipRequest request, string learnerDataSyncKey = null)
+        {
+            try
+            {
+                var model = await modelMapper.Map<IDraftApprenticeshipViewModel>(request);
+
+                if (model is EditDraftApprenticeshipViewModel editModel)
+                {
+                    if (!string.IsNullOrEmpty(learnerDataSyncKey) && modelMapper is EditDraftApprenticeshipViewModelMapper editMapper)
+                    {
+                        await editMapper.ApplyLearnerDataSyncUpdates(editModel, learnerDataSyncKey);
+                    }
+
+                    await AddLegalEntityAndCoursesToModel(editModel);
+                    PrePopulateDates(editModel);
+                    return View("EditDraftApprenticeship", editModel);
+                }
+
+                return View("ViewDraftApprenticeship", model as ViewDraftApprenticeshipViewModel);
+            }
+            catch (Exception e) when (e is DraftApprenticeshipNotFoundException)
+            {
+                return RedirectToAction("Details", "Cohort", new { request.ProviderId, request.CohortReference });
+            }
+        }
+
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, EditDraftApprenticeshipViewModel model)
+        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, EditDraftApprenticeshipViewModel model, string operation = null)
         {
+            if (operation == SyncLearnerDataOperation)
+            {
+                return await HandleLearnerDataSync(model);
+            }
+            
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit")
             {
                 StoreEditDraftApprenticeshipState(model);
-                var req = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
+                var req = await modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
 
                 var redirectAction = changeCourse == "Edit" ? nameof(EditDraftApprenticeshipCourse) : nameof(SelectDeliveryModelForEdit);
                 return RedirectToAction(redirectAction, "DraftApprenticeship", req);
@@ -344,20 +372,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (overlapResult != null && overlapResult.HasStartDateOverlap && overlapResult.HasOverlapWithApprenticeshipId.HasValue)
             {
                 StoreEditDraftApprenticeshipState(model);
-                var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
+                var hashedApprenticeshipId = encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
                 return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
                 {
-                    DraftApprenticeshipHashedId = model.DraftApprenticeshipHashedId,
+                    model.DraftApprenticeshipHashedId,
                     OverlapApprenticeshipHashedId = hashedApprenticeshipId,
                     model.ProviderId,
                 });
             }
 
-            var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipApimRequest>(model);
-            await _outerApiService.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
+            var updateRequest = await modelMapper.Map<UpdateDraftApprenticeshipApimRequest>(model);
+            await outerApiService.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
 
             
-            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value);
+            var draftApprenticeship = await commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value);
 
             if (draftApprenticeship.HasStandardOptions)
             {
@@ -377,36 +405,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{DraftApprenticeshipHashedId}/edit", Name = RouteNames.DraftApprenticeshipEdit)]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> EditDraftApprenticeship(DraftApprenticeshipRequest request)
-        {
-            try
-            {
-                var model = await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);
-
-                if (model is EditDraftApprenticeshipViewModel editModel)
-                {
-                    await AddLegalEntityAndCoursesToModel(editModel);
-                    PrePopulateDates(editModel);
-                    return View("EditDraftApprenticeship", editModel);
-                }
-
-                return View("ViewDraftApprenticeship", model as ViewDraftApprenticeshipViewModel);
-            }
-            catch (Exception e) when (e is DraftApprenticeshipNotFoundException)
-            {
-                return RedirectToAction("Details", "Cohort", new { request.ProviderId, request.CohortReference });
-            }
-        }
-
-        [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning", Name = RouteNames.RecognisePriorLearning)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearning(RecognisePriorLearningRequest request)
         {
-            var model = await _modelMapper.Map<RecognisePriorLearningViewModel>(request);
+            var model = await modelMapper.Map<RecognisePriorLearningViewModel>(request);
             if (!model.RplNeedsToBeConsidered)
             {
                 return RedirectToAction("Details", "Cohort", new { request.ProviderId, request.CohortReference });
@@ -426,7 +429,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearning(RecognisePriorLearningViewModel request)
         {
-            _ = await _modelMapper.Map<RecognisePriorLearningResult>(request);
+            _ = await modelMapper.Map<RecognisePriorLearningResult>(request);
 
             if (request.IsTherePriorLearning == true)
             {
@@ -446,7 +449,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningData(RecognisePriorLearningRequest request)
         {
-            var model = await _modelMapper.Map<PriorLearningDataViewModel>(request);
+            var model = await modelMapper.Map<PriorLearningDataViewModel>(request);
             return View("RecognisePriorLearningData", model);
         }
 
@@ -455,7 +458,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningData(PriorLearningDataViewModel model)
         {
-            var result = await _modelMapper.Map<RecognisePriorLearningResult>(model);
+            var result = await modelMapper.Map<RecognisePriorLearningResult>(model);
 
             if (result?.RplPriceReductionError == true)
             {
@@ -470,7 +473,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningSummary(PriorLearningSummaryRequest request)
         {
-            var model = await _modelMapper.Map<PriorLearningSummaryViewModel>(request);
+            var model = await modelMapper.Map<PriorLearningSummaryViewModel>(request);
 
             if (model.RplPriceReductionError == true)
             {
@@ -493,7 +496,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectOptions(SelectOptionsRequest request)
         {
-            var model = await _modelMapper.Map<ViewSelectOptionsViewModel>(request);
+            var model = await modelMapper.Map<ViewSelectOptionsViewModel>(request);
 
             if (!model.Options.Any())
             {
@@ -507,9 +510,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/select-options")]
         public async Task<IActionResult> PostSelectOptions(ViewSelectOptionsViewModel model)
         {
-            var request = await _modelMapper.Map<UpdateDraftApprenticeshipApimRequest>(model);
+            var request = await modelMapper.Map<UpdateDraftApprenticeshipApimRequest>(model);
 
-            await _outerApiService.UpdateDraftApprenticeship(model.CohortId, model.DraftApprenticeshipId, request);
+            await outerApiService.UpdateDraftApprenticeship(model.CohortId, model.DraftApprenticeshipId, request);
 
             return RedirectToAction("RecognisePriorLearning", new { model.ProviderId, model.CohortReference, model.DraftApprenticeshipHashedId });
         }
@@ -519,7 +522,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
         public async Task<IActionResult> ViewDraftApprenticeship(DraftApprenticeshipRequest request)
         {
-            var model = await _modelMapper.Map<ViewDraftApprenticeshipViewModel>(request);
+            var model = await modelMapper.Map<ViewDraftApprenticeshipViewModel>(request);
 
             return View("ViewDraftApprenticeship", model);
         }
@@ -531,7 +534,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             try
             {
-                var viewModel = await _modelMapper.Map<DeleteConfirmationViewModel>(deleteConfirmationRequest);
+                var viewModel = await modelMapper.Map<DeleteConfirmationViewModel>(deleteConfirmationRequest);
                 return View(viewModel);
             }
             catch (Exception e) when (e is DraftApprenticeshipNotFoundException)
@@ -547,16 +550,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.DeleteConfirmed != null && viewModel.DeleteConfirmed.Value)
             {
-                await _commitmentsApiClient.DeleteDraftApprenticeship(viewModel.CohortId, viewModel.DraftApprenticeshipId, new DeleteDraftApprenticeshipRequest(), CancellationToken.None);
+                await commitmentsApiClient.DeleteDraftApprenticeship(viewModel.CohortId, viewModel.DraftApprenticeshipId, new DeleteDraftApprenticeshipRequest(), CancellationToken.None);
                 TempData.AddFlashMessage(DraftApprenticeDeleted, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
             }
 
             return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
         }
-
+        
         private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)
         {
-            var cohortDetail = await _commitmentsApiClient.GetCohort(model.CohortId.Value);
+            var cohortDetail = await commitmentsApiClient.GetCohort(model.CohortId.Value);
 
             var courses = await GetCourses(cohortDetail);
 
@@ -580,7 +583,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task<TrainingProgramme[]> GetCourses(GetCohortResponse cohortDetails)
         {
-            var result = await _mediator.Send(new GetTrainingCoursesQueryRequest
+            var result = await mediator.Send(new GetTrainingCoursesQueryRequest
             {
                 IncludeFrameworks = (!cohortDetails.IsFundedByTransfer &&
                                      cohortDetails.LevyStatus != ApprenticeshipEmployerType.NonLevy)
@@ -636,15 +639,37 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return null;
             }
 
-            var apimRequest = await _modelMapper.Map<ValidateDraftApprenticeshipApimRequest>(model);
-            await _outerApiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(apimRequest);
+            var apimRequest = await modelMapper.Map<ValidateDraftApprenticeshipApimRequest>(model);
+            await outerApiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(apimRequest);
 
-            return await _outerApiService.ValidateUlnOverlapOnStartDate(
+            return await outerApiService.ValidateUlnOverlapOnStartDate(
                 model.ProviderId,
                 model.Uln,
                 model.StartDate.Date.Value.ToString("dd-MM-yyyy"),
                 model.EndDate.Date.Value.ToString("dd-MM-yyyy")
             );
         }
+
+        private async Task<IActionResult> HandleLearnerDataSync(EditDraftApprenticeshipViewModel model)
+        {
+            var result = await modelMapper.Map<LearnerDataSyncResult>(model);
+            
+            if (result.Success)
+            {
+                TempData[LearnerDataSyncSuccessKey] = result.Message;
+                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new 
+                { 
+                    model.DraftApprenticeshipHashedId,
+                    LearnerDataSyncKey = result.CacheKey
+                });
+            }
+            else
+            {
+                TempData[LearnerDataSyncErrorKey] = result.Message;
+            }
+
+            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId});
+        }
+
     }
 }

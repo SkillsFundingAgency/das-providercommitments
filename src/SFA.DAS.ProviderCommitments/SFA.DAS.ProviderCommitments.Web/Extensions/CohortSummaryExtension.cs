@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.PAS.Account.Api.Types;
+using SFA.DAS.ProviderCommitments.Enums;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions
@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
             long providerId, 
             CohortStatus selectedStatus, 
             bool hasRelationship,
-            ProviderAgreementStatus providerAgreementStatus)
+            ProviderStatusType providerStatus)
         {
             return new ApprenticeshipRequestsHeaderViewModel
             {
@@ -59,7 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                     urlHelper.Action("WithTransferSender", "Cohort", new {providerId}),
                     CohortStatus.WithTransferSender.ToString(),
                     selectedStatus == CohortStatus.WithTransferSender),
-                IsAgreementSigned = providerAgreementStatus == ProviderAgreementStatus.Agreed
+                IsAgreementSigned = providerStatus == ProviderStatusType.Active
             };
         }
     }

@@ -23,7 +23,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             var autoFixture = new Fixture();
             _cohort = autoFixture.Create<GetCohortResponse>();
 
-            _request = autoFixture.Create<DraftApprenticeshipRequest>();
+            _request = new DraftApprenticeshipRequest
+            {
+                CohortId = 123,
+                DraftApprenticeshipId = 456,
+                ProviderId = 789,
+                CohortReference = "ABC123",
+                DraftApprenticeshipHashedId = "XYZ789",
+                CacheKey = Guid.NewGuid(),
+                LearnerDataSyncKey = "test-key"
+            };
 
             _apiClient = new Mock<ICommitmentsApiClient>();
 

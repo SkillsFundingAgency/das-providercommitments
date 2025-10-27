@@ -10,6 +10,8 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.PAS.Account.Api.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
@@ -130,7 +132,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var urlHelper = new Mock<IUrlHelper>();
             urlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns<UrlActionContext>((ac) => $"http://{ac.Controller}/{ac.Action}/");
 
-            _mapper = new DraftRequestViewModelMapper(commitmentsApiClient.Object, approvalsOuterApiClient.Object, urlHelper.Object, pasAccountApiClient.Object, _encodingService.Object);
+            var outerApiClient = new Mock<IOuterApiClient>();
+            outerApiClient.Setup(x => x.Get<GetProviderDetailsResponse>(It.IsAny<GetProviderDetailsRequest>())).ReturnsAsync(new GetProviderDetailsResponse((int)Enums.ProviderStatusType.Active));
+            _mapper = new DraftRequestViewModelMapper(commitmentsApiClient.Object, approvalsOuterApiClient.Object, urlHelper.Object, pasAccountApiClient.Object, _encodingService.Object, outerApiClient.Object);
         }
 
         public async Task<WhenMappingDraftRequestToViewModelFixture> Map()
