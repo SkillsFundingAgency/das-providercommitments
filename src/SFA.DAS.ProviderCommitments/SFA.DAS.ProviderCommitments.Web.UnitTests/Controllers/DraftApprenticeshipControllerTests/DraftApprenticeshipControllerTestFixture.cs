@@ -13,10 +13,12 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
@@ -56,6 +58,7 @@ public class DraftApprenticeshipControllerTestFixture
     private readonly ViewSelectOptionsViewModel _selectOptionsViewModel;
     private readonly Mock<ITempDataDictionary> _tempData;
     private readonly Mock<IOuterApiService> _outerApiService;
+    private readonly Mock<ICacheStorageService> _cacheStorageService;
     private readonly ValidateUlnOverlapResult _validateUlnOverlapResult;
     private Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult _validateUlnOverlapOnStartDateResult;
 
@@ -203,6 +206,7 @@ public class DraftApprenticeshipControllerTestFixture
         providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
         _tempData = new Mock<ITempDataDictionary>();
+        _cacheStorageService = new Mock<ICacheStorageService>();
 
         var encodingService = new Mock<IEncodingService>();
         encodingService.Setup(x => x.Encode(_draftApprenticeshipId, EncodingType.ApprenticeshipId))
@@ -228,8 +232,10 @@ public class DraftApprenticeshipControllerTestFixture
             _commitmentsApiClient.Object,
             _modelMapper.Object,
             encodingService.Object,
-            providerFeatureToggle.Object, _outerApiService.Object, 
-            Mock.Of<IAuthenticationService>()
+            providerFeatureToggle.Object, 
+            _outerApiService.Object, 
+            Mock.Of<IAuthenticationService>(),
+            _cacheStorageService.Object
         );
             
         _controller.TempData = _tempData.Object;
@@ -743,6 +749,134 @@ public class DraftApprenticeshipControllerTestFixture
     public DraftApprenticeshipControllerTestFixture VerifyUserRedirectedTo(string page)
     {
         _actionResult.VerifyReturnsRedirectToActionResult().WithActionName(page);
+        return this;
+    }
+
+    public async Task<DraftApprenticeshipControllerTestFixture> SyncLearnerData()
+    {
+        var model = new EditDraftApprenticeshipViewModel
+        {
+            ProviderId = _draftApprenticeshipRequest.ProviderId,
+            CohortId = _draftApprenticeshipRequest.CohortId,
+            DraftApprenticeshipId = _draftApprenticeshipRequest.DraftApprenticeshipId,
+            DraftApprenticeshipHashedId = _draftApprenticeshipRequest.DraftApprenticeshipHashedId,
+            CohortReference = _draftApprenticeshipRequest.CohortReference
+        };
+        
+        _actionResult = await _controller.EditDraftApprenticeship(null, null, model, "SyncLearnerData");
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupOuterApiServiceToReturnSyncResponse(SyncLearnerDataResponse response)
+    {
+        var learnerDataSyncResult = new LearnerDataSyncResult
+        {
+            Success = response.Success,
+            Message = response.Success ? "Learner data has been successfully updated." : (response.Message ?? "Failed to sync learner data."),
+            CacheKey = response.Success ? Guid.NewGuid().ToString() : null
+        };
+        
+        _modelMapper
+            .Setup(x => x.Map<LearnerDataSyncResult>(It.IsAny<EditDraftApprenticeshipViewModel>()))
+            .ReturnsAsync(learnerDataSyncResult);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupOuterApiServiceToThrowException()
+    {
+        var learnerDataSyncResult = new LearnerDataSyncResult
+        {
+            Success = false,
+            Message = "An error occurred while syncing learner data."
+        };
+        
+        _modelMapper
+            .Setup(x => x.Map<LearnerDataSyncResult>(It.IsAny<EditDraftApprenticeshipViewModel>()))
+            .ReturnsAsync(learnerDataSyncResult);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyOuterApiServiceSyncLearnerDataCalled()
+    {
+        _modelMapper.Verify(
+            x => x.Map<LearnerDataSyncResult>(It.IsAny<EditDraftApprenticeshipViewModel>()), Times.Once);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyTempDataContains(string key, string expectedValue)
+    {
+        _tempData.VerifySet(x => x[key] = expectedValue, Times.Once);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectedToEditDraftApprenticeshipPage()
+    {
+        _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("EditDraftApprenticeship");
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupCacheStorageServiceToReturnGuid(Guid cacheKey)
+    {
+        _cacheStorageService
+            .Setup(x => x.SaveToCache(It.IsAny<Guid>(), It.IsAny<object>(), It.IsAny<int>()))
+            .Returns(Task.CompletedTask);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyCacheStorageServiceSaveToCacheCalled()
+    {
+        _cacheStorageService.Verify(
+            x => x.SaveToCache(It.IsAny<Guid>(), It.IsAny<object>(), It.IsAny<int>()), Times.Once);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectContainsLearnerDataSyncKey()
+    {
+        var redirectResult = _actionResult as RedirectToActionResult;
+        redirectResult.RouteValues.Should().ContainKey("LearnerDataSyncKey");
+        redirectResult.RouteValues["LearnerDataSyncKey"].Should().NotBeNull();
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupCacheStorageServiceToReturnUpdatedDraftApprenticeship(string cacheKey, GetDraftApprenticeshipResponse response)
+    {
+        _cacheStorageService
+            .Setup(x => x.SafeRetrieveFromCache<GetDraftApprenticeshipResponse>(cacheKey))
+            .ReturnsAsync(response);
+        _cacheStorageService
+            .Setup(x => x.DeleteFromCache(cacheKey))
+            .Returns(Task.CompletedTask);
+        return this;
+    }
+
+    public async Task<DraftApprenticeshipControllerTestFixture> EditDraftApprenticeshipWithLearnerDataSyncKey(string learnerDataSyncKey)
+    {
+        var request = new DraftApprenticeshipRequest
+        {
+            ProviderId = _draftApprenticeshipRequest.ProviderId,
+            CohortId = _draftApprenticeshipRequest.CohortId,
+            DraftApprenticeshipId = _draftApprenticeshipRequest.DraftApprenticeshipId,
+            DraftApprenticeshipHashedId = _draftApprenticeshipRequest.DraftApprenticeshipHashedId,
+            CohortReference = _draftApprenticeshipRequest.CohortReference
+        };
+        
+        _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(request))
+            .ReturnsAsync(_editModel);
+        _actionResult = await _controller.EditDraftApprenticeship(request, learnerDataSyncKey);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyCacheStorageServiceRetrieveFromCacheCalled(string cacheKey)
+    {
+        _cacheStorageService.Verify(
+            x => x.SafeRetrieveFromCache<GetDraftApprenticeshipResponse>(cacheKey), Times.Once);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyCacheStorageServiceDeleteFromCacheCalled(string cacheKey)
+    {
+        _cacheStorageService.Verify(
+            x => x.DeleteFromCache(cacheKey), Times.Once);
         return this;
     }
 }

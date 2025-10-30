@@ -69,5 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
         public bool? EmployerHasEditedCost { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
         public long? LearnerDataId { get; set; }
+        public bool HasLearnerDataChanges { get; set; }
+        public DateTime? LastLearnerDataSync { get; set; }
     }
 }

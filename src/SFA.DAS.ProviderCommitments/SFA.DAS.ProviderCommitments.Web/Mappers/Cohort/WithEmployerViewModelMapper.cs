@@ -4,7 +4,9 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.PAS.Account.Api.ClientV2;
-using SFA.DAS.PAS.Account.Api.Types;
+using SFA.DAS.ProviderCommitments.Enums;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -18,31 +20,34 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         private readonly IUrlHelper _urlHelper;
         private readonly IPasAccountApiClient _pasAccountApiClient;
         private readonly IEncodingService _encodingService;
+        private readonly IOuterApiClient _outerApiClient;
 
         public WithEmployerViewModelMapper(
             ICommitmentsApiClient commitmentApiClient,
             IApprovalsOuterApiClient approvalsOuterApiClient,
             IUrlHelper urlHelper,
             IPasAccountApiClient pasAccountApiClient,
-            IEncodingService encodingSummary)
+            IEncodingService encodingSummary,
+             IOuterApiClient outerApiClient)
         {
             _commitmentsApiClient = commitmentApiClient;
             _approvalsOuterApiClient = approvalsOuterApiClient;
             _urlHelper = urlHelper;
             _pasAccountApiClient = pasAccountApiClient;
             _encodingService = encodingSummary;
+            _outerApiClient = outerApiClient;
         }
 
         public async Task<WithEmployerViewModel> Map(CohortsByProviderRequest source)
         {
-            async Task<(CohortSummary[] Cohorts, bool HasRelationship, ProviderAgreementStatus providerAgreementStatus)> GetData()
+            async Task<(CohortSummary[] Cohorts, bool HasRelationship, ProviderStatusType providerStatus)> GetData()
             {
                 var getCohortsTask = _commitmentsApiClient.GetCohorts(new GetCohortsRequest { ProviderId = source.ProviderId });
                 var hasRelationshipTask = _approvalsOuterApiClient.GetHasRelationshipWithPermission(source.ProviderId);
-                var providerAgreement = _pasAccountApiClient.GetAgreement(source.ProviderId);
+                var providerStatusTask = _outerApiClient.Get<GetProviderDetailsResponse>(new GetProviderDetailsRequest(source.ProviderId));
 
-                await Task.WhenAll(getCohortsTask, hasRelationshipTask);
-                return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result.HasPermission, providerAgreement.Result.Status);
+                await Task.WhenAll(getCohortsTask, hasRelationshipTask, providerStatusTask);
+                return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result.HasPermission, (ProviderStatusType)providerStatusTask.Result.ProviderStatusTypeId);
             }
 
             var (cohorts, hasRelationship, providerAgreementStatus) = await GetData();
