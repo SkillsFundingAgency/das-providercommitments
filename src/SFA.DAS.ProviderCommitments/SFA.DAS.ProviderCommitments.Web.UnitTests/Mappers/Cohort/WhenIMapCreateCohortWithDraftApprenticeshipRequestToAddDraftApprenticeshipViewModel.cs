@@ -133,10 +133,20 @@ public class WhenIMapCreateCohortWithDraftApprenticeshipRequestToAddDraftApprent
     }
 
     [Test]
-    public async Task Then_ActualStartDate_IsMappedCorrectly()
+    public async Task Then_ActualStartDate_IsMappedCorrectly_WhenNotNull()
     {
         var result = await _mapper.Map(_source);
-        result.ActualStartDate.Date.Should().Be(_cacheItem.ActualStartDate.Value.Date);
+        result.ActualStartDate.Day.Should().Be(_cacheItem.ActualStartDate.Value.Date.Day);
+        result.ActualStartDate.Month.Should().Be(_cacheItem.ActualStartDate.Value.Date.Month);
+        result.ActualStartDate.Year.Should().Be(_cacheItem.ActualStartDate.Value.Date.Year);
+    }
+
+    [Test]
+    public async Task Then_ActualStartDate_IsMappedCorrectly_WhenNull()
+    {
+        _cacheItem.ActualStartDate = null;
+        var result = await _mapper.Map(_source);
+        result.ActualStartDate.Date.Should().Be(null);
     }
 
     [Test]

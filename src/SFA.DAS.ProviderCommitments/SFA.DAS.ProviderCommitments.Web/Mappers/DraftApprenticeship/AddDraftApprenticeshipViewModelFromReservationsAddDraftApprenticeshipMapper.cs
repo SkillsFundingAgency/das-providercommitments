@@ -75,6 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
                     model.StartMonth = cacheItem.StartDate.Value.Month;
                     model.StartYear = cacheItem.StartDate.Value.Year;
                 }
+                model.ActualStartDate = cacheItem.ActualStartDate.HasValue ? new DateModel(cacheItem.ActualStartDate.Value) : new DateModel();
 
                 if (cacheItem.EndDate.HasValue)
                 {
@@ -88,9 +89,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
 
                 model.LearnerDataId = cacheItem.LearnerDataId;
             }
-
             return model;
-
         }
     }
 }
