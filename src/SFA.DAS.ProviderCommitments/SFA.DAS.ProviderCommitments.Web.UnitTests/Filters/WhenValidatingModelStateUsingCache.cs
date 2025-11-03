@@ -151,7 +151,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
-            var controller = new DraftApprenticeshipController(null, null, null, null, null, null,Mock.Of<IAuthenticationService>());
+            var controller = new DraftApprenticeshipController(null, null, null, null, null, null, Mock.Of<IAuthenticationService>(), Mock.Of<ICacheStorageService>());
 
             var actionExecutingContext = new ActionExecutingContext(
                 new ActionContext(httpContext, new RouteData(), new ActionDescriptor()),
@@ -198,7 +198,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
-            var controller = new DraftApprenticeshipController(null, null, null, null, null, null,Mock.Of<IAuthenticationService>());
+            var controller = new DraftApprenticeshipController(null, null, null, null, null, null, Mock.Of<IAuthenticationService>(), Mock.Of<ICacheStorageService>());
 
             var actionExecutingContext = new ActionExecutingContext(
                 new ActionContext(httpContext, new RouteData(), new ActionDescriptor()),

@@ -34,8 +34,14 @@ public class DetailsViewModel : IAuthorizationContextModel
     public bool IsAgreementSigned { get; set; }
     public string OptionsTitle => ProviderCanApprove ? "Approve these details?" : "Submit to employer?";
     public bool ShowViewAgreementOption => !IsAgreementSigned;
-    public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider && !HasOverlappingUln && !HasEmailOverlaps && !ShowRofjaaRemovalBanner && !ShowInvalidProviderCoursesBanner; // to be added back when RPL is no longer a warning && NumberOfRplErrors == 0;
+    public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider && !HasOverlappingUln && !HasEmailOverlaps && !ShowRofjaaRemovalBanner && !ShowInvalidProviderCoursesBanner && !HasApprenticesWithLearnerDataChanges; // to be added back when RPL is no longer a warning && NumberOfRplErrors == 0;
     public bool ShowApprovalOptionMessage => ProviderCanApprove && IsApprovedByEmployer;
+    
+    public IReadOnlyCollection<CohortDraftApprenticeshipViewModel> ApprenticesWithLearnerDataChanges => 
+        Courses?.SelectMany(c => c.DraftApprenticeships.Where(a => a.HasLearnerDataChanges)).ToList() ?? [];
+    
+    public bool HasApprenticesWithLearnerDataChanges => ApprenticesWithLearnerDataChanges.Any();
+    
     public bool IsReadOnly => WithParty != Infrastructure.OuterApi.Responses.Party.Provider;
     public bool IsCompleteForProvider { get; set; }
     public bool HasEmailOverlaps { get; set; }
