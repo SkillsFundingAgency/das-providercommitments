@@ -199,7 +199,7 @@ else
 
 <div class="govuk-form-group govuk-!-margin-bottom-0 @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-form-group--error")">
     @Html.ValidationMessageFor(m => m.StartDate, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.StartDate) })
-    <dl class="govuk-summary-list govuk-!-margin-bottom-0 )">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
             <dt class="govuk-summary-list__key" id="startdate-label">
                 @startDateLabel
