@@ -275,7 +275,7 @@
                         @if (Model.ActualStartDate.HasValue)
                         {
                             <th scope="row" class="govuk-table__header">Actual training start date</th>
-                            <td id="apprentice-start-date" class="govuk-table__cell">@Model.ActualStartDate.Value.ToGdsFormat()</td>
+                            <td id="apprentice-start-date" class="govuk-table__cell">@Model.ActualStartDate.Value.ToGdsFormatWithoutDay()</td>
                         }
                         else
                         {
