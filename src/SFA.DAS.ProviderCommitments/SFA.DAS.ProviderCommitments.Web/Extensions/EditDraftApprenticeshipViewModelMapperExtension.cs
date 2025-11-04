@@ -20,13 +20,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                 DeliveryModel = source.DeliveryModel,
                 EmploymentPrice = source.EmploymentPrice,
                 Cost = source.Cost,
+                TrainingPrice = source.TrainingPrice,
+                EndPointAssessmentPrice = source.EndPointAssessmentPrice,
                 StartDate = source.StartDate.Date,
                 ActualStartDate = source.ActualStartDate.Date,
                 EmploymentEndDate = source.EmploymentEndDate.Date,
                 EndDate = source.EndDate.Date,
                 OriginatorReference = source.Reference,
                 ReservationId = source.ReservationId,
-                IgnoreStartDateOverlap = true
+                IgnoreStartDateOverlap = true,
+                LearnerDataId = source.LearnerDataId
             };
         }
     }
