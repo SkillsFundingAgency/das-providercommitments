@@ -205,7 +205,7 @@ else
                 @startDateLabel
             </dt>
             <dd class="govuk-summary-list__value" id="startdate-value">
-                @(Model.ActualStartDate.HasValue ? Model.ActualStartDate.Date.Value.ToString("MMM yyyy") : "")
+                @(Model.StartDate.HasValue ? Model.StartDate.Date.Value.ToString("MMM yyyy") : "")
                 @Html.HiddenFor(x => x.ActualStartDay)
                 @Html.HiddenFor(x => x.ActualStartMonth)
                 @Html.HiddenFor(x => x.ActualStartYear)
