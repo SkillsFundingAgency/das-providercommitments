@@ -53,7 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             {
                 if (ActualStartDate.HasValue && EndDate.HasValue)
                 {
-                    return $"{ActualStartDate.Value.ToGdsFormat()} to {EndDate.Value.ToGdsFormatWithoutDay()}";
+                    return $"{ActualStartDate.Value.ToGdsFormatWithoutDay()} to {EndDate.Value.ToGdsFormatWithoutDay()}";
                 }
 
                 if (StartDate.HasValue && EndDate.HasValue)
