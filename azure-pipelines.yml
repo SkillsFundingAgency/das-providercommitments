@@ -137,7 +137,7 @@ stages:
   variables:
   - group: MO Management Resources
   - group: MO Shared Resources
-  - group: PROD das-providercommitments
+  - group: MO das-providercommitments
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
