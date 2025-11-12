@@ -49,7 +49,7 @@ jobs:
             TargetFileName: '*.schema.json'
             TableName: Configuration
             ConfigurationSecrets:
-              SharedRedisConnectionString: $(SharedRedisConnectionString)
+              RedisConnectionString: $(RedisConnectionString)
               ApprovalsApimSubscriptionKey: $(ApprovalsApimSubscriptionKey)
               AuthenticationConfiguration:ClientSecret: $(AuthenticationConfiguration:ClientSecret)
               UserBearerTokenSigningKey: $(UserBearerTokenSigningKey)
