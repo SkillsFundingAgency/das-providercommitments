@@ -1,83 +1,90 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-        "serviceName": {
-            "type": "string"
-        },
-        "sharedFrontendAppServicePlanName": {
-            "type": "string"
-        },
-        "sharedFrontEndSubnetResourceId": {
-            "type": "string"
-        },
-        "sharedAppServicePlanResourceGroup": {
-            "type": "string"
-        },
-        "sharedEnvResourceGroup": {
-            "type": "string"
-        },
-        "configurationStorageConnectionString": {
-            "type": "securestring"
-        },
-        "environmentName": {
-            "type": "string"
-        },
-        "resourceEnvironmentName": {
-            "type": "string"
-        },
-        "resourceGroupLocation": {
-            "type": "string"
-        },
-        "loggingRedisConnectionString": {
-            "type": "securestring"
-        },
-        "loggingRedisKey": {
-            "type": "securestring"
-        },
-        "customHostName": {
-            "type": "string"
-        },
-        "appServiceAllowedIPs": {
-            "type": "array",
-            "defaultValue": []
-        },
-        "keyVaultCertificateName": {
-            "type": "string"
-        },
-        "sharedKeyVaultName": {
-            "type": "string"
-        },
-        "sharedManagementResourceGroup": {
-            "type": "string"
-        },
-        "cdnUrl": {
-            "type": "string"
-        },
-        "containerNameArray": {
-            "type": "array"
-        },
-        "sharedApimName": {
-            "type": "string"
-        },
-        "sharedApimResourceGroup": {
-            "type": "string"
-        },
-        "tags": {
-            "type": "object"
-        },
-        "utcValue": {
-            "type": "string",
-            "defaultValue": "[utcNow()]"
-        },
-        "minimumTlsVersion": {
-            "type": "string",
-            "defaultValue": "TLS1_2"
-        },
-        "deployPrivateLinkedScopedResource": {
-            "type": "bool"
-        }
+  "parameters": {
+    "serviceName": {
+      "type": "string"
     },
+    "sharedFrontendAppServicePlanName": {
+      "type": "string"
+    },
+    "sharedFrontEndSubnetResourceId": {
+      "type": "string"
+    },
+    "sharedAppServicePlanResourceGroup": {
+      "type": "string"
+    },
+    "sharedEnvResourceGroup": {
+      "type": "string"
+    },
+    "configurationStorageConnectionString": {
+      "type": "securestring"
+    },
+    "environmentName": {
+      "type": "string"
+    },
+    "resourceEnvironmentName": {
+      "type": "string"
+    },
+    "resourceGroupLocation": {
+      "type": "string"
+    },
+    "loggingRedisConnectionString": {
+      "type": "securestring"
+    },
+    "loggingRedisKey": {
+      "type": "securestring"
+    },
+    "customHostName": {
+      "type": "string"
+    },
+    "appServiceAllowedIPs": {
+      "type": "array",
+      "defaultValue": []
+    },
+    "keyVaultCertificateName": {
+      "type": "string"
+    },
+    "sharedKeyVaultName": {
+      "type": "string"
+    },
+    "sharedManagementResourceGroup": {
+      "type": "string"
+    },
+    "cdnUrl": {
+      "type": "string"
+    },
+    "containerNameArray": {
+      "type": "array"
+    },
+    "sharedApimName": {
+      "type": "string"
+    },
+    "sharedApimResourceGroup": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "object"
+    },
+    "utcValue": {
+      "type": "string",
+      "defaultValue": "[utcNow()]"
+    },
+    "logAnalyticsSubscriptionId": {
+      "type": "string",
+      "defaultValue": "[subscription().subscriptionId]"
+    },
+    "logAnalyticsWorkspaceName": {
+      "type": "string"
+    },
+    "minimumTlsVersion": {
+      "type": "string",
+      "defaultValue": "TLS1_2"
+    },
+    "deployPrivateLinkedScopedResource": {
+      "type": "bool"
+    }
+  },
     "variables": {
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
@@ -281,7 +288,7 @@
             ]
         },
         {
-            "apiVersion": "2017-08-01",
+            "apiVersion": "2021-04-01",
             "name": "[concat(variables('appServiceName'), '-application-insights-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
@@ -297,6 +304,9 @@
                     },
                     "attachedService": {
                         "value": "[variables('appServiceName')]"
+                    },
+                    "logAnalyticsWorkspaceId": {
+                        "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
                     }
                 }
             },
@@ -338,6 +348,10 @@
         "StorageAccountName": {
             "type": "string",
             "value": "[variables('storageAccountName')]"
+        },
+        "StorageConnectionString": {
+            "type": "string",
+            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId(subscription().subscriptionId, variables('resourceGroupName'), 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2022-05-01').keys[0].value, ';EndpointSuffix=', environment().suffixes.storage)]"
         }
     }
 }
