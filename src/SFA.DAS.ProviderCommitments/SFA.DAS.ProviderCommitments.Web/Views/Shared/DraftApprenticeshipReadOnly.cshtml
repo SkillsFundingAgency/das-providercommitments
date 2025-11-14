@@ -229,12 +229,47 @@ else
     </dl>
 </div>
 
+@if (Model.TrainingPrice.HasValue)
+{
+    <div class="govuk-form-group govuk-!-margin-bottom-0 @Html.AddClassIfPropertyInError(x => x.TrainingPrice, "govuk-form-group--error")">
+        @Html.ValidationMessageFor(m => m.TrainingPrice, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.TrainingPrice)})
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                <dt class="govuk-summary-list__key" id="trainingprice-label">
+                    Training price (TNP1)
+                </dt>
+                <dd class="govuk-summary-list__value" id="trainingprice-value">
+                    @DisplayCost(Model.TrainingPrice)
+                    @Html.HiddenFor(x => x.TrainingPrice)
+                </dd>
+            </div>
+        </dl>
+    </div>
+}
+
+@if (Model.EndPointAssessmentPrice.HasValue)
+{
+    <div class="govuk-form-group govuk-!-margin-bottom-0 @Html.AddClassIfPropertyInError(x => x.EndPointAssessmentPrice, "govuk-form-group--error")">
+        @Html.ValidationMessageFor(m => m.EndPointAssessmentPrice, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndPointAssessmentPrice)})
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                <dt class="govuk-summary-list__key" id="epaoprice-label">
+                    End-point assessment price (TNP2)
+                </dt>
+                <dd class="govuk-summary-list__value" id="epaoprice-value">
+                    @DisplayCost(Model.EndPointAssessmentPrice)
+                    @Html.HiddenFor(x => x.EndPointAssessmentPrice)
+                </dd>
+            </div>
+        </dl>
+    </div>
+}
 <div class="govuk-form-group govuk-!-margin-bottom-0 @Html.AddClassIfPropertyInError(x => x.Cost, "govuk-form-group--error")">
     @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
     <dl class="govuk-summary-list govuk-!-margin-bottom-4">
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
             <dt class="govuk-summary-list__key" id="cost-label">
-                Total agreed apprenticeship price (excluding VAT)
+                Total agreed apprenticeship price
             </dt>
             <dd class="govuk-summary-list__value" id="cost-value">
                 @DisplayCost(Model.Cost)

@@ -82,6 +82,27 @@ public class WhenIMapAddDraftApprenticeshipViewModelToValidateDraftApprenticeshi
     }
 
     [Test]
+    public async Task ThenTrainingPriceIsMappedCorrectly()
+    {
+        var result = await _mapper.Map(_source);
+        result.TrainingPrice.Should().Be(_source.TrainingPrice);
+    }
+
+    [Test]
+    public async Task ThenEndPointAssessmentPriceIsMappedCorrectly()
+    {
+        var result = await _mapper.Map(_source);
+        result.EndPointAssessmentPrice.Should().Be(_source.EndPointAssessmentPrice);
+    }
+
+    [Test]
+    public async Task ThenLearnerDataIdIsMappedCorrectly()
+    {
+        var result = await _mapper.Map(_source);
+        result.LearnerDataId.Should().Be(_source.LearnerDataId);
+    }
+
+    [Test]
     public async Task ThenStartDateIsMappedCorrectly()
     {
         var result = await _mapper.Map(_source);
