@@ -147,6 +147,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         [Display(Name = "Reference (optional)")]
         public string Reference { get; set; }
+        public string AgreementId { get; set; }
 
         public TrainingProgramme[] Courses { get; set; }
         public bool IsContinuation { get; set; }

@@ -1,3 +1,4 @@
+using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -21,8 +22,10 @@ using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
+using StructureMap.Query;
 using ApprenticeshipEmployerType = SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType;
 using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
 using IAuthorizationService = SFA.DAS.ProviderCommitments.Interfaces.IAuthorizationService;
@@ -240,6 +243,31 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/email", Name = RouteNames.ApprenticeEmail)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<ActionResult> AddEmail(EmailRequest request)        {
+            var model = await modelMapper.Map<AddDraftApprenticeshipEmailViewModel>(request);
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("{DraftApprenticeshipHashedId}/email", Name = RouteNames.ApprenticeEmail)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<ActionResult> AddEmail(AddDraftApprenticeshipEmailViewModel model)
+        {
+            var draft = PeekStoredEditDraftApprenticeshipState();
+            draft.Email = model.Email;
+            StoreEditDraftApprenticeshipState(draft);
+
+            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
+            {
+                model.ProviderId,
+                model.DraftApprenticeshipHashedId,
+                model.CohortReference
+            });
+        }
+
+        [HttpGet]
         [Route("add/details", Name = RouteNames.DraftApprenticeshipAddAnother)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
@@ -341,7 +369,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                     await AddLegalEntityAndCoursesToModel(editModel);
                     PrePopulateDates(editModel);
-                    return View("EditDraftApprenticeship", editModel);
+                    if (editModel.IsContinuation || editModel.LearnerDataId == null)
+                    {
+                        return View("EditDraftApprenticeship", editModel);
+                    }
+                    else { return View("ViewDraftApprenticeshipReadOnly", editModel); }
                 }
 
                 return View("ViewDraftApprenticeship", model as ViewDraftApprenticeshipViewModel);
@@ -356,13 +388,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, EditDraftApprenticeshipViewModel model, string operation = null)
+        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, EditDraftApprenticeshipViewModel model, string operation = null, string addEmail = null)
         {
             if (operation == SyncLearnerDataOperation)
             {
                 return await HandleLearnerDataSync(model);
             }
             
+            if(addEmail != null)
+            {
+                StoreEditDraftApprenticeshipState(model);
+                var req = await modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
+
+                return RedirectToAction("AddEmail", "DraftApprenticeship", req);
+            }
+
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit")
             {
                 StoreEditDraftApprenticeshipState(model);
@@ -561,7 +601,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
         }
-        
+
         private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)
         {
             var cohortDetail = await commitmentsApiClient.GetCohort(model.CohortId.Value);

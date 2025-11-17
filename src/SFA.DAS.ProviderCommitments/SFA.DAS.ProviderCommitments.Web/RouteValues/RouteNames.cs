@@ -52,4 +52,5 @@ public static class RouteNames
     public const string ProviderAccountIndex = "provider-account-index";
     public const string SelectLearnerRecord = "select-ilr";
     public const string CreateCohortAndAddFirstApprenticeship = "create-cohort-add-apprenticeship";
+    public const string ApprenticeEmail = "apprentice-email";
 }

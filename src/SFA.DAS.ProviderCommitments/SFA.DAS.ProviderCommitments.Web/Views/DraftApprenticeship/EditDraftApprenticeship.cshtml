@@ -1,4 +1,5 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.EditDraftApprenticeshipViewModel
+@using Azure
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.TagHelpers
 
@@ -102,11 +103,12 @@
             {
                 <partial name="DraftApprenticeship" for="@Model"/>
                 <button type="submit" class="govuk-button" id="submitAddDraftApprenticeship">Save</button>
-            }
+            } 
             else
             {
-                <partial name="DraftApprenticeshipReadOnly" for="@Model"/>
+                <partial name="ViewDraftApprenticeshipReadOnly" for="@Model" />
                 <button type="submit" class="govuk-button" id="submitAddDraftApprenticeship">Continue</button>
+
             }
 
             @if (!Model.IsContinuation)

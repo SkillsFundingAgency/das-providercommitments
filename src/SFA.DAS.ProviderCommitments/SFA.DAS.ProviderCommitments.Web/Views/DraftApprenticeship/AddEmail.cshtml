@@ -1,0 +1,64 @@
+﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.AddDraftApprenticeshipEmailViewModel;
+@{
+    ViewData["Title"] = "Add Email";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-l govuk-!-margin-bottom-1">Details for @Model.Name</span>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-4">Add email</h1>
+        <p class="govuk-body govuk-!-margin-bottom-6">
+            This is the email address we will use to contact the apprentice.
+        </p>
+
+
+        <form method="post" asp-route="@RouteNames.ApprenticeEmail" asp-route-providerId="@Model.ProviderId">
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="first-name">
+                    Email address
+                </label>
+                <input class="govuk-input govuk-!-width-two-thirds" id="email" name="email" value="@Model.Email">
+            </div>
+
+            <details class="govuk-details govuk-!-margin-top-4" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Why do we need an email address?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        Your apprentice will receive an email alert inviting them to the My apprenticeship
+                        service. On
+                        the service, your apprentice will be able to:
+                    </p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>review and confirm their apprenticeship details</li>
+                        <li>
+                            understand the roles and responsibilities of an apprentice, an employer and a training
+                            provider
+                        </li>
+                        <li>find help and support during their apprenticeship</li>
+                    </ul>
+                </div>
+            </details>
+
+
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button" data-govuk-button-init="">
+                    Continue
+                </button>
+                <a id="back-link" class="govuk-back-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortId, Model.DraftApprenticeshipHashedId })">Cancel</a>
+            </div>
+        </form>
+
+
+
+    </div>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortId, Model.DraftApprenticeshipHashedId })">Back</a>
+}
