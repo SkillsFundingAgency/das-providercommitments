@@ -32,6 +32,7 @@ public class GetLearnerDetailsForProviderResponse
     public long AccountLegalEntityId { get; set; }
     public string EmployerName { get; set; }
     public List<GetLearnerSummary> Learners { get; set; }
+    public int FutureMonths { get; set; }
 }
 
 public class GetLearnerSummary
