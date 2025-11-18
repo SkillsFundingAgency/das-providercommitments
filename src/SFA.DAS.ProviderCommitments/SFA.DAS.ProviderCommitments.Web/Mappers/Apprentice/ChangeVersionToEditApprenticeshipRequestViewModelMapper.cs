@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             var newStandardVersion = versionResponse.TrainingProgramme;
 
-            var editRequestViewModel = new EditApprenticeshipRequestViewModel(apprenticeship.DateOfBirth, apprenticeship.StartDate, apprenticeship.EndDate)
+        var editRequestViewModel = new EditApprenticeshipRequestViewModel(apprenticeship.DateOfBirth, apprenticeship.StartDate, apprenticeship.EndDate)
             {
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 ULN = apprenticeship.Uln,
@@ -43,7 +43,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 Version = source.SelectedVersion,
                 ProviderReference = apprenticeship.ProviderReference,
                 ProviderId = source.ProviderId,
-                HasOptions = newStandardVersion.Options.Any()
+            HasOptions = newStandardVersion.Options.Any(),
+            DeliveryModel = apprenticeship.DeliveryModel
             };
 
             return editRequestViewModel;
