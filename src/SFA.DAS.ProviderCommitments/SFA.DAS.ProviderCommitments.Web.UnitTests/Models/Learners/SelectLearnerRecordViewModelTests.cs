@@ -149,4 +149,14 @@ public class SelectLearnerRecordViewModelTests
         apprenticeship.Uln.Should().Be(ilrLearner.Uln);
         apprenticeship.CourseName.Should().Be(ilrLearner.Course);
     }
+
+    [TestCase(0, false)]
+    [TestCase(3, true)]
+    public void IsNonLevy_Calculation(int futureMonths, bool expected)
+    {
+        _viewModel.FutureMonths = futureMonths;
+
+        var isNonLevy = _viewModel.IsNonLevy;
+        isNonLevy.Should().Be(expected);
+    }
 }

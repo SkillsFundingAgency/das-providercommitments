@@ -59,6 +59,7 @@ public class SelectLearnerRecordViewModelMapperTests
         result.CohortReference.Should().Be(_request.CohortReference);
         result.EmployerAccountName.Should().Be(_apiResponse.EmployerName);
         result.LastIlrSubmittedOn.Should().Be(_apiResponse.LastSubmissionDate);
+        result.FutureMonths.Should().Be(_apiResponse.FutureMonths);
     }
 
     [Test]
