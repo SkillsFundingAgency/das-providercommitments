@@ -1,0 +1,8 @@
+﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
+
+namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+
+public class BeforeYouContinueRequest : IAuthorizationContextModel
+{
+    public long ProviderId { get; set; }
+}
