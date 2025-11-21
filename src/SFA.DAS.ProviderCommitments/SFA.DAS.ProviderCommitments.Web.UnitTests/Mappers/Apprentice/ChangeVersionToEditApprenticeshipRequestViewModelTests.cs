@@ -107,8 +107,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task VerifyViewModelIsMapped()
+    public async Task VerifyViewModelIsMapped()
         {
+        _getApprenticeshipResponse.DeliveryModel = DeliveryModel.FlexiJobAgency;
+
             var result = await _mapper.Map(_viewModel);
 
             result.Version.Should().Be(_viewModel.SelectedVersion);
@@ -122,7 +124,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             result.CourseCode.Should().Be(_getApprenticeshipResponse.CourseCode);
             result.ProviderReference.Should().Be(_getApprenticeshipResponse.ProviderReference);
 
-            result.Cost.Should().Be(_getPriceEpisodesResponse.PriceEpisodes.GetPrice());
+        result.Cost.Should().Be(_getPriceEpisodesResponse.PriceEpisodes.GetPrice());
+        result.DeliveryModel.Should().Be(_getApprenticeshipResponse.DeliveryModel);
         }
     }
 }
