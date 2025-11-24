@@ -35,6 +35,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 DateOfBirth = draftApprenticeship.DateOfBirth,
                 TrainingCourse = trainingCourse?.TrainingProgramme.Name,
                 DeliveryModel = draftApprenticeship.DeliveryModel,
+                TrainingPrice = draftApprenticeship.TrainingPrice,
+                EndPointAssessmentPrice = draftApprenticeship.EndPointAssessmentPrice,
                 Cost = draftApprenticeship.Cost,
                 EmploymentPrice = draftApprenticeship.EmploymentPrice,
                 StartDate = draftApprenticeship.StartDate,
