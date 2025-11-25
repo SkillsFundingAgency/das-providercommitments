@@ -225,6 +225,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
+        public async Task AndWhenAnotherApprenticeshipWasCreatedViaILRThenRedirectToEditPage()
+        {
+            _fixture
+                .SetUpLearnerDataOnAddModel();
+
+            await _fixture.PostToAddDraftApprenticeship();
+
+            _fixture.VerifyMappingToApiTypeIsCalled()
+                .VerifyApiAddMethodIsCalled()
+                .VerifyRedirectToEditPage();
+        }
+
+        [Test]
         public async Task AndSelectCourseIsToBeChangedThenTheUserIsRedirectedToSelectCoursePage()
         {
             await _fixture.PostToAddDraftApprenticeship(changeCourse: "Edit");
