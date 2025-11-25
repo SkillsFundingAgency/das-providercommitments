@@ -1,0 +1,38 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.DraftApprenticeshipSetReferenceViewModel
+@{
+    ViewData["Title"] = "Add Reference";
+}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-l">Details for @Model.Name</span>
+            <h1 class="govuk-heading-l">Add reference</h1>
+
+            <p class="govuk-body">
+                Add a reference, such as employee number or location. This won’t be seen by the employer.
+            </p>
+
+            <form class="form" method="post">
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="reference">
+                        Reference
+                    </label>
+                    <input class="govuk-input govuk-!-width-two-thirds" id="reference" name="reference" type="text" value="@Model.Reference">
+                </div>
+
+                <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button" type="submit" data-govuk-button-init="">
+                        Continue
+                    </button>
+                <a class="govuk-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortId, Model.DraftApprenticeshipHashedId })">Cancel</a>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortId, Model.DraftApprenticeshipHashedId })">Back</a>
+}

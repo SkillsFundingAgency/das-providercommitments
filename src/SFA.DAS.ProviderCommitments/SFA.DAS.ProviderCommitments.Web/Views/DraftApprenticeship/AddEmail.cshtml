@@ -1,5 +1,5 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
-@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.AddDraftApprenticeshipEmailViewModel;
+@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.DraftApprenticeshipAddEmailViewModel;
 @{
     ViewData["Title"] = "Add Email";
 }
@@ -14,6 +14,10 @@
 
 
         <form method="post" asp-route="@RouteNames.ApprenticeEmail" asp-route-providerId="@Model.ProviderId">
+            <input type="hidden" name="CohortId" value="@Model.CohortId" />
+            <input type="hidden" name="DraftApprenticeshipId" value="@Model.DraftApprenticeshipId" />
+            <input type="hidden" name="StartDate" value="@Model.StartDate" />
+            <input type="hidden" name="EndDate" value="@Model.EndDate" />
             <div class="govuk-form-group">
                 <label class="govuk-label" for="first-name">
                     Email address

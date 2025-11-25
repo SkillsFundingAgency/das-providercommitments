@@ -22,7 +22,6 @@ using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
-using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using StructureMap.Query;
@@ -242,29 +241,75 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", request);
         }
 
+
         [HttpGet]
-        [Route("{DraftApprenticeshipHashedId}/email", Name = RouteNames.ApprenticeEmail)]
+        [Route("{DraftApprenticeshipId}/reference", Name = RouteNames.ApprenticeEmail)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> AddEmail(EmailRequest request)        {
-            var model = await modelMapper.Map<AddDraftApprenticeshipEmailViewModel>(request);
+        public async Task<ActionResult> AddReference(DraftApprenticeshipSetReferenceRequest request)
+        {
+            var model = await modelMapper.Map<DraftApprenticeshipSetReferenceViewModel>(request);
             return View(model);
         }
 
         [HttpPost]
-        [Route("{DraftApprenticeshipHashedId}/email", Name = RouteNames.ApprenticeEmail)]
+        [Route("{DraftApprenticeshipId}/reference", Name = RouteNames.ApprenticeEmail)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> AddEmail(AddDraftApprenticeshipEmailViewModel model)
+        public async Task<ActionResult> AddReference(DraftApprenticeshipSetReferenceViewModel model)
+        {
+            var draft = PeekStoredEditDraftApprenticeshipState();
+            draft.Reference = model.Reference;
+          
+
+            if (!string.IsNullOrEmpty(model.Reference))
+            {
+                var updateRequest = await modelMapper.Map<PostDraftApprenticeshipSetReferenceApimRequest>(model);
+                await outerApiService.DraftApprenticeshipSetReference(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
+
+                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
+                {
+                    model.ProviderId,
+                    model.DraftApprenticeshipHashedId,
+                    model.CohortReference
+                });
+            }
+
+            return View(model);
+        }
+
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipId}/email", Name = RouteNames.ApprenticeEmail)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<ActionResult> AddEmail(DraftApprenticeshipAddEmailRequest request)        {
+            var model = await modelMapper.Map<DraftApprenticeshipAddEmailViewModel>(request);
+            return View(model);
+        }
+
+
+        [HttpPost]
+        [Route("{DraftApprenticeshipId}/email", Name = RouteNames.ApprenticeEmail)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<ActionResult> AddEmail(DraftApprenticeshipAddEmailViewModel model)
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
             draft.Email = model.Email;
-            StoreEditDraftApprenticeshipState(draft);
 
-            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
+            var HasOverlapEmail = await outerApiService.ValidateEmailOverlap(model.DraftApprenticeshipId, model.Email, model.StartDate, model.EndDate, model.CohortId);
+
+            if (!HasOverlapEmail)
             {
-                model.ProviderId,
-                model.DraftApprenticeshipHashedId,
-                model.CohortReference
-            });
+                var updateRequest = await modelMapper.Map<DraftApprenticeAddEmailApimRequest>(model);
+                await outerApiService.DraftApprenticeshipAddEmail(model.ProviderId,model.CohortId, model.DraftApprenticeshipId, updateRequest);
+
+                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
+                {
+                    model.ProviderId,
+                    model.DraftApprenticeshipHashedId,
+                    model.CohortReference
+                });
+            }
+
+            return View(model);
         }
 
         [HttpGet]
@@ -398,7 +443,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if(addEmail != null)
             {
                 StoreEditDraftApprenticeshipState(model);
-                var req = await modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
+                var req = await modelMapper.Map<DraftApprenticeshipAddEmailRequest>(model);
 
                 return RedirectToAction("AddEmail", "DraftApprenticeship", req);
             }

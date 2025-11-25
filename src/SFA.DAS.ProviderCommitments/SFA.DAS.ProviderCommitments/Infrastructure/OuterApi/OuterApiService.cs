@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
@@ -105,6 +106,11 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         return await outerApiClient.Get<ValidateUlnOverlapOnStartDateQueryResult>(new ValidateUlnOverlapOnStartDateQueryRequest(providerId, uln, startDate, endDate));
     }
 
+    public async Task<bool> ValidateEmailOverlap(long draftApprenticeshipId, string email,string startDate, string endDate, long cohortId)
+    {
+        return await outerApiClient.Get<bool>(new ValidateEmailOverlapRequest(draftApprenticeshipId, email, startDate, endDate, cohortId));
+    }
+
     public async Task ValidateChangeOfEmployerOverlap(ValidateChangeOfEmployerOverlapApimRequest data)
     {
         await outerApiClient.Post<object>(new PostValidateChangeOfEmployerOverlapRequest(data));
@@ -119,6 +125,18 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
     {
         await outerApiClient.Put<object>(new PutUpdateDraftApprenticeshipRequest(cohortId, apprenticeshipId) { Data = request });
     }
+
+    public async Task DraftApprenticeshipAddEmail(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeAddEmailApimRequest request)
+    {
+        await outerApiClient.Post<object>(new DraftApprenticeAddEmailRequest(providerId, cohortId, apprenticeshipId) { Data = request });
+    }
+
+
+    public async Task DraftApprenticeshipSetReference(long providerId, long cohortId, long apprenticeshipId, PostDraftApprenticeshipSetReferenceApimRequest request )
+    {
+        await outerApiClient.Post<object>(new PostDraftApprenticeshipSetReferenceRequest(providerId, cohortId, apprenticeshipId) { Data = request });
+    }
+
 
     public async Task<AddDraftApprenticeshipResponse> AddDraftApprenticeship(long cohortId, AddDraftApprenticeshipApimRequest request)
     {

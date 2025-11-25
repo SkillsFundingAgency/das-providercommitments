@@ -46,6 +46,9 @@
                 <partial name="_ValidationSummary" />
                 <input type="hidden" asp-for="CourseCode" value="@Model.CourseCode">
                 <input type="hidden" asp-for="DeliveryModel" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
+                <input type="hidden" asp-for="FirstName" value="@Model.FirstName">
+                <input type="hidden" asp-for="LastName" value="@Model.LastName">
+             
 
                 <h1 class="govuk-heading-l">View details for @Model.FirstName @Model.LastName</h1>
 
@@ -62,7 +65,7 @@
                     </details>
                 </div>
 
-                <form id="addEmail" novalidate method="post" asp-route="@RouteNames.DraftApprenticeshipEdit" asp-route-providerId="@Model.ProviderId">
+                <form id="addEmail" novalidate method="post" asp-route="@RouteNames.ApprenticeEmail">
                 <div class="govuk-summary-card">
                     <div class="govuk-summary-card__title-wrapper">
                         <h2 class="govuk-summary-card__title">
@@ -103,9 +106,10 @@
                                 <dd class="govuk-summary-list__actions">
                                     @if (!string.IsNullOrEmpty(@Model.Email))
                                     {
-                                        <a href="/training-provider/v9/approvals/add/add-email" class="govuk-link">
-                                            Change
-                                        </a>
+                                            <button id="add-email-link" type="submit" name="addEmail"
+                                                    value="add" class="das-button--inline-link">
+                                                Add Email
+                                            </button>
                                     }
 
                                 </dd>
@@ -121,6 +125,11 @@
                                     @Html.HiddenFor(x => x.BirthDay)
                                     @Html.HiddenFor(x => x.BirthMonth)
                                     @Html.HiddenFor(x => x.BirthYear)
+                                    @Html.HiddenFor(x => x.StartMonth)
+                                    @Html.HiddenFor(x => x.StartYear)
+                                    @Html.HiddenFor(x => x.EndDay)
+                                    @Html.HiddenFor(x => x.EndMonth)
+                                    @Html.HiddenFor(x => x.EndYear)
 
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
