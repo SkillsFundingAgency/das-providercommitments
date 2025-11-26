@@ -1,9 +1,8 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Enums
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
 @{
-    var originalStartDate = Model.ActualStartDate.HasValue ? Model.ActualStartDate.Value : Model.StartDate.Value;
+    var originalStartDate = Model.StartDate.Value;
 }
 
 <tr>
