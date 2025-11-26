@@ -80,6 +80,7 @@ public class RecognisePriorLearningSummaryRequestToSummaryViewModelMapper : IMap
             result.TotalCost = priorLearningSummary.TotalCost;
             result.FullName = $"{priorLearningSummary.FirstName} {priorLearningSummary.LastName}";
             result.HasStandardOptions = priorLearningSummary.HasStandardOptions;
+            result.LearnerDataId = priorLearningSummary.LearnerDataId;
         }
 
         return result;

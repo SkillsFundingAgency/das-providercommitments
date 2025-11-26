@@ -46,5 +46,6 @@
         public bool HasStandardOptions { get; set; }
         public double? PercentageTotalTraining => (double)DurationReducedByHours.GetValueOrDefault() / (double)TrainingTotalHours.GetValueOrDefault() * 100;
         public double? PercentageMinimumFunding => PercentageTotalTraining / 2;
+        public long? LearnerDataId { get; set; }
     }
 }

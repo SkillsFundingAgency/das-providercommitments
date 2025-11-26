@@ -503,6 +503,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult RecognisePriorLearningSummary(PriorLearningSummaryViewModel model)
         {
+            if (model.LearnerDataId.HasValue)
+            {
+                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId, model.CohortReference, model.ProviderId });
+            }
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 
