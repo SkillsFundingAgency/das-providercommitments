@@ -274,3 +274,82 @@ else
         </a> for this apprentice. We'll do this before the end of the apprenticeship.
     </p>
 </div>
+
+<div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">
+            Recognition of prior learning (RPL) details
+        </h2>
+        <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+                @if (Model.RecognisePriorLearning is null || Model.RecognisePriorLearning.Value == false)
+                {
+                    <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Add<span class="govuk-visually-hidden">add RPL</span></a>
+                }
+                else
+                {
+                    <a class="govuk-link" href="@Url.Action("RecognisePriorLearningDataRemoveDirect", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Remove<span class="govuk-visually-hidden">remove RPL</span></a>
+                }
+            </li>
+        </ul>
+    </div>
+    <div class="govuk-summary-card__content">
+        <dl class="govuk-summary-list">
+            @if (Model.RecognisePriorLearning is null || Model.RecognisePriorLearning.Value == false)
+            {
+                <div class="govuk-summary-list__row">
+                    <dd class="govuk-summary-list__value">
+                        No recognition of prior learning details added
+                    </dd>
+                </div>
+            }
+            else
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Total off-the-job training hours required for this standard
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.TrainingTotalHours hours
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Change<span class="govuk-visually-hidden"> Training Total Hours</span></a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Reduction in hours due to prior learning
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.DurationReducedByHours hours
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Change<span class="govuk-visually-hidden"> reduction in hours</span></a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Off-the-job training time reduction due to prior learning
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @if (@Model.IsDurationReducedByRpl is not null && Model.IsDurationReducedByRpl.Value == true)
+                        {
+                            <div>Yes</div>
+                        }
+                        else
+                        {
+                            <div>No</div>
+                        }
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference})">
+                            Change<span class="govuk-visually-hidden">
+                                Is Duration Reduced By Rpl
+                            </span>
+                        </a>
+                    </dd>
+                </div>
+            }
+        </dl>
+    </div>
+</div>

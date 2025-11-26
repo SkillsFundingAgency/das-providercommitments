@@ -112,5 +112,13 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("RecognisePriorLearning", "DraftApprenticeship",  new { Model.ProviderId, Model.CohortReference, Model.DraftApprenticeshipHashedId})">Back</a>
+    @if (Model.LearnerDataId.HasValue)
+    {
+        <a id="back-link" class="govuk-back-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.DraftApprenticeshipHashedId, Model.CohortReference, Model.ProviderId })">Back</a>
+    }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href="@Url.Action("RecognisePriorLearning", "DraftApprenticeship", new { Model.ProviderId, Model.CohortReference, Model.DraftApprenticeshipHashedId })">Back</a>
+    }
+
 }
