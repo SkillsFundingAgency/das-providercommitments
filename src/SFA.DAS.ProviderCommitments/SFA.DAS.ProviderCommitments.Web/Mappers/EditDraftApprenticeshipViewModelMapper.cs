@@ -66,7 +66,8 @@ public class EditDraftApprenticeshipViewModelMapper(
                 LastLearnerDataSync = apiResponse.LastLearnerDataSync,
                 TrainingTotalHours = apiResponse.TrainingTotalHours,
                 DurationReducedByHours = apiResponse.DurationReducedByHours,
-                IsDurationReducedByRpl = apiResponse.IsDurationReducedByRpl
+                IsDurationReducedByRpl = apiResponse.IsDurationReducedByRpl,
+                RplUpdated = source.Request.RplUpdated
             };
 
             if (cachedModel != null)

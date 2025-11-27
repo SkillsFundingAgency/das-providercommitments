@@ -7,6 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public long CohortId { get; set; }
         public long DraftApprenticeshipId { get; set; }
         public string LearnerDataSyncKey { get; set; }
+        public bool RplUpdated { get; set; }
     }
 
     public class BaseDraftApprenticeshipRequest
