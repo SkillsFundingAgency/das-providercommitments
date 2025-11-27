@@ -263,6 +263,14 @@ public class CohortController : Controller
 
         var response = await _mediator.Send(request);
 
+        if(model.LearnerDataId != null)
+        {
+            var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
+                EncodingType.ApprenticeshipId);
+            return RedirectToRoute(RouteNames.DraftApprenticeshipEdit,
+                new { response.CohortReference, draftApprenticeshipHashedId, request.ProviderId });
+        }
+
         if (response.HasStandardOptions)
         {
             var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
