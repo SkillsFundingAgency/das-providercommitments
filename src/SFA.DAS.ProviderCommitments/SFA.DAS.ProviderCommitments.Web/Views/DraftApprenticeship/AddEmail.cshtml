@@ -1,13 +1,21 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.DraftApprenticeshipAddEmailViewModel;
 @{
-    ViewData["Title"] = "Add Email";
+    var title = string.IsNullOrEmpty(Model.Email) ? "Add email address" : "Change email";
+
+    ViewData["Title"] = title;
+    var routeData = new
+    {
+        Model.CohortReference,
+        Model.ProviderId,
+        Model.DraftApprenticeshipHashedId
+    };
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l govuk-!-margin-bottom-1">Details for @Model.Name</span>
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-4">Add email</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@title</h1>
         <p class="govuk-body govuk-!-margin-bottom-6">
             This is the email address we will use to contact the apprentice.
         </p>
@@ -64,5 +72,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortId, Model.DraftApprenticeshipHashedId })">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.DraftApprenticeshipEdit, routeData)">Back</a>
 }

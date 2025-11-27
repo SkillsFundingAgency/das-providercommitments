@@ -106,9 +106,9 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         return await outerApiClient.Get<ValidateUlnOverlapOnStartDateQueryResult>(new ValidateUlnOverlapOnStartDateQueryRequest(providerId, uln, startDate, endDate));
     }
 
-    public async Task<bool> ValidateEmailOverlap(long draftApprenticeshipId, string email,string startDate, string endDate, long cohortId)
+    public async Task<ValidateEmailOverlapQueryResult> ValidateEmailOverlap(long draftApprenticeshipId, string email,string startDate, string endDate, long cohortId)
     {
-        return await outerApiClient.Get<bool>(new ValidateEmailOverlapRequest(draftApprenticeshipId, email, startDate, endDate, cohortId));
+        return await outerApiClient.Get<ValidateEmailOverlapQueryResult>(new ValidateEmailOverlapRequest(draftApprenticeshipId, email, startDate, endDate, cohortId));
     }
 
     public async Task ValidateChangeOfEmployerOverlap(ValidateChangeOfEmployerOverlapApimRequest data)

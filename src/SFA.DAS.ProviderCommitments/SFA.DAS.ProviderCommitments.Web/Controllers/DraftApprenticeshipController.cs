@@ -25,6 +25,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using StructureMap.Query;
+using System.Security.Cryptography.Xml;
 using ApprenticeshipEmployerType = SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType;
 using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
 using IAuthorizationService = SFA.DAS.ProviderCommitments.Interfaces.IAuthorizationService;
@@ -243,18 +244,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
 
         [HttpGet]
-        [Route("{DraftApprenticeshipId}/reference", Name = RouteNames.ApprenticeEmail)]
+        [Route("{DraftApprenticeshipId}/reference", Name = RouteNames.AddReference)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> AddReference(DraftApprenticeshipSetReferenceRequest request)
+        [ServiceFilter(typeof(UseCacheForValidationAttribute))]
+        public async Task<ActionResult> SetReference(DraftApprenticeshipSetReferenceRequest request)
         {
             var model = await modelMapper.Map<DraftApprenticeshipSetReferenceViewModel>(request);
             return View(model);
         }
 
         [HttpPost]
-        [Route("{DraftApprenticeshipId}/reference", Name = RouteNames.ApprenticeEmail)]
+        [Route("{DraftApprenticeshipId}/reference", Name = RouteNames.AddReference)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> AddReference(DraftApprenticeshipSetReferenceViewModel model)
+        public async Task<ActionResult> SetReference(DraftApprenticeshipSetReferenceViewModel model)
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
             draft.Reference = model.Reference;
@@ -287,16 +289,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
 
         [HttpPost]
-        [Route("{DraftApprenticeshipId}/email", Name = RouteNames.ApprenticeEmail)]
+        [Route("{DraftApprenticeshipId}/email")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> AddEmail(DraftApprenticeshipAddEmailViewModel model)
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
             draft.Email = model.Email;
 
-            var HasOverlapEmail = await outerApiService.ValidateEmailOverlap(model.DraftApprenticeshipId, model.Email, model.StartDate, model.EndDate, model.CohortId);
+            var result = await outerApiService.ValidateEmailOverlap(model.DraftApprenticeshipId, model.Email, model.StartDate, model.EndDate, model.CohortId);
 
-            if (!HasOverlapEmail)
+            if (result.HasEmailOverlapped)
             {
                 var updateRequest = await modelMapper.Map<DraftApprenticeAddEmailApimRequest>(model);
                 await outerApiService.DraftApprenticeshipAddEmail(model.ProviderId,model.CohortId, model.DraftApprenticeshipId, updateRequest);
@@ -308,6 +310,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     model.CohortReference
                 });
             }
+
+            ModelState.AddModelError("Duplicate Email", "This email address is already used for another apprenticeship in the same training period - use a different email address");
 
             return View(model);
         }
@@ -433,7 +437,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, EditDraftApprenticeshipViewModel model, string operation = null, string addEmail = null)
+        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, EditDraftApprenticeshipViewModel model, string operation = null, string addEmail = null, string addReference =null)
         {
             if (operation == SyncLearnerDataOperation)
             {
@@ -446,6 +450,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 var req = await modelMapper.Map<DraftApprenticeshipAddEmailRequest>(model);
 
                 return RedirectToAction("AddEmail", "DraftApprenticeship", req);
+            }
+
+            if(addReference != null)
+            {
+                StoreEditDraftApprenticeshipState(model);
+                var req = await modelMapper.Map<DraftApprenticeshipAddEmailRequest>(model);
+
+                return RedirectToAction("AddReference", "DraftApprenticeship", req);
             }
 
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit")

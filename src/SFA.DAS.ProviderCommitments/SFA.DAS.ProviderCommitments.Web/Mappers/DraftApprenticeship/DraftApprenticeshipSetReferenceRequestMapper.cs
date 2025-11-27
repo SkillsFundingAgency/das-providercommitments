@@ -7,12 +7,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
 public class DraftApprenticeshipSetReferenceRequestMapper : IMapper<EditDraftApprenticeshipViewModel, DraftApprenticeshipSetReferenceRequest>
 {
     public Task<DraftApprenticeshipSetReferenceRequest> Map(EditDraftApprenticeshipViewModel source)
-    {
-        var endDay = source.EndDay < 10 ? $"0{source.EndDay}" : source.EndDay.ToString();
+    {     
 
         return Task.FromResult(new DraftApprenticeshipSetReferenceRequest
         {
-            Reference = source.Email,
+            Reference = source.Reference,
             CohortId = source.CohortId.GetValueOrDefault(),
             DraftApprenticeshipId = source.DraftApprenticeshipId.Value,
             Name = $"{source.FirstName} {source.LastName}",

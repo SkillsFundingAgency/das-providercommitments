@@ -5,4 +5,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
 public class DraftApprenticeAddEmailApimRequest : SaveDataRequest
 {
     public string Email { get; set; }
+
+    public long CohortId { get; set; }
 }
