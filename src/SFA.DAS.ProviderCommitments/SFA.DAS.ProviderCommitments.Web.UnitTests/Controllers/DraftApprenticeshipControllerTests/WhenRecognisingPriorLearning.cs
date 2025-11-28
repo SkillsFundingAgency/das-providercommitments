@@ -129,6 +129,19 @@ public class WhenRecognisingPriorLearning
                 It.IsAny<CancellationToken>()));
     }
 
+    [Test]
+    public async Task When_removing_RPL_then_it_is_cleared()
+    {
+        var fixture = new WhenRecognisingPriorLearningFixture();
+        var result = await fixture.Sut.RecognisePriorLearningDataRemove(fixture.ViewModel);
+        fixture.ApiClient.Verify(x =>
+            x.RecognisePriorLearning(
+                fixture.ViewModel.CohortId,
+                fixture.ViewModel.DraftApprenticeshipId,
+                It.Is<CommitmentsV2.Api.Types.Requests.RecognisePriorLearningRequest>(r =>
+                    r.RecognisePriorLearning == false),
+                It.IsAny<CancellationToken>()));
+    }
 
     [TestCase(100, 1, null, null)]
     [TestCase(2, null, null, null)]
@@ -230,29 +243,6 @@ public class WhenRecognisingPriorLearning
             .EnterRplData(model);
 
         await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
-
-        fixture.OuterApiService.Verify(x =>
-            x.UpdatePriorLearningData(
-                fixture.DataViewModel.ProviderId,
-                fixture.DataViewModel.CohortId,
-                fixture.DataViewModel.DraftApprenticeshipId,
-                It.Is<CreatePriorLearningDataRequest>(r =>
-                    r.TrainingTotalHours == model.TrainingTotalHours &&
-                    r.DurationReducedByHours == model.DurationReducedByHours &&
-                    r.IsDurationReducedByRpl == model.IsDurationReducedByRpl &&
-                    r.DurationReducedBy == model.DurationReducedBy &&
-                    r.CostBeforeRpl == model.CostBeforeRpl &&
-                    r.PriceReducedBy == model.PriceReduced
-                )));
-    }
-
-    [Test, MoqAutoData]
-    public async Task When_removing_RPL_data_then_it_is_cleared(PriorLearningDataViewModel model)
-    {
-        var fixture = new WhenRecognisingPriorLearningFixture()
-            .EnterRplData(model);
-
-        await fixture.Sut.RecognisePriorLearningDataRemove(fixture.ViewModel);
 
         fixture.OuterApiService.Verify(x =>
             x.UpdatePriorLearningData(
