@@ -1,3 +1,4 @@
+using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -394,6 +395,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     model.ProviderId,
                     model.DraftApprenticeshipHashedId,
                     model.CohortReference);
+            }
+
+            if (model.LearnerDataId.HasValue)
+            {
+                return RedirectToAction("Details", "Cohort", new
+                {
+                    model.ProviderId,
+                    model.CohortReference,
+                });
             }
 
             return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
