@@ -1,3 +1,4 @@
+using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -396,6 +397,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     model.CohortReference);
             }
 
+            if (model.LearnerDataId.HasValue)
+            {
+                return RedirectToAction("Details", "Cohort", new
+                {
+                    model.ProviderId,
+                    model.CohortReference,
+                });
+            }
+
             return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
             {
                 model.ProviderId,
@@ -465,7 +475,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction(nameof(RecognisePriorLearningSummary), "DraftApprenticeship",
                     new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
             }
+            else if (model.LearnerDataId.HasValue)
+            {
+                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId, model.CohortReference, model.ProviderId, RplUpdated = true });
+            }
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
+        }
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-data-remove", Name = RouteNames.RecognisePriorLearningDataRemove)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> RecognisePriorLearningDataRemove(RecognisePriorLearningViewModel request)
+        {
+            request.IsTherePriorLearning = false;
+            _ = await modelMapper.Map<RecognisePriorLearningResult>(request);
+
+            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { request.ProviderId, request.CohortReference, request.DraftApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -488,6 +513,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult RecognisePriorLearningSummary(PriorLearningSummaryViewModel model)
         {
+            if (model.LearnerDataId.HasValue)
+            {
+                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId, model.CohortReference, model.ProviderId , RplUpdated = true});
+            }
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 

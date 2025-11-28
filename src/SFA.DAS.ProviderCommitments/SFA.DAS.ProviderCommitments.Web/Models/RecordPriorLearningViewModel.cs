@@ -19,6 +19,7 @@
         public bool? IsDurationReducedByRpl { get; set; }
         public int? DurationReducedBy { get; set; } // by Weeks
         public int? CostBeforeRpl { get; set; }
+        public long? LearnerDataId { get; set; }
     }
 
     public class RecognisePriorLearningResult : DraftApprenticeshipRequest
@@ -45,5 +46,6 @@
         public bool HasStandardOptions { get; set; }
         public double? PercentageTotalTraining => (double)DurationReducedByHours.GetValueOrDefault() / (double)TrainingTotalHours.GetValueOrDefault() * 100;
         public double? PercentageMinimumFunding => PercentageTotalTraining / 2;
+        public long? LearnerDataId { get; set; }
     }
 }

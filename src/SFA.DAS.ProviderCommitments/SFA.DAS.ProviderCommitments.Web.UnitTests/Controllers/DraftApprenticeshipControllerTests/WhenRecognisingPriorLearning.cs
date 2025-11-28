@@ -129,6 +129,19 @@ public class WhenRecognisingPriorLearning
                 It.IsAny<CancellationToken>()));
     }
 
+    [Test]
+    public async Task When_removing_RPL_then_it_is_cleared()
+    {
+        var fixture = new WhenRecognisingPriorLearningFixture();
+        var result = await fixture.Sut.RecognisePriorLearningDataRemove(fixture.ViewModel);
+        fixture.ApiClient.Verify(x =>
+            x.RecognisePriorLearning(
+                fixture.ViewModel.CohortId,
+                fixture.ViewModel.DraftApprenticeshipId,
+                It.Is<CommitmentsV2.Api.Types.Requests.RecognisePriorLearningRequest>(r =>
+                    r.RecognisePriorLearning == false),
+                It.IsAny<CancellationToken>()));
+    }
 
     [TestCase(100, 1, null, null)]
     [TestCase(2, null, null, null)]
@@ -292,7 +305,8 @@ public class WhenRecognisingPriorLearning
             .WithoutStandardOptions()
             .WithRplSummary(false, false)
             .WithRplCreatePriorLearningDataResponse(true, false);
-
+        
+        fixture.DataViewModel.LearnerDataId = null;
         var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
         result.VerifyRedirectsToCohortDetailsPage(fixture.DataViewModel.ProviderId, fixture.DataViewModel.CohortReference);
@@ -304,10 +318,24 @@ public class WhenRecognisingPriorLearning
         var fixture = new WhenRecognisingPriorLearningFixture()
             .WithStandardOptions()
             .WithRplCreatePriorLearningDataResponse(false, false);
-
+        
+        fixture.DataViewModel.LearnerDataId = null;
         var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
         result.VerifyRedirectsToCohortDetailsPage(fixture.DataViewModel.ProviderId, fixture.DataViewModel.CohortReference);
+    }
+
+    [TestCase, MoqAutoData]
+    public async Task After_submitting_prior_learning_data_with_no_rpl_error_then_dont_show_RPL_summary_page_navigate_to_Edit_Draft_Apprenticeship_ILR_path()
+    {
+        var fixture = new WhenRecognisingPriorLearningFixture()
+            .WithStandardOptions()
+            .WithRplCreatePriorLearningDataResponse(false, false);
+        fixture.DataViewModel.RplUpdated = true;
+
+        var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
+
+        result.VerifyRedirectsToEditDraftApprenticeship(fixture.DataViewModel.DraftApprenticeshipHashedId, fixture.DataViewModel.CohortReference, fixture.DataViewModel.ProviderId, fixture.DataViewModel.RplUpdated);
     }
 
     [TestCase, MoqAutoData]
