@@ -292,7 +292,8 @@ public class WhenRecognisingPriorLearning
             .WithoutStandardOptions()
             .WithRplSummary(false, false)
             .WithRplCreatePriorLearningDataResponse(true, false);
-
+        
+        fixture.DataViewModel.LearnerDataId = null;
         var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
         result.VerifyRedirectsToCohortDetailsPage(fixture.DataViewModel.ProviderId, fixture.DataViewModel.CohortReference);
@@ -304,7 +305,8 @@ public class WhenRecognisingPriorLearning
         var fixture = new WhenRecognisingPriorLearningFixture()
             .WithStandardOptions()
             .WithRplCreatePriorLearningDataResponse(false, false);
-
+        
+        fixture.DataViewModel.LearnerDataId = null;
         var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
         result.VerifyRedirectsToCohortDetailsPage(fixture.DataViewModel.ProviderId, fixture.DataViewModel.CohortReference);

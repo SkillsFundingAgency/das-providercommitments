@@ -42,9 +42,17 @@ public class WhenPostingRecognisePriorLearningSummaryRequest
     public void TearDown() => _sut.Dispose();
     
     [Test]
-    public void When_posting_from_Recognise_Prior_Learning_Summary()
+    public void When_posting_from_Recognise_Prior_Learning_Summary_Manual()
     {
+        _viewModel.LearnerDataId = null;
         var action = _sut.RecognisePriorLearningSummary(_viewModel);
         action.VerifyReturnsRedirectToActionResult().WithActionName("Details");
+    }
+
+    [Test]
+    public void When_posting_from_Recognise_Prior_Learning_Summary_ILR()
+    {        
+        var action = _sut.RecognisePriorLearningSummary(_viewModel);
+        action.VerifyReturnsRedirectToActionResult().WithActionName("EditDraftApprenticeship");
     }
 }
