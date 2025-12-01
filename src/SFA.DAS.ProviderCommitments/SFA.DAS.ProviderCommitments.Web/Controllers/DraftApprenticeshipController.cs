@@ -490,7 +490,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             request.IsTherePriorLearning = false;
             _ = await modelMapper.Map<RecognisePriorLearningResult>(request);
 
-            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { request.ProviderId, request.CohortReference, request.DraftApprenticeshipHashedId });
+            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { request.ProviderId, request.CohortReference, request.DraftApprenticeshipHashedId , request.RplUpdated});
         }
 
         [HttpGet]

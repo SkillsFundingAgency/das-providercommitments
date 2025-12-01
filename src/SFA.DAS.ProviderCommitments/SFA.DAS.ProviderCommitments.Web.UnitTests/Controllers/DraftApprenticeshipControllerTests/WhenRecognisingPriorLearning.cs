@@ -143,6 +143,17 @@ public class WhenRecognisingPriorLearning
                 It.IsAny<CancellationToken>()));
     }
 
+    [TestCase, MoqAutoData]
+    public async Task After_removing_RPL_redirect_to_EditDraftApprenticeship_page()
+    {
+        var fixture = new WhenRecognisingPriorLearningFixture();
+        fixture.ViewModel.RplUpdated = false;
+
+        var result = await fixture.Sut.RecognisePriorLearningDataRemove(fixture.ViewModel);
+
+        result.VerifyRedirectsToEditDraftApprenticeship(fixture.ViewModel.DraftApprenticeshipHashedId, fixture.ViewModel.CohortReference, fixture.ViewModel.ProviderId, fixture.ViewModel.RplUpdated);
+    }
+
     [TestCase(100, 1, null, null)]
     [TestCase(2, null, null, null)]
     [TestCase(null, 3, null, null)]
