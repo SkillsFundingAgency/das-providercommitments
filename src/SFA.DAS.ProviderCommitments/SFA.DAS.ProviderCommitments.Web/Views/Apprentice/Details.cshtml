@@ -272,16 +272,8 @@
                 @if (!Model.HasPendingStartDateChange)
                 {
                     <tr class="govuk-table__row">
-                        @if (Model.ActualStartDate.HasValue)
-                        {
-                            <th scope="row" class="govuk-table__header">Actual training start date</th>
-                            <td id="apprentice-start-date" class="govuk-table__cell">@Model.ActualStartDate.Value.ToGdsFormat()</td>
-                        }
-                        else
-                        {
-                            <th scope="row" class="govuk-table__header">Planned training start date</th>
-                            <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
-                        }
+                        <th scope="row" class="govuk-table__header">Planned training start date</th>
+                        <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
                         <td class="govuk-table__cell">
                         </td>
                     </tr>
@@ -290,8 +282,6 @@
                 {
                     <partial name="DetailsPartials/_PendingChangeOfStartDateDetails" />
                 }
-
-
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Planned training end date</th>

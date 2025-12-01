@@ -156,6 +156,15 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
     }
 
     [Test]
+    public async Task AndHasCacheKeyThenActualStartDateIsMappedFromCache()
+    {
+        var result = await _mapper.Map(_source);
+        result.ActualStartDate.Day.Should().Be(_cacheResponse.ActualStartDate.Value.Day);
+        result.ActualStartDate.Month.Should().Be(_cacheResponse.ActualStartDate.Value.Month);
+        result.ActualStartDate.Year.Should().Be(_cacheResponse.ActualStartDate.Value.Year);
+    }
+
+    [Test]
     public async Task AndHasCacheKeyThenEndDateIsMappedFromCache()
     {
         var result = await _mapper.Map(_source);
