@@ -487,10 +487,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningDataRemove(RecognisePriorLearningViewModel request)
         {
-            request.IsTherePriorLearning = false;
-            _ = await modelMapper.Map<RecognisePriorLearningResult>(request);
+            await commitmentsApiClient.RecognisePriorLearning(
+               request.CohortId,
+               request.DraftApprenticeshipId,
+               new CommitmentsV2.Api.Types.Requests.RecognisePriorLearningRequest
+               {
+                   RecognisePriorLearning = false
+               });
 
-            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { request.ProviderId, request.CohortReference, request.DraftApprenticeshipHashedId , request.RplUpdated});
+            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { request.ProviderId, request.CohortReference, request.DraftApprenticeshipHashedId, request.RplUpdated });
         }
 
         [HttpGet]
