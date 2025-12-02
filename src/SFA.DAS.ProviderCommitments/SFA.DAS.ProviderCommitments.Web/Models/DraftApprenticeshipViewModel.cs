@@ -2,6 +2,8 @@ using System.ComponentModel.DataAnnotations;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
@@ -147,8 +149,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         [Display(Name = "Reference (optional)")]
         public string Reference { get; set; }
-        public string AgreementId { get; set; }
-
         public TrainingProgramme[] Courses { get; set; }
         public bool IsContinuation { get; set; }
         public bool HasStandardOptions { get; set; }
@@ -167,5 +167,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public long? LearnerDataId { get; set; }
         public bool HasLearnerDataChanges { get; set; }
         public DateTime? LastLearnerDataSync { get; set; }
+        public string Name { get; set; }
+        public ViewEditBanners Banner { get; set; }
     }
 }

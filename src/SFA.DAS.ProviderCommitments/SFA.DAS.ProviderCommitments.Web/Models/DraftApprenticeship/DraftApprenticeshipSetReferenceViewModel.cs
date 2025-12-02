@@ -14,5 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship
         public long DraftApprenticeshipId { get; set; }
 
         public Party Party { get; set; }
+
+        public bool IsEdit { get; set; }
     }
 }

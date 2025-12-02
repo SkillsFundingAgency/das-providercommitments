@@ -4,6 +4,8 @@
 @using SFA.DAS.ProviderCommitments.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+@using SFA.DAS.ProviderCommitments.Web.Models.Shared
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @inject ICommitmentsApiClient CommitmentsApiClient
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
@@ -39,6 +41,21 @@
 
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper" role="main">
+        <div class="govuk-grid-column-two-thirds">
+            @if (@Model.banner != ViewEditBanners.None)
+            {
+                var bannerModel = Model.banner switch
+                {
+                    ViewEditBanners.EmailAdded => new SuccessBannerModel("email-add-banner", "Email address added", ""),
+                    ViewEditBanners.EmailUpdated => new SuccessBannerModel("email-update-banner", "Email address updated", ""),
+                    ViewEditBanners.RefernceAdded => new SuccessBannerModel("reference-add-banner", "Reference added", ""),
+                    ViewEditBanners.RefernceUpdated => new SuccessBannerModel("reference-update-banner", "Reference added", "")
+                };
+
+                <partial name="_SuccessBanner" model="bannerModel"></partial>
+            }
+        
+        </div>
         <div class="govuk-grid-row">
             <div class="">
                 <partial name="_ValidationSummary" />
@@ -46,7 +63,9 @@
                 <input type="hidden" asp-for="DeliveryModel" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
                 <input type="hidden" asp-for="FirstName" value="@Model.FirstName">
                 <input type="hidden" asp-for="LastName" value="@Model.LastName">
-             
+
+               
+
 
                 <h1 class="govuk-heading-l">View details for @Model.FirstName @Model.LastName</h1>
 
@@ -178,11 +197,12 @@
                                 </dd>
                             </div>
                             <div class="govuk-summary-list__row">
+                                    @Html.HiddenFor(x => x.AccountLegalEntityId)
                                 <dt class="govuk-summary-list__key">
                                     Agreement ID
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    @Model.AgreementId
+                                    @Model.AccountLegalEntityId
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
                                     <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> agreement ID</span></a>
@@ -269,20 +289,31 @@
                                     <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> email</span></a>
                                 </dd>
                             </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Standard option
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    <a href="/training-provider/v9/approvals/select-standard-option" class="govuk-link">
-                                        Add standard
-                                        option
-                                    </a>
-                                </dd>
+                           @if(Model.HasStandardOptions)
+                            {
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Standard option
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            @if (string.IsNullOrEmpty(Model.TrainingCourseOption))
+                                            {
+                                                 <button id="add-SO-link" type="submit" name="addStandardOption"
+                                                    value="add" class="das-button--inline-link">
+                                                    Add standard
+                                                    option
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                @Model.TrainingCourseOption
+                                            }
+                                        </dd>
                                 <dd class="govuk-summary-list__actions">
                                     <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> standard option</span></a>
                                 </dd>
                             </div>
+                            }
                             
                             <div class="govuk-summary-list__row">
 
@@ -294,7 +325,7 @@
                                     <dd class="govuk-summary-list__value">
                                         @if (string.IsNullOrEmpty(@Model.Reference))
                                         {
-                                            <button id="add-email-link" type="submit" name="addReference"
+                                            <button id="add-reference-link" type="submit" name="addReference"
                                                     value="add" class="das-button--inline-link">
                                                 Add Reference
                                             </button>
@@ -306,9 +337,9 @@
                                         }
                                     </dd>
                                     <dd class="govuk-summary-list__actions">
-                                        @if (!string.IsNullOrEmpty(@Model.Email))
+                                        @if (!string.IsNullOrEmpty(@Model.Reference))
                                         {
-                                            <button id="add-email-link" type="submit" name="addReference"
+                                            <button id="change-reference-link" type="submit" name="addReference"
                                                     value="Change" class="das-button--inline-link">
                                                 Change
                                             </button>
@@ -319,6 +350,59 @@
                         </dl>
                     </div>
                 </div>
+
+                    <div class="govuk-summary-card">
+                        <div class="govuk-summary-card__title-wrapper">
+                            <h2 class="govuk-summary-card__title">
+                                Price
+                            </h2>
+                        </div>
+                        <div class="govuk-summary-card__content">
+                            <dl class="govuk-summary-list">
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        Training price including any RPL (TNP1)
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                       @Model.TrainingPrice
+                                    </dd>
+                                    <dd class="govuk-summary-list__actions">
+                                        <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> Training price</span></a>
+                                    </dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                    @Html.HiddenFor(x => x.EndPointAssessmentPrice)
+                                    @Html.HiddenFor(x => x.TrainingPrice)
+                                    <dt class="govuk-summary-list__key">
+                                        End-point assessment (TNP2)
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.EndPointAssessmentPrice
+                                    </dd>
+                                    <dd class="govuk-summary-list__actions">
+                                        <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> End-point assessment price</span></a>
+                                    </dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        Total agreed apprenticeship price
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.Cost
+                                    </dd>
+                                    <dd class="govuk-summary-list__actions">
+                                        <a class="govuk-link" href="#">
+                                            <span class="govuk-visually-hidden">
+                                                Total agreed apprenticeship
+                                                price
+                                            </span>
+                                        </a>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+
 
                 <div class="govuk-summary-card">
                     <div class="govuk-summary-card__title-wrapper">

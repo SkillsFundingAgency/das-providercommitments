@@ -82,7 +82,7 @@ public class Startup
 
         services.AddEncodingServices(_configuration);
         services.AddApplicationServices();
-
+        
         services.Configure<CookieTempDataProviderOptions>(options =>
         {
             options.Cookie.HttpOnly = true;

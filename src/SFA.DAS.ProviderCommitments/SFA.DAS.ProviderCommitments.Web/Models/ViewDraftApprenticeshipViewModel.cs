@@ -32,5 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? DurationReducedByHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
         public int? TrainingTotalHours { get; set; }
+
+
     }
 }

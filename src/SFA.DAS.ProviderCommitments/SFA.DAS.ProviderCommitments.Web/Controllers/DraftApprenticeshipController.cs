@@ -1,5 +1,6 @@
 using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -243,18 +244,31 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
 
+        //[HttpGet]
+        //[Route("{DraftApprenticeshipId}/reference", Name = RouteNames.AddReference)]
+        //[Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        //[ServiceFilter(typeof(UseCacheForValidationAttribute))]
+        //public async Task<ActionResult> SetReference(DraftApprenticeshipSetReferenceRequest request)
+        //{
+        //    var model = await modelMapper.Map<DraftApprenticeshipSetReferenceViewModel>(request);
+        //    return View(model);
+        //}
+
         [HttpGet]
-        [Route("{DraftApprenticeshipId}/reference", Name = RouteNames.AddReference)]
+        [Route("{DraftApprenticeshipHashedId}/reference")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<ActionResult> SetReference(DraftApprenticeshipSetReferenceRequest request)
+        public async Task<IActionResult> SetReference(DraftApprenticeshipSetReferenceRequest request)
         {
+            var draft = PeekStoredEditDraftApprenticeshipState();
             var model = await modelMapper.Map<DraftApprenticeshipSetReferenceViewModel>(request);
-            return View(model);
+            model.Reference = model.Reference??draft.Reference;
+            model.Name = model.Name ??$"{draft.FirstName} {draft.LastName}";
+            return View("SetReference", model);
         }
 
+
         [HttpPost]
-        [Route("{DraftApprenticeshipId}/reference", Name = RouteNames.AddReference)]
+        [Route("{DraftApprenticeshipHashedId}/reference", Name = RouteNames.setReference)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> SetReference(DraftApprenticeshipSetReferenceViewModel model)
         {
@@ -263,7 +277,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
           
 
             if (!string.IsNullOrEmpty(model.Reference))
-            {
+            {                
+                draft.Banner = model.IsEdit ? ViewEditBanners.RefernceUpdated : ViewEditBanners.RefernceAdded;
+                StoreEditDraftApprenticeshipState(draft);
                 var updateRequest = await modelMapper.Map<PostDraftApprenticeshipSetReferenceApimRequest>(model);
                 await outerApiService.DraftApprenticeshipSetReference(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
 
@@ -280,26 +296,33 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
 
         [HttpGet]
-        [Route("{DraftApprenticeshipId}/email", Name = RouteNames.ApprenticeEmail)]
+        [Route("{DraftApprenticeshipHashedId}/email", Name = RouteNames.ApprenticeEmail)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> AddEmail(DraftApprenticeshipAddEmailRequest request)        {
+            var draft = PeekStoredEditDraftApprenticeshipState();
             var model = await modelMapper.Map<DraftApprenticeshipAddEmailViewModel>(request);
+            model.Email = model.Email ?? draft.Email;
+            model.Name = model.Name ?? $"{draft.FirstName} {draft.LastName}";
+            model.StartDate = draft.StartDate.Date.ToString();
+            model.EndDate = draft.EndDate.Date.ToString();
             return View(model);
         }
 
 
         [HttpPost]
-        [Route("{DraftApprenticeshipId}/email")]
+        [Route("{DraftApprenticeshipHashedId}/email")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> AddEmail(DraftApprenticeshipAddEmailViewModel model)
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
             draft.Email = model.Email;
-
+            
             var result = await outerApiService.ValidateEmailOverlap(model.DraftApprenticeshipId, model.Email, model.StartDate, model.EndDate, model.CohortId);
 
             if (result.HasEmailOverlapped)
-            {
+            {                
+                draft.Banner = model.IsEdit ? ViewEditBanners.EmailUpdated : ViewEditBanners.EmailAdded;
+                StoreEditDraftApprenticeshipState(draft);
                 var updateRequest = await modelMapper.Map<DraftApprenticeAddEmailApimRequest>(model);
                 await outerApiService.DraftApprenticeshipAddEmail(model.ProviderId,model.CohortId, model.DraftApprenticeshipId, updateRequest);
 
@@ -403,14 +426,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit", Name = RouteNames.DraftApprenticeshipEdit)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> EditDraftApprenticeship(DraftApprenticeshipRequest request, string learnerDataSyncKey = null)
+        public async Task<IActionResult> EditDraftApprenticeship(DraftApprenticeshipRequest request, string learnerDataSyncKey = null, ViewEditBanners banner=0)
         {
             try
             {
                 var model = await modelMapper.Map<IDraftApprenticeshipViewModel>(request);
+                
 
                 if (model is EditDraftApprenticeshipViewModel editModel)
-                {
+                {                    
                     if (!string.IsNullOrEmpty(learnerDataSyncKey) && modelMapper is EditDraftApprenticeshipViewModelMapper editMapper)
                     {
                         await editMapper.ApplyLearnerDataSyncUpdates(editModel, learnerDataSyncKey);
@@ -437,7 +461,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, EditDraftApprenticeshipViewModel model, string operation = null, string addEmail = null, string addReference =null)
+        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, EditDraftApprenticeshipViewModel model, string operation = null, string addEmail = null, string addReference =null, string
+            addStandardOption = null)
         {
             if (operation == SyncLearnerDataOperation)
             {
@@ -449,15 +474,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 StoreEditDraftApprenticeshipState(model);
                 var req = await modelMapper.Map<DraftApprenticeshipAddEmailRequest>(model);
 
-                return RedirectToAction("AddEmail", "DraftApprenticeship", req);
+                return RedirectToAction("AddEmail", "DraftApprenticeship", new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
             }
 
             if(addReference != null)
             {
                 StoreEditDraftApprenticeshipState(model);
-                var req = await modelMapper.Map<DraftApprenticeshipAddEmailRequest>(model);
+                var req = await modelMapper.Map<DraftApprenticeshipSetReferenceRequest>(model);
 
-                return RedirectToAction("AddReference", "DraftApprenticeship", req);
+                return RedirectToAction("SetReference", new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference});
+            }
+
+            if(addStandardOption!=null)
+            {
+                return RedirectToAction("SelectOptions", new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
             }
 
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit")

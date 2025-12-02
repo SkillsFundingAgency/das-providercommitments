@@ -17,5 +17,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship
         public long DraftApprenticeshipId { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
+        public bool IsEdit { get; set; }
     }
 }

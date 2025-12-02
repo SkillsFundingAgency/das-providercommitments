@@ -2,6 +2,7 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.DraftApprenticeshipAddEmailViewModel;
 @{
     var title = string.IsNullOrEmpty(Model.Email) ? "Add email address" : "Change email";
+    var isEdit = string.IsNullOrEmpty(Model.Email) ? "false" : "true";
 
     ViewData["Title"] = title;
     var routeData = new
@@ -10,22 +11,28 @@
         Model.ProviderId,
         Model.DraftApprenticeshipHashedId
     };
+
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
+        <partial name="_ValidationSummary" />
         <span class="govuk-caption-l govuk-!-margin-bottom-1">Details for @Model.Name</span>
         <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@title</h1>
         <p class="govuk-body govuk-!-margin-bottom-6">
             This is the email address we will use to contact the apprentice.
         </p>
+        </<div></div>
 
 
         <form method="post" asp-route="@RouteNames.ApprenticeEmail" asp-route-providerId="@Model.ProviderId">
             <input type="hidden" name="CohortId" value="@Model.CohortId" />
             <input type="hidden" name="DraftApprenticeshipId" value="@Model.DraftApprenticeshipId" />
+            <input type="hidden" name="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
             <input type="hidden" name="StartDate" value="@Model.StartDate" />
             <input type="hidden" name="EndDate" value="@Model.EndDate" />
+            <input type="hidden" name="IsEdit" value="@isEdit" />
             <div class="govuk-form-group">
                 <label class="govuk-label" for="first-name">
                     Email address
