@@ -482,7 +482,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-data-remove", Name = RouteNames.RecognisePriorLearningDataRemove)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningDataRemove(RecognisePriorLearningViewModel request)
