@@ -1,4 +1,5 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -15,6 +16,7 @@ public class WhenPostingRecognisePriorLearningSummaryRequest
     private Mock<IModelMapper> _modelMapperMock;
     private Mock<IAuthorizationService> _providerFeatureToggle;
     private PriorLearningSummaryViewModel _viewModel;
+    private Mock<ITempDataDictionary> _mockTempData;
 
     [SetUp]
     public void Arrange()
@@ -25,6 +27,7 @@ public class WhenPostingRecognisePriorLearningSummaryRequest
 
         _providerFeatureToggle = new Mock<IAuthorizationService>();
         _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
+        _mockTempData = new Mock<ITempDataDictionary>();
 
         _sut = new DraftApprenticeshipController(
             Mock.Of<IMediator>(),
@@ -36,6 +39,7 @@ public class WhenPostingRecognisePriorLearningSummaryRequest
             Mock.Of<IAuthenticationService>(),
             Mock.Of<ICacheStorageService>()
         );
+        _sut.TempData = _mockTempData.Object;
     }
 
     [TearDown]

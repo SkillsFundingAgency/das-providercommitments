@@ -1,4 +1,3 @@
-using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -47,7 +46,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private const string LearnerDataSyncSuccessKey = "LearnerDataSyncSuccess";
         private const string LearnerDataSyncErrorKey = "LearnerDataSyncError";
         private const string SyncLearnerDataOperation = "SyncLearnerData";
-        
+        private const string RplUpdatedKey = "RplUpdated";
+
         private const string LearnerDataSyncSuccessMessage = "Learner data has been successfully updated.";
         private const string LearnerDataSyncErrorMessage = "Failed to sync learner data.";
         private const string LearnerDataSyncExceptionMessage = "An error occurred while syncing learner data.";
@@ -477,7 +477,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             else if (model.LearnerDataId.HasValue)
             {
-                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId, model.CohortReference, model.ProviderId, RplUpdated = true });
+                TempData[RplUpdatedKey] = true;
+                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId, model.CohortReference, model.ProviderId});
             }
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
@@ -495,7 +496,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                    RecognisePriorLearning = false
                });
 
-            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { request.ProviderId, request.CohortReference, request.DraftApprenticeshipHashedId, request.RplUpdated });
+            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { request.ProviderId, request.CohortReference, request.DraftApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -520,7 +521,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (model.LearnerDataId.HasValue)
             {
-                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId, model.CohortReference, model.ProviderId , RplUpdated = true});
+                TempData[RplUpdatedKey] = true;
+                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId, model.CohortReference, model.ProviderId });
             }
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }

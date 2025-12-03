@@ -1,17 +1,17 @@
 ﻿using System;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.ProviderCommitments.Web.Authentication;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests;
 
@@ -147,11 +147,10 @@ public class WhenRecognisingPriorLearning
     public async Task After_removing_RPL_redirect_to_EditDraftApprenticeship_page()
     {
         var fixture = new WhenRecognisingPriorLearningFixture();
-        fixture.ViewModel.RplUpdated = false;
 
         var result = await fixture.Sut.RecognisePriorLearningDataRemove(fixture.ViewModel);
 
-        result.VerifyRedirectsToEditDraftApprenticeship(fixture.ViewModel.DraftApprenticeshipHashedId, fixture.ViewModel.CohortReference, fixture.ViewModel.ProviderId, fixture.ViewModel.RplUpdated);
+        result.VerifyRedirectsToEditDraftApprenticeship(fixture.ViewModel.DraftApprenticeshipHashedId, fixture.ViewModel.CohortReference, fixture.ViewModel.ProviderId);
     }
 
     [TestCase(100, 1, null, null)]
@@ -342,11 +341,10 @@ public class WhenRecognisingPriorLearning
         var fixture = new WhenRecognisingPriorLearningFixture()
             .WithStandardOptions()
             .WithRplCreatePriorLearningDataResponse(false, false);
-        fixture.DataViewModel.RplUpdated = true;
 
         var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
-        result.VerifyRedirectsToEditDraftApprenticeship(fixture.DataViewModel.DraftApprenticeshipHashedId, fixture.DataViewModel.CohortReference, fixture.DataViewModel.ProviderId, fixture.DataViewModel.RplUpdated);
+        result.VerifyRedirectsToEditDraftApprenticeship(fixture.DataViewModel.DraftApprenticeshipHashedId, fixture.DataViewModel.CohortReference, fixture.DataViewModel.ProviderId);
     }
 
     [TestCase, MoqAutoData]
@@ -441,6 +439,7 @@ public class WhenRecognisingPriorLearningFixture
 
     public Mock<ICommitmentsApiClient> ApiClient { get; }
     public Mock<IAuthorizationService> AuthorizationService { get; }
+    public Mock<ITempDataDictionary> MockTempData;
 
     public WhenRecognisingPriorLearningFixture()
     {
@@ -472,6 +471,7 @@ public class WhenRecognisingPriorLearningFixture
             .ReturnsAsync(PriorLearningDataQueryResult);
 
         AuthorizationService = new Mock<IAuthorizationService>();
+        MockTempData = new Mock<ITempDataDictionary>();
 
         Sut = new DraftApprenticeshipController(
             Mock.Of<IMediator>(),
@@ -487,6 +487,8 @@ public class WhenRecognisingPriorLearningFixture
             OuterApiService.Object,
             Mock.Of<IAuthenticationService>(),
             Mock.Of<ICacheStorageService>());
+        
+        Sut.TempData = MockTempData.Object;
     }
 
     internal WhenRecognisingPriorLearningFixture WithoutPreviousSelection()

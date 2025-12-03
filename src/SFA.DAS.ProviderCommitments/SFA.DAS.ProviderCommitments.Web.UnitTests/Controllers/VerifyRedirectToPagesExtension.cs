@@ -14,8 +14,7 @@
             return redirectAction;
         }
 
-        public static RedirectToActionResult VerifyRedirectsToEditDraftApprenticeship(this IActionResult result, string draftApprenticeshipHashedId,
-            string cohortReference, long providerId, bool rplUpdated)
+        public static RedirectToActionResult VerifyRedirectsToEditDraftApprenticeship(this IActionResult result, string draftApprenticeshipHashedId, string cohortReference, long providerId)
         {
             var redirectAction = result
                 .VerifyReturnsRedirectToActionResult()
@@ -24,7 +23,6 @@
             redirectAction.RouteValues["DraftApprenticeshipHashedId"].Should().Be(draftApprenticeshipHashedId);
             redirectAction.RouteValues["CohortReference"].Should().Be(cohortReference);
             redirectAction.RouteValues["ProviderId"].Should().Be(providerId);
-            redirectAction.RouteValues["RplUpdated"].Should().Be(rplUpdated);
 
             return redirectAction;
         }
