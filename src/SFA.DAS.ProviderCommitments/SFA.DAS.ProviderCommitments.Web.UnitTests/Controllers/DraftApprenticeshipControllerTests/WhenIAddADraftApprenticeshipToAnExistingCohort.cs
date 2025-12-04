@@ -234,7 +234,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _fixture.VerifyMappingToApiTypeIsCalled()
                 .VerifyApiAddMethodIsCalled()
-                .VerifyRedirectToEditPage();
+                .VerifyRedirectedBackToCohortDetailsPage();
         }
 
         [Test]

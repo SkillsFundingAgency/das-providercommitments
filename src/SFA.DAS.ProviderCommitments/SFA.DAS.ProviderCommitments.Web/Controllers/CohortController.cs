@@ -267,8 +267,8 @@ public class CohortController : Controller
         {
             var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
                 EncodingType.ApprenticeshipId);
-            return RedirectToRoute(RouteNames.DraftApprenticeshipEdit,
-                new { response.CohortReference, draftApprenticeshipHashedId, request.ProviderId });
+            return RedirectToAction(nameof(Details),
+                new { response.CohortReference, request.ProviderId });
         }
 
         if (response.HasStandardOptions)

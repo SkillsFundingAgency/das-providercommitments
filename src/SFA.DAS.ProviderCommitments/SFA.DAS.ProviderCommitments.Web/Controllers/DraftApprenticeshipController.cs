@@ -300,7 +300,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (model.LearnerDataId != null)
             {
                 var draftHashedId = encodingService.Encode(response.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
-                return RedirectToRoute(RouteNames.DraftApprenticeshipEdit, new { model.CohortReference, DraftApprenticeshipHashedId = draftHashedId, request.ProviderId });
+                return RedirectToAction("Details", "Cohort", new { model.CohortReference, request.ProviderId });
             }
 
             if (string.IsNullOrEmpty(model.CourseCode))

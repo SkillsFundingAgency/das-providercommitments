@@ -60,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             await _fixture.PostDraftApprenticeshipViewModel();
 
-            _fixture.VerifyRedirectToEditPage();
+            _fixture.VerifyUserRedirectedTo("Details");
         }
 
         [Test]
