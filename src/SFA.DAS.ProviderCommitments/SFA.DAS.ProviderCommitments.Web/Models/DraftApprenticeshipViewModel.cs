@@ -166,5 +166,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public long? LearnerDataId { get; set; }
         public bool HasLearnerDataChanges { get; set; }
         public DateTime? LastLearnerDataSync { get; set; }
+        public string DraftApprenticeshipHashedId { get; set; }
+        public int? TrainingTotalHours { get; set; }
+        public int? DurationReducedByHours { get; set; }
+        public bool? IsDurationReducedByRpl { get; set; }
     }
 }

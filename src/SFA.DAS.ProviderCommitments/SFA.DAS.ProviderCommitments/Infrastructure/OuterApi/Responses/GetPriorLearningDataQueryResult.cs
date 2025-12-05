@@ -8,5 +8,6 @@
         public bool? IsDurationReducedByRpl { get; set; }
         public int? DurationReducedBy { get; set; } // by Weeks
         public int? CostBeforeRpl { get; set; }
+        public long? LearnerDataId { get; set; }
     }
 }
