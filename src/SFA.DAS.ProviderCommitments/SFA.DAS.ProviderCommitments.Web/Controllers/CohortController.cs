@@ -427,11 +427,28 @@ public class CohortController : Controller
     {
         return viewModel.Selection switch
         {
-            AddDraftApprenticeshipEntryMethodOptions.ILR => RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId, UseLearnerData = true }),
+            AddDraftApprenticeshipEntryMethodOptions.ILR => RedirectToAction(nameof(BeforeYouContinue), new { viewModel.ProviderId }),
             AddDraftApprenticeshipEntryMethodOptions.BulkCsv => RedirectToAction(nameof(FileUploadInform), new { viewModel.ProviderId }),
             AddDraftApprenticeshipEntryMethodOptions.Manual => RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId }),
             _ => throw new InvalidOperationException()
         };
+    }
+
+    [HttpGet]
+    [Route("add/before-you-continue")]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public IActionResult BeforeYouContinue(BeforeYouContinueRequest request)
+    {
+        var model = new BeforeYouContinueViewModel { ProviderId = request.ProviderId };
+        return View(model);
+    }
+
+    [HttpPost]
+    [Route("add/before-you-continue")]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public IActionResult BeforeYouContinue(BeforeYouContinueViewModel viewModel)
+    {
+        return RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId, UseLearnerData = true });
     }
 
     [HttpGet]
