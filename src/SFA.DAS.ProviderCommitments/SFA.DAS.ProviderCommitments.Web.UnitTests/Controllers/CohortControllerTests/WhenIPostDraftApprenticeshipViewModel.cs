@@ -54,6 +54,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
+        public async Task AndWhenFirstApprenticeshipWasCreatedViaILRThenRedirectToEditPage()
+        {
+            _fixture.SetUpLearnerDataOnAddModel();
+
+            await _fixture.PostDraftApprenticeshipViewModel();
+
+            _fixture.VerifyUserRedirectedTo("Details");
+        }
+
+        [Test]
         public async Task AndSelectCourseIsToBeChangedThenTheUserIsRedirectedToSelectCoursePage()
         {
             _fixture.WithRedirectAction(AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectCourse);
@@ -261,6 +271,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 return this;
             }
 
+            public UnapprovedControllerTestFixture SetUpLearnerDataOnAddModel()
+            {
+                _model.LearnerDataId = 1234;
+                _encodingService.Setup(x => x.Encode(_createCohortResponse.DraftApprenticeshipId.Value, EncodingType.ApprenticeshipId))
+                    .Returns(_draftApprenticeshipHashedId);
+                return this;
+            }
+
             public UnapprovedControllerTestFixture VerifyCohortCreated()
             {
                 //1. Verify that the viewmodel submitted was mapped
@@ -273,6 +291,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             public UnapprovedControllerTestFixture VerifyUserRedirectedTo(string page)
             {
                 _actionResult.VerifyReturnsRedirectToActionResult().WithActionName(page);
+                return this;
+            }
+
+            public UnapprovedControllerTestFixture VerifyRedirectToEditPage()
+            {
+                _actionResult.VerifyRedirectsToEditPage(_draftApprenticeshipHashedId);
                 return this;
             }
 
