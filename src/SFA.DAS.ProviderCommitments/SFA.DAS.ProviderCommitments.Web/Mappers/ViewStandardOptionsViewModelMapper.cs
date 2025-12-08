@@ -30,7 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 StandardPageUrl = trainingProgramme.TrainingProgramme.StandardPageUrl,
                 SelectedOption = draftApprenticeship.TrainingCourseOption == string.Empty ? "-1" : draftApprenticeship.TrainingCourseOption,
                 HasSelectedRpl = draftApprenticeship.RecognisePriorLearning,
-                ApprenticeshipStartDate = draftApprenticeship.StartDate
+                ApprenticeshipStartDate = draftApprenticeship.StartDate,
+                LearnerDataId = source.LearnerDataId
             };
         }
     }

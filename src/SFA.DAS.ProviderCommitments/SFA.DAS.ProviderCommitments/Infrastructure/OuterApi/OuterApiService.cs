@@ -106,11 +106,6 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         return await outerApiClient.Get<ValidateUlnOverlapOnStartDateQueryResult>(new ValidateUlnOverlapOnStartDateQueryRequest(providerId, uln, startDate, endDate));
     }
 
-    public async Task<ValidateEmailOverlapQueryResult> ValidateEmailOverlap(long draftApprenticeshipId, string email,string startDate, string endDate, long cohortId)
-    {
-        return await outerApiClient.Get<ValidateEmailOverlapQueryResult>(new ValidateEmailOverlapRequest(draftApprenticeshipId, email, startDate, endDate, cohortId));
-    }
-
     public async Task ValidateChangeOfEmployerOverlap(ValidateChangeOfEmployerOverlapApimRequest data)
     {
         await outerApiClient.Post<object>(new PostValidateChangeOfEmployerOverlapRequest(data));
@@ -128,13 +123,13 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
 
     public async Task DraftApprenticeshipAddEmail(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeAddEmailApimRequest request)
     {
-        await outerApiClient.Post<object>(new DraftApprenticeAddEmailRequest(providerId, cohortId, apprenticeshipId) { Data = request });
+        await outerApiClient.Post<DraftApprenticeshipAddEmailResponse>(new DraftApprenticeAddEmailRequest(providerId, cohortId, apprenticeshipId) { Data = request });
     }
 
 
     public async Task DraftApprenticeshipSetReference(long providerId, long cohortId, long apprenticeshipId, PostDraftApprenticeshipSetReferenceApimRequest request )
     {
-        await outerApiClient.Post<object>(new PostDraftApprenticeshipSetReferenceRequest(providerId, cohortId, apprenticeshipId) { Data = request });
+        await outerApiClient.Post<DraftApprenticeshipSetReferenceResponse>(new PostDraftApprenticeshipSetReferenceRequest(providerId, cohortId, apprenticeshipId) { Data = request });
     }
 
 

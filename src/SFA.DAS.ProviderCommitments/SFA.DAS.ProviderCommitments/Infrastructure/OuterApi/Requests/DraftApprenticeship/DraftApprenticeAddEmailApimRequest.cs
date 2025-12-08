@@ -1,10 +1,9 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+﻿namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 
-namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
-
-public class DraftApprenticeAddEmailApimRequest : SaveDataRequest
+public class DraftApprenticeAddEmailApimRequest 
 {
     public string Email { get; set; }
-
     public long CohortId { get; set; }
+    public string StartDate { get; set; }
+    public string EndDate { get; set; }
 }

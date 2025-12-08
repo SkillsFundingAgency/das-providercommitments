@@ -11,7 +11,9 @@ public class DraftApprenticeshipAddEmailViewModelToApimRequestMapper : IMapper<D
         var result = new DraftApprenticeAddEmailApimRequest()
         {
             Email = source.Email,
-            CohortId = source.CohortId            
+            CohortId = source.CohortId,
+            StartDate = source.StartDate,
+            EndDate = source.EndDate,
         };
 
         return result;

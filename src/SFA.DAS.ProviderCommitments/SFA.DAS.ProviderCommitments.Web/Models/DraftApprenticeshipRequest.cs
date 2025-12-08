@@ -25,6 +25,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string EndDate { get; set; }
         public string LastName { get; set; }
         public string Name { get; set; }
-        public ViewEditBanners Banners { get; set; } = 0;
+        public long? LearnerDataId { get; set; }
     }
 }

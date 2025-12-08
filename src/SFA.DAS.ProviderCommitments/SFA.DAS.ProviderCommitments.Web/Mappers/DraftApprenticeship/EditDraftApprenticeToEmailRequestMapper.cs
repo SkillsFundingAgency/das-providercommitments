@@ -1,25 +1,31 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
-public class EditDraftApprenticeToEmailRequestMapper : IMapper<EditDraftApprenticeshipViewModel, DraftApprenticeshipAddEmailRequest>
+public class EditDraftApprenticeToEmailRequestMapper(
+     IOuterApiClient outerApiClient) : IMapper<EditDraftApprenticeshipViewModel, DraftApprenticeshipAddEmailRequest>
 {
-    public Task<DraftApprenticeshipAddEmailRequest> Map(EditDraftApprenticeshipViewModel source)
+    public async Task<DraftApprenticeshipAddEmailRequest> Map(EditDraftApprenticeshipViewModel source)
     {
-        var endDay = source.EndDay < 10 ? $"0{source.EndDay}" : source.EndDay.ToString();
 
-        return Task.FromResult(new DraftApprenticeshipAddEmailRequest
+        var apiRequest = new GetEditDraftApprenticeshipRequest(source.ProviderId, (long)source.CohortId,(long)source.DraftApprenticeshipId,null);
+        var apiResponse = await outerApiClient.Get<GetEditDraftApprenticeshipResponse>(apiRequest);       
+
+        return new DraftApprenticeshipAddEmailRequest
         {
-            Email = source.Email,
+            Email = apiResponse.Email,
             CohortId = source.CohortId.GetValueOrDefault(),
             CohortReference = source.CohortReference,
             ProviderId = source.ProviderId,
             DraftApprenticeshipId = source.DraftApprenticeshipId.Value,
             DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
-            Name = $"{source.FirstName} {source.LastName}",
-            StartDate = $"01/{source.StartMonth}/{source.StartYear}",
-            EndDate = $"{endDay}/{source.EndMonth}/{source.EndYear}",
-        });
+            Name = $"{apiResponse.FirstName} {apiResponse.LastName}",
+            StartDate = apiResponse.StartDate.Value.ToShortDateString(),
+            EndDate = apiResponse.EndDate.Value.ToShortDateString(),
+        };
     }
 }

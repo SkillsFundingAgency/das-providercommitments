@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 EndDate = source.EndDate.Date,
                 Reference = source.Reference,
                 CourseOption = source.TrainingCourseOption == "-1" ? string.Empty : source.TrainingCourseOption,
-                DeliveryModel = source.DeliveryModel.Value,
+                DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel)source.DeliveryModel.Value,
                 EmploymentEndDate = source.EmploymentEndDate.Date,
                 EmploymentPrice = source.EmploymentPrice,
                 HasLearnerDataChanges = source.HasLearnerDataChanges,

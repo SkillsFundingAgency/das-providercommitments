@@ -5,8 +5,9 @@
         None = 0,
         EmailAdded = 1,
         EmailUpdated = 2,
-        RefernceAdded = 3,
-        RefernceUpdated = 4,
+        ReferenceAdded = 3,
+        ReferenceUpdated = 4,
         AddOptions = 5,
+        StandardOptionAddedd=6
     }
 }

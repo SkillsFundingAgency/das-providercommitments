@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.DraftApprenticeshipAddEmailViewModel;
 @{
     var title = string.IsNullOrEmpty(Model.Email) ? "Add email address" : "Change email";
@@ -23,7 +24,7 @@
         <p class="govuk-body govuk-!-margin-bottom-6">
             This is the email address we will use to contact the apprentice.
         </p>
-        </<div></div>
+
 
 
         <form method="post" asp-route="@RouteNames.ApprenticeEmail" asp-route-providerId="@Model.ProviderId">
@@ -33,11 +34,12 @@
             <input type="hidden" name="StartDate" value="@Model.StartDate" />
             <input type="hidden" name="EndDate" value="@Model.EndDate" />
             <input type="hidden" name="IsEdit" value="@isEdit" />
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="first-name">
-                    Email address
-                </label>
-                <input class="govuk-input govuk-!-width-two-thirds" id="email" name="email" value="@Model.Email">
+
+            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Email, "govuk-form-group--error")">
+                <label asp-for="Email" class="govuk-label">Email address</label>
+                @Html.ValidationMessageFor(m => m.Email, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email) })
+                <input asp-for="Email" class="govuk-input" />
+
             </div>
 
             <details class="govuk-details govuk-!-margin-top-4" data-module="govuk-details">

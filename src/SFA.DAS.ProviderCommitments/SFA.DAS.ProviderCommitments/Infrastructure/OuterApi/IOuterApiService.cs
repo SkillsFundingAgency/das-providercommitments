@@ -55,8 +55,7 @@ public interface IOuterApiService
     Task<GetRplRequirementsResponse> GetRplRequirements(long providerId, long cohortId, long draftApprenticeshipId, string courseCode);
     Task<ValidateEditApprenticeshipResponse> EditApprenticeship(long providerId, long apprenticeshipId, ValidateEditApprenticeshipRequest request);
     Task<ConfirmEditApprenticeshipResponse> ConfirmEditApprenticeship(long providerId, long apprenticeshipId, ConfirmEditApprenticeshipRequest request);
-    Task<SyncLearnerDataResponse> SyncLearnerData(long providerId, long cohortId, long draftApprenticeshipId);
-    Task<ValidateEmailOverlapQueryResult> ValidateEmailOverlap(long draftApprenticeshipId, string email, string startDate, string endDate, long cohortId);
+    Task<SyncLearnerDataResponse> SyncLearnerData(long providerId, long cohortId, long draftApprenticeshipId);   
     Task DraftApprenticeshipSetReference(long providerId, long cohortId, long apprenticeshipId, PostDraftApprenticeshipSetReferenceApimRequest request);
 
     Task DraftApprenticeshipAddEmail(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeAddEmailApimRequest request);

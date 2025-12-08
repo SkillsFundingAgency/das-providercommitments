@@ -10,14 +10,6 @@
 @inject ICommitmentsApiClient CommitmentsApiClient
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
 
-@Html.HiddenFor(x => x.ReservationId)
-@Html.HiddenFor(x => x.IsContinuation)
-@Html.HiddenFor(x => x.Employer)
-@Html.HiddenFor(x => x.LearnerDataId)
-<input type="hidden" asp-for="HasStandardOptions" />
-<input type="hidden" asp-for="TrainingCourseOption" />
-<input type="hidden" asp-for="HasUnavailableFlexiJobAgencyDeliveryModel" />
-
 @{
 
     string DisplayCost(int? value) => value.HasValue ? value.Value.ToGdsCostFormat() : "--";
@@ -35,36 +27,38 @@
         Model.CourseName = (await CommitmentsApiClient.GetTrainingProgramme(Model.CourseCode)).TrainingProgramme.Name;
     }
 
-    string name = $"{Model.FirstName} {Model.FirstName}";
+    string name = $"{Model.FirstName} {Model.LastName}";
 
 }
 
 <div class="govuk-width-container">
-    <main class="govuk-main-wrapper" role="main">
+    <main class="" role="main">
+        <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            @if (@Model.banner != ViewEditBanners.None)
+            @if (@Model.Banner != ViewEditBanners.None)
             {
-                var bannerModel = Model.banner switch
+                var bannerModel = Model.Banner switch
                 {
                     ViewEditBanners.EmailAdded => new SuccessBannerModel("email-add-banner", "Email address added", ""),
                     ViewEditBanners.EmailUpdated => new SuccessBannerModel("email-update-banner", "Email address updated", ""),
-                    ViewEditBanners.RefernceAdded => new SuccessBannerModel("reference-add-banner", "Reference added", ""),
-                    ViewEditBanners.RefernceUpdated => new SuccessBannerModel("reference-update-banner", "Reference added", "")
+                    ViewEditBanners.ReferenceAdded => new SuccessBannerModel("reference-add-banner", "Reference added", ""),
+                    ViewEditBanners.ReferenceUpdated => new SuccessBannerModel("reference-update-banner", "Reference updated", ""),
+                    ViewEditBanners.StandardOptionAddedd => new SuccessBannerModel("standard-option-add-banner", "Standard option added", "")
                 };
 
                 <partial name="_SuccessBanner" model="bannerModel"></partial>
             }
         
         </div>
+            <div class="govuk-grid-column-two-thirds"></div>
+        </div>
         <div class="govuk-grid-row">
-            <div class="">
+            <div class="govuk-grid-column-full">
                 <partial name="_ValidationSummary" />
                 <input type="hidden" asp-for="CourseCode" value="@Model.CourseCode">
                 <input type="hidden" asp-for="DeliveryModel" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
                 <input type="hidden" asp-for="FirstName" value="@Model.FirstName">
-                <input type="hidden" asp-for="LastName" value="@Model.LastName">
-
-               
+                <input type="hidden" asp-for="LastName" value="@Model.LastName">               
 
 
                 <h1 class="govuk-heading-l">View details for @Model.FirstName @Model.LastName</h1>
@@ -83,6 +77,10 @@
                 </div>
 
                 <form id="addEmail" novalidate method="post">
+                    @Html.HiddenFor(x => x.IsContinuation)
+                    @Html.HiddenFor(x => x.LearnerDataId)
+                    <input type="hidden" asp-for="HasStandardOptions" />
+                    <input type="hidden" asp-for="TrainingCourseOption" />
                 <div class="govuk-summary-card">
                     <div class="govuk-summary-card__title-wrapper">
                         <h2 class="govuk-summary-card__title">
@@ -283,7 +281,7 @@
                                     Version
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    1.2
+                                        @Model.TrainingCourseVersion
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
                                     <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> email</span></a>
@@ -296,7 +294,7 @@
                                             Standard option
                                         </dt>
                                         <dd class="govuk-summary-list__value">
-                                            @if (string.IsNullOrEmpty(Model.TrainingCourseOption))
+                                            @if (string.IsNullOrEmpty(Model.TrainingCourseOption) || Model.TrainingCourseOption == "-1")
                                             {
                                                  <button id="add-SO-link" type="submit" name="addStandardOption"
                                                     value="add" class="das-button--inline-link">

@@ -103,13 +103,7 @@
             {
                 <partial name="DraftApprenticeship" for="@Model"/>
                 <button type="submit" class="govuk-button" id="submitAddDraftApprenticeship">Save</button>
-            } 
-            else
-            {
-                <partial name="ViewDraftApprenticeshipReadOnly" for="@Model" />
-                <button type="submit" class="govuk-button" id="submitAddDraftApprenticeship">Continue</button>
-
-            }
+            }            
 
             @if (!Model.IsContinuation)
             {

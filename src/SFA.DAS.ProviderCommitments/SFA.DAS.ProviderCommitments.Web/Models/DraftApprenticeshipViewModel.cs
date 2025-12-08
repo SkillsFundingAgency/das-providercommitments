@@ -169,5 +169,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public DateTime? LastLearnerDataSync { get; set; }
         public string Name { get; set; }
         public ViewEditBanners Banner { get; set; }
+        public string TrainingCourseVersion { get; set; }
     }
 }

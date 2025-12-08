@@ -13,6 +13,7 @@
             <h1 class="govuk-heading-l">@title</h1>
             @Html.HiddenFor(x => x.CohortId)
             @Html.HiddenFor(x => x.DraftApprenticeshipId)
+            @Html.HiddenFor(x => x.Party)
             <input type="hidden" name="IsEdit" value="@isEdit" />
 
             <p class="govuk-body">
@@ -23,7 +24,7 @@
                 <label class="govuk-label" for="reference">
                     Reference
                 </label>
-                <input class="govuk-input govuk-!-width-two-thirds" id="reference" name="reference" type="text" value="@Model.Reference">
+                <input class="govuk-input govuk-!-width-two-thirds" id="reference" maxlength="20" name="reference" type="text" value="@Model.Reference">
             </div>
 
             <div class="govuk-button-group">
