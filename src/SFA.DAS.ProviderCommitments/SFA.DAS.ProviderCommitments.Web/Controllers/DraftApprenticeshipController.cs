@@ -259,13 +259,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> SetReference(DraftApprenticeshipSetReferenceViewModel model)
         {
-
             if (!string.IsNullOrEmpty(model.Reference))
-            {
-                TempData["Banner"] = model.IsEdit ? ViewEditBanners.ReferenceUpdated : ViewEditBanners.ReferenceAdded;
+            {               
                 var updateRequest = await modelMapper.Map<PostDraftApprenticeshipSetReferenceApimRequest>(model);
                 await outerApiService.DraftApprenticeshipSetReference(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
-
+                TempData["Banner"] = model.IsEdit ? ViewEditBanners.ReferenceUpdated : ViewEditBanners.ReferenceAdded;
                 return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
                 {
                     model.ProviderId,
@@ -273,7 +271,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     model.CohortReference
                 });
             }
-
             return View(model);
         }
 
@@ -293,10 +290,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> AddEmail(DraftApprenticeshipAddEmailViewModel model)
         {
-
-            TempData["Banner"] = model.IsEdit ? ViewEditBanners.EmailUpdated : ViewEditBanners.EmailAdded;
             var updateRequest = await modelMapper.Map<DraftApprenticeAddEmailApimRequest>(model);
             await outerApiService.DraftApprenticeshipAddEmail(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
+            TempData["Banner"] = model.IsEdit ? ViewEditBanners.EmailUpdated : ViewEditBanners.EmailAdded;
 
             return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
             {
