@@ -204,7 +204,8 @@ public class DetailsViewModelMapper(
                         EmploymentEndDate = a.EmploymentEndDate,
                         HasLearnerDataChanges = a.HasLearnerDataChanges,
                         LastLearnerDataSync = a.LastLearnerDataSync,
-                        IsEditable = a.LearnerDataId == null
+                        IsEditable = a.LearnerDataId == null, 
+                        RecognisePriorLearning = a.RecognisePriorLearning
                     })
                     .ToList()
             })

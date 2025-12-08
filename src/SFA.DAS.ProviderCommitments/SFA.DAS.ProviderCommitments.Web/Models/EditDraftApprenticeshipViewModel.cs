@@ -11,8 +11,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public EditDraftApprenticeshipViewModel()
         {
         }
-
-        public string DraftApprenticeshipHashedId { get; set; }
         public long? DraftApprenticeshipId { get; set; }
     }
 }
