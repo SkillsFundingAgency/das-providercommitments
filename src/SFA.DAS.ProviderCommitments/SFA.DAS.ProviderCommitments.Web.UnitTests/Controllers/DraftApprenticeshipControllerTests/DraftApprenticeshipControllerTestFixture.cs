@@ -88,6 +88,7 @@ public class DraftApprenticeshipControllerTestFixture
         _selectOptionsViewModel = autoFixture.Build<ViewSelectOptionsViewModel>()
             .With(c => c.CohortId, _cohortId)
             .With(x => x.DraftApprenticeshipId, _draftApprenticeshipId)
+            .Without(c=>c.LearnerDataId)
             .Create();
 
         _draftApprenticeshipDetails = autoFixture.Build<GetDraftApprenticeshipResponse>()
@@ -401,6 +402,7 @@ public class DraftApprenticeshipControllerTestFixture
     public DraftApprenticeshipControllerTestFixture SetupUpdateRequestCourseOption()
     {
         _updateDraftApprenticeshipRequest.CourseOption = _selectOptionsViewModel.SelectedOption;
+        _updateDraftApprenticeshipRequest.LearnerDataId = null;
         return this;
     }
 

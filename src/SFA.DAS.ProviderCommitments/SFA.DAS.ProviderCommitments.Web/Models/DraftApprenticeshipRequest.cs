@@ -18,12 +18,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string CohortReference { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }
         public string Reference { get; set; }
-        public string FirstName { get; set; }
         public Party Party { get; set; }
         public string Email { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
-        public string LastName { get; set; }
         public string Name { get; set; }
         public long? LearnerDataId { get; set; }
     }

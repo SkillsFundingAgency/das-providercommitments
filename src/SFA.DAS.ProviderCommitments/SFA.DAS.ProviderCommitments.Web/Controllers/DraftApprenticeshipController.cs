@@ -393,7 +393,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit", Name = RouteNames.DraftApprenticeshipEdit)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> EditDraftApprenticeship(DraftApprenticeshipRequest request, string learnerDataSyncKey = null, ViewEditBanners banner=0)
+        public async Task<IActionResult> EditDraftApprenticeship(DraftApprenticeshipRequest request, string learnerDataSyncKey = null)
         {
             try
             {
