@@ -854,11 +854,11 @@ bool isApprovedByEmployer, bool expectedShowApprovalOptionMessage)
 
     [TestCase(true, true)]
     [TestCase(false, false)]
-    public async Task HasFoundationApprenticeshipsIsMappedCorrectly(bool hasFoundationApprenticeships, bool expectedHasFoundationApprenticeships)
+    public async Task HasAgeRestrictedApprenticeshipsIsMappedCorrectly(bool hasAgeRestrictedApprenticeships, bool expectedHasAgeRestrictedApprenticeships)
     {
-        var fixture = new DetailsViewModelMapperTestsFixture().SetHasFoundationApprenticeships(hasFoundationApprenticeships);
+        var fixture = new DetailsViewModelMapperTestsFixture().SetHasAgeRestrictedApprenticeships(hasAgeRestrictedApprenticeships);
         var result = await fixture.Map();
-        result.HasFoundationApprenticeships.Should().Be(expectedHasFoundationApprenticeships);
+        result.HasAgeRestrictedApprenticeships.Should().Be(expectedHasAgeRestrictedApprenticeships);
     }
 }
 
@@ -1233,9 +1233,9 @@ public class DetailsViewModelMapperTestsFixture
         return this;
     }
 
-    public DetailsViewModelMapperTestsFixture SetHasFoundationApprenticeships(bool hasFoundationApprenticeships)
+    public DetailsViewModelMapperTestsFixture SetHasAgeRestrictedApprenticeships(bool hasAgeRestrictedApprenticeships)
     {
-        CohortDetails.HasFoundationApprenticeships = hasFoundationApprenticeships;
+        CohortDetails.HasAgeRestrictedApprenticeships = hasAgeRestrictedApprenticeships;
         return this;
     }
 }
