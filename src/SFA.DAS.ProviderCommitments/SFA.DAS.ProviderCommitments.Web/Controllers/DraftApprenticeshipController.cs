@@ -607,7 +607,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             await outerApiService.UpdateDraftApprenticeship(model.CohortId, model.DraftApprenticeshipId, request);
 
-            if(model.LearnerDataId is not null)
+            if(request.LearnerDataId is not null)
             {                
                 TempData["Banner"] = !string.IsNullOrEmpty(request.CourseOption) ? ViewEditBanners.StandardOptionAddedd : ViewEditBanners.None;
 
