@@ -108,6 +108,7 @@ public class DraftApprenticeshipControllerTestFixture
 
         _draftApprenticeshipDetails = autoFixture.Build<GetDraftApprenticeshipResponse>()
             .With(x => x.Id, _draftApprenticeshipId)
+            .With(x=>x.HasStandardOptions, false)
             .Create();
 
         _getReservationIdForAddAnotherApprenticeRequest = autoFixture
@@ -162,6 +163,7 @@ public class DraftApprenticeshipControllerTestFixture
             CohortId = _cohortId,
             CohortReference = cohortReference,
             DeliveryModel = DeliveryModel.Regular,
+            HasStandardOptions = false
         };
 
         _editModel = new EditDraftApprenticeshipViewModel
