@@ -1,38 +1,45 @@
-using System;
-using System.Linq;
+using Moq;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.DfESignIn.Auth.Api.Models;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using System;
+using System.Linq;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipTests;
 
 public class WhenMappingSelectOptionsRequestToViewSelectOptionsViewModel
-{
-    private GetDraftApprenticeshipResponse _draftApprenticeshipApiResponse;
+{   
     private GetTrainingProgrammeResponse _standardOptionsResponse;
     private SelectOptionsRequest _selectOptionsRequest;
     private ViewStandardOptionsViewModelMapper _mapper;
     private Func<Task<ViewSelectOptionsViewModel>> _act;
     private Mock<ICommitmentsApiClient> _commitmentsApiClient;
+    private Mock<IOuterApiClient> _outerApiClient;
+    private GetEditDraftApprenticeshipResponse _draftApprenticeshipApiResponse;
 
     [SetUp]
     public void Arrange()
     {
-        var fixture = new Fixture();
-        _draftApprenticeshipApiResponse = fixture.Build<GetDraftApprenticeshipResponse>().Create();
+        var fixture = new Fixture();        
+        _draftApprenticeshipApiResponse = fixture.Build<GetEditDraftApprenticeshipResponse>().Create();
         _standardOptionsResponse = fixture.Build<GetTrainingProgrammeResponse>().Create();
         _selectOptionsRequest = fixture.Build<SelectOptionsRequest>().Create();
             
         _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
+        _outerApiClient = new Mock<IOuterApiClient>();
         _commitmentsApiClient
             .Setup(x => x.GetTrainingProgrammeVersionByStandardUId(_draftApprenticeshipApiResponse.StandardUId, CancellationToken.None))
             .ReturnsAsync(_standardOptionsResponse);
-        _commitmentsApiClient
-            .Setup(x => x.GetDraftApprenticeship(_selectOptionsRequest.CohortId, _selectOptionsRequest.DraftApprenticeshipId, CancellationToken.None))
-            .ReturnsAsync(_draftApprenticeshipApiResponse);
 
-        _mapper = new ViewStandardOptionsViewModelMapper(_commitmentsApiClient.Object);
+        _outerApiClient
+                     .Setup(x => x.Get<GetEditDraftApprenticeshipResponse>(It.IsAny<GetEditDraftApprenticeshipRequest>()))
+                     .ReturnsAsync(_draftApprenticeshipApiResponse);
+
+        _mapper = new ViewStandardOptionsViewModelMapper(_commitmentsApiClient.Object, _outerApiClient.Object);
 
         _act = async () => await _mapper.Map(TestHelper.Clone(_selectOptionsRequest));
     }
@@ -90,7 +97,7 @@ public class WhenMappingSelectOptionsRequestToViewSelectOptionsViewModel
     {
         var result = await _act();
 
-        result.TrainingCourseName.Should().Be(_draftApprenticeshipApiResponse.TrainingCourseName);
+        result.TrainingCourseName.Should().Be(_draftApprenticeshipApiResponse.CourseName);
     }
 
     [Test]

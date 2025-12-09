@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
@@ -118,6 +119,16 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
     public async Task UpdateDraftApprenticeship(long cohortId, long apprenticeshipId, UpdateDraftApprenticeshipApimRequest request)
     {
         await outerApiClient.Put<object>(new PutUpdateDraftApprenticeshipRequest(cohortId, apprenticeshipId) { Data = request });
+    }
+
+    public async Task DraftApprenticeshipAddEmail(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeAddEmailApimRequest request)
+    {
+        await outerApiClient.Post<DraftApprenticeshipAddEmailResponse>(new DraftApprenticeAddEmailRequest(providerId, cohortId, apprenticeshipId) { Data = request });
+    }
+
+    public async Task DraftApprenticeshipSetReference(long providerId, long cohortId, long apprenticeshipId, PostDraftApprenticeshipSetReferenceApimRequest request )
+    {
+        await outerApiClient.Post<DraftApprenticeshipSetReferenceResponse>(new PostDraftApprenticeshipSetReferenceRequest(providerId, cohortId, apprenticeshipId) { Data = request });
     }
 
     public async Task<AddDraftApprenticeshipResponse> AddDraftApprenticeship(long cohortId, AddDraftApprenticeshipApimRequest request)
