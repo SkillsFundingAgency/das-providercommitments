@@ -50,44 +50,50 @@
                             <div class="govuk-input__suffix" aria-hidden="true"> hours</div>
                         </div>
                     </div>
+                    @if (@Model.IsDurationReducedByRpl == true)
+                    {
+                        <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.IsDurationReducedByRpl, "govuk-form-group--error")">
+                            <label asp-for="IsDurationReducedByRpl" class="govuk-label govuk-!-font-weight-bold">
+                                Have you reduced the actual apprenticeship duration due to RPL?
+                            </label>
+                            @Html.ValidationMessageFor(m => m.IsDurationReducedByRpl, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsDurationReducedByRpl) })
+                            <fieldset class="govuk-fieldset">
+                                <div class="govuk-radios govuk-radios--conditional" data-module="radios">
 
-                    <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.IsDurationReducedByRpl, "govuk-form-group--error")">
-                        <label asp-for="IsDurationReducedByRpl" class="govuk-label govuk-!-font-weight-bold">
-                            Have you reduced the actual apprenticeship duration due to RPL?
-                        </label>
-                        @Html.ValidationMessageFor(m => m.IsDurationReducedByRpl, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsDurationReducedByRpl) })
-                        <fieldset class="govuk-fieldset">
-                            <div class="govuk-radios govuk-radios--conditional" data-module="radios">
-
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="radio-reduced" asp-for="IsDurationReducedByRpl" type="radio" value="true" data-aria-controls="conditional-yes">
-                                    <label class="govuk-label govuk-radios__label" for="radio-reduced">
-                                        Yes
-                                    </label>
-                                </div>
-                                <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-yes">
-                                    <div class="govuk-form-group">
-                                        <label class="govuk-label" for="send-details">
-                                            How many weeks was the apprenticeship reduced by?
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" id="radio-reduced" asp-for="IsDurationReducedByRpl" type="radio" value="true" data-aria-controls="conditional-yes">
+                                        <label class="govuk-label govuk-radios__label" for="radio-reduced">
+                                            Yes
                                         </label>
-                                        @Html.ValidationMessageFor(m => m.DurationReducedBy, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsDurationReducedByRpl) })
-                                        <div class="govuk-input__wrapper">
-                                            <input asp-for="DurationReducedBy" class="govuk-input govuk-input--width-5" />
-                                            <div class="govuk-input__suffix" aria-hidden="true"> weeks</div>
+                                    </div>
+                                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-yes">
+                                        <div class="govuk-form-group">
+                                            <label class="govuk-label" for="send-details">
+                                                How many weeks was the apprenticeship reduced by?
+                                            </label>
+                                            @Html.ValidationMessageFor(m => m.DurationReducedBy, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsDurationReducedByRpl) })
+                                            <div class="govuk-input__wrapper">
+                                                <input asp-for="DurationReducedBy" class="govuk-input govuk-input--width-5" />
+                                                <div class="govuk-input__suffix" aria-hidden="true"> weeks</div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="radio-notreduced" asp-for="IsDurationReducedByRpl" type="radio" value="false">
-                                    <label class="govuk-label govuk-radios__label" for="radio-notreduced">
-                                        No
-                                    </label>
-                                </div>
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" id="radio-notreduced" asp-for="IsDurationReducedByRpl" type="radio" value="false">
+                                        <label class="govuk-label govuk-radios__label" for="radio-notreduced">
+                                            No
+                                        </label>
+                                    </div>
 
-                            </div>
-                        </fieldset>
-                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    }
+                    else
+                    {
+                        <input id="radio-notreduced" asp-for="IsDurationReducedByRpl" type="hidden" value="false">
+                    }
 
                     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.PriceReduced, "govuk-form-group--error")">
                         <label asp-for="PriceReduced" class="govuk-label govuk-!-font-weight-bold">
