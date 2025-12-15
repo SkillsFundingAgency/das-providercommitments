@@ -289,33 +289,39 @@
                             </div>
                            @if(Model.HasStandardOptions)
                             {
-                                    <div class="govuk-summary-list__row">
-                                        <dt class="govuk-summary-list__key">
-                                            Standard option
-                                        </dt>
-                                        <dd class="govuk-summary-list__value">
-                                            @if (string.IsNullOrEmpty(Model.TrainingCourseOption) || Model.TrainingCourseOption == "-1")
-                                            {
-                                                 <button id="add-SO-link" type="submit" name="addStandardOption"
-                                                    value="add" class="das-button--inline-link">
-                                                    Add standard
-                                                    option
-                                                </button>
-                                            }
-                                            else
-                                            {
-                                                @Model.TrainingCourseOption
-                                            }
-                                        </dd>
-                                <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> standard option</span></a>
-                                </dd>
-                            </div>
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        Standard option
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @if (string.IsNullOrEmpty(Model.TrainingCourseOption) || Model.TrainingCourseOption == "-1")
+                                        {
+                                                <button id="add-SO-link" type="submit" name="addStandardOption"
+                                                value="add" class="das-button--inline-link">
+                                                Add standard
+                                                option
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            @Model.TrainingCourseOption
+                                        }
+                                    </dd>
+                                    <dd class="govuk-summary-list__actions">
+                                        @if (!string.IsNullOrEmpty(Model.TrainingCourseOption) && Model.TrainingCourseOption != "-1")
+                                        {
+                                            <button id="change-SO-link" type="submit" name="addStandardOption"
+                                                value="Change" class="das-button--inline-link">
+                                                Change
+                                            </button>
+                                        }
+                                    </dd>
+                                </div>
                             }
                             
                             <div class="govuk-summary-list__row">
 
-                                    @Html.HiddenFor(x => x.Reference)
+                                 @Html.HiddenFor(x => x.Reference)
                                 <dt class="govuk-summary-list__key">
                                     Your reference (optional)
                                 </dt>                               
@@ -331,7 +337,6 @@
                                         else
                                         {
                                             @Model.Reference
-
                                         }
                                     </dd>
                                     <dd class="govuk-summary-list__actions">
@@ -342,7 +347,6 @@
                                                 Change
                                             </button>
                                         }
-
                                     </dd>
                             </div>                           
                         </dl>

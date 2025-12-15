@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.DraftApprenticeshipSetReferenceViewModel
 @{
     var title = string.IsNullOrWhiteSpace(Model.Reference) ? "Add your Reference" : "Change your Reference";
@@ -7,6 +8,7 @@
 }
 
 <div class="govuk-grid-row">
+    <partial name="_ValidationSummary" />
     <form class="form" method="post" asp-route="@RouteNames.setReference">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-l">Details for @Model.Name</span>
@@ -19,12 +21,10 @@
             <p class="govuk-body">
                 Add a reference, such as employee number or location. This won’t be seen by the employer.
             </p>
-
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="reference">
-                    Reference
-                </label>
-                <input class="govuk-input govuk-!-width-two-thirds" id="reference" maxlength="20" name="reference" type="text" value="@Model.Reference">
+           <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Reference, "govuk-form-group--error")">
+                <label asp-for="Reference" class="govuk-label govuk-!-font-weight-bold">Reference</label>
+                @Html.ValidationMessageFor(m => m.Reference, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Reference) })
+                <input asp-for="Reference" maxlength="30" class="govuk-input govuk-!-width-three-quarters" />
             </div>
 
             <div class="govuk-button-group">
@@ -33,11 +33,8 @@
                 </button>
                 <a class="govuk-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortId, Model.DraftApprenticeshipHashedId })">Cancel</a>
             </div>
-
-
         </div>
     </form>
-
 </div>
 
 @section breadcrumb

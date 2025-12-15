@@ -259,19 +259,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> SetReference(DraftApprenticeshipSetReferenceViewModel model)
         {
-            if (!string.IsNullOrEmpty(model.Reference))
-            {               
-                var updateRequest = await modelMapper.Map<PostDraftApprenticeshipSetReferenceApimRequest>(model);
-                await outerApiService.DraftApprenticeshipSetReference(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
-                TempData["Banner"] = model.IsEdit ? ViewEditBanners.ReferenceUpdated : ViewEditBanners.ReferenceAdded;
-                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
-                {
-                    model.ProviderId,
-                    model.DraftApprenticeshipHashedId,
-                    model.CohortReference
-                });
-            }
-            return View(model);
+            var updateRequest = await modelMapper.Map<PostDraftApprenticeshipSetReferenceApimRequest>(model);
+            await outerApiService.DraftApprenticeshipSetReference(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
+            TempData["Banner"] = model.IsEdit ? ViewEditBanners.ReferenceUpdated : ViewEditBanners.ReferenceAdded;
+            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
+            {
+                model.ProviderId,
+                model.DraftApprenticeshipHashedId,
+                model.CohortReference
+            });
         }
 
 
@@ -449,7 +445,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if(addStandardOption!=null)
             {
-                StoreEditDraftApprenticeshipState(model);
                 return RedirectToAction("SelectOptions", new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
             }
 
