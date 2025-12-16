@@ -6,10 +6,8 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
@@ -353,8 +351,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 });
             }
 
-            model.ActualStartDate = new DateModel();
-
             var request = await modelMapper.Map<AddDraftApprenticeshipApimRequest>(model);
             request.UserId = authenticationService.UserId;
 
@@ -470,7 +466,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 });
             }
 
-            model.ActualStartDate = new DateModel();
             var updateRequest = await modelMapper.Map<UpdateDraftApprenticeshipApimRequest>(model);
             await outerApiService.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
 

@@ -115,6 +115,20 @@ public class WhenIMapViewDraftApprenticeshipDetailsToViewModel
     }
 
     [Test]
+    public async Task ThenTrainingPriceIsMappedCorrectly()
+    {
+        var result = await _act();
+        result.TrainingPrice.Should().Be(_apiResponse.TrainingPrice);
+    }
+
+    [Test]
+    public async Task ThenEndPointAssessmentPriceIsMappedCorrectly()
+    {
+        var result = await _act();
+        result.EndPointAssessmentPrice.Should().Be(_apiResponse.EndPointAssessmentPrice);
+    }
+
+    [Test]
     public async Task ThenCostIsMappedCorrectly()
     {
         var result = await _act();
