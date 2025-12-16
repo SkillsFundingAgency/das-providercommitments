@@ -1,4 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Account;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure
@@ -37,6 +38,12 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
         public async Task<GetProviderAccountLegalEntitiesResponse> GetProviderAccountLegalEntities(int ukprn)
         {
             var result = await _client.Get<GetProviderAccountLegalEntitiesResponse>($"providerpermissions/account-provider-legal-entities?ukprn={ukprn}");
+            return result;
+        }
+
+        public async Task<GetAccountResponse> GetAccount(string hashedAccountId)
+        {
+            var result = await _client.Get<GetAccountResponse>($"accounts/{hashedAccountId}");
             return result;
         }
     }

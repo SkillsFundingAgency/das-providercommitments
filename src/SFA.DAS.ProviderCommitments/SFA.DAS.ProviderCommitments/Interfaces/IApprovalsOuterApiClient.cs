@@ -1,19 +1,20 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Account;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
 
-namespace SFA.DAS.ProviderCommitments.Interfaces
+namespace SFA.DAS.ProviderCommitments.Interfaces;
+
+public interface IApprovalsOuterApiClient
 {
-    public interface IApprovalsOuterApiClient
-    {
-        Task<ProviderCourseDeliveryModels> GetProviderCourseDeliveryModels(
-            long providerId,
-            string courseCode,
-            long accountLegalEntityId,
-            CancellationToken cancellationToken = default);
+    Task<ProviderCourseDeliveryModels> GetProviderCourseDeliveryModels(
+        long providerId,
+        string courseCode,
+        long accountLegalEntityId,
+        CancellationToken cancellationToken = default);
 
-        Task<GetHasPermissionResponse> GetHasPermission(long ukprn, long accountLegalEntityId);
+    Task<GetHasPermissionResponse> GetHasPermission(long ukprn, long accountLegalEntityId);
 
-        Task<GetProviderAccountLegalEntitiesResponse> GetProviderAccountLegalEntities(int ukprn);
+    Task<GetProviderAccountLegalEntitiesResponse> GetProviderAccountLegalEntities(int ukprn);
 
-        Task<GetHasRelationshipWithPermissionResponse> GetHasRelationshipWithPermission(long ukprn);
-    }
+    Task<GetHasRelationshipWithPermissionResponse> GetHasRelationshipWithPermission(long ukprn);
+    Task<GetAccountResponse> GetAccount(string hashedAccountId);
 }

@@ -14,7 +14,7 @@
         <h1 class="govuk-heading-xl">Choose an employer</h1>
         <p class="govuk-body">Choose the employer you want to add apprentice details for.</p>
         <div class="govuk-body">
-            You can <a asp-external-subdomain="relationships" asp-external-id="@Model.ProviderId" asp-external-controller="employers" class="govuk-link">Manage your employers</a> if you cannot see the employer you need.
+            If you cannot find the employer, go to <a asp-external-subdomain="relationships" asp-external-id="@Model.ProviderId" asp-external-controller="employers" class="govuk-link">Manage your employers</a>.
         </div>
 
         <form method="get">
@@ -68,7 +68,18 @@
                         @foreach (var viewModel in Model.AccountProviderLegalEntities)
                         {
                             <tr class="govuk-table__row">
-                                <td class="govuk-table__cell" data-label="Employer">@viewModel.EmployerAccountLegalEntityName</td>
+                                <td class="govuk-table__cell" data-label="Employer">
+                                    @viewModel.EmployerAccountLegalEntityName
+                                    <br />
+                                    @if (viewModel.LevyStatus == SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType.Levy)
+                                    {
+                                        <strong class="govuk-tag govuk-tag--blue govuk-!-margin-top-1">Levy</strong>
+                                    }
+                                    else
+                                    {
+                                        <strong class="govuk-tag govuk-tag--purple govuk-!-margin-top-1">Non-levy</strong>
+                                    }
+                                </td>
                                 <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
                                 <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
                                 <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">

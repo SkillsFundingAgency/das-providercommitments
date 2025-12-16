@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -15,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         public async Task<SelectEmployerViewModel> Map(SelectEmployerRequest source)
         {
             var accountProviderLegalEntities = await GetAccountProviderLegalEntities(source);
-
+            accountProviderLegalEntities = await GetAccountsLevyStatus(accountProviderLegalEntities);
             var filterModel = new SelectEmployerFilterModel
             {
                 SearchTerm = source.SearchTerm,
@@ -37,6 +38,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 UseLearnerData = source.UseLearnerData
             };
         }
+        private async Task<List<AccountProviderLegalEntityViewModel>> GetAccountsLevyStatus(List<AccountProviderLegalEntityViewModel> source)
+        {
+            foreach (var providerAccount in source)
+            {
+                var account = await _approvalsOuterApiClient.GetAccount(providerAccount.AccountHashedId);
+                if (Enum.TryParse<ApprenticeshipEmployerType>(account?.ApprenticeshipEmployerType, out var levyStatus))
+                {
+                    providerAccount.LevyStatus = levyStatus;
+                }
+                else
+                {
+                    providerAccount.LevyStatus = ApprenticeshipEmployerType.NonLevy;
+                }
+            }
+            return source;
+        }
 
         private async Task<List<AccountProviderLegalEntityViewModel>> GetAccountProviderLegalEntities(SelectEmployerRequest source)
         {
@@ -50,6 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     EmployerAccountLegalEntityPublicHashedId = x.AccountLegalEntityPublicHashedId,
                     EmployerAccountName = x.AccountName,
                     EmployerAccountPublicHashedId = x.AccountPublicHashedId,
+                    AccountHashedId = x.AccountHashedId
                 }).ToList();
             }
 
