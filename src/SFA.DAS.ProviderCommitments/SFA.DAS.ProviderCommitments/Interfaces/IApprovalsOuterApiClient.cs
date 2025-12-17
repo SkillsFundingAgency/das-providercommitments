@@ -1,4 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Account;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Account;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
 
 namespace SFA.DAS.ProviderCommitments.Interfaces;
@@ -17,4 +18,5 @@ public interface IApprovalsOuterApiClient
 
     Task<GetHasRelationshipWithPermissionResponse> GetHasRelationshipWithPermission(long ukprn);
     Task<GetAccountResponse> GetAccount(string hashedAccountId);
+    Task<GetSelectEmployerResponse> GetSelectEmployer(GetSelectEmployerRequest request);
 }
