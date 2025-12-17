@@ -15,8 +15,8 @@ public class DraftApprenticeshipSetReferenceRequestToViewModelMapper(IOuterApiCl
         var result = new DraftApprenticeshipSetReferenceViewModel
         {
             Reference = apiResponse.ProviderReference,
-            Party = source.Party,
             CohortId = source.CohortId,
+            CohortReference = source.CohortReference,
             DraftApprenticeshipId = source.DraftApprenticeshipId,
             Name = $"{apiResponse.FirstName} {apiResponse.LastName}",
             ProviderId = source.ProviderId,

@@ -10,5 +10,5 @@ public class PostDraftApprenticeshipSetReferenceRequest(long providerId, long co
     public long ProviderId { get; set; } = providerId;
     public object Data { get; set; }
 
-    public string PostUrl => $"provider/{ProviderId}/unapproved/{CohortId}/apprentices/{DraftApprenticeshipId}/setreference";
+    public string PostUrl => $"provider/{ProviderId}/unapproved/{CohortId}/apprentices/{DraftApprenticeshipId}/reference";
 }

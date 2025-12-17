@@ -31,7 +31,7 @@
                 <button class="govuk-button" data-module="govuk-button" type="submit" data-govuk-button-init="">
                     Continue
                 </button>
-                <a class="govuk-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortId, Model.DraftApprenticeshipHashedId })">Cancel</a>
+                <a class="govuk-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortReference, Model.DraftApprenticeshipHashedId })">Cancel</a>
             </div>
         </div>
     </form>
@@ -39,5 +39,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortId, Model.DraftApprenticeshipHashedId })">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortReference, Model.DraftApprenticeshipHashedId })">Back</a>
 }

@@ -156,4 +156,14 @@ public class WhenMappingSelectOptionsRequestToViewSelectOptionsViewModel
 
         result.SelectedOption.Should().BeNull();
     }
+
+    [Test]
+    public async Task Then_If_The_LearnerData_Is_Not_Null_Then_Set_it()
+    {
+        _draftApprenticeshipApiResponse.LearnerDataId = 12345;
+
+        var result = await _act();
+
+        result.LearnerDataId.Should().Be(_draftApprenticeshipApiResponse.LearnerDataId);
+    }
 }
