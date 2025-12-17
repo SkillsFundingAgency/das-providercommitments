@@ -8,16 +8,14 @@
     ViewBag.ZendeskLabel = "add-apprentice-select-employer";
     ViewBag.GaData.Vpv = "/unapproved/add/select-employer";
 }
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Choose an employer</h1>
-        <p class="govuk-body">Choose the employer you want to add apprentice details for.</p>
-        <div class="govuk-body">
-            If you cannot find the employer, go to <a asp-external-subdomain="relationships" asp-external-id="@Model.ProviderId" asp-external-controller="employers" class="govuk-link">Manage your employers</a>.
-        </div>
-
-        <form method="get">
+<form method="get">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl" id="page-title">Choose an employer</h1>
+            <p class="govuk-body govuk-!-margin-bottom-8">
+                Choose the employer you want to add apprentice details for.
+                If you cannot find the employer, go to <a asp-external-subdomain="relationships" asp-external-id="@Model.ProviderId" asp-external-controller="employers" class="govuk-link">Manage your employers</a>.
+            </p>
             <div class="govuk-form-group">
                 <label class="govuk-label" for="searchTerm">Search by employer name, account name or agreement ID</label>
                 <div class="das-search-form__group">
@@ -27,78 +25,78 @@
                     </div>
                 </div>
             </div>
-            
-            @Html.HiddenFor(m=>m.UseLearnerData)
-            <input type="hidden" value="@Model.SelectEmployerFilterModel.CurrentlySortedByField" name="SortField" />
-            <input type="hidden" value="@Model.SelectEmployerFilterModel.ReverseSort.ToString()" name="ReverseSort" />
-
-            @if (!string.IsNullOrWhiteSpace(Model.SelectEmployerFilterModel.SearchTerm))
-            {
-                <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NewCohortSelectEmployer">Clear search</a></p>
-            }
-
-            @if (Model.AccountProviderLegalEntities.Count > 0)
-            {
-                <table class="govuk-table das-table--responsive das-table--double-arrows">
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header das-table-cell-width-35">
-                                <a class="@Model.SelectEmployerFilterModel.CssClassForArrowDirection(SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst)"
-                                   title="Sort by employer name"
-                                   asp-route="@RouteNames.NewCohortSelectEmployer"
-                                   asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData(SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst)">
-                                    Employer
-                                </a>
-
-                            </th>
-                            <th scope="col" class="govuk-table__header das-table-cell-width-35">
-                                <a class="@Model.SelectEmployerFilterModel.CssClassForArrowDirection(SelectEmployerFilterModel.EmployerAccountNameConst)"
-                                   title="Sort by account name"
-                                   asp-route="@RouteNames.NewCohortSelectEmployer"
-                                   asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData(SelectEmployerFilterModel.EmployerAccountNameConst)">
-                                    Account name
-                                </a>
-                            </th>
-                            <th scope="col" colspan="2" class="govuk-table__header das-table-cell-width-30">
-                                Agreement ID
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                        @foreach (var viewModel in Model.AccountProviderLegalEntities)
-                        {
-                            <tr class="govuk-table__row">
-                                <td class="govuk-table__cell" data-label="Employer">
-                                    @viewModel.EmployerAccountLegalEntityName
-                                    <br />
-                                    @if (viewModel.LevyStatus == SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType.Levy)
-                                    {
-                                        <strong class="govuk-tag govuk-tag--blue govuk-!-margin-top-1">Levy</strong>
-                                    }
-                                    else
-                                    {
-                                        <strong class="govuk-tag govuk-tag--purple govuk-!-margin-top-1">Non-levy</strong>
-                                    }
-                                </td>
-                                <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
-                                <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
-                                <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
-                                    <a href="@Url.Action("ConfirmEmployer", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, Model.UseLearnerData })" class="govuk-link">
-                                        Select <span class="govuk-visually-hidden">@viewModel.EmployerAccountLegalEntityName</span>
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <p class="govuk-body">0 employers match <b>'@Model.SelectEmployerFilterModel.SearchTerm'</b></p>
-            }
-        </form>
+        </div>
     </div>
-</div>
+            
+    @Html.HiddenFor(m=>m.UseLearnerData)
+    <input type="hidden" value="@Model.SelectEmployerFilterModel.CurrentlySortedByField" name="SortField" />
+    <input type="hidden" value="@Model.SelectEmployerFilterModel.ReverseSort.ToString()" name="ReverseSort" />
+
+    @if (!string.IsNullOrWhiteSpace(Model.SelectEmployerFilterModel.SearchTerm))
+    {
+        <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NewCohortSelectEmployer">Clear search</a></p>
+    }
+
+    @if (Model.AccountProviderLegalEntities.Count > 0)
+    {
+        <table class="govuk-table das-table--responsive das-table--double-arrows" aria-describedby="page-title">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header das-table-cell-width-35">
+                        <a class="@Model.SelectEmployerFilterModel.CssClassForArrowDirection(SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst)"
+                           title="Sort by employer name"
+                           asp-route="@RouteNames.NewCohortSelectEmployer"
+                           asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData(SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst)">
+                            Employer
+                        </a>
+
+                    </th>
+                    <th scope="col" class="govuk-table__header das-table-cell-width-35">
+                        <a class="@Model.SelectEmployerFilterModel.CssClassForArrowDirection(SelectEmployerFilterModel.EmployerAccountNameConst)"
+                           title="Sort by account name"
+                           asp-route="@RouteNames.NewCohortSelectEmployer"
+                           asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData(SelectEmployerFilterModel.EmployerAccountNameConst)">
+                            Account name
+                        </a>
+                    </th>
+                    <th scope="col" colspan="2" class="govuk-table__header das-table-cell-width-30">
+                        Agreement ID
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+            @foreach (var viewModel in Model.AccountProviderLegalEntities)
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell" data-label="Employer">
+                        @viewModel.EmployerAccountLegalEntityName
+                        <br />
+                        @if (viewModel.LevyStatus == SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType.Levy)
+                        {
+                            <strong class="govuk-tag govuk-tag--blue govuk-!-margin-top-1 govuk-!-margin-bottom-1">Levy</strong>
+                        }
+                        else
+                        {
+                            <strong class="govuk-tag govuk-tag--purple govuk-!-margin-top-1 govuk-!-margin-bottom-1">Non-levy</strong>
+                        }
+                    </td>
+                    <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
+                    <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
+                        <a href="@Url.Action("ConfirmEmployer", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, Model.UseLearnerData })" class="govuk-link">
+                            Select <span class="govuk-visually-hidden">@viewModel.EmployerAccountLegalEntityName</span>
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="govuk-body">0 employers match <b>'@Model.SelectEmployerFilterModel.SearchTerm'</b></p>
+    }
+</form>
 
 <script>
     var autoCompleteSource = @Html.Raw(JsonConvert.SerializeObject(Model.SelectEmployerFilterModel.Employers));
