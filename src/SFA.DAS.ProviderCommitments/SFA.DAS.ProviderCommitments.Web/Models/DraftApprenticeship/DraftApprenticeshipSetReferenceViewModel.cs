@@ -1,8 +1,9 @@
 ﻿using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship
 {
-    public class DraftApprenticeshipSetReferenceViewModel
+    public class DraftApprenticeshipSetReferenceViewModel : IAuthorizationContextModel
     {
         public long ProviderId { get; set; }
         public Guid? ReservationId { get; set; }

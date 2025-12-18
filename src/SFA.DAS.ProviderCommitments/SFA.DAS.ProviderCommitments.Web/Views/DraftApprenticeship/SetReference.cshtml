@@ -13,9 +13,6 @@
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-l">Details for @Model.Name</span>
             <h1 class="govuk-heading-l">@title</h1>
-            @Html.HiddenFor(x => x.CohortId)
-            @Html.HiddenFor(x => x.DraftApprenticeshipId)
-            @Html.HiddenFor(x => x.Party)
             <input type="hidden" name="IsEdit" value="@isEdit" />
 
             <p class="govuk-body">
