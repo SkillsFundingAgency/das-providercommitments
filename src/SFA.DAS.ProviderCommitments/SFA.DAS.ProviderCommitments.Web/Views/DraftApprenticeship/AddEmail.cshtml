@@ -12,7 +12,6 @@
         Model.ProviderId,
         Model.DraftApprenticeshipHashedId
     };
-
 }
 
 <div class="govuk-grid-row">
@@ -25,21 +24,14 @@
             This is the email address we will use to contact the apprentice.
         </p>
 
-
-
         <form method="post" asp-route="@RouteNames.ApprenticeEmail" asp-route-providerId="@Model.ProviderId">
-            <input type="hidden" name="CohortId" value="@Model.CohortId" />
-            <input type="hidden" name="DraftApprenticeshipId" value="@Model.DraftApprenticeshipId" />
             <input type="hidden" name="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
-            <input type="hidden" name="StartDate" value="@Model.StartDate" />
-            <input type="hidden" name="EndDate" value="@Model.EndDate" />
             <input type="hidden" name="IsEdit" value="@isEdit" />
 
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Email, "govuk-form-group--error")">
                 <label asp-for="Email" class="govuk-label">Email address</label>
                 @Html.ValidationMessageFor(m => m.Email, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email) })
                 <input asp-for="Email" class="govuk-input" />
-
             </div>
 
             <details class="govuk-details govuk-!-margin-top-4" data-module="govuk-details">
@@ -70,7 +62,7 @@
                 <button class="govuk-button" data-module="govuk-button" data-govuk-button-init="">
                     Continue
                 </button>
-                <a id="back-link" class="govuk-back-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortId, Model.DraftApprenticeshipHashedId })">Cancel</a>
+                <a id="back-link" class="govuk-back-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortReference, Model.DraftApprenticeshipHashedId })">Cancel</a>
             </div>
         </form>
 

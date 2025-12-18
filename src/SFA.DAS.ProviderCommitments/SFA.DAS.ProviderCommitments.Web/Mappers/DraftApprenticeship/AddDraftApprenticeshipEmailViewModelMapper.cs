@@ -22,8 +22,6 @@ public class AddDraftApprenticeshipEmailViewModelMapper(IOuterApiClient outerApi
             Email = apiResponse.Email,
             CohortReference = source.CohortReference,
             DraftApprenticeshipId = source.DraftApprenticeshipId,
-            EndDate = apiResponse.EndDate.Value.ToShortDateString(),
-            StartDate = apiResponse.StartDate.Value.ToShortDateString(),
         };
 
         return result;

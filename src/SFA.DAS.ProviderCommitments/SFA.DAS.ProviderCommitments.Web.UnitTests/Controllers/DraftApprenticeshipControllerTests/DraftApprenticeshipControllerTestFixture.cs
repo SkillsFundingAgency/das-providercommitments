@@ -100,11 +100,7 @@ public class DraftApprenticeshipControllerTestFixture
         _draftApprenticeshipAddEmailViewModel = autoFixture.Build<DraftApprenticeshipAddEmailViewModel>().
             With(x => x.CohortId, _cohortId)
             .With(x => x.DraftApprenticeshipId, _draftApprenticeshipId)
-            .With(x => x.Email)
-            .With(x => x.StartDate)
-            .With(x => x.EndDate).Create();
-
-
+            .With(x => x.Email).Create();
 
         _draftApprenticeshipDetails = autoFixture.Build<GetDraftApprenticeshipResponse>()
             .With(x => x.Id, _draftApprenticeshipId)
@@ -121,9 +117,6 @@ public class DraftApprenticeshipControllerTestFixture
         _updateDraftApprenticeshipRequest = new UpdateDraftApprenticeshipApimRequest();
         _draftApprenticeAddEmailApimRequest = autoFixture.Build<DraftApprenticeAddEmailApimRequest>()
             .With(x => x.Email)
-            .With(x => x.CohortId, _cohortId)
-            .With(x => x.StartDate)
-            .With(x => x.EndDate)
             .Create();
 
         _draftApprenticeshipSetReferenceViewModel = autoFixture.Build<DraftApprenticeshipSetReferenceViewModel>()

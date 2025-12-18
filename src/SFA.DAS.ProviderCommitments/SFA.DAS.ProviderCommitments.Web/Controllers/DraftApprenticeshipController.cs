@@ -284,7 +284,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> AddEmail(DraftApprenticeshipAddEmailViewModel model)
         {
-            var updateRequest = await modelMapper.Map<DraftApprenticeAddEmailApimRequest>(model);
+            var updateRequest = new DraftApprenticeAddEmailApimRequest {
+                Email = model.Email 
+            };
+
             await outerApiService.DraftApprenticeshipAddEmail(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
             TempData["Banner"] = model.IsEdit ? ViewEditBanners.EmailUpdated : ViewEditBanners.EmailAdded;
 
