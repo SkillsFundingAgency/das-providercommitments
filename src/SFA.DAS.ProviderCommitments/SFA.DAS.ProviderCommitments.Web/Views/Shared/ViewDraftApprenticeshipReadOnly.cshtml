@@ -98,6 +98,12 @@
                                 <dd class="govuk-summary-list__value">
                                     @if (string.IsNullOrEmpty(@Model.Email))
                                     {
+                                            <a class="govuk-link" href="@Url.Action("AddEmail", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference})">
+                                                Change<span class="govuk-visually-hidden">
+                                                    Add Email
+                                                </span>
+                                            </a>
+
                                         <button id="add-email-link" type="submit" name="addEmail"
                                                 value="add" class="das-button--inline-link">
                                             Add Email
@@ -126,7 +132,6 @@
                                     Date of birth
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-
                                     @(Model.DateOfBirth.HasValue? Model.DateOfBirth.Date.Value.ToString("dd MMM yyyy") : "")
                                     @Html.HiddenFor(x => x.BirthDay)
                                     @Html.HiddenFor(x => x.BirthMonth)
@@ -138,9 +143,6 @@
                                     @Html.HiddenFor(x => x.EndYear)
                                     @Html.HiddenFor(x => x.FirstName)
                                     @Html.HiddenFor(x => x.LastName)
-
-
-
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
                                     <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> date of birth</span></a>
@@ -161,7 +163,6 @@
                         </dl>
                     </div>
                 </div>
-              
               
                 <div class="govuk-summary-card">
                     <div class="govuk-summary-card__title-wrapper">
