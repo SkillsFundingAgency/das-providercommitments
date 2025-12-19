@@ -98,12 +98,6 @@
                                 <dd class="govuk-summary-list__value">
                                     @if (string.IsNullOrEmpty(@Model.Email))
                                     {
-                                            <a class="govuk-link" href="@Url.Action("AddEmail", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference})">
-                                                Change<span class="govuk-visually-hidden">
-                                                    Add Email
-                                                </span>
-                                            </a>
-
                                         <button id="add-email-link" type="submit" name="addEmail"
                                                 value="add" class="das-button--inline-link">
                                             Add Email
