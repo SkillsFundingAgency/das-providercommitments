@@ -20,6 +20,7 @@ public class AddDraftApprenticeshipEmailViewModelMapper(IOuterApiClient outerApi
             DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
             Name = $"{apiResponse.FirstName} {apiResponse.LastName}",
             Email = apiResponse.Email,
+            OriginalEmail = apiResponse.Email,
             CohortReference = source.CohortReference,
             DraftApprenticeshipId = source.DraftApprenticeshipId,
         };

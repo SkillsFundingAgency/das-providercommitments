@@ -11,7 +11,6 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
 
 @{
-
     string DisplayCost(int? value) => value.HasValue ? value.Value.ToGdsCostFormat() : "--";
 
     var startDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training start date" : "Planned apprenticeship training start date";
@@ -28,27 +27,17 @@
     }
 
     string name = $"{Model.FirstName} {Model.LastName}";
-
+    var banner = new SuccessBannerModel("update-status", Model.Banner, "");
 }
 
 <div class="govuk-width-container">
     <main class="" role="main">
         <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            @if (@Model.Banner != ViewEditBanners.None)
+            @if (!string.IsNullOrEmpty(@Model.Banner))
             {
-                var bannerModel = Model.Banner switch
-                {
-                    ViewEditBanners.EmailAdded => new SuccessBannerModel("email-add-banner", "Email address added", ""),
-                    ViewEditBanners.EmailUpdated => new SuccessBannerModel("email-update-banner", "Email address updated", ""),
-                    ViewEditBanners.ReferenceAdded => new SuccessBannerModel("reference-add-banner", "Reference added", ""),
-                    ViewEditBanners.ReferenceUpdated => new SuccessBannerModel("reference-update-banner", "Reference updated", ""),
-                    ViewEditBanners.StandardOptionAddedd => new SuccessBannerModel("standard-option-add-banner", "Standard option added", "")
-                };
-
-                <partial name="_SuccessBanner" model="bannerModel"></partial>
+                <partial name="_SuccessBanner" model="banner"></partial>
             }
-        
         </div>
             <div class="govuk-grid-column-two-thirds"></div>
         </div>
@@ -59,7 +48,6 @@
                 <input type="hidden" asp-for="DeliveryModel" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
                 <input type="hidden" asp-for="FirstName" value="@Model.FirstName">
                 <input type="hidden" asp-for="LastName" value="@Model.LastName">               
-
 
                 <h1 class="govuk-heading-l">View details for @Model.FirstName @Model.LastName</h1>
 

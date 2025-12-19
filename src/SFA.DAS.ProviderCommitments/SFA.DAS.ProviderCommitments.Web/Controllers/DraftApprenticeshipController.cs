@@ -248,7 +248,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> SetReference(DraftApprenticeshipSetReferenceRequest request)
         {            
             var model = await modelMapper.Map<DraftApprenticeshipSetReferenceViewModel>(request);
-            return View("SetReference", model);
+            return View(model);
         }
 
 
@@ -257,9 +257,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> SetReference(DraftApprenticeshipSetReferenceViewModel model)
         {
-            var updateRequest = await modelMapper.Map<PostDraftApprenticeshipSetReferenceApimRequest>(model);
-            await outerApiService.DraftApprenticeshipSetReference(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
-            TempData["Banner"] = model.IsEdit ? ViewEditBanners.ReferenceUpdated : ViewEditBanners.ReferenceAdded;
+            if (model.HasChanged())
+            {
+                var updateRequest = await modelMapper.Map<PostDraftApprenticeshipSetReferenceApimRequest>(model);
+                await outerApiService.DraftApprenticeshipSetReference(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
+                TempData["Banner"] = model.DisplayUpdateMessage();
+            }
+
             return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
             {
                 model.ProviderId,
@@ -278,18 +282,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(model);
         }
 
-
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/email")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> AddEmail(DraftApprenticeshipAddEmailViewModel model)
         {
-            var updateRequest = new DraftApprenticeAddEmailApimRequest {
-                Email = model.Email 
-            };
+            if (model.HasChanged())
+            {
+                var updateRequest = new DraftApprenticeAddEmailApimRequest
+                {
+                    Email = model.Email
+                };
 
-            await outerApiService.DraftApprenticeshipAddEmail(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
-            TempData["Banner"] = model.IsEdit ? ViewEditBanners.EmailUpdated : ViewEditBanners.EmailAdded;
+                await outerApiService.DraftApprenticeshipAddEmail(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
+                TempData["Banner"] = model.DisplayUpdateMessage();
+            }
 
             return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
             {
@@ -400,7 +407,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                     if(TempData.TryGetValue("Banner", out object value))
                     {
-                        editModel.Banner = (ViewEditBanners)value;
+                        editModel.Banner = (string)value;
                     }
 
                     await AddLegalEntityAndCoursesToModel(editModel);
@@ -602,7 +609,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if(request.LearnerDataId is not null)
             {                
-                TempData["Banner"] = !string.IsNullOrEmpty(request.CourseOption) ? ViewEditBanners.StandardOptionAddedd : ViewEditBanners.None;
+                TempData["Banner"] = "Course option updated";
 
                 return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
                 {

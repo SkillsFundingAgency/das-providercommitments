@@ -4,7 +4,6 @@
 @{
     var title = string.IsNullOrWhiteSpace(Model.Reference) ? "Add your Reference" : "Change your Reference";
     ViewData["Title"] = title;
-    var isEdit = string.IsNullOrEmpty(Model.Reference) ? "false" : "true";
 }
 
 <div class="govuk-grid-row">
@@ -13,7 +12,7 @@
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-l">Details for @Model.Name</span>
             <h1 class="govuk-heading-l">@title</h1>
-            <input type="hidden" name="IsEdit" value="@isEdit" />
+            @Html.HiddenFor(m => m.OriginalReference)
 
             <p class="govuk-body">
                 Add a reference, such as employee number or location. This won’t be seen by the employer.

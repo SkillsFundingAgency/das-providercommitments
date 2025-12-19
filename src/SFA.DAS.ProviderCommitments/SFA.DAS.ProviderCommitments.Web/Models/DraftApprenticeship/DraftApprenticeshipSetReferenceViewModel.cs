@@ -8,6 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship
         public long ProviderId { get; set; }
         public Guid? ReservationId { get; set; }
         public string Reference { get; set; }
+        public string OriginalReference { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }
         public long CohortId { get; set; }
         public string Name { get; set; }
@@ -16,6 +17,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship
 
         public Party Party { get; set; }
 
-        public bool IsEdit { get; set; }
+        public string DisplayUpdateMessage()
+        {
+            if (string.IsNullOrEmpty(OriginalReference) && !string.IsNullOrEmpty(Reference))
+                return "Reference added";
+            if (!string.IsNullOrEmpty(OriginalReference) && string.IsNullOrEmpty(Reference))
+                return "Reference removed";
+            if (OriginalReference != Reference)
+                return "Reference updated";
+            return null;
+        }
+        public bool HasChanged() => Reference != OriginalReference;
     }
 }

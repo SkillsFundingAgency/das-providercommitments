@@ -25,8 +25,7 @@
         </p>
 
         <form method="post" asp-route="@RouteNames.ApprenticeEmail" asp-route-providerId="@Model.ProviderId">
-            <input type="hidden" name="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
-            <input type="hidden" name="IsEdit" value="@isEdit" />
+            @Html.HiddenFor(m => m.OriginalEmail)
 
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Email, "govuk-form-group--error")">
                 <label asp-for="Email" class="govuk-label">Email address</label>

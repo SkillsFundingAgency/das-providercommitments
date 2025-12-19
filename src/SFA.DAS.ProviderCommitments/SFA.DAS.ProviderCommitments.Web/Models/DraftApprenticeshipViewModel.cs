@@ -168,7 +168,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public bool HasLearnerDataChanges { get; set; }
         public DateTime? LastLearnerDataSync { get; set; }
         public string Name { get; set; }
-        public ViewEditBanners Banner { get; set; }
+        public string Banner { get; set; }
         public string TrainingCourseVersion { get; set; }
     }
 }
