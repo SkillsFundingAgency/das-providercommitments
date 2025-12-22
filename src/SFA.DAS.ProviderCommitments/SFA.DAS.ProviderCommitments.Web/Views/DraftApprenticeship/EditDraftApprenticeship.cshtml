@@ -14,65 +14,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="_ValidationSummary" />
-        
-        @if (TempData["LearnerDataSyncSuccess"] != null)
-        {
-            <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                <div class="govuk-notification-banner__header">
-                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                        Success
-                    </h2>
-                </div>
-                <div class="govuk-notification-banner__content">
-                    <p class="govuk-notification-banner__heading">
-                        @TempData["LearnerDataSyncSuccess"]
-                    </p>
-                </div>
-            </div>
-        }
-        
-        @if (TempData["LearnerDataSyncError"] != null)
-        {
-            <div class="govuk-notification-banner govuk-notification-banner--error" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                <div class="govuk-notification-banner__header">
-                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                        Error
-                    </h2>
-                </div>
-                <div class="govuk-notification-banner__content">
-                    <p class="govuk-notification-banner__heading">
-                        @TempData["LearnerDataSyncError"]
-                    </p>
-                </div>
-            </div>
-        }
-        
-        @if (Model.HasLearnerDataChanges)
-        {
-            <div class="govuk-notification-banner" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                <div class="govuk-notification-banner__header">
-                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                        Important
-                    </h2>
-                </div>
-                <div class="govuk-notification-banner__content">
-                    <p class="govuk-notification-banner__heading">
-                        Apprentice details have been changed in the ILR. To continue you need to 
-                        <form method="post" asp-route="@RouteNames.DraftApprenticeshipEdit" asp-route-providerId="@Model.ProviderId" style="display: inline;">
-                            <input type="hidden" name="CohortId" value="@Model.CohortId" />
-                            <input type="hidden" name="DraftApprenticeshipId" value="@Model.DraftApprenticeshipId" />
-                            <input type="hidden" name="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
-                            <input type="hidden" name="CohortReference" value="@Model.CohortReference" />
-                            <input type="hidden" name="Operation" value="SyncLearnerData" />
-                            <button type="submit" class="govuk-link" style="background: none; border: none; padding: 0; font: inherit; color: #1d70b8; text-decoration: underline; cursor: pointer;">
-                                update now
-                            </button>
-                        </form>
-                    </p>
-                </div>
-            </div>
-        }
-        
+
         <div asp-show="@rplStillNeedsConsideration" class="govuk-notification-banner">
             <div class="govuk-notification-banner__header">
                 <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
@@ -99,11 +41,8 @@
 
             <button type="submit" id="defaultButton" aria-hidden="true" class="govuk-visually-hidden" tabindex="-1"></button>
             
-            @if (Model.IsContinuation || Model.LearnerDataId == null)
-            {
-                <partial name="DraftApprenticeship" for="@Model"/>
-                <button type="submit" class="govuk-button" id="submitAddDraftApprenticeship">Save</button>
-            }            
+            <partial name="DraftApprenticeship" for="@Model"/>
+            <button type="submit" class="govuk-button" id="submitAddDraftApprenticeship">Save</button>
 
             @if (!Model.IsContinuation)
             {

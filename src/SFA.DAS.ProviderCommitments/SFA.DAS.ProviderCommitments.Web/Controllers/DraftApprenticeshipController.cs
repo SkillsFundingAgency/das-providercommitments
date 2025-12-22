@@ -482,6 +482,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             
             var draftApprenticeship = await commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value);
 
+            if(model.LearnerDataId != null)
+            {
+                return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
+            }
+
             if (draftApprenticeship.HasStandardOptions)
             {
                 return RedirectToOptionalPages(
