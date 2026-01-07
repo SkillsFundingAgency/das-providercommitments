@@ -65,7 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 return "TRUE";
             }
 
-            if (csvRecord.DurationReducedBy == "0")
+            if (csvRecord.DurationReducedBy == "0" || string.IsNullOrWhiteSpace(csvRecord.DurationReducedBy))
             {
                 return "FALSE";
             }
