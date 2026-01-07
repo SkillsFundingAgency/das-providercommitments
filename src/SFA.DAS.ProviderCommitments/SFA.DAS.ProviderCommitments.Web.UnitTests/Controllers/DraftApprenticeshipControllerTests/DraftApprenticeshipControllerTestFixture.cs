@@ -47,7 +47,7 @@ public class DraftApprenticeshipControllerTestFixture
     private readonly AddDraftApprenticeshipApimRequest _createAddDraftApprenticeshipRequest;
     private readonly UpdateDraftApprenticeshipApimRequest _updateDraftApprenticeshipRequest;
     private readonly DraftApprenticeAddEmailApimRequest _draftApprenticeAddEmailApimRequest;
-    private readonly PostDraftApprenticeshipSetReferenceApimRequest _postDraftApprenticeshipSetReferenceApimRequest;
+    private readonly DraftApprenticeshipSetReferenceApimRequest _postDraftApprenticeshipSetReferenceApimRequest;
     private readonly ReservationsAddDraftApprenticeshipRequest _reservationsAddDraftApprenticeshipRequest;
     private readonly GetReservationIdForAddAnotherApprenticeRequest _getReservationIdForAddAnotherApprenticeRequest;
     private readonly SelectAddAnotherDraftApprenticeshipJourneyViewModel _selectAddAnotherApprenticeshipJourneyViewModel;
@@ -124,7 +124,7 @@ public class DraftApprenticeshipControllerTestFixture
             .With(x=>x.DraftApprenticeshipId, _draftApprenticeshipId)
             .With(x=>x.Reference)
             .Create();
-        _postDraftApprenticeshipSetReferenceApimRequest = autoFixture.Build<PostDraftApprenticeshipSetReferenceApimRequest>()            
+        _postDraftApprenticeshipSetReferenceApimRequest = autoFixture.Build<DraftApprenticeshipSetReferenceApimRequest>()            
             .With(x => x.Reference)
             .Create();
 
@@ -212,7 +212,7 @@ public class DraftApprenticeshipControllerTestFixture
         _modelMapper.Setup(x => x.Map<DraftApprenticeAddEmailApimRequest>(It.IsAny<DraftApprenticeshipAddEmailViewModel>()))
            .ReturnsAsync(_draftApprenticeAddEmailApimRequest);
 
-        _modelMapper.Setup(x => x.Map<PostDraftApprenticeshipSetReferenceApimRequest>(It.IsAny<DraftApprenticeshipSetReferenceViewModel>()))
+        _modelMapper.Setup(x => x.Map<DraftApprenticeshipSetReferenceApimRequest>(It.IsAny<DraftApprenticeshipSetReferenceViewModel>()))
          .ReturnsAsync(_postDraftApprenticeshipSetReferenceApimRequest);
 
         _modelMapper.Setup(x => x.Map<AddDraftApprenticeshipViewModel>(It.IsAny<ReservationsAddDraftApprenticeshipRequest>()))
@@ -430,7 +430,7 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
-    public async Task<DraftApprenticeshipControllerTestFixture> PostToAddEmail()
+    public async Task<DraftApprenticeshipControllerTestFixture> PutToAddEmail()
     {
         _actionResult = await _controller.AddEmail(_draftApprenticeshipAddEmailViewModel);
         return this;
@@ -663,7 +663,7 @@ public class DraftApprenticeshipControllerTestFixture
     {
         _outerApiService.Verify(
             x => x.DraftApprenticeshipSetReference(_draftApprenticeshipSetReferenceViewModel.ProviderId, _cohortId, _draftApprenticeshipId, 
-            It.Is<PostDraftApprenticeshipSetReferenceApimRequest>(c => c.Reference.Equals(reference ?? _postDraftApprenticeshipSetReferenceApimRequest.Reference))), Times.Once);
+            It.Is<DraftApprenticeshipSetReferenceApimRequest>(c => c.Reference.Equals(reference ?? _postDraftApprenticeshipSetReferenceApimRequest.Reference))), Times.Once);
         return this;
     }
 

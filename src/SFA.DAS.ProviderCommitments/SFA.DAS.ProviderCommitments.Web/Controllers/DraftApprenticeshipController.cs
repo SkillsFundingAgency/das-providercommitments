@@ -251,7 +251,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(model);
         }
 
-
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/reference", Name = RouteNames.setReference)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
@@ -259,8 +258,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (model.HasChanged())
             {
-                var updateRequest = await modelMapper.Map<PostDraftApprenticeshipSetReferenceApimRequest>(model);
-                await outerApiService.DraftApprenticeshipSetReference(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
+                var updateRequest = await modelMapper.Map<DraftApprenticeshipSetReferenceApimRequest>(model);
+                outerApiService.DraftApprenticeshipSetReference(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
                 TempData["Banner"] = model.DisplayUpdateMessage();
             }
 
@@ -271,7 +270,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 model.CohortReference
             });
         }
-
 
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/email", Name = RouteNames.ApprenticeEmail)]
@@ -294,7 +292,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     Email = model.Email
                 };
 
-                await outerApiService.DraftApprenticeshipAddEmail(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
+                outerApiService.DraftApprenticeshipAddEmail(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
                 TempData["Banner"] = model.DisplayUpdateMessage();
             }
 

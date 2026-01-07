@@ -15,11 +15,11 @@ public class WhenIAddEmailToDraftApprenticeship
     {
         _fixture.SetupAddEmailAddress();
 
-        await _fixture.PostToAddEmail();
+        await _fixture.PutToAddEmail();
 
         _fixture
             .VerifyApiUpdateWithAddEmailSet()
             .VerifyRedirectedToEditDraftApprenticeship();
-    }
+    }   
 }
 

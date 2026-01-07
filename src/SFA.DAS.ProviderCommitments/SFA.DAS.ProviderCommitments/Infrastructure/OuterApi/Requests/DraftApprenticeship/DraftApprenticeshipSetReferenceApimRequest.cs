@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 
-public class PostDraftApprenticeshipSetReferenceApimRequest
+public class DraftApprenticeshipSetReferenceApimRequest
 {
     public string Reference {  get; set; }
 
