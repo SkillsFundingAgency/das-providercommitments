@@ -667,7 +667,6 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
-
     public DraftApprenticeshipControllerTestFixture VerifyRedirectedBackToCohortDetailsPage()
     {
         _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("Details");

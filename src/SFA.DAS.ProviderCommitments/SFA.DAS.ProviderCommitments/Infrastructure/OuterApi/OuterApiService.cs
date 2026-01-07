@@ -121,14 +121,14 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         await outerApiClient.Put<object>(new PutUpdateDraftApprenticeshipRequest(cohortId, apprenticeshipId) { Data = request });
     }
 
-    public void DraftApprenticeshipAddEmail(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeAddEmailApimRequest request)
+    public Task DraftApprenticeshipAddEmail(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeAddEmailApimRequest request)
     {
-        outerApiClient.Put<object>(new DraftApprenticeAddEmailRequest(providerId, cohortId, apprenticeshipId) { Data = request });
+       return outerApiClient.Put<object>(new DraftApprenticeAddEmailRequest(providerId, cohortId, apprenticeshipId) { Data = request });
     }
 
-    public void DraftApprenticeshipSetReference(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeshipSetReferenceApimRequest request )
+    public Task DraftApprenticeshipSetReference(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeshipSetReferenceApimRequest request )
     {
-        outerApiClient.Put<object>(new PostDraftApprenticeshipSetReferenceRequest(providerId, cohortId, apprenticeshipId) { Data = request });
+       return outerApiClient.Put<object>(new PostDraftApprenticeshipSetReferenceRequest(providerId, cohortId, apprenticeshipId) { Data = request });
     }
 
     public async Task<AddDraftApprenticeshipResponse> AddDraftApprenticeship(long cohortId, AddDraftApprenticeshipApimRequest request)

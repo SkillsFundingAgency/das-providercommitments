@@ -163,10 +163,12 @@
                                 <dd class="govuk-summary-list__value">
                                     @if (string.IsNullOrEmpty(@Model.Email))
                                     {
-                                        <button id="add-email-link" type="submit" name="addEmail"
+                                        @* <button id="add-email-link" type="submit" name="addEmail"
                                                 value="add" class="das-button--inline-link">
                                             Add Email
-                                        </button>
+                                        </button> *@
+
+                                            <a id="add-email-link" class="das-button--inline-link" href="@Url.Action("AddEmail", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Add Email</a>
                                     }
                                     else
                                     {
@@ -177,10 +179,7 @@
                                 <dd class="govuk-summary-list__actions">
                                     @if (!string.IsNullOrEmpty(@Model.Email))
                                     {
-                                            <button id="add-email-link" type="submit" name="addEmail"
-                                                    value="add" class="das-button--inline-link">
-                                                Change Email
-                                            </button>
+                                        <a id="change-email-link" class="das-button--inline-link" href="@Url.Action("AddEmail", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Change</a>
                                     }
                                 </dd>
                             </div>
@@ -342,11 +341,10 @@
                                     <dd class="govuk-summary-list__value">
                                         @if (string.IsNullOrEmpty(Model.TrainingCourseOption) || Model.TrainingCourseOption == "-1")
                                         {
-                                                <button id="add-SO-link" type="submit" name="addStandardOption"
-                                                value="add" class="das-button--inline-link">
+                                            <a id="add-SO-link" name="addSOLink" class="das-button--inline-link" href="@Url.Action("SelectOptions", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">
                                                 Add standard
                                                 option
-                                            </button>
+                                            </a>
                                         }
                                         else
                                         {
@@ -356,10 +354,9 @@
                                     <dd class="govuk-summary-list__actions">
                                         @if (!string.IsNullOrEmpty(Model.TrainingCourseOption) && Model.TrainingCourseOption != "-1")
                                         {
-                                            <button id="change-SO-link" type="submit" name="addStandardOption"
-                                                value="Change" class="das-button--inline-link">
-                                                Change
-                                            </button>
+                                                <a id="change-SO-link" name="changeSOLink" class="das-button--inline-link" href="@Url.Action("SelectOptions", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">
+                                                    Change
+                                                </a>
                                         }
                                     </dd>
                                 </div>
@@ -375,10 +372,7 @@
                                     <dd class="govuk-summary-list__value">
                                         @if (string.IsNullOrEmpty(@Model.Reference))
                                         {
-                                            <button id="add-reference-link" type="submit" name="addReference"
-                                                    value="add" class="das-button--inline-link">
-                                                Add Reference
-                                            </button>
+                                            <a id="add-reference-link" name="addReference" class="das-button--inline-link" href="@Url.Action("SetReference", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Add Reference</a>
                                         }
                                         else
                                         {
@@ -388,10 +382,7 @@
                                     <dd class="govuk-summary-list__actions">
                                         @if (!string.IsNullOrEmpty(@Model.Reference))
                                         {
-                                            <button id="change-reference-link" type="submit" name="addReference"
-                                                    value="Change" class="das-button--inline-link">
-                                                Change
-                                            </button>
+                                            <a id="change-reference-link" name="changeReference" class="das-button--inline-link" href="@Url.Action("SetReference", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Change</a>
                                         }
                                     </dd>
                             </div>                           

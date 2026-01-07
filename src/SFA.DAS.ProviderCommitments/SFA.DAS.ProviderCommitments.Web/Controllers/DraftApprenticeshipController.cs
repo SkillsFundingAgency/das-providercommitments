@@ -245,7 +245,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/reference")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SetReference(DraftApprenticeshipSetReferenceRequest request)
+        public async Task<IActionResult> SetReference(DraftApprenticeshipRequest request)
         {            
             var model = await modelMapper.Map<DraftApprenticeshipSetReferenceViewModel>(request);
             return View(model);
@@ -259,7 +259,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (model.HasChanged())
             {
                 var updateRequest = await modelMapper.Map<DraftApprenticeshipSetReferenceApimRequest>(model);
-                outerApiService.DraftApprenticeshipSetReference(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
+                await outerApiService.DraftApprenticeshipSetReference(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
                 TempData["Banner"] = model.DisplayUpdateMessage();
             }
 
@@ -274,7 +274,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/email", Name = RouteNames.ApprenticeEmail)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> AddEmail(DraftApprenticeshipAddEmailRequest request) 
+        public async Task<ActionResult> AddEmail(DraftApprenticeshipRequest request) 
         {            
             var model = await modelMapper.Map<DraftApprenticeshipAddEmailViewModel>(request);
             return View(model);
@@ -292,7 +292,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     Email = model.Email
                 };
 
-                outerApiService.DraftApprenticeshipAddEmail(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
+               await outerApiService.DraftApprenticeshipAddEmail(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
                 TempData["Banner"] = model.DisplayUpdateMessage();
             }
 
@@ -435,22 +435,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (operation == SyncLearnerDataOperation)
             {
                 return await HandleLearnerDataSync(model);
-            }
-            
-            if(addEmail != null)
-            {   
-                return RedirectToAction("AddEmail", "DraftApprenticeship", new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
-            }
-
-            if(addReference != null)
-            {               
-                return RedirectToAction("SetReference", new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
-            }
-
-            if(addStandardOption!=null)
-            {
-                return RedirectToAction("SelectOptions", new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
-            }
+            } 
 
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit")
             {

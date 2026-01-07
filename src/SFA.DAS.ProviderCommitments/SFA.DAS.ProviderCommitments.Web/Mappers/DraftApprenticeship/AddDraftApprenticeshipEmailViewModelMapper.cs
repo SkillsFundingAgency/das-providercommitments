@@ -1,13 +1,14 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
+using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
 public class AddDraftApprenticeshipEmailViewModelMapper(IOuterApiClient outerApiClient)
-: IMapper<DraftApprenticeshipAddEmailRequest, DraftApprenticeshipAddEmailViewModel>
+: IMapper<DraftApprenticeshipRequest, DraftApprenticeshipAddEmailViewModel>
 {
-    public async Task<DraftApprenticeshipAddEmailViewModel> Map(DraftApprenticeshipAddEmailRequest source)
+    public async Task<DraftApprenticeshipAddEmailViewModel> Map(DraftApprenticeshipRequest source)
     {
 
         var apiRequest = new GetEditDraftApprenticeshipRequest(source.ProviderId, (long)source.CohortId, (long)source.DraftApprenticeshipId, null);

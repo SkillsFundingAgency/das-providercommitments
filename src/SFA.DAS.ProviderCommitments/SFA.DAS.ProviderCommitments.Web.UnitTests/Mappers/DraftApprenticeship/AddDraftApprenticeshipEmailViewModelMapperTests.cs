@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
-using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship;
 
@@ -10,14 +10,14 @@ public class AddDraftApprenticeshipEmailViewModelMapperTests
 {
     private AddDraftApprenticeshipEmailViewModelMapper _mapper;
     private Mock<IOuterApiClient> _apiClient;
-    private DraftApprenticeshipAddEmailRequest _request;
+    private DraftApprenticeshipRequest _request;
     private GetEditDraftApprenticeshipResponse _apiResponse;
     private readonly Fixture _fixture = new();
 
     [SetUp]
     public void Setup()
     {
-        _request = _fixture.Create<DraftApprenticeshipAddEmailRequest>();
+        _request = _fixture.Create<DraftApprenticeshipRequest>();
         _apiResponse = _fixture.Create<GetEditDraftApprenticeshipResponse>();
 
         _apiClient = new Mock<IOuterApiClient>();

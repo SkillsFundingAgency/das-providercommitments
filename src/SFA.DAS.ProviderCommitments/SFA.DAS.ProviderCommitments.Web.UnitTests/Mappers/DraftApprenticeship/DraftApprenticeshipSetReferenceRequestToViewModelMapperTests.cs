@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.Services;
 
@@ -10,14 +11,14 @@ internal class DraftApprenticeshipSetReferenceRequestToViewModelMapperTests
 {
     private DraftApprenticeshipSetReferenceRequestToViewModelMapper _mapper;
     private Mock<IOuterApiClient> _apiClient;
-    private DraftApprenticeshipSetReferenceRequest _request;
+    private DraftApprenticeshipRequest _request;
     private GetEditDraftApprenticeshipResponse _apiResponse;
     private readonly Fixture _fixture = new();
 
     [SetUp]
     public void Setup()
     {
-        _request = _fixture.Create<DraftApprenticeshipSetReferenceRequest>();
+        _request = _fixture.Create<DraftApprenticeshipRequest>();
         _apiResponse = _fixture.Create<GetEditDraftApprenticeshipResponse>();
 
         _apiClient = new Mock<IOuterApiClient>();

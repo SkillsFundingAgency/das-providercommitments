@@ -56,6 +56,6 @@ public interface IOuterApiService
     Task<ValidateEditApprenticeshipResponse> EditApprenticeship(long providerId, long apprenticeshipId, ValidateEditApprenticeshipRequest request);
     Task<ConfirmEditApprenticeshipResponse> ConfirmEditApprenticeship(long providerId, long apprenticeshipId, ConfirmEditApprenticeshipRequest request);
     Task<SyncLearnerDataResponse> SyncLearnerData(long providerId, long cohortId, long draftApprenticeshipId);   
-    void DraftApprenticeshipSetReference(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeshipSetReferenceApimRequest request);
-    void DraftApprenticeshipAddEmail(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeAddEmailApimRequest request);
+    Task DraftApprenticeshipSetReference(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeshipSetReferenceApimRequest request);
+    Task DraftApprenticeshipAddEmail(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeAddEmailApimRequest request);
 }
