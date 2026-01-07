@@ -561,6 +561,18 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
+    public DraftApprenticeshipControllerTestFixture SetUpUpdateDraftApprenticeship()
+    {        
+        _editModel.LearnerDataId = 123;
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectedToCohortDetails()
+    {
+        _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("Details");
+        return this;
+    }
+
     public DraftApprenticeshipControllerTestFixture SetupAddingToThrowCommitmentsApiException()
     {
         _outerApiService
