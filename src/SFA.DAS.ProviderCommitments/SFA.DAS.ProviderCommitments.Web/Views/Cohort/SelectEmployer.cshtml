@@ -1,4 +1,4 @@
-﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.Models.Shared 
 @using Newtonsoft.Json;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
@@ -12,8 +12,10 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl" id="page-title">Choose an employer</h1>
-            <p class="govuk-body govuk-!-margin-bottom-8">
+            <p class="govuk-body">
                 Choose the employer you want to add apprentice details for.
+            </p>
+            <p class="govuk-body govuk-!-margin-bottom-8">
                 If you cannot find the employer, go to <a asp-external-subdomain="relationships" asp-external-id="@Model.ProviderId" asp-external-controller="employers" class="govuk-link">Manage your employers</a>.
             </p>
             <div class="govuk-form-group">
