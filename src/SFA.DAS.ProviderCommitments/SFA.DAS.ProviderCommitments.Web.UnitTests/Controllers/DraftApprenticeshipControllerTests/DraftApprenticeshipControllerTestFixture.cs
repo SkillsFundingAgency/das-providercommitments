@@ -555,6 +555,12 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
+    public DraftApprenticeshipControllerTestFixture SetUpLearnerDataOnAddModel()
+    {
+        _addModel.LearnerDataId = 1234;
+        return this;
+    }
+
     public DraftApprenticeshipControllerTestFixture SetUpStandardToReturnNoOptions()
     {
         _draftApprenticeshipDetails.HasStandardOptions = false;
@@ -798,6 +804,12 @@ public class DraftApprenticeshipControllerTestFixture
     public DraftApprenticeshipControllerTestFixture VerifyRedirectToSelectOptionsPage()
     {
         _actionResult.VerifyRedirectsToSelectOptionsPage(_draftApprenticeshipHashedId);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectToEditPage()
+    {
+        _actionResult.VerifyRedirectsToEditPage(_draftApprenticeshipHashedId);
         return this;
     }
 

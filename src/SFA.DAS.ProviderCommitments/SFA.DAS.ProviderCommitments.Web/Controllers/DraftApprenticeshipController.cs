@@ -364,6 +364,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var response = await outerApiService.AddDraftApprenticeship(model.CohortId.Value, request);
 
+            if (model.LearnerDataId != null)
+            {
+                var draftHashedId = encodingService.Encode(response.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
+                return RedirectToAction("Details", "Cohort", new { model.CohortReference, request.ProviderId });
+            }
+
             if (string.IsNullOrEmpty(model.CourseCode))
             {
                 return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });

@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
+﻿using SFA.DAS.ProviderCommitments.Web.RouteValues;
+
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
 {
     internal static class VerifyRedirectToPagesExtension
     {
@@ -75,6 +77,16 @@
                 .VerifyReturnsRedirectToActionResult()
                 .WithActionName("Details");
 
+            redirectAction.RouteValues["DraftApprenticeshipHashedId"].Should().Be(draftApprenticeshipHashedId);
+
+            return redirectAction;
+        }
+
+        public static RedirectToRouteResult VerifyRedirectsToEditPage(this IActionResult result, string draftApprenticeshipHashedId)
+        {
+            var redirectAction = result.VerifyReturnsRedirectToRouteResult();
+
+            redirectAction.RouteName.Should().Be(RouteNames.DraftApprenticeshipEdit);
             redirectAction.RouteValues["DraftApprenticeshipHashedId"].Should().Be(draftApprenticeshipHashedId);
 
             return redirectAction;
