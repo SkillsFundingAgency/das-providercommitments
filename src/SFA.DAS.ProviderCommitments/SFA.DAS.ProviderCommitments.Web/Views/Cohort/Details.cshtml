@@ -99,7 +99,6 @@
                     </p>
                 </div>
             </div>
-
         </div>
     </div>
 }
@@ -136,13 +135,19 @@
 
 <partial name="_ValidationSummary"/>
 <h1 class="govuk-heading-xl">@Model.PageTitle</h1>
-<dl class="das-definition-list das-definition-list--inline">
-    <dt class="das-definition-list__title govuk-!-margin-bottom-4">Employer</dt>
-    <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.LegalEntityName</dd>
-    <dt class="das-definition-list__title govuk-!-margin-bottom-4">Cohort reference</dt>
-    <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.CohortReference</dd>
-    <dt class="das-definition-list__title govuk-!-margin-bottom-4">Status</dt>
-    <dd class="das-definition-list__definition">@Model.Status</dd>
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key" id="status-label">Status</dt>
+        <dd class="govuk-summary-list__value" id="status-value">@Model.Status</dd>
+    </div>
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key" id="cohort-label">Cohort reference</dt>
+        <dd class="govuk-summary-list__value" id="cohort-value">@Model.CohortReference</dd>
+    </div>
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key" id="employer-label">Employer</dt>
+        <dd class="govuk-summary-list__value" id="employer-value">@Model.LegalEntityName</dd>
+    </div>
 </dl>
 
 @if (!string.IsNullOrWhiteSpace(Model.Message))
@@ -153,7 +158,23 @@
     </div>
 }
 
-<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+<div class="govuk-form-group">
+    <details class="govuk-details govuk-!-margin-top-2" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                I need to change some apprentice details
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>
+                You can change some details here using the ‘View’ link. This includes recognition of prior learning (RPL) and standard options.
+            </p>
+            <p>
+                You need to update all other details in the ILR, then return to this service. Changes can take up to 15 minutes to appear here.
+            </p>
+        </div>
+    </details>
+</div>
 
 @foreach (var course in Model.Courses)
 {
@@ -337,13 +358,12 @@
                         @(Model.IsReadOnly || !draftApprenticeship.IsEditable ? "View" : "Edit")
                         <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName's details</span>
                     </a>
+                    &nbsp;|&nbsp;
                     @if (!Model.IsReadOnly && !Model.IsLinkedToChangeOfPartyRequest)
                     {
-                        <br/>
-                        <br/>
                         <a class="govuk-link delete-apprentice"
                            href="@Url.RouteUrl(RouteNames.ApprenticeDelete, new { ProviderId = Model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeship.DraftApprenticeshipHashedId, CohortReference = Model.CohortReference })">
-                            Delete <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName </span>
+                            Remove <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName </span>
                         </a>
                     }
                 </td>
@@ -408,6 +428,17 @@
         <div class="govuk-grid-column-two-thirds">
             <form id="submitCohort" novalidate method="post" asp-route-providerId="@Model.ProviderId">
                 <input type="hidden" asp-for="ProviderId"/>
+
+                <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.RplVerified, "govuk-form-group--error")">
+                    <div class="govuk-checkboxes">
+                        @Html.ValidationMessageFor(m => m.RplVerified, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.RplVerified) })
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="rplVerified" name="RplVerified" type="checkbox" value="true">
+                            <label class="govuk-label govuk-checkboxes__label" for="rplVerified">I confirm I’ve checked RPL for each apprentice and added details where needed </label>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.Selection, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -420,7 +451,7 @@
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="radio-approve" name="selection" type="radio" value="@CohortDetailsOptions.Approve" data-aria-controls="conditional-approve">
                                     <label class="govuk-label govuk-radios__label" for="radio-approve">
-                                        Yes, approve and notify employer
+                                        Yes, send to employer for approval
                                     </label>
                                 </div>
                             }
@@ -455,7 +486,7 @@
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="radio-home" name="selection" type="radio" value="@CohortDetailsOptions.ApprenticeRequest">
                                     <label class="govuk-label govuk-radios__label" for="radio-home">
-                                        No, save and return to apprentice requests
+                                        No, save as a draft and return to apprentice requests
                                     </label>
                                 </div>
                             }
@@ -464,12 +495,7 @@
                     </fieldset>
                 </div>
 
-                <button type="submit" id="continue-button" class="govuk-button">Save and submit</button>
-                <br/>
-                <a class="govuk-link" id="save-and-exit-cohort" href="@Url.RouteUrl(RouteNames.Cohort, new { Model.ProviderId })">
-                    Save and exit
-                </a>
-
+                <button type="submit" id="continue-button" class="govuk-button">Save and continue</button>
             </form>
         </div>
     </div>

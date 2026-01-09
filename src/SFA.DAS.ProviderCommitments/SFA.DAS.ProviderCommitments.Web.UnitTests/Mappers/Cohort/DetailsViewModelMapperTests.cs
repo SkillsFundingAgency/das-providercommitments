@@ -326,15 +326,15 @@ public class DetailsViewModelMapperTests
         excessModel.Should().BeNull();
     }
 
-    [TestCase(0, "Approve apprentice details", Party.Provider)]
-    [TestCase(1, "Approve apprentice details", Party.Provider)]
-    [TestCase(2, "Approve 2 apprentices' details", Party.Provider)]
-    [TestCase(0, "View apprentice details", Party.Employer)]
-    [TestCase(1, "View apprentice details", Party.Employer)]
-    [TestCase(2, "View 2 apprentices' details", Party.Employer)]
-    [TestCase(0, "View apprentice details", Party.TransferSender)]
-    [TestCase(1, "View apprentice details", Party.TransferSender)]
-    [TestCase(2, "View 2 apprentices' details", Party.TransferSender)]
+    [TestCase(0, "Check apprentice details", Party.Provider)]
+    [TestCase(1, "Check apprentice details", Party.Provider)]
+    [TestCase(2, "Check apprentice details", Party.Provider)]
+    [TestCase(0, "Check apprentice details", Party.Employer)]
+    [TestCase(1, "Check apprentice details", Party.Employer)]
+    [TestCase(2, "Check apprentice details", Party.Employer)]
+    [TestCase(0, "Check apprentice details", Party.TransferSender)]
+    [TestCase(1, "Check apprentice details", Party.TransferSender)]
+    [TestCase(2, "Check apprentice details", Party.TransferSender)]
     public async Task PageTitleIsSetCorrectlyForTheNumberOfApprenticeships(int numberOfApprenticeships, string expectedPageTitle, Party withParty)
     {
         var fixture = new DetailsViewModelMapperTestsFixture().CreateThisNumberOfApprenticeships(numberOfApprenticeships);
@@ -385,7 +385,7 @@ public class DetailsViewModelMapperTests
         result.IsAgreementSigned.Should().Be(expectedIsAgreementSigned);
     }
 
-    [TestCase(true, "Approve these details?")]
+    [TestCase(true, "Do you want to send these details to the employer?")]
     [TestCase(false, "Submit to employer?")]
     public async Task OptionsTitleIsMappedCorrectlyWithATransfer(bool isAgreementSigned, string expectedOptionsTitle)
     {
@@ -395,7 +395,7 @@ public class DetailsViewModelMapperTests
         result.OptionsTitle.Should().Be(expectedOptionsTitle);
     }
 
-    [TestCase(true, "Approve these details?")]
+    [TestCase(true, "Do you want to send these details to the employer?")]
     [TestCase(false, "Submit to employer?")]
     public async Task OptionsTitleIsMappedCorrectlyWithoutATransfer(bool isAgreementSigned, string expectedOptionsTitle)
     {

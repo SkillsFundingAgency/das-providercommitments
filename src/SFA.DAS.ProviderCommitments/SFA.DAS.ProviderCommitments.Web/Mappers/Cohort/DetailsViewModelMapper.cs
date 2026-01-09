@@ -51,7 +51,7 @@ public class DetailsViewModelMapper(
         var emailOverlaps = cohortDetails.ApprenticeshipEmailOverlaps.ToList();
 
         var courses = await GroupCourses(cohortDetails.DraftApprenticeships, emailOverlaps, cohortDetails);
-        var viewOrApprove = cohortDetails.WithParty == Party.Provider ? "Approve" : "View";
+        var viewOrApprove = cohortDetails.WithParty == Party.Provider ? "Check" : "View";
         var isAgreementSigned = (ProviderStatusType) providerStatus.ProviderStatusTypeId == ProviderStatusType.Active;
 
         return new DetailsViewModel
@@ -67,9 +67,7 @@ public class DetailsViewModelMapper(
             EncodedPledgeApplicationId = cohortDetails.PledgeApplicationId == null ? null : encodingService.Encode(cohortDetails.PledgeApplicationId.Value, EncodingType.PledgeApplicationId),
             Message = cohortDetails.LatestMessageCreatedByEmployer,
             Courses = courses,
-            PageTitle = cohortDetails.DraftApprenticeships.Count > 1
-                ? $"{viewOrApprove} {cohortDetails.DraftApprenticeships.Count} apprentices' details"
-                : $"{viewOrApprove} apprentice details",
+            PageTitle = $"Check apprentice details",
             IsApprovedByEmployer = cohortDetails.IsApprovedByEmployer,
             IsAgreementSigned = isAgreementSigned,
             IsCompleteForProvider = cohortDetails.IsCompleteForProvider,
