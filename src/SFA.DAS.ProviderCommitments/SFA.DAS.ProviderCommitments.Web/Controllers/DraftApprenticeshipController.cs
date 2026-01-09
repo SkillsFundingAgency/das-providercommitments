@@ -51,7 +51,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private const string LearnerDataSyncSuccessKey = "LearnerDataSyncSuccess";
         private const string LearnerDataSyncErrorKey = "LearnerDataSyncError";
         private const string SyncLearnerDataOperation = "SyncLearnerData";
-        
+        private const string RplUpdatedKey = "RplUpdated";
+
         private const string LearnerDataSyncSuccessMessage = "Learner data has been successfully updated.";
         private const string LearnerDataSyncErrorMessage = "Failed to sync learner data.";
         private const string LearnerDataSyncExceptionMessage = "An error occurred while syncing learner data.";
@@ -485,6 +486,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     model.CohortReference);
             }
 
+            if (model.LearnerDataId.HasValue)
+            {
+                return RedirectToAction("Details", "Cohort", new
+                {
+                    model.ProviderId,
+                    model.CohortReference,
+                });
+            }
+
             return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
             {
                 model.ProviderId,
@@ -554,7 +564,28 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction(nameof(RecognisePriorLearningSummary), "DraftApprenticeship",
                     new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
             }
+            else if (model.LearnerDataId.HasValue)
+            {
+                TempData[RplUpdatedKey] = true;
+                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId, model.CohortReference, model.ProviderId});
+            }
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
+        }
+
+        [HttpPost]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-data-remove", Name = RouteNames.RecognisePriorLearningDataRemove)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> RecognisePriorLearningDataRemove(RecognisePriorLearningViewModel request)
+        {
+            await commitmentsApiClient.RecognisePriorLearning(
+               request.CohortId,
+               request.DraftApprenticeshipId,
+               new CommitmentsV2.Api.Types.Requests.RecognisePriorLearningRequest
+               {
+                   RecognisePriorLearning = false
+               });
+
+            return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { request.ProviderId, request.CohortReference, request.DraftApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -577,6 +608,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult RecognisePriorLearningSummary(PriorLearningSummaryViewModel model)
         {
+            if (model.LearnerDataId.HasValue)
+            {
+                TempData[RplUpdatedKey] = true;
+                return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId, model.CohortReference, model.ProviderId });
+            }
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 
