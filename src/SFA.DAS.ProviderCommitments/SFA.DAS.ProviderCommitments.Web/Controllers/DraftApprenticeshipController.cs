@@ -51,13 +51,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private const string LearnerDataSyncSuccessKey = "LearnerDataSyncSuccess";
         private const string LearnerDataSyncErrorKey = "LearnerDataSyncError";
         private const string SyncLearnerDataOperation = "SyncLearnerData";
-        private const string RplUpdatedKey = "RplUpdated";
 
         private const string LearnerDataSyncSuccessMessage = "Learner data has been successfully updated.";
         private const string LearnerDataSyncErrorMessage = "Failed to sync learner data.";
         private const string LearnerDataSyncExceptionMessage = "An error occurred while syncing learner data.";
 
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
+        public const string UpdatedBanner = "Banner";
 
         [HttpGet]
         [Route("add")]
@@ -261,7 +261,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 var updateRequest = await modelMapper.Map<DraftApprenticeshipSetReferenceApimRequest>(model);
                 await outerApiService.DraftApprenticeshipSetReference(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
-                TempData["Banner"] = model.DisplayUpdateMessage();
+                TempData[UpdatedBanner] = model.DisplayUpdateMessage();
             }
 
             return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
@@ -294,7 +294,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 };
 
                await outerApiService.DraftApprenticeshipAddEmail(model.ProviderId, model.CohortId, model.DraftApprenticeshipId, updateRequest);
-                TempData["Banner"] = model.DisplayUpdateMessage();
+                TempData[UpdatedBanner] = model.DisplayUpdateMessage();
             }
 
             return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
@@ -410,7 +410,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                         await editMapper.ApplyLearnerDataSyncUpdates(editModel, learnerDataSyncKey);
                     }
 
-                    if(TempData.TryGetValue("Banner", out object value))
+                    if(TempData.TryGetValue(UpdatedBanner, out object value))
                     {
                         editModel.Banner = (string)value;
                     }
@@ -566,7 +566,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             else if (model.LearnerDataId.HasValue)
             {
-                TempData[RplUpdatedKey] = true;
+                TempData[UpdatedBanner] = "Recognition of prior learning added";
                 return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId, model.CohortReference, model.ProviderId});
             }
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
@@ -610,7 +610,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (model.LearnerDataId.HasValue)
             {
-                TempData[RplUpdatedKey] = true;
+                TempData[UpdatedBanner] = "Recognition of prior learning added";
                 return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { model.DraftApprenticeshipHashedId, model.CohortReference, model.ProviderId });
             }
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
@@ -639,7 +639,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if(request.LearnerDataId is not null)
             {                
-                TempData["Banner"] = "Course option updated";
+                TempData[UpdatedBanner] = "Course option updated";
 
                 return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
                 {
