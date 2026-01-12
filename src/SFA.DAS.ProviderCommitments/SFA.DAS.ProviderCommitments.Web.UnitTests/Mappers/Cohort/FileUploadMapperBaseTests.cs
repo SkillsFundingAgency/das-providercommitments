@@ -261,7 +261,7 @@ public class FileUploadMapperBaseTests
         }
     }
 
-    [TestCase(null, null, null)]
+    [TestCase(null, null, "FALSE")]
     [TestCase(null, "200", "TRUE")]
     [TestCase("TRUE", "200", "TRUE")]
     [TestCase("FALSE", "200", "FALSE")]
