@@ -14,12 +14,12 @@
 
 @* This ensures that only one banner is visible at any given time *@
 @if ((!Model.IsAgreementSigned
-      ||
-      (!Model.IsCompleteForProvider && !Model.IsReadOnly)
-      ||
-      Model.HasOverlappingUln
-      ||
-      Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidProviderCoursesBanner && !Model.HasApprenticesWithLearnerDataChanges)
+     ||
+     (!Model.IsCompleteForProvider && !Model.IsReadOnly)
+     ||
+     Model.HasOverlappingUln
+     ||
+     Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidProviderCoursesBanner && !Model.HasApprenticesWithLearnerDataChanges)
 {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -158,23 +158,26 @@
     </div>
 }
 
-<div class="govuk-form-group">
-    <details class="govuk-details govuk-!-margin-top-2" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-                I need to change some apprentice details
-            </span>
-        </summary>
-        <div class="govuk-details__text">
-            <p>
-                You can change some details here using the ‘View’ link. This includes recognition of prior learning (RPL) and standard options.
-            </p>
-            <p>
-                You need to update all other details in the ILR, then return to this service. Changes can take up to 15 minutes to appear here.
-            </p>
-        </div>
-    </details>
-</div>
+@if (!Model.IsReadOnly)
+{
+    <div class="govuk-form-group">
+        <details class="govuk-details govuk-!-margin-top-2" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    I need to change some apprentice details
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <p>
+                    You can change some details here using the ‘View’ link. This includes recognition of prior learning (RPL) and standard options.
+                </p>
+                <p>
+                    You need to update all other details in the ILR, then return to this service. Changes can take up to 15 minutes to appear here.
+                </p>
+            </div>
+        </details>
+    </div>
+}
 
 @foreach (var course in Model.Courses)
 {
