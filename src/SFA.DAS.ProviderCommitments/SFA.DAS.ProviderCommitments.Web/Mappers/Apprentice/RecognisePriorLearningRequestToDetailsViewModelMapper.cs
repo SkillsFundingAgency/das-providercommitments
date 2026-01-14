@@ -32,6 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 result.DurationReducedBy = priorLearningData.DurationReducedBy;
                 result.CostBeforeRpl = priorLearningData.CostBeforeRpl;
                 result.PriceReduced = priorLearningData.PriceReduced;
+                result.LearnerDataId = priorLearningData.LearnerDataId;
             }
 
             if (result.DurationReducedBy == 0)
@@ -79,6 +80,7 @@ public class RecognisePriorLearningSummaryRequestToSummaryViewModelMapper : IMap
             result.TotalCost = priorLearningSummary.TotalCost;
             result.FullName = $"{priorLearningSummary.FirstName} {priorLearningSummary.LastName}";
             result.HasStandardOptions = priorLearningSummary.HasStandardOptions;
+            result.LearnerDataId = priorLearningSummary.LearnerDataId;
         }
 
         return result;
