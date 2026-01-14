@@ -1,5 +1,6 @@
-﻿using System;
-using SFA.DAS.CommitmentsV2.Types;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using System;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship
 {
@@ -27,5 +28,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
         public bool IgnoreStartDateOverlap { get; set; }
         public bool HasLearnerDataChanges { get; set; }
         public DateTime? LastLearnerDataSync { get; set; }
+        public long? LearnerDataId {  get; set; }
     }
 }
