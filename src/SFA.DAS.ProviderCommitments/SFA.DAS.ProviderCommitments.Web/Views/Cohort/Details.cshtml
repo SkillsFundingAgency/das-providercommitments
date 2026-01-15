@@ -158,26 +158,23 @@
     </div>
 }
 
-@if (!Model.IsReadOnly)
-{
-    <div class="govuk-form-group">
-        <details class="govuk-details govuk-!-margin-top-2" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    I need to change some apprentice details
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                <p>
-                    You can change some details here using the ‘View’ link. This includes recognition of prior learning (RPL) and standard options.
-                </p>
-                <p>
-                    You need to update all other details in the ILR, then return to this service. Changes can take up to 15 minutes to appear here.
-                </p>
-            </div>
-        </details>
-    </div>
-}
+<div class="govuk-form-group">
+    <details class="govuk-details govuk-!-margin-top-2" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                I need to change some apprentice details
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>
+                You can change some details here using the ‘View’ link. This includes recognition of prior learning (RPL) and standard options.
+            </p>
+            <p>
+                You need to update all other details in the ILR, then return to this service. Changes can take up to 15 minutes to appear here.
+            </p>
+        </div>
+    </details>
+</div>
 
 @foreach (var course in Model.Courses)
 {
@@ -347,11 +344,14 @@
                         {
                             <span class="das-table-cell">
                                 No
-                                <br/>
-                                <a class="govuk-link govuk-link--no-visited-state" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", new { Model.ProviderId, @draftApprenticeship.DraftApprenticeshipHashedId, Model.CohortReference })">
-                                    Add RPL
-                                    <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName's details</span>
-                                </a>
+                                @if(draftApprenticeship.ShowRplAddLink)
+                                {
+                                    <br/>
+                                    <a class="govuk-link govuk-link--no-visited-state" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", new { Model.ProviderId, @draftApprenticeship.DraftApprenticeshipHashedId, Model.CohortReference })">
+                                        Add RPL
+                                        <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName's details</span>
+                                    </a>
+                                }
                             </span>
                             
                         }
@@ -361,9 +361,9 @@
                         @(Model.IsReadOnly || !draftApprenticeship.IsEditable ? "View" : "Edit")
                         <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName's details</span>
                     </a>
-                    &nbsp;|&nbsp;
                     @if (!Model.IsReadOnly && !Model.IsLinkedToChangeOfPartyRequest)
                     {
+                        @: &nbsp;| &nbsp;
                         <a class="govuk-link delete-apprentice"
                            href="@Url.RouteUrl(RouteNames.ApprenticeDelete, new { ProviderId = Model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeship.DraftApprenticeshipHashedId, CohortReference = Model.CohortReference })">
                             Remove <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName </span>

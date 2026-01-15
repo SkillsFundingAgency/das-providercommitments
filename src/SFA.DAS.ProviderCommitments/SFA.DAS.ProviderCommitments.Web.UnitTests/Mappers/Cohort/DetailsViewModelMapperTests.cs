@@ -860,6 +860,35 @@ bool isApprovedByEmployer, bool expectedShowApprovalOptionMessage)
         var result = await fixture.Map();
         result.HasAgeRestrictedApprenticeships.Should().Be(expectedHasAgeRestrictedApprenticeships);
     }
+
+    [Test]
+    public async Task ShowRplAddLinkIsMappedToFalseWhenInCopCohort()
+    {
+        var fixture = new DetailsViewModelMapperTestsFixture();
+        fixture.SetCohortDetailsCopRequestId(1234);
+
+        var result = await fixture.Map();
+
+        foreach(var a in result.Courses?.SelectMany(c => c.DraftApprenticeships))
+        {
+            a.ShowRplAddLink.Should().BeFalse();
+        }
+    }
+
+    [Test]
+    public async Task ShowRplAddLinkIsDependantOnRplValue()
+    {
+        var fixture = new DetailsViewModelMapperTestsFixture();
+        fixture.SetCohortDetailsCopRequestId(null);
+
+        var result = await fixture.Map();
+
+        foreach (var a in result.Courses?.SelectMany(c => c.DraftApprenticeships))
+        {
+            a.ShowRplAddLink.Should().Be(!(a.RecognisePriorLearning ?? false));
+        }
+    }
+
 }
 
 public class DetailsViewModelMapperTestsFixture
@@ -984,6 +1013,14 @@ public class DetailsViewModelMapperTestsFixture
 
         return this;
     }
+
+    public DetailsViewModelMapperTestsFixture SetCohortDetailsCopRequestId(long? value)
+    {
+        CohortDetails.ChangeOfPartyRequestId = value;
+
+        return this;
+    }
+
 
     private DetailsViewModelMapperTestsFixture SetEncodingOfApprenticeIds()
     {

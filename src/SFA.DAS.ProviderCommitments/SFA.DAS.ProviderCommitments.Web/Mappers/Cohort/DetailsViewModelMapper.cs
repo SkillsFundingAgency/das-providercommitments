@@ -203,7 +203,8 @@ public class DetailsViewModelMapper(
                         HasLearnerDataChanges = a.HasLearnerDataChanges,
                         LastLearnerDataSync = a.LastLearnerDataSync,
                         IsEditable = a.LearnerDataId == null, 
-                        RecognisePriorLearning = a.RecognisePriorLearning
+                        RecognisePriorLearning = a.RecognisePriorLearning,
+                        ShowRplAddLink = !cohortResponse.IsLinkedToChangeOfPartyRequest && a.RecognisePriorLearning != true
                     })
                     .ToList()
             })
