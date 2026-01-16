@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
+using Moq;
 using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -20,9 +19,12 @@ using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
+using System;
+using System.Collections.Generic;
 using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.SelectCourseViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests;
@@ -44,6 +46,8 @@ public class DraftApprenticeshipControllerTestFixture
     private readonly EditDraftApprenticeshipViewModel _editModel;
     private readonly AddDraftApprenticeshipApimRequest _createAddDraftApprenticeshipRequest;
     private readonly UpdateDraftApprenticeshipApimRequest _updateDraftApprenticeshipRequest;
+    private readonly DraftApprenticeAddEmailApimRequest _draftApprenticeAddEmailApimRequest;
+    private readonly DraftApprenticeshipSetReferenceApimRequest _postDraftApprenticeshipSetReferenceApimRequest;
     private readonly ReservationsAddDraftApprenticeshipRequest _reservationsAddDraftApprenticeshipRequest;
     private readonly GetReservationIdForAddAnotherApprenticeRequest _getReservationIdForAddAnotherApprenticeRequest;
     private readonly SelectAddAnotherDraftApprenticeshipJourneyViewModel _selectAddAnotherApprenticeshipJourneyViewModel;
@@ -56,6 +60,8 @@ public class DraftApprenticeshipControllerTestFixture
     private readonly SelectOptionsRequest _selectOptionsRequest;
     private readonly ViewSelectOptionsViewModel _viewSelectOptionsViewModel;
     private readonly ViewSelectOptionsViewModel _selectOptionsViewModel;
+    private readonly DraftApprenticeshipAddEmailViewModel _draftApprenticeshipAddEmailViewModel;
+    private readonly DraftApprenticeshipSetReferenceViewModel _draftApprenticeshipSetReferenceViewModel;
     private readonly Mock<ITempDataDictionary> _tempData;
     private readonly Mock<IOuterApiService> _outerApiService;
     private readonly Mock<ICacheStorageService> _cacheStorageService;
@@ -88,10 +94,17 @@ public class DraftApprenticeshipControllerTestFixture
         _selectOptionsViewModel = autoFixture.Build<ViewSelectOptionsViewModel>()
             .With(c => c.CohortId, _cohortId)
             .With(x => x.DraftApprenticeshipId, _draftApprenticeshipId)
+            .Without(c=>c.LearnerDataId)
             .Create();
+
+        _draftApprenticeshipAddEmailViewModel = autoFixture.Build<DraftApprenticeshipAddEmailViewModel>().
+            With(x => x.CohortId, _cohortId)
+            .With(x => x.DraftApprenticeshipId, _draftApprenticeshipId)
+            .With(x => x.Email).Create();
 
         _draftApprenticeshipDetails = autoFixture.Build<GetDraftApprenticeshipResponse>()
             .With(x => x.Id, _draftApprenticeshipId)
+            .With(x=>x.HasStandardOptions, false)
             .Create();
 
         _getReservationIdForAddAnotherApprenticeRequest = autoFixture
@@ -102,6 +115,18 @@ public class DraftApprenticeshipControllerTestFixture
 
         _createAddDraftApprenticeshipRequest = new AddDraftApprenticeshipApimRequest();
         _updateDraftApprenticeshipRequest = new UpdateDraftApprenticeshipApimRequest();
+        _draftApprenticeAddEmailApimRequest = autoFixture.Build<DraftApprenticeAddEmailApimRequest>()
+            .With(x => x.Email)
+            .Create();
+
+        _draftApprenticeshipSetReferenceViewModel = autoFixture.Build<DraftApprenticeshipSetReferenceViewModel>()
+            .With(x=>x.CohortId, _cohortId)
+            .With(x=>x.DraftApprenticeshipId, _draftApprenticeshipId)
+            .With(x=>x.Reference)
+            .Create();
+        _postDraftApprenticeshipSetReferenceApimRequest = autoFixture.Build<DraftApprenticeshipSetReferenceApimRequest>()            
+            .With(x => x.Reference)
+            .Create();
 
         _reservationsAddDraftApprenticeshipRequest = autoFixture.Build<ReservationsAddDraftApprenticeshipRequest>()
             .With(x => x.ProviderId, providerId)
@@ -131,6 +156,7 @@ public class DraftApprenticeshipControllerTestFixture
             CohortId = _cohortId,
             CohortReference = cohortReference,
             DeliveryModel = DeliveryModel.Regular,
+            HasStandardOptions = false
         };
 
         _editModel = new EditDraftApprenticeshipViewModel
@@ -182,6 +208,12 @@ public class DraftApprenticeshipControllerTestFixture
 
         _modelMapper.Setup(x => x.Map<UpdateDraftApprenticeshipApimRequest>(It.IsAny<EditDraftApprenticeshipViewModel>()))
             .ReturnsAsync(_updateDraftApprenticeshipRequest);
+
+        _modelMapper.Setup(x => x.Map<DraftApprenticeAddEmailApimRequest>(It.IsAny<DraftApprenticeshipAddEmailViewModel>()))
+           .ReturnsAsync(_draftApprenticeAddEmailApimRequest);
+
+        _modelMapper.Setup(x => x.Map<DraftApprenticeshipSetReferenceApimRequest>(It.IsAny<DraftApprenticeshipSetReferenceViewModel>()))
+         .ReturnsAsync(_postDraftApprenticeshipSetReferenceApimRequest);
 
         _modelMapper.Setup(x => x.Map<AddDraftApprenticeshipViewModel>(It.IsAny<ReservationsAddDraftApprenticeshipRequest>()))
             .ReturnsAsync(_addModel);
@@ -397,10 +429,35 @@ public class DraftApprenticeshipControllerTestFixture
         _actionResult = await _controller.PostSelectOptions(_selectOptionsViewModel);
         return this;
     }
-        
+
+    public async Task<DraftApprenticeshipControllerTestFixture> PutToAddEmail()
+    {
+        _actionResult = await _controller.AddEmail(_draftApprenticeshipAddEmailViewModel);
+        return this;
+    }
+
+    public async Task<DraftApprenticeshipControllerTestFixture> PostToSetReference()
+    {
+        _actionResult = await _controller.SetReference(_draftApprenticeshipSetReferenceViewModel);
+        return this;
+    }
+
     public DraftApprenticeshipControllerTestFixture SetupUpdateRequestCourseOption()
     {
         _updateDraftApprenticeshipRequest.CourseOption = _selectOptionsViewModel.SelectedOption;
+        _updateDraftApprenticeshipRequest.LearnerDataId = null;
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupAddEmailAddress()
+    {
+        _draftApprenticeAddEmailApimRequest.Email = _draftApprenticeshipAddEmailViewModel.Email;
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupReference()
+    {
+        _postDraftApprenticeshipSetReferenceApimRequest.Reference = _draftApprenticeshipSetReferenceViewModel.Reference;
         return this;
     }
 
@@ -498,9 +555,27 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
+    public DraftApprenticeshipControllerTestFixture SetUpLearnerDataOnAddModel()
+    {
+        _addModel.LearnerDataId = 1234;
+        return this;
+    }
+
     public DraftApprenticeshipControllerTestFixture SetUpStandardToReturnNoOptions()
     {
         _draftApprenticeshipDetails.HasStandardOptions = false;
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetUpUpdateDraftApprenticeship()
+    {        
+        _editModel.LearnerDataId = 123;
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectedToCohortDetails()
+    {
+        _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("Details");
         return this;
     }
 
@@ -594,6 +669,22 @@ public class DraftApprenticeshipControllerTestFixture
         return this;
     }
 
+    public DraftApprenticeshipControllerTestFixture VerifyApiUpdateWithAddEmailSet(string email = null)
+    {
+        _outerApiService.Verify(
+            x => x.DraftApprenticeshipAddEmail(_draftApprenticeshipAddEmailViewModel.ProviderId, _cohortId, _draftApprenticeshipId,
+            It.Is<DraftApprenticeAddEmailApimRequest>(c => c.Email.Equals(email ?? _draftApprenticeAddEmailApimRequest.Email))), Times.Once);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyApiUpdateWithReferenceSet(string reference = null)
+    {
+        _outerApiService.Verify(
+            x => x.DraftApprenticeshipSetReference(_draftApprenticeshipSetReferenceViewModel.ProviderId, _cohortId, _draftApprenticeshipId, 
+            It.Is<DraftApprenticeshipSetReferenceApimRequest>(c => c.Reference.Equals(reference ?? _postDraftApprenticeshipSetReferenceApimRequest.Reference))), Times.Once);
+        return this;
+    }
+
     public DraftApprenticeshipControllerTestFixture VerifyRedirectedBackToCohortDetailsPage()
     {
         _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("Details");
@@ -603,6 +694,12 @@ public class DraftApprenticeshipControllerTestFixture
     public DraftApprenticeshipControllerTestFixture VerifyRedirectedToRplQuestion()
     {
         _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("RecognisePriorLearning");
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectedToEditDraftApprenticeship()
+    {
+        _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("EditDraftApprenticeship");
         return this;
     }
 
@@ -707,6 +804,12 @@ public class DraftApprenticeshipControllerTestFixture
     public DraftApprenticeshipControllerTestFixture VerifyRedirectToSelectOptionsPage()
     {
         _actionResult.VerifyRedirectsToSelectOptionsPage(_draftApprenticeshipHashedId);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectToEditPage()
+    {
+        _actionResult.VerifyRedirectsToEditPage(_draftApprenticeshipHashedId);
         return this;
     }
 
