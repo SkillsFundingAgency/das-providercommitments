@@ -875,20 +875,41 @@ bool isApprovedByEmployer, bool expectedShowApprovalOptionMessage)
         }
     }
 
-    [Test]
-    public async Task ShowRplAddLinkIsDependantOnRplValue()
+    [TestCase("Apprenticeship", null, true)]
+    [TestCase("Apprenticeship", false, true)]
+    [TestCase("Apprenticeship", true, false)]
+    [TestCase("FoundationApprenticeship", false, false)]
+    [TestCase("Unknown", false, false)]
+    public async Task ShowRplAddLinkIsDependantOnTheseValuesRplBeingSet(string apprenticeshipType, bool? hasRpl, bool expected)
     {
         var fixture = new DetailsViewModelMapperTestsFixture();
-        fixture.SetCohortDetailsCopRequestId(null);
+        fixture.SetCohortDetailsForAddRpl(apprenticeshipType, DateTime.Today, hasRpl);
 
         var result = await fixture.Map();
 
         foreach (var a in result.Courses?.SelectMany(c => c.DraftApprenticeships))
         {
-            a.ShowRplAddLink.Should().Be(!(a.RecognisePriorLearning ?? false));
+            a.ShowRplAddLink.Should().Be(expected);
         }
     }
 
+    [TestCase("Apprenticeship", null, false)]
+    [TestCase("Apprenticeship", false, false)]
+    [TestCase("Apprenticeship", true, false)]
+    [TestCase("FoundationApprenticeship", false, false)]
+    [TestCase("Unknown", false, false)]
+    public async Task ShowRplAddLinkIsNotShownWhenNoStartDate(string apprenticeshipType, bool? hasRpl, bool expected)
+    {
+        var fixture = new DetailsViewModelMapperTestsFixture();
+        fixture.SetCohortDetailsForAddRpl(apprenticeshipType, null, hasRpl);
+
+        var result = await fixture.Map();
+
+        foreach (var a in result.Courses?.SelectMany(c => c.DraftApprenticeships))
+        {
+            a.ShowRplAddLink.Should().Be(expected);
+        }
+    }
 }
 
 public class DetailsViewModelMapperTestsFixture
@@ -1021,6 +1042,18 @@ public class DetailsViewModelMapperTestsFixture
         return this;
     }
 
+    public DetailsViewModelMapperTestsFixture SetCohortDetailsForAddRpl(string apprenticeshipType, DateTime? startDate, bool? hasRpl)
+    {
+        CohortDetails.ChangeOfPartyRequestId = null;
+        foreach (var a in CohortDetails.DraftApprenticeships)
+        {
+            a.ApprenticeshipType = apprenticeshipType;
+            a.StartDate = startDate;
+            a.RecognisePriorLearning = hasRpl;
+        }
+
+        return this;
+    }
 
     private DetailsViewModelMapperTestsFixture SetEncodingOfApprenticeIds()
     {

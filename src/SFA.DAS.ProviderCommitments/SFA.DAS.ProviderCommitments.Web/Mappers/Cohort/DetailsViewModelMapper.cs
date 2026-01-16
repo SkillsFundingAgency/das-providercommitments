@@ -204,7 +204,8 @@ public class DetailsViewModelMapper(
                         LastLearnerDataSync = a.LastLearnerDataSync,
                         IsEditable = a.LearnerDataId == null, 
                         RecognisePriorLearning = a.RecognisePriorLearning,
-                        ShowRplAddLink = !cohortResponse.IsLinkedToChangeOfPartyRequest && a.RecognisePriorLearning != true
+                        ShowRplAddLink = CanShowRplAddLink(cohortResponse, a),
+                        ApprenticeshipType = ConvertToApprenticeshipType(a.ApprenticeshipType)
                     })
                     .ToList()
             })
@@ -219,6 +220,31 @@ public class DetailsViewModelMapper(
 
         return groupedByCourse;
     }
+
+    private ApprenticeshipType ConvertToApprenticeshipType(string type)
+    {
+        if (string.IsNullOrWhiteSpace(type))
+            return ApprenticeshipType.Unknown;
+
+        return Enum.TryParse<ApprenticeshipType>(type, ignoreCase: true, out var result)
+            ? result
+            : ApprenticeshipType.Unknown;
+    }
+
+    private bool CanShowRplAddLink(GetCohortDetailsResponse cohortResponse, DraftApprenticeshipDto apprenticeship)
+    {
+        if(cohortResponse.IsLinkedToChangeOfPartyRequest)
+            return false;
+        if(apprenticeship.RecognisePriorLearning == true)
+            return false;
+        if (!apprenticeship.StartDate.HasValue)
+            return false;
+        if (ConvertToApprenticeshipType(apprenticeship.ApprenticeshipType) != ApprenticeshipType.Apprenticeship)
+            return false;
+
+        return true;
+    }
+
 
     private bool IsDraftApprenticeshipComplete(DraftApprenticeshipDto draftApprenticeship, GetCohortDetailsResponse cohortResponse)
     {

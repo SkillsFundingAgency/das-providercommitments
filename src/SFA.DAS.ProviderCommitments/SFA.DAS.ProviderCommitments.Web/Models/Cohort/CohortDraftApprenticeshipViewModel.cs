@@ -98,5 +98,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             public DateTime? CreatedOn { get; set; }
         }
         public bool? RecognisePriorLearning { get; set; }
+        public ApprenticeshipType ApprenticeshipType { get; set; }
+    }
+
+    public enum ApprenticeshipType
+    {
+        Unknown,
+        Apprenticeship,
+        FoundationApprenticeship,
+        ApprenticeshipUnit
     }
 }
