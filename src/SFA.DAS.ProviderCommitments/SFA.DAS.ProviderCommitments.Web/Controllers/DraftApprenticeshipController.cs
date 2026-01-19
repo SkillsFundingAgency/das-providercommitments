@@ -585,6 +585,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                    RecognisePriorLearning = false
                });
 
+            TempData[UpdatedBanner] = "Recognition of prior learning removed";
+
             return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new { request.ProviderId, request.CohortReference, request.DraftApprenticeshipHashedId });
         }
 
