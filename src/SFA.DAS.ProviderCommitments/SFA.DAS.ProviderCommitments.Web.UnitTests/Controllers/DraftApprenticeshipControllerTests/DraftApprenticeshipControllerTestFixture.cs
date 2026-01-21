@@ -198,6 +198,16 @@ public class DraftApprenticeshipControllerTestFixture
         _modelMapper.Setup(x => x.Map<AddAnotherApprenticeshipRedirectModel>(It.Is<BaseReservationsAddDraftApprenticeshipRequest>(p => p.UseLearnerData == true)))
             .ReturnsAsync(_redirectToAddAnotherModelWithLearner);
 
+        _modelMapper.Setup(x => x.Map<DraftApprenticeshipRequest>(It.IsAny<EditDraftApprenticeshipViewModel>()))
+            .ReturnsAsync((EditDraftApprenticeshipViewModel source) => new DraftApprenticeshipRequest
+            {
+                ProviderId = source.ProviderId,
+                CohortReference = source.CohortReference,
+                DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
+                CohortId = source.CohortId ?? 0,
+                DraftApprenticeshipId = source.DraftApprenticeshipId ?? 0
+            });
+
         _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
         _commitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(_cohortResponse);
@@ -638,6 +648,16 @@ public class DraftApprenticeshipControllerTestFixture
     public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectForEditCoursePage()
     {
         _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("EditDraftApprenticeshipCourse");
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture VerifyRedirectIncludesCohortIdAndDraftApprenticeshipId()
+    {
+        var redirectResult = _actionResult.VerifyReturnsRedirectToActionResult();
+        redirectResult.RouteValues.Should().ContainKey("CohortId");
+        redirectResult.RouteValues["CohortId"].Should().Be(_editModel.CohortId);
+        redirectResult.RouteValues.Should().ContainKey("DraftApprenticeshipId");
+        redirectResult.RouteValues["DraftApprenticeshipId"].Should().Be(_editModel.DraftApprenticeshipId);
         return this;
     }
     public DraftApprenticeshipControllerTestFixture VerifyReturnsSelectHowViewModelWithCorrectValues()
