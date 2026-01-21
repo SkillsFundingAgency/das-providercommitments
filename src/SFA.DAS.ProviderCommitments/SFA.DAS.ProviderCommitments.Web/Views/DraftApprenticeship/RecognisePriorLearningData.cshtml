@@ -1,4 +1,4 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.PriorLearningDataViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.PriorLearningDataViewModel
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @{
     ViewData["Title"] = "Add recognition of prior learning details";
@@ -50,7 +50,7 @@
                             <div class="govuk-input__suffix" aria-hidden="true"> hours</div>
                         </div>
                     </div>
-                    @if (@Model.IsDurationReducedByRpl == true)
+                    @if (@Model.IsDurationReducedByRpl.HasValue || @Model.DurationReducedBy.HasValue)
                     {
                         <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.IsDurationReducedByRpl, "govuk-form-group--error")">
                             <label asp-for="IsDurationReducedByRpl" class="govuk-label govuk-!-font-weight-bold">
