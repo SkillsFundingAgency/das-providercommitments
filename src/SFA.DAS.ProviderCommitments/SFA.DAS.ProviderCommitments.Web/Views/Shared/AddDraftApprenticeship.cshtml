@@ -1,4 +1,4 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.AddDraftApprenticeshipViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.AddDraftApprenticeshipViewModel
 
 @{
     ViewBag.Title = "Apprenticeships";
@@ -14,6 +14,8 @@
         <form id="addApprenticeship" novalidate method="post">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="CacheKey"/>
+            <input type="hidden" asp-for="CohortId"/>
+            <input type="hidden" asp-for="CohortReference"/>
             @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
             @Html.HiddenFor(x => x.HasMultipleDeliveryModelOptions)            
 
