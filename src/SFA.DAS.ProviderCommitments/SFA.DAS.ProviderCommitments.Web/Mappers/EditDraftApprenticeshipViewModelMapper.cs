@@ -63,7 +63,8 @@ public class EditDraftApprenticeshipViewModelMapper(
                 EmailAddressConfirmed = apiResponse.EmailAddressConfirmed,
                 LearnerDataId = apiResponse.LearnerDataId,
                 HasLearnerDataChanges = apiResponse.HasLearnerDataChanges,
-                LastLearnerDataSync = apiResponse.LastLearnerDataSync
+                LastLearnerDataSync = apiResponse.LastLearnerDataSync,
+                TrainingCourseVersion = apiResponse.TrainingCourseVersion
             };
 
             if (cachedModel != null)

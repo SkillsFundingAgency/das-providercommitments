@@ -147,7 +147,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         [Display(Name = "Reference (optional)")]
         public string Reference { get; set; }
-
         public TrainingProgramme[] Courses { get; set; }
         public bool IsContinuation { get; set; }
         public bool HasStandardOptions { get; set; }
@@ -166,5 +165,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public long? LearnerDataId { get; set; }
         public bool HasLearnerDataChanges { get; set; }
         public DateTime? LastLearnerDataSync { get; set; }
+        public string Banner { get; set; }
+        public string TrainingCourseVersion { get; set; }
     }
 }
