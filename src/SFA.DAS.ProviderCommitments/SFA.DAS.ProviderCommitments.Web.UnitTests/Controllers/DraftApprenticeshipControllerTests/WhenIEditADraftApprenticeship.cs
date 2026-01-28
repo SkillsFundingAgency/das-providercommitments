@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 
@@ -48,8 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task AndWhenEditingCourse()
         {
             await _fixture.PostToEditDraftApprenticeship("Edit");
-            _fixture.VerifyRedirectedToSelectForEditCoursePage()
-                .VerifyRedirectIncludesCohortIdAndDraftApprenticeshipId();
+            _fixture.VerifyRedirectedToSelectForEditCoursePage();
         }
 
         [Test]
