@@ -18,6 +18,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             AssertValidationResult(request => request.Selection, model, expectedValid);
         }
 
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public void Validate_RplVerified_ShouldBeValidated(bool rplVerified, bool expectedValid)
+        {
+            var model = new DetailsViewModel { RplVerified = rplVerified };
+            AssertValidationResult(request => request.RplVerified, model, expectedValid);
+        }
+
         private static void AssertValidationResult<T>(Expression<Func<DetailsViewModel, T>> property, DetailsViewModel instance, bool expectedValid)
         {
             var validator = new DetailsViewModelValidator();

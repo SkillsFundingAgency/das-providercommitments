@@ -19,5 +19,6 @@
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool HasStandardOptions { get; set; }
+        public long? LearnerDataId { get; set; }
     }
 }
