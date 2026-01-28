@@ -1,4 +1,4 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.EditDraftApprenticeshipViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.EditDraftApprenticeshipViewModel
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.TagHelpers
 
@@ -91,6 +91,10 @@
         <form id="addApprenticeship" novalidate method="post" asp-route="@RouteNames.DraftApprenticeshipEdit" asp-route-providerId="@Model.ProviderId">
             
             <input type="hidden" asp-for="ProviderId"/>
+            <input type="hidden" asp-for="CohortId"/>
+            <input type="hidden" asp-for="DraftApprenticeshipId"/>
+            <input type="hidden" asp-for="CohortReference"/>
+            <input type="hidden" asp-for="DraftApprenticeshipHashedId"/>
             <input type="hidden" asp-for="EmployerAccountLegalEntityPublicHashedId"/>
             <input type="hidden" asp-for="HasMultipleDeliveryModelOptions"/>
             <input type="hidden" asp-for="HasLearnerDataChanges"/>
