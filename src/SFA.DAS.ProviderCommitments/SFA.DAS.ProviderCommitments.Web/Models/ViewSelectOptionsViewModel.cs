@@ -16,5 +16,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string StandardPageUrl { get; set; }
         public bool? HasSelectedRpl { get; set; }
         public DateTime? ApprenticeshipStartDate { get; set; }
+        public long? LearnerDataId { get; set; }
     }
 }

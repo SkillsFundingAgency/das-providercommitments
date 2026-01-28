@@ -1,0 +1,540 @@
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.CommitmentsV2.Api.Client
+@using SFA.DAS.ProviderCommitments.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Models
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+@using SFA.DAS.ProviderCommitments.Web.Models.Shared
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@inject ICommitmentsApiClient CommitmentsApiClient
+@model SFA.DAS.ProviderCommitments.Web.Models.EditDraftApprenticeshipViewModel
+
+@{
+    string DisplayCost(int? value) => value.HasValue ? value.Value.ToGdsCostFormat() : "--";
+
+    var startDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training start date" : "Planned apprenticeship training start date";
+    var endDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training end date" : "Planned apprenticeship training end date";
+
+    ViewBag.ValidationOrder = "FirstName,LastName,Email,DateOfBirth,Uln,StartDate,EndDate,EmploymentEndDate,Cost,EmploymentPrice,Reference";
+
+    Model.CourseCode = ViewData.ModelState[nameof(Model.CourseCode)]?.AttemptedValue ?? Model.CourseCode;
+    Model.DeliveryModel = ViewData.ModelState[nameof(Model.DeliveryModel)]?.AttemptedValue.ToEnum<DeliveryModel>() ?? Model.DeliveryModel;
+
+    if (!string.IsNullOrWhiteSpace(Model.CourseCode))
+    {
+        Model.CourseName = (await CommitmentsApiClient.GetTrainingProgramme(Model.CourseCode)).TrainingProgramme.Name;
+    }
+
+    string name = $"{Model.FirstName} {Model.LastName}";
+    var banner = new SuccessBannerModel("update-status", Model.Banner, "");
+}
+
+<div class="govuk-width-container">
+    <main class="" role="main">
+        <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            @if (!string.IsNullOrEmpty(@Model.Banner))
+            {
+                <partial name="_SuccessBanner" model="banner"></partial>
+            }
+        </div>
+            <div class="govuk-grid-column-two-thirds"></div>
+        </div>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <partial name="_ValidationSummary" />
+
+                @if (TempData["LearnerDataSyncSuccess"] != null)
+                {
+                    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                        <div class="govuk-notification-banner__header">
+                            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                                Success
+                            </h2>
+                        </div>
+                        <div class="govuk-notification-banner__content">
+                            <p class="govuk-notification-banner__heading">
+                                @TempData["LearnerDataSyncSuccess"]
+                            </p>
+                        </div>
+                    </div>
+                }
+
+                @if (TempData["LearnerDataSyncError"] != null)
+                {
+                    <div class="govuk-notification-banner govuk-notification-banner--error" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                        <div class="govuk-notification-banner__header">
+                            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                                Error
+                            </h2>
+                        </div>
+                        <div class="govuk-notification-banner__content">
+                            <p class="govuk-notification-banner__heading">
+                                @TempData["LearnerDataSyncError"]
+                            </p>
+                        </div>
+                    </div>
+                }
+
+                @if (Model.HasLearnerDataChanges)
+                {
+                    <div class="govuk-notification-banner" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                        <div class="govuk-notification-banner__header">
+                            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                                Important
+                            </h2>
+                        </div>
+                        <div class="govuk-notification-banner__content">
+                            <p class="govuk-notification-banner__heading">
+                                Apprentice details have been changed in the ILR. To continue you need to
+                                <form method="post" asp-route="@RouteNames.DraftApprenticeshipEdit" asp-route-providerId="@Model.ProviderId" style="display: inline;">
+                                    <input type="hidden" name="CohortId" value="@Model.CohortId" />
+                                    <input type="hidden" name="DraftApprenticeshipId" value="@Model.DraftApprenticeshipId" />
+                                    <input type="hidden" name="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
+                                    <input type="hidden" name="CohortReference" value="@Model.CohortReference" />
+                                    <input type="hidden" name="Operation" value="SyncLearnerData" />
+                                    <button type="submit" class="govuk-link" style="background: none; border: none; padding: 0; font: inherit; color: #1d70b8; text-decoration: underline; cursor: pointer;">
+                                        update now
+                                    </button>
+                                </form>
+                            </p>
+                        </div>
+                    </div>
+                }
+
+                <h1 class="govuk-heading-l">View details for @Model.FirstName @Model.LastName</h1>
+
+                <div class="govuk-form-group">
+                    <details class="govuk-details govuk-!-margin-top-2" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                I need to change some apprentice details
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            You will need to remove the apprentice from the cohort or delete the cohort. Then update the apprentice details in the ILR and add the apprentice again.
+                        </div>
+                    </details>
+                </div>
+
+                <form id="addEmail" novalidate method="post">
+
+                    <input type="hidden" asp-for="ProviderId" />
+                    <input type="hidden" asp-for="EmployerAccountLegalEntityPublicHashedId" />
+                    <input type="hidden" asp-for="HasMultipleDeliveryModelOptions" />
+                    <input type="hidden" asp-for="HasLearnerDataChanges" />
+                    <input type="hidden" asp-for="LastLearnerDataSync" />
+
+                    <input type="hidden" asp-for="CourseCode" value="@Model.CourseCode">
+                    <input type="hidden" asp-for="DeliveryModel" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
+                    <input type="hidden" asp-for="FirstName" value="@Model.FirstName">
+                    <input type="hidden" asp-for="LastName" value="@Model.LastName">
+
+                    @Html.HiddenFor(x => x.IsContinuation)
+                    @Html.HiddenFor(x => x.LearnerDataId)
+                    <input type="hidden" asp-for="HasStandardOptions" />
+                    <input type="hidden" asp-for="TrainingCourseOption" />
+
+                <div class="govuk-summary-card">
+                    <div class="govuk-summary-card__title-wrapper">
+                        <h2 class="govuk-summary-card__title">
+                            Apprentice details
+                        </h2>
+                    </div>
+                    <div class="govuk-summary-card__content">
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Name
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @name
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> name</span></a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                    @Html.HiddenFor(x => x.Email)
+                                <dt class="govuk-summary-list__key">
+                                    Email address
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @if (string.IsNullOrEmpty(@Model.Email))
+                                    {
+                                        <a id="add-email-link" class="das-button--inline-link" href="@Url.Action("AddEmail", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Add Email</a>
+                                    }
+                                    else
+                                    {
+                                        @Model.Email
+                                    }
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    @if (!string.IsNullOrEmpty(@Model.Email))
+                                    {
+                                        <a id="change-email-link" class="das-button--inline-link" href="@Url.Action("AddEmail", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Change</a>
+                                    }
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Date of birth
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @(Model.DateOfBirth.HasValue? Model.DateOfBirth.Date.Value.ToString("dd MMM yyyy") : "")
+                                    @Html.HiddenFor(x => x.BirthDay)
+                                    @Html.HiddenFor(x => x.BirthMonth)
+                                    @Html.HiddenFor(x => x.BirthYear)
+                                    @Html.HiddenFor(x => x.StartMonth)
+                                    @Html.HiddenFor(x => x.StartYear)
+                                    @Html.HiddenFor(x => x.EndDay)
+                                    @Html.HiddenFor(x => x.EndMonth)
+                                    @Html.HiddenFor(x => x.EndYear)
+                                    @Html.HiddenFor(x => x.FirstName)
+                                    @Html.HiddenFor(x => x.LastName)
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> date of birth</span></a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Unique learner number
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @Model.Uln
+                                    @Html.HiddenFor(x => x.Uln)
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> Unique learner number</span></a>
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+              
+                <div class="govuk-summary-card">
+                    <div class="govuk-summary-card__title-wrapper">
+                        <h2 class="govuk-summary-card__title">
+                            Employer
+                        </h2>
+                    </div>
+                    <div class="govuk-summary-card__content">
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Name
+                                </dt>
+                                <dd class="govuk-summary-list__value" id="employer-value">
+                                    @Model.Employer
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> employer name</span></a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                    @Html.HiddenFor(x => x.AccountLegalEntityId)
+                                <dt class="govuk-summary-list__key">
+                                    Agreement ID
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @Model.AccountLegalEntityId
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> agreement ID</span></a>
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+                <div class="govuk-summary-card">
+                    <div class="govuk-summary-card__title-wrapper">
+                        <h2 class="govuk-summary-card__title">
+                            Training dates
+                        </h2>
+                    </div>
+                    <div class="govuk-summary-card__content">
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Start date
+                                </dt>
+                                <dd class="govuk-summary-list__value" id="startdate-value">
+                                    @(Model.StartDate.HasValue && Model.StartDate.Date.HasValue ? Model.StartDate.Date.Value.ToString("MMM yyyy") : "")
+                                    @Html.HiddenFor(x => x.StartMonth)
+                                    @Html.HiddenFor(x => x.StartYear)
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> start date</span></a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Planned end date (not including end-point assessment)
+                                </dt>
+                                <dd class="govuk-summary-list__value" id="enddate-value">
+                                    @(Model.EndDate.HasValue && Model.EndDate.Date.HasValue ? Model.EndDate.Date.Value.ToString("MMM yyyy") : "")
+                                    @Html.HiddenFor(x => x.EndMonth)
+                                    @Html.HiddenFor(x => x.EndYear)
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> planned end date</span></a>
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+                <div class="govuk-summary-card">
+                    <div class="govuk-summary-card__title-wrapper">
+                        <h2 class="govuk-summary-card__title">
+                            Apprenticeship details
+                        </h2>
+                    </div>
+                    <div class="govuk-summary-card__content">
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Apprenticeship training course
+                                </dt>
+                                <dd class="govuk-summary-list__value" id="course-value">
+                                    @Model.CourseName
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> Apprenticeship training course</span></a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Maximum funding band for this course
+                                </dt>
+                                <dd class="govuk-summary-list__value" id="cost-value">
+                                    @DisplayCost(Model.Cost)
+                                    @Html.HiddenFor(x => x.Cost)
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> Apprenticeship training course</span></a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Version
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                        @Model.TrainingCourseVersion
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> email</span></a>
+                                </dd>
+                            </div>
+                           @if(Model.HasStandardOptions)
+                            {
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        Standard option
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @if (string.IsNullOrEmpty(Model.TrainingCourseOption) || Model.TrainingCourseOption == "-1")
+                                        {
+                                            <a id="add-SO-link" name="addSOLink" class="das-button--inline-link" href="@Url.Action("SelectOptions", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">
+                                                Add standard
+                                                option
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            @Model.TrainingCourseOption
+                                        }
+                                    </dd>
+                                    <dd class="govuk-summary-list__actions">
+                                        @if (!string.IsNullOrEmpty(Model.TrainingCourseOption) && Model.TrainingCourseOption != "-1")
+                                        {
+                                                <a id="change-SO-link" name="changeSOLink" class="das-button--inline-link" href="@Url.Action("SelectOptions", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">
+                                                    Change
+                                                </a>
+                                        }
+                                    </dd>
+                                </div>
+                            }
+                            
+                            <div class="govuk-summary-list__row">
+
+                                 @Html.HiddenFor(x => x.Reference)
+                                <dt class="govuk-summary-list__key">
+                                    Your reference (optional)
+                                </dt>                               
+
+                                    <dd class="govuk-summary-list__value">
+                                        @if (string.IsNullOrEmpty(@Model.Reference))
+                                        {
+                                            <a id="add-reference-link" name="addReference" class="das-button--inline-link" href="@Url.Action("SetReference", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Add Reference</a>
+                                        }
+                                        else
+                                        {
+                                            @Model.Reference
+                                        }
+                                    </dd>
+                                    <dd class="govuk-summary-list__actions">
+                                        @if (!string.IsNullOrEmpty(@Model.Reference))
+                                        {
+                                            <a id="change-reference-link" name="changeReference" class="das-button--inline-link" href="@Url.Action("SetReference", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Change</a>
+                                        }
+                                    </dd>
+                            </div>                           
+                        </dl>
+                    </div>
+                </div>
+
+                    <div class="govuk-summary-card">
+                        <div class="govuk-summary-card__title-wrapper">
+                            <h2 class="govuk-summary-card__title">
+                                Price
+                            </h2>
+                        </div>
+                        <div class="govuk-summary-card__content">
+                            <dl class="govuk-summary-list">
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        Training price including any RPL (TNP1)
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                       @Model.TrainingPrice
+                                    </dd>
+                                    <dd class="govuk-summary-list__actions">
+                                        <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> Training price</span></a>
+                                    </dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                    @Html.HiddenFor(x => x.EndPointAssessmentPrice)
+                                    @Html.HiddenFor(x => x.TrainingPrice)
+                                    <dt class="govuk-summary-list__key">
+                                        End-point assessment (TNP2)
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.EndPointAssessmentPrice
+                                    </dd>
+                                    <dd class="govuk-summary-list__actions">
+                                        <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> End-point assessment price</span></a>
+                                    </dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        Total agreed apprenticeship price
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.Cost
+                                    </dd>
+                                    <dd class="govuk-summary-list__actions">
+                                        <a class="govuk-link" href="#">
+                                            <span class="govuk-visually-hidden">
+                                                Total agreed apprenticeship
+                                                price
+                                            </span>
+                                        </a>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+
+
+                    <div class="govuk-summary-card">
+                        <div class="govuk-summary-card__title-wrapper">
+                            <h2 class="govuk-summary-card__title">
+                                Recognition of prior learning (RPL) details
+                            </h2>
+                            <ul class="govuk-summary-card__actions">
+                                <li class="govuk-summary-card__action">
+                                    @if (Model.RecognisePriorLearning is null || Model.RecognisePriorLearning.Value == false)
+                                    {
+                                        <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Add<span class="govuk-visually-hidden">add RPL</span></a>
+                                    }
+                                    else
+                                    {
+                                        <button class="das-button--inline-link"
+                                                formmethod="post"
+                                                formaction="@Url.Action("RecognisePriorLearningDataRemove", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })"
+                                                type="submit">
+                                            Remove<span class="govuk-visually-hidden">remove RPL</span>
+                                        </button>
+                                    }
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="govuk-summary-card__content">
+                            <dl class="govuk-summary-list">
+                                @if (Model.RecognisePriorLearning is null || Model.RecognisePriorLearning.Value == false)
+                                {
+                                    <div class="govuk-summary-list__row">
+                                        <dd class="govuk-summary-list__value">
+                                            No recognition of prior learning details added
+                                        </dd>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Total off-the-job training hours required for this standard
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            @Model.TrainingTotalHours hours
+                                        </dd>
+                                        <dd class="govuk-summary-list__actions">
+                                            <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Change<span class="govuk-visually-hidden"> Training Total Hours</span></a>
+                                        </dd>
+                                    </div>
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Reduction in hours due to prior learning
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            @Model.DurationReducedByHours hours
+                                        </dd>
+                                        <dd class="govuk-summary-list__actions">
+                                            <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Change<span class="govuk-visually-hidden"> reduction in hours</span></a>
+                                        </dd>
+                                    </div>
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Off-the-job training time reduction due to prior learning
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            @if (@Model.IsDurationReducedByRpl is not null && Model.IsDurationReducedByRpl.Value == true)
+                                            {
+                                                <div>Yes</div>
+                                            }
+                                            else
+                                            {
+                                                <div>No</div>
+                                            }
+                                        </dd>
+                                        <dd class="govuk-summary-list__actions">
+                                            <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference})">
+                                                Change<span class="govuk-visually-hidden">
+                                                    Is Duration Reduced By Rpl
+                                                </span>
+                                            </a>
+                                        </dd>
+                                    </div>
+                                }
+                            </dl>
+                        </div>
+                    </div>
+
+                <button type="submit" class="govuk-button" id="submitAddDraftApprenticeship">Save & submit</button>
+
+                <p>
+                    <a class="govuk-link govuk-link--no-visited-state" href="@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })">
+                        Cancel
+                    </a>
+                </p>
+                </form>
+            </div>
+        </div>
+         
+
+    </main>
+</div>
+@section breadcrumb {
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })">Back</a>
+}

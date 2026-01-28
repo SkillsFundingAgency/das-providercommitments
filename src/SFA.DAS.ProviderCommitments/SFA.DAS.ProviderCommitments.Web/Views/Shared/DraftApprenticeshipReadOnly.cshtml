@@ -236,7 +236,7 @@ else
 @if (Model.TrainingPrice.HasValue)
 {
     <div class="govuk-form-group govuk-!-margin-bottom-0 @Html.AddClassIfPropertyInError(x => x.TrainingPrice, "govuk-form-group--error")">
-        @Html.ValidationMessageFor(m => m.TrainingPrice, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.TrainingPrice)})
+        @Html.ValidationMessageFor(m => m.TrainingPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.TrainingPrice) })
         <dl class="govuk-summary-list govuk-summary-list--no-border">
             <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
                 <dt class="govuk-summary-list__key" id="trainingprice-label">
@@ -254,7 +254,7 @@ else
 @if (Model.EndPointAssessmentPrice.HasValue)
 {
     <div class="govuk-form-group govuk-!-margin-bottom-0 @Html.AddClassIfPropertyInError(x => x.EndPointAssessmentPrice, "govuk-form-group--error")">
-        @Html.ValidationMessageFor(m => m.EndPointAssessmentPrice, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndPointAssessmentPrice)})
+        @Html.ValidationMessageFor(m => m.EndPointAssessmentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndPointAssessmentPrice) })
         <dl class="govuk-summary-list govuk-summary-list--no-border">
             <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
                 <dt class="govuk-summary-list__key" id="epaoprice-label">

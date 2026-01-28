@@ -151,7 +151,7 @@ public class WhenIMapDraftApprenticeshipToUpdateRequest
     {
         _source.DeliveryModel = dm;
         var result = await _act();
-        result.DeliveryModel.Should().Be(dm);
+        result.DeliveryModel.Should().Be((Infrastructure.OuterApi.Types.DeliveryModel)dm);
     }
 
     [Test]

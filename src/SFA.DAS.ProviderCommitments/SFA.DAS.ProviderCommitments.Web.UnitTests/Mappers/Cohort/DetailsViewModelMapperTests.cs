@@ -326,15 +326,15 @@ public class DetailsViewModelMapperTests
         excessModel.Should().BeNull();
     }
 
-    [TestCase(0, "Approve apprentice details", Party.Provider)]
-    [TestCase(1, "Approve apprentice details", Party.Provider)]
-    [TestCase(2, "Approve 2 apprentices' details", Party.Provider)]
-    [TestCase(0, "View apprentice details", Party.Employer)]
-    [TestCase(1, "View apprentice details", Party.Employer)]
-    [TestCase(2, "View 2 apprentices' details", Party.Employer)]
-    [TestCase(0, "View apprentice details", Party.TransferSender)]
-    [TestCase(1, "View apprentice details", Party.TransferSender)]
-    [TestCase(2, "View 2 apprentices' details", Party.TransferSender)]
+    [TestCase(0, "Check apprentice details", Party.Provider)]
+    [TestCase(1, "Check apprentice details", Party.Provider)]
+    [TestCase(2, "Check apprentice details", Party.Provider)]
+    [TestCase(0, "Check apprentice details", Party.Employer)]
+    [TestCase(1, "Check apprentice details", Party.Employer)]
+    [TestCase(2, "Check apprentice details", Party.Employer)]
+    [TestCase(0, "Check apprentice details", Party.TransferSender)]
+    [TestCase(1, "Check apprentice details", Party.TransferSender)]
+    [TestCase(2, "Check apprentice details", Party.TransferSender)]
     public async Task PageTitleIsSetCorrectlyForTheNumberOfApprenticeships(int numberOfApprenticeships, string expectedPageTitle, Party withParty)
     {
         var fixture = new DetailsViewModelMapperTestsFixture().CreateThisNumberOfApprenticeships(numberOfApprenticeships);
@@ -385,7 +385,7 @@ public class DetailsViewModelMapperTests
         result.IsAgreementSigned.Should().Be(expectedIsAgreementSigned);
     }
 
-    [TestCase(true, "Approve these details?")]
+    [TestCase(true, "Do you want to send these details to the employer?")]
     [TestCase(false, "Submit to employer?")]
     public async Task OptionsTitleIsMappedCorrectlyWithATransfer(bool isAgreementSigned, string expectedOptionsTitle)
     {
@@ -395,7 +395,7 @@ public class DetailsViewModelMapperTests
         result.OptionsTitle.Should().Be(expectedOptionsTitle);
     }
 
-    [TestCase(true, "Approve these details?")]
+    [TestCase(true, "Do you want to send these details to the employer?")]
     [TestCase(false, "Submit to employer?")]
     public async Task OptionsTitleIsMappedCorrectlyWithoutATransfer(bool isAgreementSigned, string expectedOptionsTitle)
     {
@@ -860,6 +860,56 @@ bool isApprovedByEmployer, bool expectedShowApprovalOptionMessage)
         var result = await fixture.Map();
         result.HasAgeRestrictedApprenticeships.Should().Be(expectedHasAgeRestrictedApprenticeships);
     }
+
+    [Test]
+    public async Task ShowRplAddLinkIsMappedToFalseWhenInCopCohort()
+    {
+        var fixture = new DetailsViewModelMapperTestsFixture();
+        fixture.SetCohortDetailsCopRequestId(1234);
+
+        var result = await fixture.Map();
+
+        foreach(var a in result.Courses?.SelectMany(c => c.DraftApprenticeships))
+        {
+            a.ShowRplAddLink.Should().BeFalse();
+        }
+    }
+
+    [TestCase("Apprenticeship", null, true)]
+    [TestCase("Apprenticeship", false, true)]
+    [TestCase("Apprenticeship", true, false)]
+    [TestCase("FoundationApprenticeship", false, false)]
+    [TestCase("Unknown", false, false)]
+    public async Task ShowRplAddLinkIsDependantOnTheseValuesRplBeingSet(string apprenticeshipType, bool? hasRpl, bool expected)
+    {
+        var fixture = new DetailsViewModelMapperTestsFixture();
+        fixture.SetCohortDetailsForAddRpl(apprenticeshipType, DateTime.Today, hasRpl);
+
+        var result = await fixture.Map();
+
+        foreach (var a in result.Courses?.SelectMany(c => c.DraftApprenticeships))
+        {
+            a.ShowRplAddLink.Should().Be(expected);
+        }
+    }
+
+    [TestCase("Apprenticeship", null, false)]
+    [TestCase("Apprenticeship", false, false)]
+    [TestCase("Apprenticeship", true, false)]
+    [TestCase("FoundationApprenticeship", false, false)]
+    [TestCase("Unknown", false, false)]
+    public async Task ShowRplAddLinkIsNotShownWhenNoStartDate(string apprenticeshipType, bool? hasRpl, bool expected)
+    {
+        var fixture = new DetailsViewModelMapperTestsFixture();
+        fixture.SetCohortDetailsForAddRpl(apprenticeshipType, null, hasRpl);
+
+        var result = await fixture.Map();
+
+        foreach (var a in result.Courses?.SelectMany(c => c.DraftApprenticeships))
+        {
+            a.ShowRplAddLink.Should().Be(expected);
+        }
+    }
 }
 
 public class DetailsViewModelMapperTestsFixture
@@ -980,6 +1030,26 @@ public class DetailsViewModelMapperTestsFixture
         {
             _encodingService.Setup(x => x.Encode(pledgeApplicationId.Value, EncodingType.PledgeApplicationId))
                 .Returns(expectedEncodedId);
+        }
+
+        return this;
+    }
+
+    public DetailsViewModelMapperTestsFixture SetCohortDetailsCopRequestId(long? value)
+    {
+        CohortDetails.ChangeOfPartyRequestId = value;
+
+        return this;
+    }
+
+    public DetailsViewModelMapperTestsFixture SetCohortDetailsForAddRpl(string apprenticeshipType, DateTime? startDate, bool? hasRpl)
+    {
+        CohortDetails.ChangeOfPartyRequestId = null;
+        foreach (var a in CohortDetails.DraftApprenticeships)
+        {
+            a.ApprenticeshipType = apprenticeshipType;
+            a.StartDate = startDate;
+            a.RecognisePriorLearning = hasRpl;
         }
 
         return this;
