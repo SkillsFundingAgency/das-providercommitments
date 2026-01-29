@@ -268,7 +268,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit")
             {
                 StoreAddDraftApprenticeshipState(model);
-                var req = await modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
+                var req = await modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
                 var redirectAction = changeCourse == "Edit" ? nameof(AddDraftApprenticeshipCourse) : nameof(SelectDeliveryModel);
 
                 return RedirectToAction(redirectAction, "DraftApprenticeship", req);
