@@ -1,14 +1,12 @@
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.Models.Shared
 @using Newtonsoft.Json;
-@inject IConfiguration Configuration;
-@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.ChangeEmployerViewModel
 
 @{
-    ViewBag.Title = "Choose an employer";
-    ViewBag.ZendeskLabel = "add-apprentice-select-employer";
-    ViewBag.GaData.Vpv = "/unapproved/add/select-employer";
-    var ilrSelectMultipleFeatureEnabled = Configuration.GetValue<bool>("ILRSelectMultipleFeatureEnabled");
+    ViewBag.Title = "Change an employer";
+    ViewBag.ZendeskLabel = "add-apprentice-change-employer";
+    ViewBag.GaData.Vpv = "/unapproved/add/change-employer";
 }
 <form method="get">
     <div class="govuk-grid-row">
@@ -35,10 +33,11 @@
     @Html.HiddenFor(m => m.UseLearnerData)
     <input type="hidden" value="@Model.SelectEmployerFilterModel.CurrentlySortedByField" name="SortField" />
     <input type="hidden" value="@Model.SelectEmployerFilterModel.ReverseSort.ToString()" name="ReverseSort" />
+    <input type="hidden" value="@Model.CacheKey.ToString()" name="CacheKey" />
 
     @if (!string.IsNullOrWhiteSpace(Model.SelectEmployerFilterModel.SearchTerm))
     {
-        <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NewCohortSelectEmployer">Clear search</a></p>
+        <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.SelectMultipleChangeEmployer">Clear search</a></p>
     }
 
     @if (Model.AccountProviderLegalEntities.Count > 0)
@@ -49,7 +48,7 @@
                     <th scope="col" class="govuk-table__header das-table-cell-width-35">
                         <a class="@Model.SelectEmployerFilterModel.CssClassForArrowDirection(SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst)"
                            title="Sort by employer name"
-                           asp-route="@RouteNames.NewCohortSelectEmployer"
+                           asp-route="@RouteNames.SelectMultipleChangeEmployer"
                            asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData(SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst)">
                             Employer
                         </a>
@@ -58,7 +57,7 @@
                     <th scope="col" class="govuk-table__header das-table-cell-width-35">
                         <a class="@Model.SelectEmployerFilterModel.CssClassForArrowDirection(SelectEmployerFilterModel.EmployerAccountNameConst)"
                            title="Sort by account name"
-                           asp-route="@RouteNames.NewCohortSelectEmployer"
+                           asp-route="@RouteNames.SelectMultipleChangeEmployer"
                            asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData(SelectEmployerFilterModel.EmployerAccountNameConst)">
                             Account name
                         </a>
@@ -87,18 +86,9 @@
                         <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
                         <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
                         <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
-                            @if (ilrSelectMultipleFeatureEnabled)
-                            {
-                                <a href="@Url.Action("BeginMultipleLearnerSelection", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, Model.UseLearnerData, viewModel.EmployerAccountName })" class="govuk-link">
-                                    Select <span class="govuk-visually-hidden">@viewModel.EmployerAccountLegalEntityName</span>
-                                </a>                                                                
-                            }
-                            else
-                            {
-                                <a href="@Url.Action("ConfirmEmployer", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, Model.UseLearnerData })" class="govuk-link">
-                                    Select <span class="govuk-visually-hidden">@viewModel.EmployerAccountLegalEntityName</span>
-                                </a>
-                            }
+                            <a href="@Url.Action("ContinueMultipleLearnerSelection", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, Model.UseLearnerData, viewModel.EmployerAccountName, Model.CacheKey })" class="govuk-link">
+                                Select <span class="govuk-visually-hidden">@viewModel.EmployerAccountLegalEntityName</span>
+                            </a>
                         </td>
                     </tr>
                 }
@@ -118,5 +108,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("SelectAddDraftApprenticeshipJourney", "Cohort", new { Model.ProviderId, UseLearnerData = Model.UseLearnerData })">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.SelectMultipleLearnerRecords, new { Model.ProviderId, UseLearnerData = Model.UseLearnerData })">Back</a>
 }

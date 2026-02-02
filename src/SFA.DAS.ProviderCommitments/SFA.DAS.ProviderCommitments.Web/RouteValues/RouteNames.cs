@@ -31,6 +31,7 @@ public static class RouteNames
     public const string UpdateDataLockConfirm = "update-datalock-confirm";
     public const string ChooseCohort = "choose-a-cohort";
     public const string NewCohortSelectEmployer = "new-cohort-select-employer";
+    public const string NewCohortSelectEmployerRedirect = "new-cohort-select-employer-redirect";
     public const string ProviderSignOut = "provider-signout";
     public const string CohortReview = "cohort-review";
     public const string CohortWithTransferSender = "cohort-with-transfer-sender";
@@ -51,5 +52,10 @@ public static class RouteNames
     public const string Dashboard = "provider-dashboard";
     public const string ProviderAccountIndex = "provider-account-index";
     public const string SelectLearnerRecord = "select-ilr";
+    public const string SelectMultipleLearnerRecords = "select-multiple-ilr";
+    public const string SelectMultipleLearnerRecordsFilter = "select-multiple-ilr-filter";
+    public const string SelectMultipleLearnerRecordsSort = "select-multiple-ilr-sort";
+    public const string SelectMultipleChangeEmployer = "change-employer";
+    public const string SelectMultipleChangeEmployerRedirect = "change-employer-redirect";
     public const string CreateCohortAndAddFirstApprenticeship = "create-cohort-add-apprenticeship";
 }

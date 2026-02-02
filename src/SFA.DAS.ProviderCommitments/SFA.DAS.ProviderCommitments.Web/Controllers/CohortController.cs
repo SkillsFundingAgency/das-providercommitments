@@ -297,6 +297,34 @@ public class CohortController : Controller
     }
 
     [HttpGet]
+    [Route("add/select-employer-redirect", Name = RouteNames.NewCohortSelectEmployerRedirect)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> BeginMultipleLearnerSelection(SelectEmployerRedirectRequest request)
+    {
+        var redirectModel = await _modelMapper.Map<SelectMultipleLearnerRecordsRequest>(request);
+        return RedirectToAction("SelectMultipleLearnerRecords", "Learner", redirectModel);
+
+    }
+
+    [HttpGet]
+    [Route("add/change-employer", Name = RouteNames.SelectMultipleChangeEmployer)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> ChangeEmployer(ChangeEmployerRequest request)
+    {
+        var model = await _modelMapper.Map<ChangeEmployerViewModel>(request);
+        return View(model);
+    }
+
+    [HttpGet]
+    [Route("add/change-employer-redirect", Name = RouteNames.SelectMultipleChangeEmployerRedirect)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> ContinueMultipleLearnerSelection(ChangeEmployerRedirectRequest request)
+    {
+        var redirectModel = await _modelMapper.Map<SelectMultipleLearnerRecordsRequest>(request);
+        return RedirectToAction("SelectMultipleLearnerRecords", "Learner", redirectModel);
+    }
+
+    [HttpGet]
     [Route("add/confirm-employer")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
