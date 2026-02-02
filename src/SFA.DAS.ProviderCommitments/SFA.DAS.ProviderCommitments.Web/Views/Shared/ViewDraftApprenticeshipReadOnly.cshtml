@@ -113,7 +113,7 @@
                             </span>
                         </summary>
                         <div class="govuk-details__text">
-                            You will need to remove the apprentice from the cohort or delete the cohort. Then update the apprentice details in the ILR and add the apprentice again.
+                            You can update some details here using the ‘Change’ or ‘Add’ links. If no link is shown, update the details in the ILR.
                         </div>
                     </details>
                 </div>
@@ -163,7 +163,7 @@
                                 <dd class="govuk-summary-list__value">
                                     @if (string.IsNullOrEmpty(@Model.Email))
                                     {
-                                        <a id="add-email-link" class="das-button--inline-link" href="@Url.Action("AddEmail", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Add Email</a>
+                                        <a id="add-email-link" class="das-button--inline-link" href="@Url.Action("AddEmail", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Add email address</a>
                                     }
                                     else
                                     {
@@ -261,7 +261,7 @@
                                     Start date
                                 </dt>
                                 <dd class="govuk-summary-list__value" id="startdate-value">
-                                    @(Model.StartDate.HasValue && Model.StartDate.Date.HasValue ? Model.StartDate.Date.Value.ToString("MMM yyyy") : "")
+                                        @(Model.StartDate.HasValue && Model.StartDate.Date.HasValue ? Model.StartDate.Date.Value.ToString("MMMM yyyy") : "")
                                     @Html.HiddenFor(x => x.StartMonth)
                                     @Html.HiddenFor(x => x.StartYear)
                                 <dd class="govuk-summary-list__actions">
@@ -273,7 +273,7 @@
                                     Planned end date (not including end-point assessment)
                                 </dt>
                                 <dd class="govuk-summary-list__value" id="enddate-value">
-                                    @(Model.EndDate.HasValue && Model.EndDate.Date.HasValue ? Model.EndDate.Date.Value.ToString("MMM yyyy") : "")
+                                        @(Model.EndDate.HasValue && Model.EndDate.Date.HasValue ? Model.EndDate.Date.Value.ToString("MMMM yyyy") : "")
                                     @Html.HiddenFor(x => x.EndMonth)
                                     @Html.HiddenFor(x => x.EndYear)
                                 </dd>
@@ -397,7 +397,7 @@
                                         Training price including any RPL (TNP1)
                                     </dt>
                                     <dd class="govuk-summary-list__value">
-                                       @Model.TrainingPrice
+                                       @DisplayCost(@Model.TrainingPrice)
                                     </dd>
                                     <dd class="govuk-summary-list__actions">
                                         <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> Training price</span></a>
@@ -410,7 +410,7 @@
                                         End-point assessment (TNP2)
                                     </dt>
                                     <dd class="govuk-summary-list__value">
-                                        @Model.EndPointAssessmentPrice
+                                        @DisplayCost(@Model.EndPointAssessmentPrice)
                                     </dd>
                                     <dd class="govuk-summary-list__actions">
                                         <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> End-point assessment price</span></a>
@@ -421,7 +421,7 @@
                                         Total agreed apprenticeship price
                                     </dt>
                                     <dd class="govuk-summary-list__value">
-                                        @Model.Cost
+                                        @DisplayCost(@Model.Cost)
                                     </dd>
                                     <dd class="govuk-summary-list__actions">
                                         <a class="govuk-link" href="#">
@@ -521,7 +521,7 @@
                         </div>
                     </div>
 
-                <button type="submit" class="govuk-button" id="submitAddDraftApprenticeship">Save & submit</button>
+                <button type="submit" class="govuk-button" id="submitAddDraftApprenticeship">Save and submit</button>
 
                 <p>
                     <a class="govuk-link govuk-link--no-visited-state" href="@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })">

@@ -58,10 +58,10 @@
 
 
             <div class="govuk-button-group">
-                <button class="govuk-button" data-module="govuk-button" data-govuk-button-init="">
+                <button class="govuk-button" data-module="govuk-button" data-govuk-button-init>
                     Continue
                 </button>
-                <a id="back-link" class="govuk-back-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortReference, Model.DraftApprenticeshipHashedId })">Cancel</a>
+                <a id="cancel-link" class="govuk-link" href="@Url.Action("EditDraftApprenticeship", "DraftApprenticeship", new { Model.ProviderId, Model.CohortReference, Model.DraftApprenticeshipHashedId })">Cancel</a>
             </div>
         </form>
     </div>

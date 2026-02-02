@@ -16,11 +16,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship
         public string DisplayUpdateMessage()
         {
             if (string.IsNullOrEmpty(OriginalEmail) && !string.IsNullOrEmpty(Email))
-                return "Email added";
+                return "Email address added";
             if (!string.IsNullOrEmpty(OriginalEmail) && string.IsNullOrEmpty(Email))
-                return "Email removed";
+                return "Email address removed";
             if (OriginalEmail != Email)
-                return "Email updated";
+                return "Email address changed";
             return null;
         }
         public bool HasChanged() => Email != OriginalEmail;

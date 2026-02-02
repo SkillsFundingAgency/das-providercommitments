@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship
             if (!string.IsNullOrEmpty(OriginalReference) && string.IsNullOrEmpty(Reference))
                 return "Reference removed";
             if (OriginalReference != Reference)
-                return "Reference updated";
+                return "Reference changed";
             return null;
         }
         public bool HasChanged() => Reference != OriginalReference;
