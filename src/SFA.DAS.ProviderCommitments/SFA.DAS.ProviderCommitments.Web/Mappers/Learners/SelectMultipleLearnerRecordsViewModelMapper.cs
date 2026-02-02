@@ -26,7 +26,7 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             CacheKey = cacheItem.CacheKey,
             ReservationId = cacheItem.ReservationId,
             TotalNumberOfLearnersFound = response.Total,
-            PageNumber = response.Page,
+            PageNumber = source.Page,
             SortField = cacheItem.SortField,
             ReverseSort = cacheItem.ReverseSort,
             SearchTerm = cacheItem.SearchTerm,
