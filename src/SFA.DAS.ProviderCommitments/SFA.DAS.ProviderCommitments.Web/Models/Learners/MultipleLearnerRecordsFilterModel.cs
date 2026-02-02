@@ -21,7 +21,6 @@ public class MultipleLearnerRecordsFilterModel
     public string SortField { get; set; }
     public bool ReverseSort { get; set; }
     public Guid? CacheKey { get; set; }
-    public Guid? ReservationId { get; set; }
     public bool ShowPageLinks => TotalNumberOfLearnersFound > LearnerRecordSearch.NumberOfLearnersPerSearchPage;
     public Dictionary<string, string> RouteData => BuildRouteData();
     public string StartMonth { get; set; }
