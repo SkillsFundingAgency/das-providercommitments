@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
+using SFA.DAS.ProviderCommitments.Web.Models.Learners;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -54,7 +55,7 @@ public class SelectMultipleLearnerRecordsViewModel : IAuthorizationContextModel
     }
     public bool ShowPageLinks => FilterModel.TotalNumberOfLearnersFound > Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
-    public LearnerRecordsFilterModel FilterModel { get; set; }
+    public MultipleLearnerRecordsFilterModel FilterModel { get; set; }
     public int FutureMonths { get; set; }
     public bool IsNonLevy => FutureMonths > 0;
 }

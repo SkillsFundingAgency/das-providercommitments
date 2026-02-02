@@ -12,19 +12,19 @@ public class SelectMultipleLearnerRecordsSortRequestMapper(ICacheStorageService 
     {
         var cacheItem = await cacheStorage.RetrieveFromCache<SelectMultipleLearnerRecordsCacheItem>(source.CacheKey.Value);
 
-        var reverseSort = !string.IsNullOrEmpty(cacheItem.Filter.SortField)
-                           && cacheItem.Filter.SortField.ToLower() == source.SortField.ToLower()
-                           && !cacheItem.Filter.ReverseSort;
+        var reverseSort = !string.IsNullOrEmpty(cacheItem.SortField)
+                           && cacheItem.SortField.ToLower() == source.SortField.ToLower()
+                           && !cacheItem.ReverseSort;
 
-        cacheItem.Filter.SortField = source.SortField;
-        cacheItem.Filter.ReverseSort = reverseSort;
+        cacheItem.SortField = source.SortField;
+        cacheItem.ReverseSort = reverseSort;
 
         await cacheStorage.SaveToCache(cacheItem.Key.ToString(), cacheItem, 1);
 
         var request = new SelectMultipleLearnerRecordsRequest
         {
             ProviderId = cacheItem.ProviderId,
-            CacheKey = source.CacheKey,
+            CacheKey = source.CacheKey
         };
 
         return request;

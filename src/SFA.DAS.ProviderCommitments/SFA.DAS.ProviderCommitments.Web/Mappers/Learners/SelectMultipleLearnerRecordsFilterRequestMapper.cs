@@ -14,15 +14,15 @@ public class SelectMultipleLearnerRecordsFilterRequestMapper(ICacheStorageServic
 
         if (source.ClearFilter)
         {
-            cacheItem.Filter.SearchTerm = "";
-            cacheItem.Filter.StartMonth = null;
-            cacheItem.Filter.StartYear = DateTime.UtcNow.Year.ToString();
+            cacheItem.SearchTerm = "";
+            cacheItem.StartMonth = null;
+            cacheItem.StartYear = DateTime.UtcNow.Year.ToString();
         }
         else
         {
-            cacheItem.Filter.SearchTerm = source.SearchTerm;
-            cacheItem.Filter.StartMonth = source.StartMonth.ToString();
-            cacheItem.Filter.StartYear = source.StartYear.ToString();
+            cacheItem.SearchTerm = source.SearchTerm;
+            cacheItem.StartMonth = source.StartMonth.ToString();
+            cacheItem.StartYear = source.StartYear.ToString();
         }
 
         await cacheStorage.SaveToCache(cacheItem.Key.ToString(), cacheItem, 1);

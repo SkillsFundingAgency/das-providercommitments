@@ -69,12 +69,8 @@
             </div>
         </div>
     </div>
-    @* <input type="hidden" value="@Model.FilterModel.SortField" name="SortField" /> *@
-    @* <input type="hidden" value="@Model.FilterModel.ReverseSort.ToString()" name="ReverseSort" /> *@
     <input type="hidden" value="@Model.CacheKey" name="CacheKey" />
     <input type="hidden" value="@Model.ProviderId" name="ProviderId" />
-    <input type="hidden" value="@Model.ReservationId" name="ReservationId" />
-    @* <input type="hidden" value="@Model.EmployerAccountName" name="EmployerAccountName" /> *@
 
     @if (!string.IsNullOrWhiteSpace(Model.EmployerAccountLegalEntityPublicHashedId))
     {
@@ -111,7 +107,7 @@
                 </div>
             </div>
             @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm) || !string.IsNullOrWhiteSpace(Model.FilterModel.StartMonth) || Model.FilterModel.StartYear != DateTime.Now.Year.ToString())
-            {                
+            {
                 <p class="govuk-body">
                     <button class="das-button--inline-link" data-module="govuk-button" type="submit" name="clearFilter" value="true">
                         Clear search and filters

@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Models.Learners;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
@@ -13,11 +14,11 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
         var cacheItem = await cacheStorage.RetrieveFromCache<SelectMultipleLearnerRecordsCacheItem>(source.CacheKey.Value);
 
         var response = await client.GetLearnerDetailsForProvider(cacheItem.ProviderId, cacheItem.AccountLegalEntityId,
-            cacheItem.CohortId, cacheItem.Filter.SearchTerm, cacheItem.Filter.SortField, cacheItem.Filter.ReverseSort, cacheItem.Filter.PageNumber,
-            int.TryParse(cacheItem.Filter.StartMonth, out var m) ? m : null,
-            int.Parse(cacheItem.Filter.StartYear));
+            cacheItem.CohortId, cacheItem.SearchTerm, cacheItem.SortField, cacheItem.ReverseSort, source.Page,
+            int.TryParse(cacheItem.StartMonth, out var m) ? m : null,
+            int.Parse(cacheItem.StartYear));
 
-        var filterModel = new LearnerRecordsFilterModel()
+        var filterModel = new MultipleLearnerRecordsFilterModel()
         {
             ProviderId = cacheItem.ProviderId,
             EmployerAccountLegalEntityPublicHashedId = cacheItem.EmployerAccountLegalEntityPublicHashedId,
@@ -26,11 +27,11 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             ReservationId = cacheItem.ReservationId,
             TotalNumberOfLearnersFound = response.Total,
             PageNumber = response.Page,
-            SortField = cacheItem.Filter.SortField,
-            ReverseSort = cacheItem.Filter.ReverseSort,
-            SearchTerm = cacheItem.Filter.SearchTerm,
-            StartMonth = cacheItem.Filter.StartMonth,
-            StartYear = cacheItem.Filter.StartYear
+            SortField = cacheItem.SortField,
+            ReverseSort = cacheItem.ReverseSort,
+            SearchTerm = cacheItem.SearchTerm,
+            StartMonth = cacheItem.StartMonth,
+            StartYear = cacheItem.StartYear
         };
 
         var model = new SelectMultipleLearnerRecordsViewModel

@@ -108,5 +108,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.SelectMultipleLearnerRecords, new { Model.ProviderId, UseLearnerData = Model.UseLearnerData })">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.SelectMultipleLearnerRecords, new { Model.CacheKey, Model.ProviderId, Model.UseLearnerData })">Back</a>
 }
