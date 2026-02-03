@@ -366,7 +366,7 @@
                                     <dd class="govuk-summary-list__value">
                                         @if (string.IsNullOrEmpty(@Model.Reference))
                                         {
-                                            <a id="add-reference-link" name="addReference" class="das-button--inline-link" href="@Url.Action("SetReference", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Add Reference</a>
+                                            <a id="add-reference-link" name="addReference" class="das-button--inline-link" href="@Url.Action("SetReference", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Add reference</a>
                                         }
                                         else
                                         {
