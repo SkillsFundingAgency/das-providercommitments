@@ -485,17 +485,6 @@
                                     </div>
                                     <div class="govuk-summary-list__row">
                                         <dt class="govuk-summary-list__key">
-                                            Reduction in hours due to prior learning
-                                        </dt>
-                                        <dd class="govuk-summary-list__value">
-                                            @Model.DurationReducedByHours hours
-                                        </dd>
-                                        <dd class="govuk-summary-list__actions">
-                                            <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Change<span class="govuk-visually-hidden"> reduction in hours</span></a>
-                                        </dd>
-                                    </div>
-                                    <div class="govuk-summary-list__row">
-                                        <dt class="govuk-summary-list__key">
                                             Off-the-job training time reduction due to prior learning
                                         </dt>
                                         <dd class="govuk-summary-list__value">
@@ -514,6 +503,17 @@
                                                     Is Duration Reduced By Rpl
                                                 </span>
                                             </a>
+                                        </dd>
+                                    </div>
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Price reduction due to prior learning
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            @DisplayCost(@Model.PriceReducedBy)
+                                        </dd>
+                                        <dd class="govuk-summary-list__actions">
+                                            <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference })">Change<span class="govuk-visually-hidden"> reduction in price</span></a>
                                         </dd>
                                     </div>
                                 }
