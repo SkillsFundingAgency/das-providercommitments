@@ -31,7 +31,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
             StartMonth = source.StartMonth.ToString(),
             StartYear = source.StartYear.ToString(),
             Courses = [new SelectListItem("All", ""),
-            .. coursesResponse.TrainingProgrammes.ToList()
+            .. coursesResponse.TrainingCourses.ToList()
                 .Select(m => new SelectListItem
                 {
                     Text = m.Name,

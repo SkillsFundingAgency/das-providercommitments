@@ -57,7 +57,7 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
             var timeString = britishDateTime.ToString("h:mmtt");
             // Ensure consistent AM/PM format across platforms
             timeString = timeString.Replace("am", "AM").Replace("pm", "PM");
-            return $"List updated {timeString} on {britishDateTime:dd MMM yyyy}";
+            return $"List updated: {timeString} on {britishDateTime:dd MMM yyyy}";
         }
     }
     public bool ShowPageLinks => FilterModel.TotalNumberOfLearnersFound > Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage;

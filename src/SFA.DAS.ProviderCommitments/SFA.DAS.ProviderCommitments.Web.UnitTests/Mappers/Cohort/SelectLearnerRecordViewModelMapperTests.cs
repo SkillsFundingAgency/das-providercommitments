@@ -54,9 +54,9 @@ public class SelectLearnerRecordViewModelMapperTests
         result.FilterModel.SearchTerm.Should().Be(_request.SearchTerm);
         result.FilterModel.CacheKey.Should().Be(_request.CacheKey);
         result.FilterModel.CourseCode.Should().Be(_request.CourseCode);
-        result.FilterModel.Courses.Count.Should().Be(_coursesResponse.TrainingProgrammes.Count() + 1);
+        result.FilterModel.Courses.Count.Should().Be(_coursesResponse.TrainingCourses.Count() + 1);
 
-        foreach(var course in _coursesResponse.TrainingProgrammes)
+        foreach(var course in _coursesResponse.TrainingCourses)
         {
             result.FilterModel.Courses.First(t=>t.Value == course.CourseCode).Text.Should().Be(course.Name);
         }

@@ -140,6 +140,6 @@ public class OuterApiServiceTest
         var actual = await service.GetCourses(request);
 
         actual.Should().Be(apiResponse);
-        actual.TrainingProgrammes.Should().BeEquivalentTo(apiResponse.TrainingProgrammes);
+        actual.TrainingCourses.Should().BeEquivalentTo(apiResponse.TrainingCourses);
     }
 }

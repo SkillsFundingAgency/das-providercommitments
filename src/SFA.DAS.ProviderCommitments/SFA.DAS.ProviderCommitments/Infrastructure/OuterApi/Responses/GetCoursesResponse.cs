@@ -6,7 +6,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 
 public class GetCoursesResponse
 {
-    public IEnumerable<TrainingCourse> TrainingProgrammes { get; set; }
+    public IEnumerable<TrainingCourse> TrainingCourses { get; set; }
 }
 
 public class TrainingCourse
