@@ -13,13 +13,14 @@ public class GetLearnerDetailsForProviderRequest(
     bool sortDesc,
     int page, 
     int? startMonth, 
-    int startYear)
+    int startYear,
+    string courseCode)
     : IGetApiRequest
 {
     public string GetUrl =>
         $"providers/{providerId}/unapproved/add/learners/select?AccountLegalEntityId={accountLegalEntityId}&cohortId={cohortId}&SearchTerm={WebUtility.UrlEncode(searchTerm)}" +
         $"&SortColumn={WebUtility.UrlEncode(sortColumn)}&SortDescending={sortDesc}&Page={page}&pageSize={Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage}" +
-        $"&startMonth={startMonth}&startYear={startYear}";
+        $"&startMonth={startMonth}&startYear={startYear}&courseCode={courseCode}";
 }
 
 public class GetLearnerDetailsForProviderResponse

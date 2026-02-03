@@ -57,7 +57,7 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
             var timeString = britishDateTime.ToString("h:mmtt");
             // Ensure consistent AM/PM format across platforms
             timeString = timeString.Replace("am", "AM").Replace("pm", "PM");
-            return $"Last updated {timeString} on {britishDateTime:dddd d MMMM}";
+            return $"List updated {timeString} on {britishDateTime:dd MMM yyyy}";
         }
     }
     public bool ShowPageLinks => FilterModel.TotalNumberOfLearnersFound > Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage;
@@ -88,6 +88,8 @@ public class LearnerRecordsFilterModel
     public string StartYear { get; set; } = DateTime.UtcNow.Year.ToString();
     public List<SelectListItem> MonthNames { get; set; }
     public List<SelectListItem> YearNames { get; set; }
+    public string CourseCode { get; set; }
+    public List<SelectListItem> Courses { get; set; }
 
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 

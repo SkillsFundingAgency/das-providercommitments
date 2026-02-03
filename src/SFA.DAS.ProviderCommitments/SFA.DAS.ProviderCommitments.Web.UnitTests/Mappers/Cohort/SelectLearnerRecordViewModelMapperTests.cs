@@ -1,5 +1,7 @@
 ﻿using System.Linq;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -13,6 +15,7 @@ public class SelectLearnerRecordViewModelMapperTests
     private Mock<IOuterApiService> _outerApiService;
     private SelectLearnerRecordRequest _request;
     private GetLearnerDetailsForProviderResponse _apiResponse;
+    private GetCoursesResponse _coursesResponse;
 
     [SetUp]
     public void Setup()
@@ -21,11 +24,15 @@ public class SelectLearnerRecordViewModelMapperTests
 
         _request = fixture.Create<SelectLearnerRecordRequest>();
         _apiResponse = fixture.Create<GetLearnerDetailsForProviderResponse>();
+        _coursesResponse = fixture.Create<GetCoursesResponse>();
 
         _outerApiService = new Mock<IOuterApiService>();
 
-        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.CohortId, _request.SearchTerm, _request.SortField, 
-                _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear))
+        _outerApiService.Setup(x => x.GetCourses(It.Is<GetCoursesRequest>(t => t.Ukprn == _request.ProviderId))).
+           ReturnsAsync(_coursesResponse);
+
+        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.CohortId, _request.SearchTerm, _request.SortField,
+                _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear, _request.CourseCode))
             .ReturnsAsync(_apiResponse);
 
         _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
@@ -46,6 +53,13 @@ public class SelectLearnerRecordViewModelMapperTests
         result.FilterModel.ReverseSort.Should().Be(_request.ReverseSort);
         result.FilterModel.SearchTerm.Should().Be(_request.SearchTerm);
         result.FilterModel.CacheKey.Should().Be(_request.CacheKey);
+        result.FilterModel.CourseCode.Should().Be(_request.CourseCode);
+        result.FilterModel.Courses.Count.Should().Be(_coursesResponse.TrainingProgrammes.Count() + 1);
+
+        foreach(var course in _coursesResponse.TrainingProgrammes)
+        {
+            result.FilterModel.Courses.First(t=>t.Value == course.CourseCode).Text.Should().Be(course.Name);
+        }
     }
 
     [Test]
@@ -64,6 +78,6 @@ public class SelectLearnerRecordViewModelMapperTests
     public async Task MapLearnersCorrectly()
     {
         var result = await _mapper.Map(_request);
-        result.Learners.Should().BeEquivalentTo(_apiResponse.Learners.Select(x=>(LearnerSummary)x).ToList());
+        result.Learners.Should().BeEquivalentTo(_apiResponse.Learners.Select(x => (LearnerSummary)x).ToList());
     }
 }

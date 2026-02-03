@@ -1,4 +1,6 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -10,7 +12,9 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
     public async Task<SelectLearnerRecordViewModel> Map(SelectLearnerRecordRequest source)
     {
         var response = await client.GetLearnerDetailsForProvider(source.ProviderId, source.AccountLegalEntityId,
-            source.CohortId, source.SearchTerm, source.SortField, source.ReverseSort, source.Page, source.StartMonth, source.StartYear);
+            source.CohortId, source.SearchTerm, source.SortField, source.ReverseSort, source.Page, source.StartMonth, source.StartYear,source.CourseCode);
+
+        var coursesResponse = await client.GetCourses(new Infrastructure.OuterApi.Requests.GetCoursesRequest(source.ProviderId));
 
         var filterModel = new LearnerRecordsFilterModel()
         {
@@ -25,7 +29,15 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
             ReverseSort = source.ReverseSort,
             SearchTerm = source.SearchTerm,
             StartMonth = source.StartMonth.ToString(),
-            StartYear = source.StartYear.ToString()
+            StartYear = source.StartYear.ToString(),
+            Courses = [new SelectListItem("All", ""),
+            .. coursesResponse.TrainingProgrammes.ToList()
+                .Select(m => new SelectListItem
+                {
+                    Text = m.Name,
+                    Value = m.CourseCode
+                })],
+            CourseCode = source.CourseCode,
         };
 
         var model = new SelectLearnerRecordViewModel
@@ -39,7 +51,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
             Learners = response.Learners.ConvertAll(x => (LearnerSummary)x),
             LastIlrSubmittedOn = response.LastSubmissionDate,
             FilterModel = filterModel,
-            FutureMonths = response.FutureMonths
+            FutureMonths = response.FutureMonths         
         };
         model.SortedByHeader();
         return model;
