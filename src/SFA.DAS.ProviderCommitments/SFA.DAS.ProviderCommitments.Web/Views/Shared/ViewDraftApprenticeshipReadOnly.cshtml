@@ -488,19 +488,12 @@
                                             Off-the-job training time reduction due to prior learning
                                         </dt>
                                         <dd class="govuk-summary-list__value">
-                                            @if (@Model.IsDurationReducedByRpl is not null && Model.IsDurationReducedByRpl.Value == true)
-                                            {
-                                                <div>Yes</div>
-                                            }
-                                            else
-                                            {
-                                                <div>No</div>
-                                            }
+                                            @Model.DurationReducedByHours hours
                                         </dd>
                                         <dd class="govuk-summary-list__actions">
                                             <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", new { Model.ProviderId, Model.DraftApprenticeshipHashedId, Model.CohortReference})">
                                                 Change<span class="govuk-visually-hidden">
-                                                    Is Duration Reduced By Rpl
+                                                    Duration Reduced By Hours
                                                 </span>
                                             </a>
                                         </dd>
