@@ -15,7 +15,6 @@ public class SelectLearnerRecordViewModelMapperTests
     private Mock<IOuterApiService> _outerApiService;
     private SelectLearnerRecordRequest _request;
     private GetLearnerDetailsForProviderResponse _apiResponse;
-    private GetCoursesResponse _coursesResponse;
 
     [SetUp]
     public void Setup()
@@ -24,12 +23,7 @@ public class SelectLearnerRecordViewModelMapperTests
 
         _request = fixture.Create<SelectLearnerRecordRequest>();
         _apiResponse = fixture.Create<GetLearnerDetailsForProviderResponse>();
-        _coursesResponse = fixture.Create<GetCoursesResponse>();
-
-        _outerApiService = new Mock<IOuterApiService>();
-
-        _outerApiService.Setup(x => x.GetCourses(It.Is<GetCoursesRequest>(t => t.Ukprn == _request.ProviderId))).
-           ReturnsAsync(_coursesResponse);
+        _outerApiService = new Mock<IOuterApiService>();        
 
         _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.CohortId, _request.SearchTerm, _request.SortField,
                 _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear, _request.CourseCode))
@@ -54,9 +48,9 @@ public class SelectLearnerRecordViewModelMapperTests
         result.FilterModel.SearchTerm.Should().Be(_request.SearchTerm);
         result.FilterModel.CacheKey.Should().Be(_request.CacheKey);
         result.FilterModel.CourseCode.Should().Be(_request.CourseCode);
-        result.FilterModel.Courses.Count.Should().Be(_coursesResponse.TrainingCourses.Count() + 1);
+        result.FilterModel.Courses.Count.Should().Be(_apiResponse.TrainingCourses.Count() + 1);
 
-        foreach(var course in _coursesResponse.TrainingCourses)
+        foreach(var course in _apiResponse.TrainingCourses)
         {
             result.FilterModel.Courses.First(t=>t.Value == course.CourseCode).Text.Should().Be(course.Name);
         }

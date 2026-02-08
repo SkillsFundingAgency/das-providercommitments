@@ -14,8 +14,6 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
         var response = await client.GetLearnerDetailsForProvider(source.ProviderId, source.AccountLegalEntityId,
             source.CohortId, source.SearchTerm, source.SortField, source.ReverseSort, source.Page, source.StartMonth, source.StartYear,source.CourseCode);
 
-        var coursesResponse = await client.GetCourses(new Infrastructure.OuterApi.Requests.GetCoursesRequest(source.ProviderId));
-
         var filterModel = new LearnerRecordsFilterModel()
         {
             ProviderId = source.ProviderId,
@@ -31,7 +29,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
             StartMonth = source.StartMonth.ToString(),
             StartYear = source.StartYear.ToString(),
             Courses = [new SelectListItem("All", ""),
-            .. coursesResponse.TrainingCourses.ToList()
+            .. response.TrainingCourses.ToList()
                 .Select(m => new SelectListItem
                 {
                     Text = m.Name,

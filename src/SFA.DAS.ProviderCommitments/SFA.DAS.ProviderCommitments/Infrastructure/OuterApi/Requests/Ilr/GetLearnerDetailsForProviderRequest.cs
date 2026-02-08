@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 
@@ -14,7 +15,7 @@ public class GetLearnerDetailsForProviderRequest(
     int page, 
     int? startMonth, 
     int startYear,
-    string courseCode)
+    int? courseCode)
     : IGetApiRequest
 {
     public string GetUrl =>
@@ -34,6 +35,8 @@ public class GetLearnerDetailsForProviderResponse
     public string EmployerName { get; set; }
     public List<GetLearnerSummary> Learners { get; set; }
     public int FutureMonths { get; set; }
+    public IEnumerable<TrainingCourse> TrainingCourses { get; set; }
+
 }
 
 public class GetLearnerSummary
