@@ -171,5 +171,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public bool? IsDurationReducedByRpl { get; set; }
         public string Banner { get; set; }
         public string TrainingCourseVersion { get; set; }
+        public bool IsRplRequired { get; set; }
     }
 }
