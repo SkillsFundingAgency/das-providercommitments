@@ -15,7 +15,7 @@ public class GetLearnerDetailsForProviderRequest(
     int page,
     int? startMonth,
     int startYear,
-    int? courseCode)
+    string courseCode)
     : IGetApiRequest
 {
     public string GetUrl =>

@@ -232,7 +232,7 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
 
     public async Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, long? accountLegalEntityId, long? cohortId, string searchTerm, string sortColumn, bool sortDesc, int page, int? startMonth, int startYear, string courseCode)
     {
-        var request = new GetLearnerDetailsForProviderRequest(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDesc, page, startMonth, startYear, string.IsNullOrEmpty(courseCode) ? 0 : int.Parse(courseCode) );
+        var request = new GetLearnerDetailsForProviderRequest(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDesc, page, startMonth, startYear, courseCode );
 
         var response = await outerApiClient.Get<GetLearnerDetailsForProviderResponse>(request);
 
