@@ -33,7 +33,7 @@ public class SelectLearnerRecordViewModelMapperTests
 
         _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId,
                 _request.CohortId, _request.SearchTerm, _request.SortField,
-                _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear,_request.CourseCode))
+                _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear, _request.CourseCode))
             .ReturnsAsync(_apiResponse);
 
         _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
@@ -54,6 +54,7 @@ public class SelectLearnerRecordViewModelMapperTests
         result.FilterModel.ReverseSort.Should().Be(_request.ReverseSort);
         result.FilterModel.SearchTerm.Should().Be(_request.SearchTerm);
         result.FilterModel.CacheKey.Should().Be(_request.CacheKey);
+        result.FilterModel.CourseCode.Should().Be(_request.CourseCode);
     }
 
     [Test]
@@ -67,12 +68,14 @@ public class SelectLearnerRecordViewModelMapperTests
         result.EmployerAccountName.Should().Be(_apiResponse.EmployerName);
         result.LastIlrSubmittedOn.Should().Be(_apiResponse.LastSubmissionDate);
         result.FutureMonths.Should().Be(_apiResponse.FutureMonths);
+        result.FilterModel.Courses.Where(c => c.Text != "All").Select(x => x.Text).
+            Should().BeEquivalentTo(_apiResponse.TrainingCourses.Select(y => y.Name));
     }
 
     [Test]
     public async Task MapLearnersCorrectly()
     {
         var result = await _mapper.Map(_request);
-        result.Learners.Should().BeEquivalentTo(_apiResponse.Learners.Select(x=>(LearnerSummary)x).ToList());
+        result.Learners.Should().BeEquivalentTo(_apiResponse.Learners.Select(x => (LearnerSummary)x).ToList());
     }
 }

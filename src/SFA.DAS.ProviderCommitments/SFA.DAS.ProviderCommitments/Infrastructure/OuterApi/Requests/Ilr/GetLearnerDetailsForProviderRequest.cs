@@ -12,8 +12,8 @@ public class GetLearnerDetailsForProviderRequest(
     string searchTerm,
     string sortColumn,
     bool sortDesc,
-    int page, 
-    int? startMonth, 
+    int page,
+    int? startMonth,
     int startYear,
     int? courseCode)
     : IGetApiRequest
@@ -36,7 +36,6 @@ public class GetLearnerDetailsForProviderResponse
     public List<GetLearnerSummary> Learners { get; set; }
     public int FutureMonths { get; set; }
     public IEnumerable<TrainingCourse> TrainingCourses { get; set; }
-
 }
 
 public class GetLearnerSummary
