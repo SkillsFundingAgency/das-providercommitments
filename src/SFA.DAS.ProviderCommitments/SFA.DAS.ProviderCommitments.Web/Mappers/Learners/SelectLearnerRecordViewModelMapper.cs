@@ -12,8 +12,20 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
 {
     public async Task<SelectLearnerRecordViewModel> Map(SelectLearnerRecordRequest source)
     {
-        var response = await client.GetLearnerDetailsForProvider(source.ProviderId, new SelectLearnersRequest() { AccountLegalEntityId =  source.AccountLegalEntityId,
-            CohortId = source.CohortId, SearchTerm = source.SearchTerm, SortColumn = source.SortField, ReverseSort = source.ReverseSort, Page = source.Page, StartMonth = source.StartMonth, StartYear = source.StartYear, CourseCode = source.CourseCode });
+        var learnerRequest = new SelectLearnersRequest()
+        {
+            AccountLegalEntityId = source.AccountLegalEntityId,
+            CohortId = source.CohortId,
+            SearchTerm = source.SearchTerm,
+            SortColumn = source.SortField,
+            ReverseSort = source.ReverseSort,
+            Page = source.Page,
+            StartMonth = source.StartMonth,
+            StartYear = source.StartYear,
+            CourseCode = source.CourseCode
+        };
+
+        var response = await client.GetLearnerDetailsForProvider(source.ProviderId,learnerRequest);
 
         var filterModel = new LearnerRecordsFilterModel()
         {

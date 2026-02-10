@@ -1,7 +1,5 @@
 ﻿using System.Linq;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -25,27 +23,23 @@ public class SelectLearnerRecordViewModelMapperTests
         _apiResponse = fixture.Create<GetLearnerDetailsForProviderResponse>();
         _outerApiService = new Mock<IOuterApiService>();
 
-        var learnerRequest = new SelectLearnersRequest()
-        {
-            AccountLegalEntityId = _request.AccountLegalEntityId,
-            CohortId = _request.CohortId,
-            SearchTerm = _request.SearchTerm,
-            SortColumn = _request.SortField,
-            ReverseSort = _request.ReverseSort,
-            Page = _request.Page,
-            StartMonth = _request.StartMonth,
-            StartYear = _request.StartYear,
-            CourseCode = _request.CourseCode
-        };
-
-        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, learnerRequest))
-          .ReturnsAsync(_apiResponse);
+        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId,
+           It.Is<SelectLearnersRequest>(t => t.AccountLegalEntityId == _request.AccountLegalEntityId &&
+           t.CohortId == _request.CohortId &&
+           t.SearchTerm == _request.SearchTerm &&
+           t.SortColumn == _request.SortField &&
+           t.ReverseSort == _request.ReverseSort &&
+           t.Page == _request.Page &&
+           t.StartMonth == _request.StartMonth &&
+           t.StartYear == _request.StartYear &&
+           t.CourseCode == _request.CourseCode)))
+           .ReturnsAsync(_apiResponse);
 
         _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
     }
 
     [Test]
-    public async Task MapToFilterModelCorrectly()
+    public async Task MapToFilterModelCorrectlyForLearners()
     {
         var result = await _mapper.Map(_request);
         result.FilterModel.ProviderId.Should().Be(_request.ProviderId);
@@ -69,7 +63,7 @@ public class SelectLearnerRecordViewModelMapperTests
     }
 
     [Test]
-    public async Task MapToViewModelCorrectly()
+    public async Task MapToViewModelCorrectlyForLearners()
     {
         var result = await _mapper.Map(_request);
         result.ProviderId.Should().Be(_request.ProviderId);
@@ -81,7 +75,7 @@ public class SelectLearnerRecordViewModelMapperTests
     }
 
     [Test]
-    public async Task MapLearnersCorrectly()
+    public async Task MapLearnersCorrectlyForLearners()
     {
         var result = await _mapper.Map(_request);
         result.Learners.Should().BeEquivalentTo(_apiResponse.Learners.Select(x => (LearnerSummary)x).ToList());

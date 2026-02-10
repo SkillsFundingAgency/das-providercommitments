@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -14,7 +13,6 @@ public class SelectLearnerRecordViewModelMapperTests
     private Mock<IOuterApiService> _outerApiService;
     private SelectLearnerRecordRequest _request;
     private GetLearnerDetailsForProviderResponse _apiResponse;
-    private GetCoursesResponse _coursesResponse;
 
     [SetUp]
     public void Setup()
@@ -23,24 +21,19 @@ public class SelectLearnerRecordViewModelMapperTests
 
         _request = fixture.Create<SelectLearnerRecordRequest>();
         _apiResponse = fixture.Create<GetLearnerDetailsForProviderResponse>();
-        _coursesResponse = fixture.Create<GetCoursesResponse>();
 
         _outerApiService = new Mock<IOuterApiService>();
 
-        var learnerRequest = new SelectLearnersRequest()
-        {
-            AccountLegalEntityId = _request.AccountLegalEntityId,
-            CohortId = _request.CohortId,
-            SearchTerm = _request.SearchTerm,
-            SortColumn = _request.SortField,
-            ReverseSort = _request.ReverseSort,
-            Page = _request.Page,
-            StartMonth = _request.StartMonth,
-            StartYear = _request.StartYear,
-            CourseCode = _request.CourseCode
-        };
-
-        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, learnerRequest))
+        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId,
+            It.Is<SelectLearnersRequest>(t => t.AccountLegalEntityId == _request.AccountLegalEntityId &&
+            t.CohortId == _request.CohortId &&
+            t.SearchTerm == _request.SearchTerm &&
+            t.SortColumn == _request.SortField &&
+            t.ReverseSort == _request.ReverseSort &&
+            t.Page == _request.Page &&
+            t.StartMonth == _request.StartMonth &&
+            t.StartYear == _request.StartYear &&
+            t.CourseCode == _request.CourseCode)))
             .ReturnsAsync(_apiResponse);
 
         _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
