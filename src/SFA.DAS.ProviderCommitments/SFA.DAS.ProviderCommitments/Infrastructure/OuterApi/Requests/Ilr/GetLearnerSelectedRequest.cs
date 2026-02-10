@@ -19,7 +19,7 @@ public class GetLearnerSelectedResponse
     public DateTime PlannedEndDate { get; set; }
     public int EpaoPrice { get; set; }
     public int TrainingPrice { get; set; }
-    public int StandardCode { get; set; }
+    public string TrainingCode { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
 }

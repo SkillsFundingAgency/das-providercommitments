@@ -28,7 +28,7 @@ public class AddAnotherDraftApprenticeshipRequestFromLearnerSelectedRequestMappe
         cacheItem.Uln = learner.Uln.ToString();
         cacheItem.EndPointAssessmentPrice = learner.EpaoPrice;
         cacheItem.TrainingPrice = learner.TrainingPrice;
-        cacheItem.CourseCode = learner.StandardCode.ToString();
+        cacheItem.CourseCode = learner.TrainingCode;
         cacheItem.Cost = learner.TrainingPrice + cacheItem.EndPointAssessmentPrice;
         cacheItem.LearnerDataId = source.LearnerDataId;
         await cacheStorage.SaveToCache(cacheItem.CacheKey, cacheItem, 1);

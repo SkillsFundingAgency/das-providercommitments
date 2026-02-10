@@ -107,7 +107,7 @@ public class WhenIMapSelectedLearnerRequestToCreateCohortWithDraftApprenticeship
                i.LearnerDataId == _source.LearnerDataId &&
                i.EndPointAssessmentPrice == _response.EpaoPrice &&
                i.TrainingPrice == _response.TrainingPrice &&
-               i.CourseCode == _response.StandardCode.ToString() &&
+               i.CourseCode == _response.TrainingCode &&
                i.Cost == _response.TrainingPrice + _response.EpaoPrice;
     }
 }
