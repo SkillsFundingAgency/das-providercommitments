@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -11,8 +12,8 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
 {
     public async Task<SelectLearnerRecordViewModel> Map(SelectLearnerRecordRequest source)
     {
-        var response = await client.GetLearnerDetailsForProvider(source.ProviderId, source.AccountLegalEntityId,
-            source.CohortId, source.SearchTerm, source.SortField, source.ReverseSort, source.Page, source.StartMonth, source.StartYear,source.CourseCode);
+        var response = await client.GetLearnerDetailsForProvider(source.ProviderId, new SelectLearnersRequest() { AccountLegalEntityId =  source.AccountLegalEntityId,
+            CohortId = source.CohortId, SearchTerm = source.SearchTerm, SortColumn = source.SortField, ReverseSort = source.ReverseSort, Page = source.Page, StartMonth = source.StartMonth, StartYear = source.StartYear, CourseCode = source.CourseCode });
 
         var filterModel = new LearnerRecordsFilterModel()
         {
@@ -29,7 +30,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
             StartMonth = source.StartMonth.ToString(),
             StartYear = source.StartYear.ToString(),
             Courses = [new SelectListItem("All", ""),
-            .. response.TrainingCourses.ToList()
+            .. response.TrainingCourses
                 .Select(m => new SelectListItem
                 {
                     Text = m.Name,

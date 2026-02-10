@@ -3,9 +3,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
@@ -124,22 +122,5 @@ public class OuterApiServiceTest
         actual.Should().Be(apiResponse);
         actual.Success.Should().Be(apiResponse.Success);
         actual.Message.Should().Be(apiResponse.Message);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_GetCourses_Request_Is_Made_And_Response_Returned(
-        GetCoursesRequest request,
-        GetCoursesResponse apiResponse,
-        [Frozen] Mock<IOuterApiClient> apiClient,
-        OuterApiService service)
-    {
-        //Arrange
-        apiClient.Setup(t => t.Get<GetCoursesResponse>(It.Is<GetCoursesRequest>(t => t.Ukprn == request.Ukprn))).ReturnsAsync(apiResponse);
-
-        //Act
-        var actual = await service.GetCourses(request);
-
-        actual.Should().Be(apiResponse);
-        actual.TrainingCourses.Should().BeEquivalentTo(apiResponse.TrainingCourses);
     }
 }

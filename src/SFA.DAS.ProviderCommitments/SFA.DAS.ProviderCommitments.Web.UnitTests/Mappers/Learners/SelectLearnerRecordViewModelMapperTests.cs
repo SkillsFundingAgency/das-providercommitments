@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -28,12 +27,20 @@ public class SelectLearnerRecordViewModelMapperTests
 
         _outerApiService = new Mock<IOuterApiService>();
 
-        _outerApiService.Setup(x => x.GetCourses(It.Is<GetCoursesRequest>(t => t.Ukprn == _request.ProviderId))).
-                 ReturnsAsync(_coursesResponse);
+        var learnerRequest = new SelectLearnersRequest()
+        {
+            AccountLegalEntityId = _request.AccountLegalEntityId,
+            CohortId = _request.CohortId,
+            SearchTerm = _request.SearchTerm,
+            SortColumn = _request.SortField,
+            ReverseSort = _request.ReverseSort,
+            Page = _request.Page,
+            StartMonth = _request.StartMonth,
+            StartYear = _request.StartYear,
+            CourseCode = _request.CourseCode
+        };
 
-        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId,
-                _request.CohortId, _request.SearchTerm, _request.SortField,
-                _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear, _request.CourseCode))
+        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, learnerRequest))
             .ReturnsAsync(_apiResponse);
 
         _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);

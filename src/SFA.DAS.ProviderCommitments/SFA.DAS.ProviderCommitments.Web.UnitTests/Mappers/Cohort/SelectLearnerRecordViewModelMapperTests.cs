@@ -23,11 +23,23 @@ public class SelectLearnerRecordViewModelMapperTests
 
         _request = fixture.Create<SelectLearnerRecordRequest>();
         _apiResponse = fixture.Create<GetLearnerDetailsForProviderResponse>();
-        _outerApiService = new Mock<IOuterApiService>();        
+        _outerApiService = new Mock<IOuterApiService>();
 
-        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.CohortId, _request.SearchTerm, _request.SortField,
-                _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear, _request.CourseCode))
-            .ReturnsAsync(_apiResponse);
+        var learnerRequest = new SelectLearnersRequest()
+        {
+            AccountLegalEntityId = _request.AccountLegalEntityId,
+            CohortId = _request.CohortId,
+            SearchTerm = _request.SearchTerm,
+            SortColumn = _request.SortField,
+            ReverseSort = _request.ReverseSort,
+            Page = _request.Page,
+            StartMonth = _request.StartMonth,
+            StartYear = _request.StartYear,
+            CourseCode = _request.CourseCode
+        };
+
+        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, learnerRequest))
+          .ReturnsAsync(_apiResponse);
 
         _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
     }
@@ -50,9 +62,9 @@ public class SelectLearnerRecordViewModelMapperTests
         result.FilterModel.CourseCode.Should().Be(_request.CourseCode);
         result.FilterModel.Courses.Count.Should().Be(_apiResponse.TrainingCourses.Count() + 1);
 
-        foreach(var course in _apiResponse.TrainingCourses)
+        foreach (var course in _apiResponse.TrainingCourses)
         {
-            result.FilterModel.Courses.First(t=>t.Value == course.CourseCode).Text.Should().Be(course.Name);
+            result.FilterModel.Courses.First(t => t.Value == course.CourseCode).Text.Should().Be(course.Name);
         }
     }
 

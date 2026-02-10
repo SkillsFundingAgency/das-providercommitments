@@ -230,9 +230,9 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         return response.HasApprenticeshipAccess;
     }
 
-    public async Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, long? accountLegalEntityId, long? cohortId, string searchTerm, string sortColumn, bool sortDesc, int page, int? startMonth, int startYear, string courseCode)
+    public async Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, SelectLearnersRequest learnerRequest)
     {
-        var request = new GetLearnerDetailsForProviderRequest(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDesc, page, startMonth, startYear, courseCode );
+        var request = new GetLearnerDetailsForProviderRequest(providerId, learnerRequest);
 
         var response = await outerApiClient.Get<GetLearnerDetailsForProviderResponse>(request);
 
@@ -313,10 +313,5 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         var apiRequest = new PostConfirmEditApprenticeshipRequest(providerId, apprenticeshipId, request);
 
         return await outerApiClient.Post<ConfirmEditApprenticeshipResponse>(apiRequest);
-    }
-
-    public async Task<GetCoursesResponse> GetCourses(GetCoursesRequest request)
-    {
-        return await outerApiClient.Get<GetCoursesResponse>(request);
     }
 }
