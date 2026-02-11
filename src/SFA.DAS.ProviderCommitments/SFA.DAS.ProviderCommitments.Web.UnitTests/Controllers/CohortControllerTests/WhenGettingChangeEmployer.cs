@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
@@ -32,26 +34,37 @@ public class WhenGettingChangeEmployer
 
         result.Should().NotBeNull();
         result.Model.GetType().Should().Be(typeof(ChangeEmployerViewModel));
+
+        var model = result.Model.Should().BeOfType<ChangeEmployerViewModel>().Subject;
+        model.ProviderId.Should().Be(fixture.ProviderId);
+        model.CacheKey.Should().Be(fixture.CacheKey);
     }
 }
 
 public class ChangeEmployerFixture
 {
     public CohortController Sut { get; set; }
+    public long ProviderId => _providerId;
+    public Guid CacheKey => _cacheKey;
+
     private readonly Mock<IModelMapper> _modelMapperMock;
     private readonly ChangeEmployerRequest _request;
     private readonly long _providerId;
+    private readonly Guid _cacheKey;
 
     public ChangeEmployerFixture()
     {
-        _request = new ChangeEmployerRequest { ProviderId = _providerId };
+        _providerId = 123;
+        _cacheKey = Guid.NewGuid();
+        _request = new ChangeEmployerRequest { ProviderId = _providerId, CacheKey = _cacheKey };
         _modelMapperMock = new Mock<IModelMapper>();
         var viewModel = new ChangeEmployerViewModel
         {
+            ProviderId = _providerId,
+            CacheKey = _cacheKey,
             AccountProviderLegalEntities = new List<AccountProviderLegalEntityViewModel>(),
             BackLink = "Test.com"
         };
-        _providerId = 123;
 
         _modelMapperMock
             .Setup(x => x.Map<ChangeEmployerViewModel>(_request))

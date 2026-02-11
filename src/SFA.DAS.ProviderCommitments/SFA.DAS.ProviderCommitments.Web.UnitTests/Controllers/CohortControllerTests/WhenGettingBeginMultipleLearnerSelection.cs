@@ -32,20 +32,27 @@ public class WhenGettingBeginMultipleLearnerSelection
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirect.ActionName.Should().Be("SelectMultipleLearnerRecords");
         redirect.ControllerName.Should().Be("Learner");
+        redirect.RouteValues.Should().NotBeNull();
+        redirect.RouteValues.Should().ContainKey("providerId").WhoseValue.Should().Be(fixture.ProviderId);
+        redirect.RouteValues.Should().ContainKey("cacheKey").WhoseValue.Should().Be(fixture.CacheKey);
     }
 }
 
 public class BeginMultipleLearnerSelectionFixture
 {
     public CohortController Sut { get; set; }
+    public long ProviderId => _providerId;
+    public Guid CacheKey => _cacheKey;
+
     private readonly Mock<IModelMapper> _modelMapperMock;
     private readonly SelectEmployerRedirectRequest _request;
     private readonly long _providerId;
     private readonly Guid _cacheKey;
 
-
     public BeginMultipleLearnerSelectionFixture()
     {
+        _providerId = 123;
+        _cacheKey = Guid.NewGuid();
         _request = new SelectEmployerRedirectRequest { ProviderId = _providerId };
         _modelMapperMock = new Mock<IModelMapper>();
         var redirectModel = new SelectMultipleLearnerRecordsRequest
@@ -53,8 +60,6 @@ public class BeginMultipleLearnerSelectionFixture
             ProviderId = _providerId,
             CacheKey = _cacheKey
         };
-        _providerId = 123;
-        _cacheKey = Guid.NewGuid();
 
         _modelMapperMock
             .Setup(x => x.Map<SelectMultipleLearnerRecordsRequest>(_request))
