@@ -329,12 +329,12 @@ public class DetailsViewModelMapperTests
     [TestCase(0, "Check apprentice details", Party.Provider)]
     [TestCase(1, "Check apprentice details", Party.Provider)]
     [TestCase(2, "Check apprentice details", Party.Provider)]
-    [TestCase(0, "Check apprentice details", Party.Employer)]
-    [TestCase(1, "Check apprentice details", Party.Employer)]
-    [TestCase(2, "Check apprentice details", Party.Employer)]
-    [TestCase(0, "Check apprentice details", Party.TransferSender)]
-    [TestCase(1, "Check apprentice details", Party.TransferSender)]
-    [TestCase(2, "Check apprentice details", Party.TransferSender)]
+    [TestCase(0, "View apprentice details", Party.Employer)]
+    [TestCase(1, "View apprentice details", Party.Employer)]
+    [TestCase(2, "View apprentice details", Party.Employer)]
+    [TestCase(0, "View apprentice details", Party.TransferSender)]
+    [TestCase(1, "View apprentice details", Party.TransferSender)]
+    [TestCase(2, "View apprentice details", Party.TransferSender)]
     public async Task PageTitleIsSetCorrectlyForTheNumberOfApprenticeships(int numberOfApprenticeships, string expectedPageTitle, Party withParty)
     {
         var fixture = new DetailsViewModelMapperTestsFixture().CreateThisNumberOfApprenticeships(numberOfApprenticeships);
