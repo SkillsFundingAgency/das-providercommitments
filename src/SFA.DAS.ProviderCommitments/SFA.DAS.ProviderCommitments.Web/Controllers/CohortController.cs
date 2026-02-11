@@ -303,7 +303,6 @@ public class CohortController : Controller
     {
         var redirectModel = await _modelMapper.Map<SelectMultipleLearnerRecordsRequest>(request);
         return RedirectToAction("SelectMultipleLearnerRecords", "Learner", redirectModel);
-
     }
 
     [HttpGet]
