@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
@@ -261,22 +261,27 @@ public class FileUploadMapperBaseTests
         }
     }
 
-    [TestCase(null, null, "FALSE")]
-    [TestCase(null, "200", "TRUE")]
-    [TestCase("TRUE", "200", "TRUE")]
-    [TestCase("FALSE", "200", "FALSE")]
-    [TestCase("FALSE", null, "FALSE")]
-    [TestCase("XXX", null, "XXX")]
-    [TestCase(null, "0", "FALSE")]
-    public void VerifyIsDurationReducedByRplIsDefaultedCorrectlyWhenExtendedRplIsOn(string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
+    [TestCase(null, null, null, null)]
+    [TestCase(null, null, "200", null)]
+    [TestCase("false", null, null, null)]
+    [TestCase("false", null, "200", null)]
+    [TestCase("true", null, "200", "TRUE")]
+    [TestCase("true", null, null, null)]
+    [TestCase("true", null, "0", null)]
+    [TestCase(null, "TRUE", "200", "TRUE")]
+    [TestCase(null, "FALSE", "200", "FALSE")]
+    [TestCase("true", "TRUE", "200", "TRUE")]
+    [TestCase("true", "FALSE", "200", "FALSE")]
+    public void VerifyIsDurationReducedByRplIsDefaultedCorrectlyWhenExtendedRplIsOn(string recognisePriorLearning, string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
     {
         CsvRecords = Fixture.Build<CsvRecord>()
             .With(x => x.DateOfBirth, "2000-02-02")
             .With(x => x.StartDate, "2021-03-04")
             .With(x => x.EndDate, "2022-04")
             .With(x => x.TotalPrice, "1000")
-            .With(x=>x.IsDurationReducedByRPL, isDurationReducedByRpl)
-            .With(x=>x.DurationReducedBy, durationReducedBy)
+            .With(x => x.RecognisePriorLearning, recognisePriorLearning)
+            .With(x => x.IsDurationReducedByRPL, isDurationReducedByRpl)
+            .With(x => x.DurationReducedBy, durationReducedBy)
             .CreateMany(2).ToList();
 
         Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1);
