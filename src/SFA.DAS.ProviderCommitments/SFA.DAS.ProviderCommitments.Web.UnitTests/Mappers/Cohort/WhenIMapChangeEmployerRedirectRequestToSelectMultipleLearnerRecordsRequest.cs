@@ -60,7 +60,6 @@ public class WhenIMapChangeEmployerRedirectRequestToSelectMultipleLearnerRecords
                 ProviderId = 123,
                 CacheKey = Guid.NewGuid(),
                 EmployerAccountLegalEntityPublicHashedId = "DSFF23",
-                UseLearnerData = true,
                 EmployerAccountName = "TestAccountName"
             };
 
@@ -117,7 +116,6 @@ public class WhenIMapChangeEmployerRedirectRequestToSelectMultipleLearnerRecords
 
             _savedItem.ProviderId.Should().Be(_source.ProviderId);
             _savedItem.EmployerAccountLegalEntityPublicHashedId.Should().Be(_source.EmployerAccountLegalEntityPublicHashedId);
-            _savedItem.UseLearnerData.Should().Be(_source.UseLearnerData);
             _savedItem.EmployerAccountName.Should().Be(_source.EmployerAccountName);
         }
 

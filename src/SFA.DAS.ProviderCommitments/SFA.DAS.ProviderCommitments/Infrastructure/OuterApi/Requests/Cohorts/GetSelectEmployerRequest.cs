@@ -7,15 +7,13 @@ public class GetSelectEmployerRequest(
     long providerId,
     string searchTerm,
     string sortField,
-    bool reverseSort,
-    bool useLearnerData)
+    bool reverseSort)
     : IGetApiRequest
 {
     private long ProviderId { get; } = providerId;
     private string SearchTerm { get; } = searchTerm;
     private string SortField { get; } = sortField;
     private bool ReverseSort { get; } = reverseSort;
-    private bool UseLearnerData { get; } = useLearnerData;
 
     public string GetUrl
     {
@@ -32,9 +30,8 @@ public class GetSelectEmployerRequest(
             {
                 queryParams.Add($"sortField={WebUtility.UrlEncode(SortField)}");
             }
-            
+
             queryParams.Add($"reverseSort={ReverseSort}");
-            queryParams.Add($"useLearnerData={UseLearnerData}");
 
             var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
             return $"provider/{ProviderId}/unapproved/add/select-employer{queryString}";

@@ -24,7 +24,7 @@
                 @if (string.IsNullOrWhiteSpace(Model.CohortReference))
                 {
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href=@Url.Action("ChangeEmployer", "Cohort", new { @Model.ProviderId, UseLearnerData = true, @Model.CacheKey })>Change<span class="govuk-visually-hidden"> employer</span></a>
+                        <a class="govuk-link" href=@Url.Action("ChangeEmployer", "Cohort", new { @Model.ProviderId, @Model.CacheKey })>Change<span class="govuk-visually-hidden"> employer</span></a>
                     </dd>
                 }
             </div>

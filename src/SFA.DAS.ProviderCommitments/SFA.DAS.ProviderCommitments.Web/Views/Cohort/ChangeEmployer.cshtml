@@ -29,8 +29,7 @@
             </div>
         </div>
     </div>
-
-    @Html.HiddenFor(m => m.UseLearnerData)
+    
     <input type="hidden" value="@Model.SelectEmployerFilterModel.CurrentlySortedByField" name="SortField" />
     <input type="hidden" value="@Model.SelectEmployerFilterModel.ReverseSort.ToString()" name="ReverseSort" />
     <input type="hidden" value="@Model.CacheKey.ToString()" name="CacheKey" />
@@ -86,7 +85,7 @@
                         <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
                         <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
                         <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
-                            <a href="@Url.Action("ContinueMultipleLearnerSelection", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, Model.UseLearnerData, viewModel.EmployerAccountName, Model.CacheKey })" class="govuk-link">
+                            <a href="@Url.Action("ContinueMultipleLearnerSelection", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, viewModel.EmployerAccountName, Model.CacheKey })" class="govuk-link">
                                 Select <span class="govuk-visually-hidden">@viewModel.EmployerAccountLegalEntityName</span>
                             </a>
                         </td>
@@ -108,5 +107,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.SelectMultipleLearnerRecords, new { Model.CacheKey, Model.ProviderId, Model.UseLearnerData })">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.SelectMultipleLearnerRecords, new { Model.CacheKey, Model.ProviderId })">Back</a>
 }

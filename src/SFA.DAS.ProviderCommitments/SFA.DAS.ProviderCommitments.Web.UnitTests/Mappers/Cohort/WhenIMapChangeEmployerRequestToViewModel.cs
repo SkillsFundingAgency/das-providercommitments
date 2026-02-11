@@ -95,8 +95,7 @@ public class WhenIMapChangeEmployerRequestToViewModel
             ProviderId = 123,
             SearchTerm = "Test",
             SortField = "EmployerAccountLegalEntityName",
-            ReverseSort = true,
-            UseLearnerData = true
+            ReverseSort = true
         });
 
         var result = await fixture.Act();
@@ -104,7 +103,6 @@ public class WhenIMapChangeEmployerRequestToViewModel
         result.SelectEmployerFilterModel.SearchTerm.Should().Be("Test");
         result.SelectEmployerFilterModel.CurrentlySortedByField.Should().Be("EmployerAccountLegalEntityName");
         result.SelectEmployerFilterModel.ReverseSort.Should().BeTrue();
-        result.SelectEmployerFilterModel.UseLearnerData.Should().BeTrue();
     }
 
     [Test]
@@ -256,7 +254,6 @@ public class WhenIMapChangeEmployerRequestToViewModel
         {
             result.AccountProviderLegalEntities.Count.Should().Be(_apiResponse.AccountProviderLegalEntities.Count);
             result.ProviderId.Should().Be(_request.ProviderId);
-            result.UseLearnerData.Should().Be(_request.UseLearnerData);
             result.CacheKey.Should().Be(_request.CacheKey);
 
             foreach (var entity in _apiResponse.AccountProviderLegalEntities)

@@ -16,8 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 source.ProviderId,
                 source.SearchTerm,
                 source.SortField,
-                source.ReverseSort,
-                source.UseLearnerData);
+                source.ReverseSort);
 
             var apiResponse = await approvalsOuterApiClient.GetSelectEmployer(apiRequest);
 

@@ -16,8 +16,7 @@ public class ChangeEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOut
             source.ProviderId,
             source.SearchTerm,
             source.SortField,
-            source.ReverseSort,
-            source.UseLearnerData);
+            source.ReverseSort);
 
         var apiResponse = await approvalsOuterApiClient.GetSelectEmployer(apiRequest);
 
@@ -37,7 +36,6 @@ public class ChangeEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOut
             SearchTerm = source.SearchTerm,
             ReverseSort = source.ReverseSort,
             CurrentlySortedByField = source.SortField,
-            UseLearnerData = source.UseLearnerData,
             Employers = apiResponse.Employers
         };
 
@@ -46,8 +44,7 @@ public class ChangeEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOut
             CacheKey = source.CacheKey,
             AccountProviderLegalEntities = accountProviderLegalEntities,
             ProviderId = source.ProviderId,
-            SelectEmployerFilterModel = filterModel,
-            UseLearnerData = source.UseLearnerData
+            SelectEmployerFilterModel = filterModel
         };
     }
 
