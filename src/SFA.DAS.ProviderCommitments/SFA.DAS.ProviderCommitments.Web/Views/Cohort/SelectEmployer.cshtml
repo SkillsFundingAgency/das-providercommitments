@@ -1,14 +1,12 @@
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.Models.Shared
 @using Newtonsoft.Json;
-@inject IConfiguration Configuration;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
 
 @{
     ViewBag.Title = "Choose an employer";
     ViewBag.ZendeskLabel = "add-apprentice-select-employer";
     ViewBag.GaData.Vpv = "/unapproved/add/select-employer";
-    var ilrSelectMultipleFeatureEnabled = Configuration.GetValue<bool>("ILRSelectMultipleFeatureEnabled");
 }
 <form method="get">
     <div class="govuk-grid-row">
@@ -87,7 +85,7 @@
                         <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
                         <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
                         <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
-                            @if (ilrSelectMultipleFeatureEnabled)
+                            @if (Model.IlrSelectMultipleFeatureEnabled)
                             {
                                 <a href="@Url.Action("BeginMultipleLearnerSelection", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, Model.UseLearnerData, viewModel.EmployerAccountName })" class="govuk-link">
                                     Select <span class="govuk-visually-hidden">@viewModel.EmployerAccountLegalEntityName</span>
