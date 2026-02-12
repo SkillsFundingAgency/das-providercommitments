@@ -70,17 +70,17 @@ public class SelectEmployerFilterModel
         };
     }
 
-    public IEnumerable<PageLink> PageLinks
+    public IEnumerable<PaginationPageLink> PageLinks
     {
         get
         {
-            var links = new List<PageLink>();
+            var links = new List<PaginationPageLink>();
             var totalPages = (int)Math.Ceiling((double)TotalEmployersFound / PageSize);
             var totalPageLinks = totalPages < 5 ? totalPages : 5;
 
             if (totalPages > 1 && PageNumber > 1)
             {
-                links.Add(new PageLink
+                links.Add(new PaginationPageLink
                 {
                     Label = "Previous",
                     AriaLabel = "Previous page",
@@ -98,7 +98,7 @@ public class SelectEmployerFilterModel
 
             for (var i = 0; i < totalPageLinks; i++)
             {
-                links.Add(new PageLink
+                links.Add(new PaginationPageLink
                 {
                     Label = (pageNumberSeed + i).ToString(),
                     AriaLabel = $"Page {pageNumberSeed + i}",
@@ -109,7 +109,7 @@ public class SelectEmployerFilterModel
 
             if (totalPages > 1 && PageNumber < totalPages)
             {
-                links.Add(new PageLink
+                links.Add(new PaginationPageLink
                 {
                     Label = "Next",
                     AriaLabel = "Next page",
@@ -119,14 +119,6 @@ public class SelectEmployerFilterModel
 
             return links;
         }
-    }
-
-    public class PageLink
-    {
-        public string Label { get; set; }
-        public string AriaLabel { get; set; }
-        public bool? IsCurrent { get; set; }
-        public Dictionary<string, string> RouteData { get; set; }
     }
 
     public string CssClassForArrowDirection(string sortByThisField)

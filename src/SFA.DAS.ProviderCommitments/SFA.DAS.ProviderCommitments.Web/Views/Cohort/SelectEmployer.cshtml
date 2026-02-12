@@ -1,6 +1,5 @@
 @using System.Linq
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@using SFA.DAS.ProviderCommitments.Web.Models.Shared
 @using Newtonsoft.Json
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
 
@@ -95,29 +94,16 @@
             }
             </tbody>
         </table>
-        @if (Model.SelectEmployerFilterModel.ShowPageLinks)
+        @await Html.PartialAsync("_PaginationNav", new PaginationNavViewModel
         {
-            <nav role="navigation" aria-label="Pagination">
-                <div class="das-pagination__summary">
-                    Showing @Model.SelectEmployerFilterModel.PagedRecordsFrom to @Model.SelectEmployerFilterModel.PagedRecordsTo of @Model.SelectEmployerFilterModel.TotalEmployersFound
-                    employer@(Model.SelectEmployerFilterModel.TotalEmployersFound == 1 ? "" : "s")
-                </div>
-                <ul class="das-pagination">
-                    @foreach (var pageLink in Model.SelectEmployerFilterModel.PageLinks)
-                    {
-                        <li class="das-pagination__item">
-                            <a class="das-pagination__link @(pageLink.IsCurrent.HasValue && pageLink.IsCurrent.Value ? "current" : "")"
-                               asp-route="@RouteNames.NewCohortSelectEmployer"
-                               asp-all-route-data="@pageLink.RouteData"
-                               aria-current="@pageLink.IsCurrent"
-                               aria-label="@pageLink.AriaLabel">
-                                @pageLink.Label
-                            </a>
-                        </li>
-                    }
-                </ul>
-            </nav>
-        }
+            RouteName = RouteNames.NewCohortSelectEmployer,
+            ShowPageLinks = Model.SelectEmployerFilterModel.ShowPageLinks,
+            PageLinks = Model.SelectEmployerFilterModel.PageLinks,
+            PagedRecordsFrom = Model.SelectEmployerFilterModel.PagedRecordsFrom,
+            PagedRecordsTo = Model.SelectEmployerFilterModel.PagedRecordsTo,
+            TotalCount = Model.SelectEmployerFilterModel.TotalEmployersFound,
+            SummaryLabel = Model.SelectEmployerFilterModel.TotalEmployersFound == 1 ? " employer" : " employers"
+        })
     }
     else
     {

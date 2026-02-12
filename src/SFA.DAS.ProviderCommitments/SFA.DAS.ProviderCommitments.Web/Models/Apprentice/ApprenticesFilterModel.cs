@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Html;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -59,17 +60,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int TotalNumberOfApprenticeshipsFound { get; set; }
         public int TotalNumberOfApprenticeshipsWithAlertsFound { get; set; }
         
-        public IEnumerable<PageLink> PageLinks {
+        public IEnumerable<PaginationPageLink> PageLinks {
             get
             {
-                var links = new List<PageLink>();
+                var links = new List<PaginationPageLink>();
                 var totalPages = (int)Math.Ceiling((double)TotalNumberOfApprenticeshipsFound / PageSize);
                 var totalPageLinks = totalPages < 5 ? totalPages : 5;
 
                 //previous link
                 if (totalPages > 1 && PageNumber > 1)
                 {
-                    links.Add(new PageLink
+                    links.Add(new PaginationPageLink
                     {
                         Label = "Previous",
                         AriaLabel = "Previous page",
@@ -89,7 +90,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 
                 for (var i = 0; i < totalPageLinks; i++)
                 {
-                    var link = new PageLink
+                    var link = new PaginationPageLink
                     {
                         Label = (pageNumberSeed + i).ToString(),
                         AriaLabel = $"Page {pageNumberSeed + i}",
@@ -102,7 +103,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 //next link
                 if (totalPages > 1 && PageNumber < totalPages)
                 {
-                    links.Add(new PageLink
+                    links.Add(new PaginationPageLink
                     {
                         Label = "Next",
                         AriaLabel = "Next page",
@@ -196,15 +197,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 
             return routeData;
         }
-
-        public class PageLink
-        {
-            public string Label { get; set; }
-            public string AriaLabel { get; set; }
-            public bool? IsCurrent { get; set; }
-            public Dictionary<string, string> RouteData { get; set; }
-        }
     }
-
-    
 }
