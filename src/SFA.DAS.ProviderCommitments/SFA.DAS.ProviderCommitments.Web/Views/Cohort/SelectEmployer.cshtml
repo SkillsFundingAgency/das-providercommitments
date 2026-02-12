@@ -1,6 +1,7 @@
+@using System.Linq
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@using SFA.DAS.ProviderCommitments.Web.Models.Shared 
-@using Newtonsoft.Json;
+@using SFA.DAS.ProviderCommitments.Web.Models.Shared
+@using Newtonsoft.Json
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
 
 @{
@@ -33,13 +34,14 @@
     @Html.HiddenFor(m=>m.UseLearnerData)
     <input type="hidden" value="@Model.SelectEmployerFilterModel.CurrentlySortedByField" name="SortField" />
     <input type="hidden" value="@Model.SelectEmployerFilterModel.ReverseSort.ToString()" name="ReverseSort" />
+    <input type="hidden" value="@Model.SelectEmployerFilterModel.PageNumber" name="PageNumber" />
 
     @if (!string.IsNullOrWhiteSpace(Model.SelectEmployerFilterModel.SearchTerm))
     {
-        <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NewCohortSelectEmployer">Clear search</a></p>
+        <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NewCohortSelectEmployer" asp-all-route-data="@Model.SelectEmployerFilterModel.BuildClearSearchRouteData()">Clear search</a></p>
     }
 
-    @if (Model.AccountProviderLegalEntities.Count > 0)
+    @if ((Model.AccountProviderLegalEntities?.Count ?? 0) > 0)
     {
         <table class="govuk-table das-table--responsive das-table--double-arrows" aria-describedby="page-title">
             <thead class="govuk-table__head">
@@ -93,15 +95,38 @@
             }
             </tbody>
         </table>
+        @if (Model.SelectEmployerFilterModel.ShowPageLinks)
+        {
+            <nav role="navigation" aria-label="Pagination">
+                <div class="das-pagination__summary">
+                    Showing @Model.SelectEmployerFilterModel.PagedRecordsFrom to @Model.SelectEmployerFilterModel.PagedRecordsTo of @Model.SelectEmployerFilterModel.TotalEmployersFound
+                    employer@(Model.SelectEmployerFilterModel.TotalEmployersFound == 1 ? "" : "s")
+                </div>
+                <ul class="das-pagination">
+                    @foreach (var pageLink in Model.SelectEmployerFilterModel.PageLinks)
+                    {
+                        <li class="das-pagination__item">
+                            <a class="das-pagination__link @(pageLink.IsCurrent.HasValue && pageLink.IsCurrent.Value ? "current" : "")"
+                               asp-route="@RouteNames.NewCohortSelectEmployer"
+                               asp-all-route-data="@pageLink.RouteData"
+                               aria-current="@pageLink.IsCurrent"
+                               aria-label="@pageLink.AriaLabel">
+                                @pageLink.Label
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
     }
     else
     {
-        <p class="govuk-body">0 employers match <b>'@Model.SelectEmployerFilterModel.SearchTerm'</b></p>
+        <p class="govuk-body">@(string.IsNullOrWhiteSpace(Model.SelectEmployerFilterModel.SearchTerm) ? "0 employers" : "0 employers match <b>'" + Model.SelectEmployerFilterModel.SearchTerm + "'</b>")</p>
     }
 </form>
 
 <script>
-    var autoCompleteSource = @Html.Raw(JsonConvert.SerializeObject(Model.SelectEmployerFilterModel.Employers));
+    var autoCompleteSource = @Html.Raw(JsonConvert.SerializeObject(Model.SelectEmployerFilterModel?.Employers ?? Enumerable.Empty<string>()));
 </script>
 
 
