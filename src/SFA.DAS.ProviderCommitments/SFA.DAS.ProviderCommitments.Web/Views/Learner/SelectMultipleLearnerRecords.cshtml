@@ -1,0 +1,240 @@
+﻿@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+@using SFA.DAS.ProviderCommitments.Web.Models.Cohort
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectMultipleLearnerRecordsViewModel
+
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewBag.GaData.Vpv = "/add/ilrs/selectmultiple";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-1">@Model.PageTitle</h1>
+
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Employer
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.EmployerAccountName
+                </dd>
+                @if (string.IsNullOrWhiteSpace(Model.CohortReference))
+                {
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href=@Url.Action("ChangeEmployer", "Cohort", new { @Model.ProviderId, @Model.CacheKey })>Change<span class="govuk-visually-hidden"> employer</span></a>
+                    </dd>
+                }
+            </div>
+        </dl>
+
+        <details class="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    What this list includes
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <p class="govuk-body">
+                    This list shows learners from your ILR submissions who are not approved in this service yet.
+                </p>
+            </div>
+        </details>
+
+        @if (Model.IsNonLevy)
+        {
+            <p class="govuk-body">
+                You will not see apprentices with non-levy employers that have a future start date outside of the @Model.FutureMonths month reservation window.
+            </p>
+        }
+    </div>
+</div>
+
+<form method="get"
+      asp-controller="Learner"
+      asp-action="SelectMultipleLearnerRecordsFilter"
+      asp-route-providerId="@Model.ProviderId">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+                <label for="searchTerm" class="govuk-label">Search apprentice name or unique learner number (ULN)</label>
+                <div class="das-search-form__group">
+                    <input class="govuk-input das-search-form__input" id="searchTerm" name="searchTerm" type="text" value="@Model.FilterModel.SearchTerm">
+                    <div class="das-search-form__button-wrap">
+                        <button class="govuk-button das-search-form__button" type="submit">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" value="@Model.CacheKey" name="CacheKey" />
+    <input type="hidden" value="@Model.ProviderId" name="ProviderId" />
+
+    @if (!string.IsNullOrWhiteSpace(Model.EmployerAccountLegalEntityPublicHashedId))
+    {
+        <input type="hidden" value="@Model.EmployerAccountLegalEntityPublicHashedId" name="EmployerAccountLegalEntityPublicHashedId" />
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
+    {
+        <input type="hidden" value="@Model.CohortReference" name="CohortReference" />
+    }
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <div class="das-pane govuk-!-margin-bottom-3">
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-third">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="FilterModel.StartMonth">Start month</label>
+                            <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.StartMonth" name="StartMonth" asp-items="Model.FilterModel.MonthNames">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="govuk-grid-column-one-third">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="StartYear">Start year</label>
+                            <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.StartYear" name="StartYear" asp-items="Model.FilterModel.YearNames">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="govuk-grid-column-one-third" style="justify-content: flex-end;">
+                        <label class="govuk-label">&nbsp;</label>
+                        <div class="govuk-form-group">
+                            <button class="govuk-button govuk-!-margin-0" type="submit">Apply filters</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm) || !string.IsNullOrWhiteSpace(Model.FilterModel.StartMonth) || Model.FilterModel.StartYear != DateTime.Now.Year.ToString())
+            {
+                <p class="govuk-body">
+                    <button class="das-button--inline-link" data-module="govuk-button" type="submit" name="clearFilter" value="true">
+                        Clear search and filters
+                    </button>
+                </p>
+            }
+        </div>
+    </div>
+</form>
+
+<div class="govuk-grid-row govuk-!-margin-bottom-2">
+    <div class="govuk-grid-column-one-half">
+        <p class="govuk-body">
+            @Model.FilterModel.TotalNumberOfApprenticeshipsFoundDescription
+        </p>
+    </div>
+    <div class="govuk-grid-column-one-half das-!-text-align-right--from-tablet">
+        <p class="govuk-body">@Model.LastIlrSubmittedOnDesc</p>
+    </div>
+</div>
+
+@if (Model.FilterModel.TotalNumberOfLearnersFound > 0)
+{
+    <table class="govuk-table das-table--responsive das-table--double-arrows das-table--condensed">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">
+                    <a class="@(Model.FilterModel.SortField == "FirstName" ? Model.SortedByHeaderClassName : SelectMultipleLearnerRecordsViewModel.HeaderClassName)"
+                       asp-route="@RouteNames.SelectMultipleLearnerRecordsSort"
+                       asp-route-providerId="@Model.ProviderId"
+                       asp-route-cacheKey="@Model.CacheKey"
+                       asp-route-sortField="FirstName"
+                       title="Sort the table by name">
+                        Name
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    <a class="@(Model.FilterModel.SortField == "Uln" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
+                       asp-route="@RouteNames.SelectMultipleLearnerRecordsSort"
+                       asp-route-providerId="@Model.ProviderId"
+                       asp-route-cacheKey="@Model.CacheKey"
+                       asp-route-sortField="Uln"
+                       title="Sort the table by ULN">
+                        ULN
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    Course
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    <a class="@(Model.FilterModel.SortField == "StartDate" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
+                       asp-route="@RouteNames.SelectMultipleLearnerRecordsSort"
+                       asp-route-providerId="@Model.ProviderId"
+                       asp-route-cacheKey="@Model.CacheKey"
+                       asp-route-sortField="StartDate"
+                       title="Sort the table by StartDate">
+                        Start date
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+
+                </th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            @foreach (var apprenticeship in Model.Learners)
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell" data-label="Apprentice name">
+                        @apprenticeship.Name
+                    </td>
+                    <td class="govuk-table__cell" data-label="ULN">
+                        @apprenticeship.Uln
+                    </td>
+                    <td class="govuk-table__cell" data-label="Apprenticeship training course">
+                        @apprenticeship.CourseName
+                    </td>
+                    <td class="govuk-table__cell" data-label="StartDate">
+                        @apprenticeship.StartDate.ToString("dd MMM yyyy")
+                    </td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
+                        @if (string.IsNullOrWhiteSpace(Model.CohortReference))
+                        {
+                            <a href="@Url.Action("LearnerSelectedForNewCohort", new { Model.ProviderId, Model.CacheKey, Model.EmployerAccountLegalEntityPublicHashedId, LearnerDataId = apprenticeship.Id })" class="govuk-link">
+                                Select
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("LearnerToBeAddedToCohort", new { Model.ProviderId, Model.CacheKey, Model.CohortReference, LearnerDataId = apprenticeship.Id })" class="govuk-link">
+                                Select
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (Model.ShowPageLinks)
+{
+    <nav role="navigation" aria-label="Pagination">
+        <ul class="das-pagination">
+            @foreach (var pageLink in Model.FilterModel.PageLinks)
+            {
+                <li class="das-pagination__item">
+                    <a class="das-pagination__link @(pageLink.IsCurrent.HasValue && pageLink.IsCurrent.Value ? "current":"")"
+                       asp-route="@RouteNames.SelectMultipleLearnerRecords"
+                       asp-all-route-data="@pageLink.RouteData"
+                       aria-current="@pageLink.IsCurrent"
+                       aria-label="@pageLink.AriaLabel">
+                        @pageLink.Label
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+@section breadcrumb {
+    @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })>Back</a>
+    }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", "Cohort", new { @Model.ProviderId, UseLearnerData = true })>Back</a>
+    }
+}

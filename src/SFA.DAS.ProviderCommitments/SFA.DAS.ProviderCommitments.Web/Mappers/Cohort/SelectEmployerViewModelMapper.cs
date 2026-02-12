@@ -7,7 +7,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class SelectEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOuterApiClient)
+    public class SelectEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOuterApiClient, IConfiguration configuration)
         : IMapper<SelectEmployerRequest, SelectEmployerViewModel>
     {
         public async Task<SelectEmployerViewModel> Map(SelectEmployerRequest source)
@@ -16,8 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 source.ProviderId,
                 source.SearchTerm,
                 source.SortField,
-                source.ReverseSort,
-                source.UseLearnerData);
+                source.ReverseSort);
 
             var apiResponse = await approvalsOuterApiClient.GetSelectEmployer(apiRequest);
 
@@ -40,13 +39,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 UseLearnerData = source.UseLearnerData,
                 Employers = apiResponse.Employers
             };
+            var ilrSelectMultipleFeatureEnabled = configuration.GetValue<bool>("ILRSelectMultipleFeatureEnabled");
 
             return new SelectEmployerViewModel
             {
                 AccountProviderLegalEntities = accountProviderLegalEntities,
                 ProviderId = source.ProviderId,
                 SelectEmployerFilterModel = filterModel,
-                UseLearnerData = source.UseLearnerData
+                UseLearnerData = source.UseLearnerData,
+                IlrSelectMultipleFeatureEnabled = ilrSelectMultipleFeatureEnabled
             };
         }
 

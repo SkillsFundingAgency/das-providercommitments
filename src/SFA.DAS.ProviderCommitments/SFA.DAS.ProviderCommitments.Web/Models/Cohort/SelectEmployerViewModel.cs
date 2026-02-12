@@ -9,5 +9,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public IList<AccountProviderLegalEntityViewModel> AccountProviderLegalEntities { get; set; }
         public string BackLink { get; set; }
         public SelectEmployerFilterModel SelectEmployerFilterModel { get; set; }
+        public bool IlrSelectMultipleFeatureEnabled { get; set; }
     }
 }
