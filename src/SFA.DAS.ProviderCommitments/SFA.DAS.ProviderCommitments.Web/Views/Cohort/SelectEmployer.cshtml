@@ -1,6 +1,6 @@
+@using System.Linq
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@using SFA.DAS.ProviderCommitments.Web.Models.Shared 
-@using Newtonsoft.Json;
+@using Newtonsoft.Json
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
 
 @{
@@ -33,13 +33,14 @@
     @Html.HiddenFor(m=>m.UseLearnerData)
     <input type="hidden" value="@Model.SelectEmployerFilterModel.CurrentlySortedByField" name="SortField" />
     <input type="hidden" value="@Model.SelectEmployerFilterModel.ReverseSort.ToString()" name="ReverseSort" />
+    <input type="hidden" value="@Model.SelectEmployerFilterModel.PageNumber" name="PageNumber" />
 
     @if (!string.IsNullOrWhiteSpace(Model.SelectEmployerFilterModel.SearchTerm))
     {
-        <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NewCohortSelectEmployer">Clear search</a></p>
+        <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NewCohortSelectEmployer" asp-all-route-data="@Model.SelectEmployerFilterModel.BuildClearSearchRouteData()">Clear search</a></p>
     }
 
-    @if (Model.AccountProviderLegalEntities.Count > 0)
+    @if ((Model.AccountProviderLegalEntities?.Count ?? 0) > 0)
     {
         <table class="govuk-table das-table--responsive das-table--double-arrows" aria-describedby="page-title">
             <thead class="govuk-table__head">
@@ -93,15 +94,25 @@
             }
             </tbody>
         </table>
+        @await Html.PartialAsync("_PaginationNav", new PaginationNavViewModel
+        {
+            RouteName = RouteNames.NewCohortSelectEmployer,
+            ShowPageLinks = Model.SelectEmployerFilterModel.ShowPageLinks,
+            PageLinks = Model.SelectEmployerFilterModel.PageLinks,
+            PagedRecordsFrom = Model.SelectEmployerFilterModel.PagedRecordsFrom,
+            PagedRecordsTo = Model.SelectEmployerFilterModel.PagedRecordsTo,
+            TotalCount = Model.SelectEmployerFilterModel.TotalEmployersFound,
+            SummaryLabel = Model.SelectEmployerFilterModel.TotalEmployersFound == 1 ? " employer" : " employers"
+        })
     }
     else
     {
-        <p class="govuk-body">0 employers match <b>'@Model.SelectEmployerFilterModel.SearchTerm'</b></p>
+        <p class="govuk-body">@(string.IsNullOrWhiteSpace(Model.SelectEmployerFilterModel.SearchTerm) ? "0 employers" : "0 employers match <b>'" + Model.SelectEmployerFilterModel.SearchTerm + "'</b>")</p>
     }
 </form>
 
 <script>
-    var autoCompleteSource = @Html.Raw(JsonConvert.SerializeObject(Model.SelectEmployerFilterModel.Employers));
+    var autoCompleteSource = @Html.Raw(JsonConvert.SerializeObject(Model.SelectEmployerFilterModel?.Employers ?? Enumerable.Empty<string>()));
 </script>
 
 
