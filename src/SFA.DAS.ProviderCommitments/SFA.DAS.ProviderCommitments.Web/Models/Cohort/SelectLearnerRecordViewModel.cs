@@ -267,6 +267,15 @@ public class LearnerRecordsFilterModel
 
         filters.Add(WebUtility.HtmlEncode(StartYear));
 
+        if (!string.IsNullOrWhiteSpace(CourseCode))
+        {
+            var item = Courses.FirstOrDefault(x => x.Value == CourseCode);
+            if (item != null)
+            {
+                filters.Add(WebUtility.HtmlEncode(item.Text));
+            }
+        }
+
         return filters;
     }
 }

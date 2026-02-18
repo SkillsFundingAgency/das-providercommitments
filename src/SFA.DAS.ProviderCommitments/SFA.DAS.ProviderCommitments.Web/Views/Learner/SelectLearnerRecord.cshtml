@@ -92,17 +92,19 @@
                             <label class="govuk-label" for="FilterModel.StartMonth">Start month</label>
                             <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.StartMonth" name="StartMonth" asp-items="Model.FilterModel.MonthNames">
                             </select>
-                        </div>
-                        <div class="govuk-form-group">
-                            <label class="govuk-label" for="CourseCode">Course name</label>
-                            <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.CourseCode" name="CourseCode" asp-items="Model.FilterModel.Courses">
-                            </select>
-                        </div>
+                        </div>                        
                     </div>
                     <div class="govuk-grid-column-one-third">
                         <div class="govuk-form-group">
                             <label class="govuk-label" for="StartYear">Start year</label>
                             <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.StartYear" name="StartYear" asp-items="Model.FilterModel.YearNames">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="govuk-grid-column-one-third">
+                       <div class="govuk-form-group">
+                            <label class="govuk-label" for="CourseCode">Course name</label>
+                            <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.CourseCode" name="CourseCode" asp-items="Model.FilterModel.Courses">
                             </select>
                         </div>
                     </div>
@@ -137,11 +139,6 @@
             </div>
         </div>
     </div>
-<div class="govuk-!-margin-bottom-3">
-    <a href="javascript:void(0)" id="addAllFilteredLink" class="govuk-link govuk-body">
-        Add all filtered learners (<span id="filteredCount">@Model.FilterModel.TotalNumberOfLearnersFound</span>)
-    </a>
-</div>
 
 @if (@Model.FilterModel.TotalNumberOfLearnersFound == 0)
 {
