@@ -21,18 +21,25 @@ public class SelectLearnerRecordViewModelMapperTests
 
         _request = fixture.Create<SelectLearnerRecordRequest>();
         _apiResponse = fixture.Create<GetLearnerDetailsForProviderResponse>();
-
         _outerApiService = new Mock<IOuterApiService>();
 
-        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId, _request.CohortId, _request.SearchTerm, _request.SortField, 
-                _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear))
-            .ReturnsAsync(_apiResponse);
+        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId,
+           It.Is<SelectLearnersRequest>(t => t.AccountLegalEntityId == _request.AccountLegalEntityId &&
+           t.CohortId == _request.CohortId &&
+           t.SearchTerm == _request.SearchTerm &&
+           t.SortColumn == _request.SortField &&
+           t.ReverseSort == _request.ReverseSort &&
+           t.Page == _request.Page &&
+           t.StartMonth == _request.StartMonth &&
+           t.StartYear == _request.StartYear &&
+           t.CourseCode == _request.CourseCode)))
+           .ReturnsAsync(_apiResponse);
 
         _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
     }
 
     [Test]
-    public async Task MapToFilterModelCorrectly()
+    public async Task MapToFilterModelCorrectlyForLearners()
     {
         var result = await _mapper.Map(_request);
         result.FilterModel.ProviderId.Should().Be(_request.ProviderId);
@@ -46,10 +53,17 @@ public class SelectLearnerRecordViewModelMapperTests
         result.FilterModel.ReverseSort.Should().Be(_request.ReverseSort);
         result.FilterModel.SearchTerm.Should().Be(_request.SearchTerm);
         result.FilterModel.CacheKey.Should().Be(_request.CacheKey);
+        result.FilterModel.CourseCode.Should().Be(_request.CourseCode);
+        result.FilterModel.Courses.Count.Should().Be(_apiResponse.TrainingCourses.Count() + 1);
+
+        foreach (var course in _apiResponse.TrainingCourses)
+        {
+            result.FilterModel.Courses.First(t => t.Value == course.CourseCode).Text.Should().Be(course.Name);
+        }
     }
 
     [Test]
-    public async Task MapToViewModelCorrectly()
+    public async Task MapToViewModelCorrectlyForLearners()
     {
         var result = await _mapper.Map(_request);
         result.ProviderId.Should().Be(_request.ProviderId);
@@ -61,9 +75,9 @@ public class SelectLearnerRecordViewModelMapperTests
     }
 
     [Test]
-    public async Task MapLearnersCorrectly()
+    public async Task MapLearnersCorrectlyForLearners()
     {
         var result = await _mapper.Map(_request);
-        result.Learners.Should().BeEquivalentTo(_apiResponse.Learners.Select(x=>(LearnerSummary)x).ToList());
+        result.Learners.Should().BeEquivalentTo(_apiResponse.Learners.Select(x => (LearnerSummary)x).ToList());
     }
 }
