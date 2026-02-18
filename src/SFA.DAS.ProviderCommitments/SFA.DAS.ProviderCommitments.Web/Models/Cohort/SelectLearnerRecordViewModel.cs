@@ -60,6 +60,7 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
             return $"List updated: {timeString} on {britishDateTime:dd MMM yyyy}";
         }
     }
+
     public bool ShowPageLinks => FilterModel.TotalNumberOfLearnersFound > Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
     public LearnerRecordsFilterModel FilterModel { get; set; }
@@ -75,6 +76,7 @@ public class LearnerRecordsFilterModel
     public int PageNumber { get; set; } = 1;
     public string SearchTerm { get; set; }
     public int TotalNumberOfLearnersFound { get; set; }
+
     public HtmlString TotalNumberOfApprenticeshipsFoundDescription =>
         new HtmlString($"{TotalNumberOfLearnersFound} apprentice records found " + GetFiltersUsedMessage());
 
@@ -258,8 +260,8 @@ public class LearnerRecordsFilterModel
 
         if (!string.IsNullOrWhiteSpace(StartMonth))
         {
-            var item = MonthNames.FirstOrDefault(x=>x.Value == StartMonth);
-            if(item != null)
+            var item = MonthNames.FirstOrDefault(x => x.Value == StartMonth);
+            if (item != null)
             {
                 filters.Add(WebUtility.HtmlEncode(item.Text));
             }

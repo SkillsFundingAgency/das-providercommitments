@@ -77,11 +77,11 @@
     <input type="hidden" value="@Model.ReservationId" name="ReservationId" />
     @if (!string.IsNullOrWhiteSpace(Model.EmployerAccountLegalEntityPublicHashedId))
     {
-        <input type="hidden" value="@Model.EmployerAccountLegalEntityPublicHashedId" name="EmployerAccountLegalEntityPublicHashedId"/>
+        <input type="hidden" value="@Model.EmployerAccountLegalEntityPublicHashedId" name="EmployerAccountLegalEntityPublicHashedId" />
     }
     @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
     {
-        <input type="hidden" value="@Model.CohortReference" name="CohortReference"/>
+        <input type="hidden" value="@Model.CohortReference" name="CohortReference" />
     }
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
@@ -92,7 +92,7 @@
                             <label class="govuk-label" for="FilterModel.StartMonth">Start month</label>
                             <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.StartMonth" name="StartMonth" asp-items="Model.FilterModel.MonthNames">
                             </select>
-                        </div>                        
+                        </div>
                     </div>
                     <div class="govuk-grid-column-one-third">
                         <div class="govuk-form-group">
@@ -102,7 +102,7 @@
                         </div>
                     </div>
                     <div class="govuk-grid-column-one-third">
-                       <div class="govuk-form-group">
+                        <div class="govuk-form-group">
                             <label class="govuk-label" for="CourseCode">Course name</label>
                             <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.CourseCode" name="CourseCode" asp-items="Model.FilterModel.Courses">
                             </select>
@@ -112,9 +112,9 @@
 
                 <div class="govuk-!-margin-bottom-7">
                     <label class="govuk-label">&nbsp;</label>
-                    
-                        <button class="govuk-button govuk-!-margin-0 govuk-!-margin-top-1" type="submit">Apply filters</button>
-                    
+
+                    <button class="govuk-button govuk-!-margin-0 govuk-!-margin-top-1" type="submit">Apply filters</button>
+
                     @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm) || !string.IsNullOrWhiteSpace(Model.FilterModel.StartMonth) || Model.FilterModel.StartYear != DateTime.Now.Year.ToString() || !string.IsNullOrWhiteSpace(Model.FilterModel.CourseCode))
                     {
                         <a class="govuk-link govuk-link--no-visited-state govuk-!-margin-left-2 govuk-!-margin-top-2 govuk-!-font-size-19" style="display:inline-block" asp-route="@RouteNames.SelectLearnerRecord" asp-all-route-data="@routeValues">Clear search and filters</a>
@@ -125,24 +125,24 @@
     </div>
 </form>
 
-    <div class="govuk-grid-row govuk-!-padding-top-6">
-        <div class="govuk-grid-column-full">
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-one-half">                    
-                    <p class="govuk-body record-count" >
-                   @(Model.FilterModel.TotalNumberOfLearnersFound > 0 ?  @Model.FilterModel.TotalNumberOfApprenticeshipsFoundDescription : "")
+<div class="govuk-grid-row govuk-!-padding-top-6">
+    <div class="govuk-grid-column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+                <p class="govuk-body record-count">
+                    @(Model.FilterModel.TotalNumberOfLearnersFound > 0 ? @Model.FilterModel.TotalNumberOfApprenticeshipsFoundDescription : "")
                 </p>
-                </div>
-                <div class="govuk-grid-column-one-half govuk-!-text-align-right">
-                    <p class="govuk-body">@Model.LastIlrSubmittedOnDesc</p>
-                </div>
+            </div>
+            <div class="govuk-grid-column-one-half govuk-!-text-align-right">
+                <p class="govuk-body">@Model.LastIlrSubmittedOnDesc</p>
             </div>
         </div>
     </div>
+</div>
 
 @if (@Model.FilterModel.TotalNumberOfLearnersFound == 0)
 {
-   
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <div id="noResultsMessage" style="display: block;">
