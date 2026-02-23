@@ -14,6 +14,19 @@
             return redirectAction;
         }
 
+        public static RedirectToActionResult VerifyRedirectsToEditDraftApprenticeship(this IActionResult result, string draftApprenticeshipHashedId, string cohortReference, long providerId)
+        {
+            var redirectAction = result
+                .VerifyReturnsRedirectToActionResult()
+                .WithActionName("EditDraftApprenticeship");
+
+            redirectAction.RouteValues["DraftApprenticeshipHashedId"].Should().Be(draftApprenticeshipHashedId);
+            redirectAction.RouteValues["CohortReference"].Should().Be(cohortReference);
+            redirectAction.RouteValues["ProviderId"].Should().Be(providerId);
+
+            return redirectAction;
+        }
+
         public static RedirectToActionResult VerifyRedirectsToRecognisePriorLearningSummaryPage(this IActionResult result, string draftApprenticeshipHashedId)
         {
             var redirectAction = result
