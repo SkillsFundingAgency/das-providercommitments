@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
@@ -14,81 +15,103 @@ public class WhenIMapSelectEmployerRequestToViewModel
     [Test]
     public async Task ThenCallsGetSelectEmployerApi()
     {
+        // Arrange
         var fixture = new SelectEmployerViewModelMapperFixture();
 
+        // Act
         await fixture.Act();
 
+        // Assert
         fixture.Verify_GetSelectEmployerWasCalled_Once();
     }
 
     [Test]
     public async Task ThenCorrectlyMapsApiResponseToViewModel()
     {
+        // Arrange
         var fixture = new SelectEmployerViewModelMapperFixture();
 
+        // Act
         var result = await fixture.Act();
 
+        // Assert
         fixture.Assert_SelectEmployerViewModelCorrectlyMapped(result);
     }
 
     [Test]
     public async Task ThenCorrectlyMapsLevyStatus_WhenLevy()
     {
+        // Arrange
         var fixture = new SelectEmployerViewModelMapperFixture();
         fixture.WithLevyStatus("Levy");
 
+        // Act
         var result = await fixture.Act();
 
+        // Assert
         result.AccountProviderLegalEntities[0].LevyStatus.Should().Be(ApprenticeshipEmployerType.Levy);
     }
 
     [Test]
     public async Task ThenCorrectlyMapsLevyStatus_WhenNonLevy()
     {
+        // Arrange
         var fixture = new SelectEmployerViewModelMapperFixture();
         fixture.WithLevyStatus("NonLevy");
 
+        // Act
         var result = await fixture.Act();
 
+        // Assert
         result.AccountProviderLegalEntities[0].LevyStatus.Should().Be(ApprenticeshipEmployerType.NonLevy);
     }
 
     [Test]
     public async Task ThenDefaultsToNonLevy_WhenLevyStatusIsNull()
     {
+        // Arrange
         var fixture = new SelectEmployerViewModelMapperFixture();
         fixture.WithLevyStatus(null);
 
+        // Act
         var result = await fixture.Act();
 
+        // Assert
         result.AccountProviderLegalEntities[0].LevyStatus.Should().Be(ApprenticeshipEmployerType.NonLevy);
     }
 
     [Test]
     public async Task ThenDefaultsToNonLevy_WhenLevyStatusIsEmpty()
     {
+        // Arrange
         var fixture = new SelectEmployerViewModelMapperFixture();
         fixture.WithLevyStatus(string.Empty);
 
+        // Act
         var result = await fixture.Act();
 
+        // Assert
         result.AccountProviderLegalEntities[0].LevyStatus.Should().Be(ApprenticeshipEmployerType.NonLevy);
     }
 
     [Test]
     public async Task ThenDefaultsToNonLevy_WhenLevyStatusIsInvalid()
     {
+        // Arrange
         var fixture = new SelectEmployerViewModelMapperFixture();
         fixture.WithLevyStatus("InvalidValue");
 
+        // Act
         var result = await fixture.Act();
 
+        // Assert
         result.AccountProviderLegalEntities[0].LevyStatus.Should().Be(ApprenticeshipEmployerType.NonLevy);
     }
 
     [Test]
     public async Task ThenCorrectlyMapsFilterModel()
     {
+        // Arrange
         var fixture = new SelectEmployerViewModelMapperFixture();
         fixture.WithRequest(new SelectEmployerRequest
         {
@@ -99,22 +122,30 @@ public class WhenIMapSelectEmployerRequestToViewModel
             UseLearnerData = true
         });
 
+        // Act
         var result = await fixture.Act();
 
+        // Assert
         result.SelectEmployerFilterModel.SearchTerm.Should().Be("Test");
         result.SelectEmployerFilterModel.CurrentlySortedByField.Should().Be("EmployerAccountLegalEntityName");
         result.SelectEmployerFilterModel.ReverseSort.Should().BeTrue();
         result.SelectEmployerFilterModel.UseLearnerData.Should().BeTrue();
+        result.SelectEmployerFilterModel.ProviderId.Should().Be(123);
+        result.SelectEmployerFilterModel.TotalEmployersFound.Should().Be(1);
+        result.SelectEmployerFilterModel.PageNumber.Should().Be(1);
     }
 
     [Test]
     public async Task ThenCorrectlyMapsEmployersListForAutocomplete()
     {
+        // Arrange
         var fixture = new SelectEmployerViewModelMapperFixture();
         fixture.WithMultipleEmployers();
 
+        // Act
         var result = await fixture.Act();
 
+        // Assert
         result.SelectEmployerFilterModel.Employers.Should().Contain("Legal Entity 1");
         result.SelectEmployerFilterModel.Employers.Should().Contain("Legal Entity 2");
         result.SelectEmployerFilterModel.Employers.Should().Contain("Account 1");
@@ -124,11 +155,36 @@ public class WhenIMapSelectEmployerRequestToViewModel
     [Test]
     public async Task ThenCorrectlyMapsEmptyApiResponseToViewModel()
     {
+        // Arrange
         var fixture = new SelectEmployerViewModelMapperFixture().WithNoMatchingEmployers();
 
+        // Act
         var result = await fixture.Act();
 
+        // Assert
         SelectEmployerViewModelMapperFixture.Assert_ListOfEmployersIsEmpty(result);
+    }
+
+    [Test]
+    public async Task ThenPassesPageNumberAndPageSizeToApi_AndMapsTotalCountAndPageNumber()
+    {
+        // Arrange
+        var fixture = new SelectEmployerViewModelMapperFixture();
+        fixture.WithRequest(new SelectEmployerRequest
+        {
+            ProviderId = 456,
+            PageNumber = 2
+        });
+        fixture.WithApiResponseTotalCount(250);
+
+        // Act
+        var result = await fixture.Act();
+
+        // Assert
+        result.SelectEmployerFilterModel.PageNumber.Should().Be(2);
+        result.SelectEmployerFilterModel.TotalEmployersFound.Should().Be(250);
+        result.SelectEmployerFilterModel.ShowPageLinks.Should().BeTrue();
+        fixture.Verify_GetSelectEmployerWasCalled_WithPageNumberAndPageSize(2, Constants.SelectEmployer.NumberOfEmployersPerPage);
     }
 
     public class SelectEmployerViewModelMapperFixture
@@ -159,7 +215,8 @@ public class WhenIMapSelectEmployerRequestToViewModel
                         ApprenticeshipEmployerType = "Levy"
                     }
                 ],
-                Employers = ["TestAccountLegalEntityName", "TestAccountName"]
+                Employers = ["TestAccountLegalEntityName", "TestAccountName"],
+                TotalCount = 1
             };
 
             _approvalsOuterApiClientMock = new Mock<IApprovalsOuterApiClient>();
@@ -217,7 +274,8 @@ public class WhenIMapSelectEmployerRequestToViewModel
                         ApprenticeshipEmployerType = "NonLevy"
                     }
                 ],
-                Employers = ["Legal Entity 1", "Legal Entity 2", "Account 1", "Account 2"]
+                Employers = ["Legal Entity 1", "Legal Entity 2", "Account 1", "Account 2"],
+                TotalCount = 2
             };
 
             _approvalsOuterApiClientMock
@@ -234,7 +292,8 @@ public class WhenIMapSelectEmployerRequestToViewModel
             _apiResponse = new GetSelectEmployerResponse
             {
                 AccountProviderLegalEntities = [],
-                Employers = []
+                Employers = [],
+                TotalCount = 0
             };
 
             _approvalsOuterApiClientMock
@@ -247,8 +306,29 @@ public class WhenIMapSelectEmployerRequestToViewModel
         public void Verify_GetSelectEmployerWasCalled_Once()
         {
             _approvalsOuterApiClientMock.Verify(
-                x => x.GetSelectEmployer(It.Is<GetSelectEmployerRequest>(r => 
+                x => x.GetSelectEmployer(It.Is<GetSelectEmployerRequest>(r =>
                     r.GetUrl.Contains(_request.ProviderId.ToString()))), Times.Once);
+        }
+
+        public void Verify_GetSelectEmployerWasCalled_WithPageNumberAndPageSize(int pageNumber, int pageSize)
+        {
+            _approvalsOuterApiClientMock.Verify(
+                x => x.GetSelectEmployer(It.Is<GetSelectEmployerRequest>(r =>
+                    r.GetUrl.Contains($"pageNumber={pageNumber}") && r.GetUrl.Contains($"pageSize={pageSize}"))), Times.Once);
+        }
+
+        public SelectEmployerViewModelMapperFixture WithApiResponseTotalCount(int totalCount)
+        {
+            _apiResponse = new GetSelectEmployerResponse
+            {
+                AccountProviderLegalEntities = _apiResponse.AccountProviderLegalEntities,
+                Employers = _apiResponse.Employers,
+                TotalCount = totalCount
+            };
+            _approvalsOuterApiClientMock
+                .Setup(x => x.GetSelectEmployer(It.IsAny<GetSelectEmployerRequest>()))
+                .ReturnsAsync(_apiResponse);
+            return this;
         }
 
         public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)

@@ -1,4 +1,4 @@
-﻿@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectLearnerRecordViewModel
@@ -198,25 +198,12 @@
         </tbody>
     </table>
 }
-@if (Model.ShowPageLinks)
+@await Html.PartialAsync("_PaginationNav", new PaginationNavViewModel
 {
-    <nav role="navigation" aria-label="Pagination">
-        <ul class="das-pagination">
-            @foreach (var pageLink in Model.FilterModel.PageLinks)
-            {
-                <li class="das-pagination__item">
-                    <a class="das-pagination__link @(pageLink.IsCurrent.HasValue && pageLink.IsCurrent.Value ? "current":"")"
-                       asp-route="@RouteNames.SelectLearnerRecord"
-                       asp-all-route-data="@pageLink.RouteData"
-                       aria-current="@pageLink.IsCurrent"
-                       aria-label="@pageLink.AriaLabel">
-                        @pageLink.Label
-                    </a>
-                </li>
-            }
-        </ul>
-    </nav>
-}
+    RouteName = RouteNames.SelectLearnerRecord,
+    ShowPageLinks = Model.ShowPageLinks,
+    PageLinks = Model.FilterModel.PageLinks
+})
 
 @section breadcrumb {
     @if (!string.IsNullOrWhiteSpace(Model.CohortReference))

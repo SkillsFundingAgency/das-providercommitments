@@ -1,12 +1,12 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Microsoft.AspNetCore.Html;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using static SFA.DAS.ProviderCommitments.Constants;
-using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ApprenticesFilterModel;
 using System.Net;
+using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -142,17 +142,17 @@ public class LearnerRecordsFilterModel
         return routeData;
     }
 
-    public IEnumerable<PageLink> PageLinks
+    public IEnumerable<PaginationPageLink> PageLinks
     {
         get
         {
-            var links = new List<PageLink>();
+            var links = new List<PaginationPageLink>();
             var totalPages = (int)Math.Ceiling((double)TotalNumberOfLearnersFound / PageSize);
             var totalPageLinks = totalPages < 5 ? totalPages : 5;
 
             if (totalPages > 1 && PageNumber > 1)
             {
-                links.Add(new PageLink
+                links.Add(new PaginationPageLink
                 {
                     Label = "Previous",
                     AriaLabel = "Previous page",
@@ -170,7 +170,7 @@ public class LearnerRecordsFilterModel
 
             for (var i = 0; i < totalPageLinks; i++)
             {
-                var link = new PageLink
+                var link = new PaginationPageLink
                 {
                     Label = (pageNumberSeed + i).ToString(),
                     AriaLabel = $"Page {pageNumberSeed + i}",
@@ -183,7 +183,7 @@ public class LearnerRecordsFilterModel
             //next link
             if (totalPages > 1 && PageNumber < totalPages)
             {
-                links.Add(new PageLink
+                links.Add(new PaginationPageLink
                 {
                     Label = "Next",
                     AriaLabel = "Next page",

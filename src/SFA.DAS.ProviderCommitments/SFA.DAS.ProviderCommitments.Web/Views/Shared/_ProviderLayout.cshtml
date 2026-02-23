@@ -1,21 +1,17 @@
-﻿@{
+@{
     // the _Layout view is contained in the package SFA.DAS.Provider.Shared.UI
     // ReSharper disable once Razor.LayoutNotResolved
     Layout = "_Layout";
 }
 
 <partial name="_FlashMessagePartial" />
+@await RenderSectionAsync("breadcrumb", required: false)
 @RenderBody()
 
 @section Styles
 {
     @await RenderSectionAsync("Styles", required: false)
     <link href="/css/app.css" rel="stylesheet" no-cdn />
-}
-
-@section breadcrumb
-{
-    @await RenderSectionAsync("breadcrumb", required: false)
 }
 
 @section Scripts
