@@ -28,7 +28,7 @@ public class SelectLearnerRecordViewModelMapperTests
                 _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear))
             .ReturnsAsync(_apiResponse);
 
-        _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
+        _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object, Mock.Of<ILogger<SelectLearnerRecordViewModelMapper>>());
     }
 
     [Test]
