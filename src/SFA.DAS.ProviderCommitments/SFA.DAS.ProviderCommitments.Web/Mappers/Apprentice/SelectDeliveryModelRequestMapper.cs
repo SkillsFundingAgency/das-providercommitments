@@ -4,34 +4,33 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+
+public class SelectDeliveryModelRequestMapper : IMapper<ConfirmEmployerViewModel, SelectDeliveryModelRequest>
 {
-    public class SelectDeliveryModelRequestMapper : IMapper<ConfirmEmployerViewModel, SelectDeliveryModelRequest>
+    private readonly ICacheStorageService _cacheStorage;
+    private readonly IEncodingService _encodingService;
+
+    public SelectDeliveryModelRequestMapper(ICacheStorageService cacheStorage, IEncodingService encodingService)
     {
-        private readonly ICacheStorageService _cacheStorage;
-        private readonly IEncodingService _encodingService;
+        _cacheStorage = cacheStorage;
+        _encodingService = encodingService;
+    }
 
-        public SelectDeliveryModelRequestMapper(ICacheStorageService cacheStorage, IEncodingService encodingService)
+    public async Task<SelectDeliveryModelRequest> Map(ConfirmEmployerViewModel source)
+    {
+        var cacheItem = new ChangeEmployerCacheItem(Guid.NewGuid())
         {
-            _cacheStorage = cacheStorage;
-            _encodingService = encodingService;
-        }
+            AccountLegalEntityId = _encodingService.Decode(source.EmployerAccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId)
+        };
 
-        public async Task<SelectDeliveryModelRequest> Map(ConfirmEmployerViewModel source)
+        await _cacheStorage.SaveToCache(cacheItem.Key.ToString(), cacheItem, 1);
+
+        return new SelectDeliveryModelRequest
         {
-            var cacheItem = new ChangeEmployerCacheItem(Guid.NewGuid())
-            {
-                AccountLegalEntityId = _encodingService.Decode(source.EmployerAccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId)
-            };
-
-            await _cacheStorage.SaveToCache(cacheItem.Key.ToString(), cacheItem, 1);
-
-            return new SelectDeliveryModelRequest
-            {
-                ProviderId = source.ProviderId,
-                ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                CacheKey = cacheItem.Key
-            };
-        }
+            ProviderId = source.ProviderId,
+            ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+            CacheKey = cacheItem.Key
+        };
     }
 }

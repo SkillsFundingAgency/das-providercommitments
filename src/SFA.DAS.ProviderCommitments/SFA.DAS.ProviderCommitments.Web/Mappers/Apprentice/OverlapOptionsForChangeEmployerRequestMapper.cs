@@ -2,14 +2,14 @@
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+
+public class OverlapOptionsForChangeEmployerRequestMapper : IMapper<ChangeOfEmployerOverlapAlertViewModel,
+    OverlapOptionsForChangeEmployerRequest>
 {
-    public class OverlapOptionsForChangeEmployerRequestMapper : IMapper<ChangeOfEmployerOverlapAlertViewModel,
-        OverlapOptionsForChangeEmployerRequest>
+    public async Task<OverlapOptionsForChangeEmployerRequest> Map(ChangeOfEmployerOverlapAlertViewModel source)
     {
-        public async Task<OverlapOptionsForChangeEmployerRequest> Map(ChangeOfEmployerOverlapAlertViewModel source)
-        {
-            return await Task.FromResult(new OverlapOptionsForChangeEmployerRequest
+        return await Task.FromResult(new OverlapOptionsForChangeEmployerRequest
             {
                 ProviderId = source.ProviderId,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
@@ -17,7 +17,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 CacheKey = source.CacheKey,
                 Status = source.Status
             }
-            );
-        }
+        );
     }
 }

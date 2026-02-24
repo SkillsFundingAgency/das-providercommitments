@@ -5,56 +5,55 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+
+public class CreateCohortRequestFromAddDraftApprenticeshipViewModelMapper : IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest>
 {
-    public class CreateCohortRequestFromAddDraftApprenticeshipViewModelMapper : IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest>
+    private readonly ICommitmentsApiClient _commitmentsApiClient;
+    private readonly ICacheStorageService _cacheStorage;
+
+    public CreateCohortRequestFromAddDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient,
+        ICacheStorageService cacheStorage)
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly ICacheStorageService _cacheStorage;
+        _commitmentsApiClient = commitmentsApiClient;
+        _cacheStorage = cacheStorage;
+    }
 
-        public CreateCohortRequestFromAddDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient,
-            ICacheStorageService cacheStorage)
+    public async Task<CreateCohortRequest> Map(AddDraftApprenticeshipViewModel source)
+    {
+        var cacheItem = await _cacheStorage.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey);
+
+        var accountLegalEntity =
+            await _commitmentsApiClient.GetAccountLegalEntity(cacheItem.AccountLegalEntityId,
+                CancellationToken.None);
+
+        if (accountLegalEntity is null)
         {
-            _commitmentsApiClient = commitmentsApiClient;
-            _cacheStorage = cacheStorage;
+            throw new Exception($"AccountLegalEntity {source.AccountLegalEntityId} not found", null);
         }
 
-        public async Task<CreateCohortRequest> Map(AddDraftApprenticeshipViewModel source)
+        return new CreateCohortRequest
         {
-            var cacheItem = await _cacheStorage.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey);
-
-            var accountLegalEntity =
-                await _commitmentsApiClient.GetAccountLegalEntity(cacheItem.AccountLegalEntityId,
-                    CancellationToken.None);
-
-            if (accountLegalEntity is null)
-            {
-                throw new Exception($"AccountLegalEntity {source.AccountLegalEntityId} not found", null);
-            }
-
-            return new CreateCohortRequest
-            {
-                AccountId = accountLegalEntity.AccountId,
-                AccountLegalEntityId = cacheItem.AccountLegalEntityId,
-                ProviderId = source.ProviderId,
-                ReservationId = cacheItem.ReservationId,
-                FirstName = source.FirstName,
-                LastName = source.LastName,
-                Email = source.Email,
-                DateOfBirth = source.DateOfBirth.Date,
-                UniqueLearnerNumber = source.Uln,
-                CourseCode = source.CourseCode,
-                Cost = source.Cost,
-                TrainingPrice = source.TrainingPrice,
-                EndPointAssessmentPrice = source.EndPointAssessmentPrice,
-                EmploymentPrice = source.EmploymentPrice,
-                StartDate = source.StartDate.Date,
-                ActualStartDate = source.ActualStartDate.Date,
-                EmploymentEndDate = source.EmploymentEndDate.Date,
-                EndDate = source.EndDate.Date,
-                OriginatorReference = source.Reference,
-                DeliveryModel = source.DeliveryModel
-            };
-        }
+            AccountId = accountLegalEntity.AccountId,
+            AccountLegalEntityId = cacheItem.AccountLegalEntityId,
+            ProviderId = source.ProviderId,
+            ReservationId = cacheItem.ReservationId,
+            FirstName = source.FirstName,
+            LastName = source.LastName,
+            Email = source.Email,
+            DateOfBirth = source.DateOfBirth.Date,
+            UniqueLearnerNumber = source.Uln,
+            CourseCode = source.CourseCode,
+            Cost = source.Cost,
+            TrainingPrice = source.TrainingPrice,
+            EndPointAssessmentPrice = source.EndPointAssessmentPrice,
+            EmploymentPrice = source.EmploymentPrice,
+            StartDate = source.StartDate.Date,
+            ActualStartDate = source.ActualStartDate.Date,
+            EmploymentEndDate = source.EmploymentEndDate.Date,
+            EndDate = source.EndDate.Date,
+            OriginatorReference = source.Reference,
+            DeliveryModel = source.DeliveryModel
+        };
     }
 }

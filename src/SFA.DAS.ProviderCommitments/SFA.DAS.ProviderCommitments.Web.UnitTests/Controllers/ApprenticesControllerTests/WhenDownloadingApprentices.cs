@@ -1,11 +1,8 @@
 ﻿using System.IO;
-using AutoFixture.NUnit3;
-using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Http;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests;
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using FluentAssertions.Execution;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;

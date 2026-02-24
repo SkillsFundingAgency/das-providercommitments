@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using AutoFixture.Kernel;
-using FluentAssertions.Execution;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;

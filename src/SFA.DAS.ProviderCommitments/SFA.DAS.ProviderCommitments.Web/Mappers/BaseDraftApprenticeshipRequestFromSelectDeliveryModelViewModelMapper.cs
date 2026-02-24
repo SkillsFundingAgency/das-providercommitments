@@ -1,18 +1,17 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers
+namespace SFA.DAS.ProviderCommitments.Web.Mappers;
+
+public class BaseDraftApprenticeshipRequestFromSelectDeliveryModelViewModelMapper : IMapper<SelectDeliveryModelViewModel, BaseDraftApprenticeshipRequest>
 {
-    public class BaseDraftApprenticeshipRequestFromSelectDeliveryModelViewModelMapper : IMapper<SelectDeliveryModelViewModel, BaseDraftApprenticeshipRequest>
+    public Task<BaseDraftApprenticeshipRequest> Map(SelectDeliveryModelViewModel source)
     {
-        public Task<BaseDraftApprenticeshipRequest> Map(SelectDeliveryModelViewModel source)
+        return Task.FromResult(new BaseDraftApprenticeshipRequest
         {
-            return Task.FromResult(new BaseDraftApprenticeshipRequest
-            {
-                ProviderId = source.ProviderId,
-                CohortReference = source.CohortReference,
-                DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId
-            });
-        }
+            ProviderId = source.ProviderId,
+            CohortReference = source.CohortReference,
+            DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId
+        });
     }
 }

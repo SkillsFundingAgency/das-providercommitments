@@ -10,105 +10,104 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+
+public class
+    ChangeOfEmployerOverlapAlertViewModelMapper : IMapper<ChangeOfEmployerOverlapAlertRequest,
+    ChangeOfEmployerOverlapAlertViewModel>
 {
-    public class
-        ChangeOfEmployerOverlapAlertViewModelMapper : IMapper<ChangeOfEmployerOverlapAlertRequest,
-            ChangeOfEmployerOverlapAlertViewModel>
+    private readonly ICacheStorageService _cacheStorage;
+    private readonly IEncodingService _encodingService;
+    private readonly IOuterApiClient _outerApiClient;
+    private readonly ILogger<ChangeOfEmployerOverlapAlertViewModelMapper> _logger;
+
+    public ChangeOfEmployerOverlapAlertViewModelMapper(IOuterApiClient outerApiClient,
+        ILogger<ChangeOfEmployerOverlapAlertViewModelMapper> logger, ICacheStorageService cacheStorage,
+        IEncodingService encodingService)
     {
-        private readonly ICacheStorageService _cacheStorage;
-        private readonly IEncodingService _encodingService;
-        private readonly IOuterApiClient _outerApiClient;
-        private readonly ILogger<ChangeOfEmployerOverlapAlertViewModelMapper> _logger;
+        _logger = logger;
+        _cacheStorage = cacheStorage;
+        _encodingService = encodingService;
+        _outerApiClient = outerApiClient;
+    }
 
-        public ChangeOfEmployerOverlapAlertViewModelMapper(IOuterApiClient outerApiClient,
-            ILogger<ChangeOfEmployerOverlapAlertViewModelMapper> logger, ICacheStorageService cacheStorage,
-            IEncodingService encodingService)
+    public async Task<ChangeOfEmployerOverlapAlertViewModel> Map(ChangeOfEmployerOverlapAlertRequest source)
+    {
+        try
         {
-            _logger = logger;
-            _cacheStorage = cacheStorage;
-            _encodingService = encodingService;
-            _outerApiClient = outerApiClient;
+            var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
+
+            var data = await GetApprenticeshipData(source.ProviderId, source.ApprenticeshipId, cacheItem.AccountLegalEntityId);
+
+            var newStartDate = new MonthYearModel(cacheItem.StartDate);
+            var newEndDate = new MonthYearModel(cacheItem.EndDate);
+            var newEmploymentEndDate = string.IsNullOrEmpty(cacheItem.EmploymentEndDate)
+                ? null
+                : new MonthYearModel(cacheItem.EmploymentEndDate);
+
+            return new ChangeOfEmployerOverlapAlertViewModel
+            {
+                DeliveryModel = cacheItem.DeliveryModel.Value,
+                OldDeliveryModel = data.Apprenticeship.DeliveryModel,
+                ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+                AccountLegalEntityPublicHashedId = _encodingService.Encode(cacheItem.AccountLegalEntityId,
+                    EncodingType.PublicAccountLegalEntityId),
+                OldEmployerName = data.Apprenticeship.EmployerName,
+                ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
+                Uln = data.Apprenticeship.Uln,
+                StopDate = data.Apprenticeship.StopDate,
+                OldStartDate = data.Apprenticeship.StartDate.Value,
+                OldEndDate = data.Apprenticeship.EndDate,
+                OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetPrice()),
+                OldEmploymentPrice = data.Apprenticeship.EmploymentPrice,
+                OldEmploymentEndDate = data.Apprenticeship.EmploymentEndDate,
+                NewEmployerName = data.AccountLegalEntity.LegalEntityName,
+                NewStartDate = newStartDate.MonthYear,
+                NewEndDate = newEndDate.MonthYear,
+                NewPrice = cacheItem.Price.Value,
+                NewEmploymentEndDate = newEmploymentEndDate?.MonthYear,
+                NewEmploymentPrice = cacheItem.EmploymentPrice,
+                FundingBandCap = GetFundingBandCap(data.TrainingProgrammeResponse.TrainingProgramme, newStartDate.Date),
+                ShowDeliveryModel = !cacheItem.SkippedDeliveryModelSelection ||
+                                    (cacheItem.SkippedDeliveryModelSelection && (int)cacheItem.DeliveryModel !=
+                                        (int)data.Apprenticeship.DeliveryModel),
+                ShowDeliveryModelChangeLink = !cacheItem.SkippedDeliveryModelSelection,
+                Status = data.Apprenticeship.Status,
+                CacheKey = source.CacheKey,
+                ProviderId = source.ProviderId
+            };
         }
-
-        public async Task<ChangeOfEmployerOverlapAlertViewModel> Map(ChangeOfEmployerOverlapAlertRequest source)
+        catch (Exception e)
         {
-            try
-            {
-                var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
-
-                var data = await GetApprenticeshipData(source.ProviderId, source.ApprenticeshipId, cacheItem.AccountLegalEntityId);
-
-                var newStartDate = new MonthYearModel(cacheItem.StartDate);
-                var newEndDate = new MonthYearModel(cacheItem.EndDate);
-                var newEmploymentEndDate = string.IsNullOrEmpty(cacheItem.EmploymentEndDate)
-                    ? null
-                    : new MonthYearModel(cacheItem.EmploymentEndDate);
-
-                return new ChangeOfEmployerOverlapAlertViewModel
-                {
-                    DeliveryModel = cacheItem.DeliveryModel.Value,
-                    OldDeliveryModel = data.Apprenticeship.DeliveryModel,
-                    ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                    AccountLegalEntityPublicHashedId = _encodingService.Encode(cacheItem.AccountLegalEntityId,
-                        EncodingType.PublicAccountLegalEntityId),
-                    OldEmployerName = data.Apprenticeship.EmployerName,
-                    ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
-                    Uln = data.Apprenticeship.Uln,
-                    StopDate = data.Apprenticeship.StopDate,
-                    OldStartDate = data.Apprenticeship.StartDate.Value,
-                    OldEndDate = data.Apprenticeship.EndDate,
-                    OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetPrice()),
-                    OldEmploymentPrice = data.Apprenticeship.EmploymentPrice,
-                    OldEmploymentEndDate = data.Apprenticeship.EmploymentEndDate,
-                    NewEmployerName = data.AccountLegalEntity.LegalEntityName,
-                    NewStartDate = newStartDate.MonthYear,
-                    NewEndDate = newEndDate.MonthYear,
-                    NewPrice = cacheItem.Price.Value,
-                    NewEmploymentEndDate = newEmploymentEndDate?.MonthYear,
-                    NewEmploymentPrice = cacheItem.EmploymentPrice,
-                    FundingBandCap = GetFundingBandCap(data.TrainingProgrammeResponse.TrainingProgramme, newStartDate.Date),
-                    ShowDeliveryModel = !cacheItem.SkippedDeliveryModelSelection ||
-                                        (cacheItem.SkippedDeliveryModelSelection && (int)cacheItem.DeliveryModel !=
-                                            (int)data.Apprenticeship.DeliveryModel),
-                    ShowDeliveryModelChangeLink = !cacheItem.SkippedDeliveryModelSelection,
-                    Status = data.Apprenticeship.Status,
-                    CacheKey = source.CacheKey,
-                    ProviderId = source.ProviderId
-                };
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(
-                    $"Error mapping apprenticeshipId {source.ApprenticeshipId} to model {nameof(ChangeOfEmployerOverlapAlertViewModel)}",
-                    e);
-                throw;
-            }
+            _logger.LogError(
+                $"Error mapping apprenticeshipId {source.ApprenticeshipId} to model {nameof(ChangeOfEmployerOverlapAlertViewModel)}",
+                e);
+            throw;
         }
+    }
 
-        private async Task<GetApprenticeshipDataResponse> GetApprenticeshipData(long providerId, long apprenticeshipId, long accountLegalEntityId)
+    private async Task<GetApprenticeshipDataResponse> GetApprenticeshipData(long providerId, long apprenticeshipId, long accountLegalEntityId)
+    {
+        var apprenticeshipDetails = await _outerApiClient.Get<GetApprenticeshipDataResponse>(
+            new GetApprenticeshipDataRequest(providerId, apprenticeshipId, accountLegalEntityId));
+
+        return apprenticeshipDetails;
+    }
+
+    private int? GetFundingBandCap(TrainingProgramme course, DateTime? startDate)
+    {
+        if (course == null)
         {
-            var apprenticeshipDetails = await _outerApiClient.Get<GetApprenticeshipDataResponse>(
-                new GetApprenticeshipDataRequest(providerId, apprenticeshipId, accountLegalEntityId));
-
-            return apprenticeshipDetails;
-        }
-
-        private int? GetFundingBandCap(TrainingProgramme course, DateTime? startDate)
-        {
-            if (course == null)
-            {
-                return null;
-            }
-
-            var cap = course.FundingCapOn(startDate.Value);
-
-            if (cap > 0)
-            {
-                return cap;
-            }
-
             return null;
         }
+
+        var cap = course.FundingCapOn(startDate.Value);
+
+        if (cap > 0)
+        {
+            return cap;
+        }
+
+        return null;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq.Expressions;
-using FluentValidation.TestHelper;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice;
 

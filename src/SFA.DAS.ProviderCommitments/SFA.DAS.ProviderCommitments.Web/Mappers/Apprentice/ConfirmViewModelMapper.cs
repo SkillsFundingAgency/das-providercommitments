@@ -10,95 +10,94 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+
+public class ConfirmViewModelMapper : IMapper<ConfirmRequest, ConfirmViewModel>
 {
-    public class ConfirmViewModelMapper : IMapper<ConfirmRequest, ConfirmViewModel>
+    private readonly ICacheStorageService _cacheStorage;
+    private readonly IEncodingService _encodingService;
+    private readonly ILogger<ConfirmViewModelMapper> _logger;
+    private readonly IOuterApiClient _outerApiClient;
+
+    public ConfirmViewModelMapper(IOuterApiClient outerApiClient, ILogger<ConfirmViewModelMapper> logger, ICacheStorageService cacheStorage, IEncodingService encodingService)
     {
-        private readonly ICacheStorageService _cacheStorage;
-        private readonly IEncodingService _encodingService;
-        private readonly ILogger<ConfirmViewModelMapper> _logger;
-        private readonly IOuterApiClient _outerApiClient;
+        _outerApiClient = outerApiClient;
+        _logger = logger;
+        _cacheStorage = cacheStorage;
+        _encodingService = encodingService;
+    }
 
-        public ConfirmViewModelMapper(IOuterApiClient outerApiClient, ILogger<ConfirmViewModelMapper> logger, ICacheStorageService cacheStorage, IEncodingService encodingService)
+    public async Task<ConfirmViewModel> Map(ConfirmRequest source)
+    {
+        try
         {
-            _outerApiClient = outerApiClient;
-            _logger = logger;
-            _cacheStorage = cacheStorage;
-            _encodingService = encodingService;
+            var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
+
+            var data = await GetApprenticeshipData(source.ProviderId, source.ApprenticeshipId, cacheItem.AccountLegalEntityId);
+
+            var newStartDate = new MonthYearModel(cacheItem.StartDate);
+            var newEndDate = new MonthYearModel(cacheItem.EndDate);
+            var newEmploymentEndDate = string.IsNullOrEmpty(cacheItem.EmploymentEndDate)
+                ? null
+                : new MonthYearModel(cacheItem.EmploymentEndDate);
+
+            return new ConfirmViewModel
+            {
+                DeliveryModel = cacheItem.DeliveryModel.Value,
+                OldDeliveryModel = data.Apprenticeship.DeliveryModel,
+                ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+                AccountLegalEntityPublicHashedId = _encodingService.Encode(cacheItem.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
+                OldEmployerName = data.Apprenticeship.EmployerName,
+                ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
+                Uln = data.Apprenticeship.Uln,
+                StopDate = data.Apprenticeship.StopDate.Value,
+                OldStartDate = data.Apprenticeship.StartDate.Value,
+                OldEndDate = data.Apprenticeship.EndDate,
+                OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetPrice()),
+                OldEmploymentPrice = data.Apprenticeship.EmploymentPrice,
+                OldEmploymentEndDate = data.Apprenticeship.EmploymentEndDate,
+                NewEmployerName = data.AccountLegalEntity.LegalEntityName,
+                NewStartDate = newStartDate.MonthYear,
+                NewEndDate = newEndDate.MonthYear,
+                NewPrice = cacheItem.Price.Value,
+                NewEmploymentEndDate = newEmploymentEndDate?.MonthYear,
+                NewEmploymentPrice = cacheItem.EmploymentPrice,
+                FundingBandCap = GetFundingBandCap(data.TrainingProgrammeResponse.TrainingProgramme, newStartDate.Date),
+                ShowDeliveryModel = !cacheItem.SkippedDeliveryModelSelection ||
+                                    (cacheItem.SkippedDeliveryModelSelection && (int)cacheItem.DeliveryModel != (int)data.Apprenticeship.DeliveryModel),
+                ShowDeliveryModelChangeLink = !cacheItem.SkippedDeliveryModelSelection,
+                CacheKey = source.CacheKey
+            };
         }
-
-        public async Task<ConfirmViewModel> Map(ConfirmRequest source)
+        catch (Exception e)
         {
-            try
-            {
-                var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
-
-                var data = await GetApprenticeshipData(source.ProviderId, source.ApprenticeshipId, cacheItem.AccountLegalEntityId);
-
-                var newStartDate = new MonthYearModel(cacheItem.StartDate);
-                var newEndDate = new MonthYearModel(cacheItem.EndDate);
-                var newEmploymentEndDate = string.IsNullOrEmpty(cacheItem.EmploymentEndDate)
-                    ? null
-                    : new MonthYearModel(cacheItem.EmploymentEndDate);
-
-                return new ConfirmViewModel
-                {
-                    DeliveryModel = cacheItem.DeliveryModel.Value,
-                    OldDeliveryModel = data.Apprenticeship.DeliveryModel,
-                    ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                    AccountLegalEntityPublicHashedId = _encodingService.Encode(cacheItem.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
-                    OldEmployerName = data.Apprenticeship.EmployerName,
-                    ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
-                    Uln = data.Apprenticeship.Uln,
-                    StopDate = data.Apprenticeship.StopDate.Value,
-                    OldStartDate = data.Apprenticeship.StartDate.Value,
-                    OldEndDate = data.Apprenticeship.EndDate,
-                    OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetPrice()),
-                    OldEmploymentPrice = data.Apprenticeship.EmploymentPrice,
-                    OldEmploymentEndDate = data.Apprenticeship.EmploymentEndDate,
-                    NewEmployerName = data.AccountLegalEntity.LegalEntityName,
-                    NewStartDate = newStartDate.MonthYear,
-                    NewEndDate = newEndDate.MonthYear,
-                    NewPrice = cacheItem.Price.Value,
-                    NewEmploymentEndDate = newEmploymentEndDate?.MonthYear,
-                    NewEmploymentPrice = cacheItem.EmploymentPrice,
-                    FundingBandCap = GetFundingBandCap(data.TrainingProgrammeResponse.TrainingProgramme, newStartDate.Date),
-                    ShowDeliveryModel = !cacheItem.SkippedDeliveryModelSelection ||
-                                        (cacheItem.SkippedDeliveryModelSelection && (int)cacheItem.DeliveryModel != (int)data.Apprenticeship.DeliveryModel),
-                    ShowDeliveryModelChangeLink = !cacheItem.SkippedDeliveryModelSelection,
-                    CacheKey = source.CacheKey
-                };
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Error mapping apprenticeshipId {source.ApprenticeshipId} to model {nameof(ConfirmViewModel)}", e);
-                throw;
-            }
+            _logger.LogError($"Error mapping apprenticeshipId {source.ApprenticeshipId} to model {nameof(ConfirmViewModel)}", e);
+            throw;
         }
+    }
 
-        private async Task<GetApprenticeshipDataResponse> GetApprenticeshipData(long providerId, long apprenticeshipId, long accountLegalEntityId)
+    private async Task<GetApprenticeshipDataResponse> GetApprenticeshipData(long providerId, long apprenticeshipId, long accountLegalEntityId)
+    {
+        var apprenticeshipDetails = await _outerApiClient.Get<GetApprenticeshipDataResponse>(
+            new GetApprenticeshipDataRequest(providerId, apprenticeshipId, accountLegalEntityId));
+
+        return apprenticeshipDetails;
+    }
+
+    private static int? GetFundingBandCap(TrainingProgramme course, DateTime? startDate)
+    {
+        if (course == null)
         {
-            var apprenticeshipDetails = await _outerApiClient.Get<GetApprenticeshipDataResponse>(
-                new GetApprenticeshipDataRequest(providerId, apprenticeshipId, accountLegalEntityId));
-
-            return apprenticeshipDetails;
-        }
-
-        private static int? GetFundingBandCap(TrainingProgramme course, DateTime? startDate)
-        {
-            if (course == null)
-            {
-                return null;
-            }
-
-            var cap = course.FundingCapOn(startDate.Value);
-
-            if (cap > 0)
-            {
-                return cap;
-            }
-
             return null;
         }
+
+        var cap = course.FundingCapOn(startDate.Value);
+
+        if (cap > 0)
+        {
+            return cap;
+        }
+
+        return null;
     }
 }

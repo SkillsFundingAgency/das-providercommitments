@@ -3,35 +3,34 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers
+namespace SFA.DAS.ProviderCommitments.Web.Mappers;
+
+public class SelectDeliveryModelMapperHelper : ISelectDeliveryModelMapperHelper
 {
-    public class SelectDeliveryModelMapperHelper : ISelectDeliveryModelMapperHelper
+    private readonly IApprovalsOuterApiClient _client;
+    private readonly IEncodingService _encodingService;
+
+    public SelectDeliveryModelMapperHelper(IApprovalsOuterApiClient client, IEncodingService encodingService)
     {
-        private readonly IApprovalsOuterApiClient _client;
-        private readonly IEncodingService _encodingService;
+        _client = client;
+        _encodingService = encodingService;
+    }
+    public async Task<SelectDeliveryModelViewModel> Map(long providerId, string courseCode, long? accountLegalEntityId, DeliveryModel? deliveryModel)
+    {
+        var response = await _client.GetProviderCourseDeliveryModels(providerId, courseCode, accountLegalEntityId ?? 0);
 
-        public SelectDeliveryModelMapperHelper(IApprovalsOuterApiClient client, IEncodingService encodingService)
+        return new SelectDeliveryModelViewModel
         {
-            _client = client;
-            _encodingService = encodingService;
-        }
-        public async Task<SelectDeliveryModelViewModel> Map(long providerId, string courseCode, long? accountLegalEntityId, DeliveryModel? deliveryModel)
-        {
-            var response = await _client.GetProviderCourseDeliveryModels(providerId, courseCode, accountLegalEntityId ?? 0);
+            CourseCode = courseCode,
+            DeliveryModel = deliveryModel,
+            DeliveryModels = response.DeliveryModels.ToArray()
+        };
+    }
 
-            return new SelectDeliveryModelViewModel
-            {
-                CourseCode = courseCode,
-                DeliveryModel = deliveryModel,
-                DeliveryModels = response.DeliveryModels.ToArray()
-            };
-        }
-
-        public async Task<bool> HasMultipleDeliveryModels(long providerId, string courseCode, string employerAccountLegalEntityPublicHashedId)
-        {
-            var aleId = _encodingService.Decode(employerAccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
-            var response = await _client.GetProviderCourseDeliveryModels(providerId, courseCode, aleId);
-            return (response?.DeliveryModels.Count() > 1);
-        }
+    public async Task<bool> HasMultipleDeliveryModels(long providerId, string courseCode, string employerAccountLegalEntityPublicHashedId)
+    {
+        var aleId = _encodingService.Decode(employerAccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
+        var response = await _client.GetProviderCourseDeliveryModels(providerId, courseCode, aleId);
+        return (response?.DeliveryModels.Count() > 1);
     }
 }

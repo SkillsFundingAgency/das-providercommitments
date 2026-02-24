@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using AutoFixture.NUnit3;
 using Microsoft.AspNetCore.Http;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System.Security.Claims;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers;
 

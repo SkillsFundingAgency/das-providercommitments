@@ -1,15 +1,12 @@
-﻿using AutoFixture.NUnit3;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.Testing.AutoFixture;
 using System.Collections.Generic;
 using System.Security.Claims;
-using FluentAssertions.Execution;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization;

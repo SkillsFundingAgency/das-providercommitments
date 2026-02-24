@@ -7,39 +7,38 @@ using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectCourseViewModel;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+
+public class SelectCourseViewModelMapper : IMapper<SelectCourseRequest, SelectCourseViewModel>
 {
-    public class SelectCourseViewModelMapper : IMapper<SelectCourseRequest, SelectCourseViewModel>
+    private readonly IOuterApiClient _apiClient;
+    private readonly ICacheStorageService _cacheStorage;
+
+    public SelectCourseViewModelMapper(
+        IOuterApiClient apiClient,
+        ICacheStorageService cacheStorage)
     {
-        private readonly IOuterApiClient _apiClient;
-        private readonly ICacheStorageService _cacheStorage;
+        _apiClient = apiClient;
+        _cacheStorage = cacheStorage;
+    }
 
-        public SelectCourseViewModelMapper(
-            IOuterApiClient apiClient,
-            ICacheStorageService cacheStorage)
+    public async Task<SelectCourseViewModel> Map(SelectCourseRequest source)
+    {
+        var cacheItem = await _cacheStorage.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey);
+
+        var apiRequest = new GetAddDraftApprenticeshipCourseRequest(source.ProviderId, cacheItem.AccountLegalEntityId);
+        var apiResponse = await _apiClient.Get<GetAddDraftApprenticeshipCourseResponse>(apiRequest);
+
+        var result = new SelectCourseViewModel
         {
-            _apiClient = apiClient;
-            _cacheStorage = cacheStorage;
-        }
+            CacheKey = source.CacheKey,
+            CourseCode = cacheItem.CourseCode != null? cacheItem.CourseCode : source.CourseCode,
+            ProviderId = source.ProviderId,
+            EmployerName = apiResponse.EmployerName,
+            ShowManagingStandardsContent = apiResponse.IsMainProvider,
+            Standards = apiResponse.Standards.Select(x => new Standard { CourseCode = x.CourseCode, Name = x.Name })
+        };
 
-        public async Task<SelectCourseViewModel> Map(SelectCourseRequest source)
-        {
-            var cacheItem = await _cacheStorage.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey);
-
-            var apiRequest = new GetAddDraftApprenticeshipCourseRequest(source.ProviderId, cacheItem.AccountLegalEntityId);
-            var apiResponse = await _apiClient.Get<GetAddDraftApprenticeshipCourseResponse>(apiRequest);
-
-            var result = new SelectCourseViewModel
-            {
-                CacheKey = source.CacheKey,
-                CourseCode = cacheItem.CourseCode != null? cacheItem.CourseCode : source.CourseCode,
-                ProviderId = source.ProviderId,
-                EmployerName = apiResponse.EmployerName,
-                ShowManagingStandardsContent = apiResponse.IsMainProvider,
-                Standards = apiResponse.Standards.Select(x => new Standard { CourseCode = x.CourseCode, Name = x.Name })
-            };
-
-            return result;
-        }
+        return result;
     }
 }

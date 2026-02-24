@@ -3,31 +3,30 @@ using SFA.DAS.ProviderCommitments.Web.Services;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers
+namespace SFA.DAS.ProviderCommitments.Web.Mappers;
+
+public class
+    BaseApprenticeshipRequestFromEditApprenticeshipCourseViewModelMapper : IMapper<EditApprenticeshipCourseViewModel
+    , BaseApprenticeshipRequest>
 {
-    public class
-        BaseApprenticeshipRequestFromEditApprenticeshipCourseViewModelMapper : IMapper<EditApprenticeshipCourseViewModel
-            , BaseApprenticeshipRequest>
+    private readonly ITempDataStorageService _tempData;
+    private const string ViewModelForEdit = "ViewModelForEdit";
+
+    public BaseApprenticeshipRequestFromEditApprenticeshipCourseViewModelMapper(ITempDataStorageService tempData) =>
+        _tempData = tempData;
+
+    public Task<BaseApprenticeshipRequest> Map(EditApprenticeshipCourseViewModel source)
     {
-        private readonly ITempDataStorageService _tempData;
-        private const string ViewModelForEdit = "ViewModelForEdit";
+        var data = _tempData.RetrieveFromCache<EditApprenticeshipRequestViewModel>(ViewModelForEdit);
+        data.CourseCode = source.CourseCode;
+        _tempData.AddToCache(data, ViewModelForEdit);
 
-        public BaseApprenticeshipRequestFromEditApprenticeshipCourseViewModelMapper(ITempDataStorageService tempData) =>
-            _tempData = tempData;
-
-        public Task<BaseApprenticeshipRequest> Map(EditApprenticeshipCourseViewModel source)
+        var request = new BaseApprenticeshipRequest
         {
-            var data = _tempData.RetrieveFromCache<EditApprenticeshipRequestViewModel>(ViewModelForEdit);
-            data.CourseCode = source.CourseCode;
-            _tempData.AddToCache(data, ViewModelForEdit);
+            ApprenticeshipHashedId = data.ApprenticeshipHashedId,
+            ProviderId = data.ProviderId
+        };
 
-            var request = new BaseApprenticeshipRequest
-            {
-                ApprenticeshipHashedId = data.ApprenticeshipHashedId,
-                ProviderId = data.ProviderId
-            };
-
-            return Task.FromResult(request);
-        }
+        return Task.FromResult(request);
     }
 }

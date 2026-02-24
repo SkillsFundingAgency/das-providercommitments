@@ -1,36 +1,34 @@
 ﻿using System;
 using System.Linq.Expressions;
-using FluentValidation.TestHelper;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Validators.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort;
+
+[TestFixture]
+public class SelectEmployerRequestValidatorTests 
 {
-    [TestFixture]
-    public class SelectEmployerRequestValidatorTests 
+
+    [TestCase(0, false)]
+    [TestCase(1, true)]
+    public void ThenProviderIdIsValidated(long providerId, bool expectedValid)
     {
+        var request = new SelectEmployerRequest {ProviderId = providerId};
+        AssertValidationResult(x => x.ProviderId, request, expectedValid);
+    }
 
-        [TestCase(0, false)]
-        [TestCase(1, true)]
-        public void ThenProviderIdIsValidated(long providerId, bool expectedValid)
+    private static void AssertValidationResult<T>(Expression<Func<SelectEmployerRequest, T>> property, SelectEmployerRequest instance, bool expectedValid)
+    {
+        var validator = new SelectEmployerRequestValidator();
+        var result = validator.TestValidate(instance);
+
+        if (expectedValid)
         {
-            var request = new SelectEmployerRequest {ProviderId = providerId};
-            AssertValidationResult(x => x.ProviderId, request, expectedValid);
+            result.ShouldNotHaveValidationErrorFor(property);
         }
-
-        private static void AssertValidationResult<T>(Expression<Func<SelectEmployerRequest, T>> property, SelectEmployerRequest instance, bool expectedValid)
+        else
         {
-            var validator = new SelectEmployerRequestValidator();
-            var result = validator.TestValidate(instance);
-
-            if (expectedValid)
-            {
-                result.ShouldNotHaveValidationErrorFor(property);
-            }
-            else
-            {
-                result.ShouldHaveValidationErrorFor(property);
-            }
+            result.ShouldHaveValidationErrorFor(property);
         }
     }
 }

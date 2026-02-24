@@ -2,35 +2,34 @@
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+
+public class FileUploadStartViewModelToReviewRequestMapper : IMapper<FileUploadStartViewModel, FileUploadReviewRequest>
 {
-    public class FileUploadStartViewModelToReviewRequestMapper : IMapper<FileUploadStartViewModel, FileUploadReviewRequest>
+    private readonly IBulkUploadFileParser _fileParser;
+    private readonly ICacheService _cache;
+
+    public FileUploadStartViewModelToReviewRequestMapper(IBulkUploadFileParser fileParser, ICacheService cache)
     {
-        private readonly IBulkUploadFileParser _fileParser;
-        private readonly ICacheService _cache;
+        _fileParser = fileParser;
+        _cache = cache;
+    }
 
-        public FileUploadStartViewModelToReviewRequestMapper(IBulkUploadFileParser fileParser, ICacheService cache)
+    public async Task<FileUploadReviewRequest> Map(FileUploadStartViewModel source)
+    {
+        var csvRecords = _fileParser.GetCsvRecords(source.ProviderId, source.Attachment);
+        var cache = new FileUploadCacheModel
         {
-            _fileParser = fileParser;
-            _cache = cache;
-        }
+            CsvRecords = csvRecords,
+            FileUploadLogId = source.FileUploadLogId,
+        };
 
-        public async Task<FileUploadReviewRequest> Map(FileUploadStartViewModel source)
+        var cacheRequestId = await _cache.SetCache(cache, nameof(FileUploadStartViewModelToReviewRequestMapper));
+
+        return new FileUploadReviewRequest
         {
-            var csvRecords = _fileParser.GetCsvRecords(source.ProviderId, source.Attachment);
-            var cache = new FileUploadCacheModel
-            {
-                CsvRecords = csvRecords,
-                FileUploadLogId = source.FileUploadLogId,
-            };
-
-            var cacheRequestId = await _cache.SetCache(cache, nameof(FileUploadStartViewModelToReviewRequestMapper));
-
-            return new FileUploadReviewRequest
-            {
-                ProviderId = source.ProviderId,
-                CacheRequestId = cacheRequestId
-            };
-        }
+            ProviderId = source.ProviderId,
+            CacheRequestId = cacheRequestId
+        };
     }
 }

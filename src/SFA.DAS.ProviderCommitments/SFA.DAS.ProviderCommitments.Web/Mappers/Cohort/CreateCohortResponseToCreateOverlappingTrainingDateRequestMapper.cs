@@ -2,16 +2,15 @@
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+
+public class CreateCohortResponseToCreateOverlappingTrainingDateRequestMapper : IMapper<CreateCohortResponse, CreateOverlappingTrainingDateApimRequest>
 {
-    public class CreateCohortResponseToCreateOverlappingTrainingDateRequestMapper : IMapper<CreateCohortResponse, CreateOverlappingTrainingDateApimRequest>
+    public Task<CreateOverlappingTrainingDateApimRequest> Map(CreateCohortResponse source)
     {
-        public Task<CreateOverlappingTrainingDateApimRequest> Map(CreateCohortResponse source)
+        return Task.FromResult(new CreateOverlappingTrainingDateApimRequest
         {
-            return Task.FromResult(new CreateOverlappingTrainingDateApimRequest
-            {
-                DraftApprenticeshipId = source.DraftApprenticeshipId.Value
-            });
-        }
+            DraftApprenticeshipId = source.DraftApprenticeshipId.Value
+        });
     }
 }
