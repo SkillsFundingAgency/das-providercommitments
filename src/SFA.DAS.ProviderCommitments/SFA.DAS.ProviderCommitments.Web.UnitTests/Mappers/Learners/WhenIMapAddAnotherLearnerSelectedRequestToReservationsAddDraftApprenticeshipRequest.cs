@@ -1,112 +1,79 @@
 using System;
+using AutoFixture.NUnit3;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Learners;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Learners;
 
 [TestFixture]
 public class WhenIMapAddAnotherLearnerSelectedRequestToReservationsAddDraftApprenticeshipRequest
 {
-    private AddAnotherDraftApprenticeshipRequestFromLearnerSelectedRequestMapper _mapper;
-    private AddAnotherLearnerSelectedRequest _source;
-    private long _providerId;
-    private long _learnerId;
-    private GetLearnerSelectedResponse _response;
-    private Func<Task<ReservationsAddDraftApprenticeshipRequest>> _act;
-    private Mock<ICacheStorageService> _cacheService;
-    private Mock<IOuterApiService> _outerApiService;
-    private AddAnotherApprenticeshipCacheItem _cacheItem;
-
-    [SetUp]
-    public void Arrange()
+    [Test, MoqAutoData]
+    public async Task Then_result_properties_are_mapped_from_source_and_cache(
+        Guid reservationId,
+        int epaPrice,
+        GetLearnerSelectedResponse response,
+        AddAnotherLearnerSelectedRequest source,
+        [Frozen] Mock<ICacheStorageService> cacheService,
+        [Frozen] Mock<IOuterApiService> outerApiService,
+        [Greedy] AddAnotherDraftApprenticeshipRequestFromLearnerSelectedRequestMapper sut)
     {
-        var fixture = new Fixture();
-        _providerId = fixture.Create<long>();
-        _learnerId = fixture.Create<long>();
-        _response = fixture.Create<GetLearnerSelectedResponse>();
-        _source = fixture.Build<AddAnotherLearnerSelectedRequest>()
-            .With(p => p.ProviderId, _providerId)
-            .With(p => p.LearnerDataId, _learnerId)
-            .Create();
-
-        _cacheItem = new AddAnotherApprenticeshipCacheItem(_source.CacheKey)
+        // Arrange
+        var cacheItem = new AddAnotherApprenticeshipCacheItem(source.CacheKey)
         {
-            ReservationId = fixture.Create<Guid>(),
-            EndPointAssessmentPrice = fixture.Create<int>()
+            ReservationId = reservationId,
+            EndPointAssessmentPrice = epaPrice
         };
-        _cacheService = new Mock<ICacheStorageService>();
-        _cacheService.Setup(x => x.RetrieveFromCache<AddAnotherApprenticeshipCacheItem>(_source.CacheKey)).ReturnsAsync(_cacheItem);
+        AddAnotherApprenticeshipCacheItem savedCacheItem = null;
 
-        _outerApiService = new Mock<IOuterApiService>();
-        _outerApiService.Setup(x => x.GetLearnerSelected(_providerId, _learnerId)).ReturnsAsync(_response);
+        cacheService
+            .Setup(x => x.RetrieveFromCache<AddAnotherApprenticeshipCacheItem>(source.CacheKey))
+            .ReturnsAsync(cacheItem)
+            .Verifiable();
+        cacheService
+            .Setup(x => x.SaveToCache(source.CacheKey, It.IsAny<AddAnotherApprenticeshipCacheItem>(), 1))
+            .Callback<Guid, AddAnotherApprenticeshipCacheItem, int>((_, item, _) => savedCacheItem = item)
+            .Returns(Task.CompletedTask)
+            .Verifiable();
 
-        _mapper = new AddAnotherDraftApprenticeshipRequestFromLearnerSelectedRequestMapper(_cacheService.Object, _outerApiService.Object);
+        outerApiService
+            .Setup(x => x.GetLearnerSelected(source.ProviderId, source.LearnerDataId))
+            .ReturnsAsync(response)
+            .Verifiable();
 
-        _act = async () => await _mapper.Map(_source);
-    }
+        // Act
+        var result = await sut.Map(source);
 
-    [Test]
-    public async Task ThenProviderIdIsMappedCorrectly()
-    {
-        var result = await _act();
-        result.ProviderId.Should().Be(_source.ProviderId);
-    }
+        // Assert
+        result.Should().NotBeNull();
+        result.CacheKey.Should().Be(source.CacheKey);
+        result.ProviderId.Should().Be(source.ProviderId);
+        result.ReservationId.Should().Be(cacheItem.ReservationId);
+        result.CohortReference.Should().Be(source.CohortReference);
 
-    [Test]
-    public async Task ThenCacheKeyIsMappedCorrectly()
-    {
-        var result = await _act();
-        result.CacheKey.Should().Be(_source.CacheKey);
-    }
+        savedCacheItem.Should().NotBeNull();
+        savedCacheItem.FirstName.Should().Be(response.FirstName);
+        savedCacheItem.LastName.Should().Be(response.LastName);
+        savedCacheItem.Email.Should().Be(response.Email);
+        savedCacheItem.DateOfBirth.Should().Be(response.Dob);
+        savedCacheItem.StartDate.Should().Be(response.StartDate);
+        savedCacheItem.EndDate.Should().Be(response.PlannedEndDate);
+        savedCacheItem.Uln.Should().Be(response.Uln.ToString());
+        savedCacheItem.LearnerDataId.Should().Be(source.LearnerDataId);
+        savedCacheItem.EndPointAssessmentPrice.Should().Be(response.EpaoPrice);
+        savedCacheItem.TrainingPrice.Should().Be(response.TrainingPrice);
+        savedCacheItem.CourseCode.Should().Be(response.TrainingCode);
+        savedCacheItem.Cost.Should().Be(response.TrainingPrice + response.EpaoPrice);
+        savedCacheItem.DeliveryModel.Should().Be(response.IsFlexiJob ? DeliveryModel.FlexiJobAgency : DeliveryModel.Regular);
 
-    [Test]
-    public async Task ThenReservationIdIsMappedCorrectly()
-    {
-        var result = await _act();
-        result.ReservationId.Should().Be(_cacheItem.ReservationId);
-    }
-
-    [Test]
-    public async Task ThenCohortReferenceIsMappedCorrectly()
-    {
-        var result = await _act();
-        result.CohortReference.Should().Be(_source.CohortReference);
-    }
-
-    [Test]
-    public async Task ThenVerifyCacheUpdatedWithPersonalDetailsCorrectly()
-    {
-        var result = await _act();
-        _cacheService.Verify(x => x.SaveToCache(_cacheItem.CacheKey, It.Is<AddAnotherApprenticeshipCacheItem>(p => ValidateDetails(p)), 1));
-    }
-
-    [TestCase(true, DeliveryModel.FlexiJobAgency)]
-    [TestCase(false, DeliveryModel.Regular)]
-    public async Task ThenVerifyCacheUpdatedWithDeliveryModelCorrectly(bool isFlexiJob, DeliveryModel? expected)
-    {
-        _response.IsFlexiJob = isFlexiJob;
-        var result = await _act();
-        _cacheService.Verify(x => x.SaveToCache(_cacheItem.CacheKey, It.Is<AddAnotherApprenticeshipCacheItem>(p => p.DeliveryModel == expected), 1));
-    }
-
-    private bool ValidateDetails(AddAnotherApprenticeshipCacheItem i)
-    {
-        return i.FirstName == _response.FirstName &&
-               i.LastName == _response.LastName &&
-               i.Email == _response.Email &&
-               i.DateOfBirth == _response.Dob &&
-               i.StartDate == _response.StartDate &&
-               i.EndDate == _response.PlannedEndDate &&
-               i.Uln == _response.Uln.ToString() &&
-               i.LearnerDataId == _source.LearnerDataId &&
-               i.EndPointAssessmentPrice == _response.EpaoPrice &&
-               i.TrainingPrice == _response.TrainingPrice &&
-               i.CourseCode == (_response.TrainingCode ?? _response.StandardCode.ToString()) &&
-               i.Cost == _response.TrainingPrice + _cacheItem.EndPointAssessmentPrice;
+        outerApiService.Verify();
+        outerApiService.VerifyNoOtherCalls();
+        cacheService.Verify();
+        cacheService.VerifyNoOtherCalls();
     }
 }

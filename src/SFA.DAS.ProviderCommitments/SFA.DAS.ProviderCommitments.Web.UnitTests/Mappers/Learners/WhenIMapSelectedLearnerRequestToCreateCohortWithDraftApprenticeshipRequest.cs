@@ -3,7 +3,6 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
@@ -12,102 +11,64 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Learners;
 [TestFixture]
 public class WhenIMapSelectedLearnerRequestToCreateCohortWithDraftApprenticeshipRequest
 {
-    private CreateCohortWithDraftApprenticeshipRequestFromLearnerSelectedRequestMapper _mapper;
-    private LearnerSelectedRequest _source;
-    private long _providerId;
-    private long _learnerId;
-    private GetLearnerSelectedResponse _response;
-    private Func<Task<CreateCohortWithDraftApprenticeshipRequest>> _act;
-    private Mock<ICacheStorageService> _cacheService;
-    private Mock<IOuterApiService> _outerApiService;
-    private CreateCohortCacheItem _cacheItem;
-
+    private readonly Fixture _fixture = new();
+    private readonly Mock<ICacheStorageService> _cacheService = new();
+    private readonly Mock<IOuterApiService> _outerApiService = new();
+    private CreateCohortWithDraftApprenticeshipRequestFromLearnerSelectedRequestMapper _sut;
+    
     [SetUp]
-    public void Arrange()
+    public void Setup()
     {
-        var fixture = new Fixture();
-        _providerId = fixture.Create<long>();
-        _learnerId = fixture.Create<long>();
-        _response = fixture.Create<GetLearnerSelectedResponse>();
-        _source = fixture.Build<LearnerSelectedRequest>().With(p=>p.ProviderId, _providerId).With(p=>p.LearnerDataId, _learnerId).Create();
-
-        _cacheItem = fixture.Create<CreateCohortCacheItem>();
-        _cacheService = new Mock<ICacheStorageService>();
-        _cacheService.Setup(x => x.RetrieveFromCache<CreateCohortCacheItem>(_source.CacheKey)).ReturnsAsync(_cacheItem);
-
-        _outerApiService = new Mock<IOuterApiService>();
-        _outerApiService.Setup(x => x.GetLearnerSelected(_providerId, _learnerId)).ReturnsAsync(_response);
-
-        _mapper = new CreateCohortWithDraftApprenticeshipRequestFromLearnerSelectedRequestMapper(_cacheService.Object, _outerApiService.Object);
-
-        _act = async () => await _mapper.Map(_source);
+        _sut = new CreateCohortWithDraftApprenticeshipRequestFromLearnerSelectedRequestMapper(_cacheService.Object, _outerApiService.Object);
     }
-
+    
     [Test]
-    public async Task ThenProviderIdIsMappedCorrectly()
+    public async Task Then_result_properties_are_mapped_from_source_and_cache()
     {
-        var result = await _act();
-        result.ProviderId.Should().Be(_source.ProviderId);
-    }
+        // Arrange
+        var response = _fixture.Create<GetLearnerSelectedResponse>();
+        var source = _fixture.Create<LearnerSelectedRequest>();
+        var cacheItem = _fixture.Create<CreateCohortCacheItem>();
+        cacheItem.CacheKey = source.CacheKey;
+        CreateCohortCacheItem savedCacheItem = null;
+        
+        _cacheService.Setup(x => x.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey)).ReturnsAsync(cacheItem);
+        _cacheService
+            .Setup(x => x.SaveToCache(source.CacheKey, It.IsAny<CreateCohortCacheItem>(), 1))
+            .Callback<Guid, CreateCohortCacheItem, int>((_, item, _) => savedCacheItem = item)
+            .Returns(Task.CompletedTask);
+        
+        _outerApiService.Setup(x => x.GetLearnerSelected(source.ProviderId, source.LearnerDataId)).ReturnsAsync(response);
+        
+        // Act
+        var result = await _sut.Map(source);
 
-    [Test]
-    public async Task ThenEmployerAccountLegalEntityPublicHashedIdIsMappedCorrectly()
-    {
-        var result = await _act();
-        result.EmployerAccountLegalEntityPublicHashedId.Should().Be(_source.EmployerAccountLegalEntityPublicHashedId);
-    }
+        // Assert
+        result.Should().NotBeNull();
+        result.CacheKey.Should().Be(source.CacheKey);
+        result.ProviderId.Should().Be(source.ProviderId);
+        result.ReservationId.Should().Be(cacheItem.ReservationId);
+        result.EmployerAccountLegalEntityPublicHashedId.Should().Be(source.EmployerAccountLegalEntityPublicHashedId);
+        result.AccountLegalEntityId.Should().Be(source.AccountLegalEntityId);
 
-    [Test]
-    public async Task ThenCacheKeyIsMappedCorrectly()
-    {
-        var result = await _act();
-        result.CacheKey.Should().Be(_source.CacheKey);
-    }
-
-    [Test]
-    public async Task ThenReservationKeyIsMappedCorrectly()
-    {
-        var result = await _act();
-        result.ReservationId.Should().Be(_cacheItem.ReservationId);
-    }
-
-    [Test]
-    public async Task ThenAleIdIsMappedCorrectly()
-    {
-        var result = await _act();
-        result.AccountLegalEntityId.Should().Be(_source.AccountLegalEntityId);
-    }
-
-    [Test]
-    public async Task ThenVerifyCacheUpdatedWithPersonalDetailsCorrectly()
-    {
-
-        var result = await _act();
-        _cacheService.Verify(x=>x.SaveToCache(_cacheItem.CacheKey, It.Is<CreateCohortCacheItem>(p=>ValidateDetails(p)), 1));;
-    }
-
-    [TestCase(true, DeliveryModel.FlexiJobAgency)]
-    [TestCase(false, DeliveryModel.Regular)]
-    public async Task ThenVerifyCacheUpdatedWithTheseDetailsCorrectly(bool isFlexiJob, DeliveryModel? expected)
-    {
-        _response.IsFlexiJob = isFlexiJob;
-        var result = await _act();
-        _cacheService.Verify(x => x.SaveToCache(_cacheItem.CacheKey, It.Is<CreateCohortCacheItem>(p => p.DeliveryModel == expected), 1)); ;
-    }
-
-    private bool ValidateDetails(CreateCohortCacheItem i)
-    {
-        return i.FirstName == _response.FirstName &&
-               i.LastName == _response.LastName &&
-               i.Email == _response.Email &&
-               i.DateOfBirth == _response.Dob &&
-               i.StartDate == _response.StartDate &&
-               i.EndDate == _response.PlannedEndDate &&
-               i.Uln == _response.Uln.ToString() &&
-               i.LearnerDataId == _source.LearnerDataId &&
-               i.EndPointAssessmentPrice == _response.EpaoPrice &&
-               i.TrainingPrice == _response.TrainingPrice &&
-               i.CourseCode == _response.TrainingCode &&
-               i.Cost == _response.TrainingPrice + _response.EpaoPrice;
+        savedCacheItem.Should().NotBeNull();
+        savedCacheItem.FirstName.Should().Be(response.FirstName);
+        savedCacheItem.LastName.Should().Be(response.LastName);
+        savedCacheItem.Email.Should().Be(response.Email);
+        savedCacheItem.DateOfBirth.Should().Be(response.Dob);
+        savedCacheItem.StartDate.Should().Be(response.StartDate);
+        savedCacheItem.EndDate.Should().Be(response.PlannedEndDate);
+        savedCacheItem.Uln.Should().Be(response.Uln.ToString());
+        savedCacheItem.LearnerDataId.Should().Be(source.LearnerDataId);
+        savedCacheItem.EndPointAssessmentPrice.Should().Be(response.EpaoPrice);
+        savedCacheItem.TrainingPrice.Should().Be(response.TrainingPrice);
+        savedCacheItem.CourseCode.Should().Be(response.TrainingCode);
+        savedCacheItem.Cost.Should().Be(response.TrainingPrice + response.EpaoPrice);
+        savedCacheItem.DeliveryModel.Should().Be(response.IsFlexiJob ? DeliveryModel.FlexiJobAgency : DeliveryModel.Regular);
+        
+        _outerApiService.VerifyAll();
+        _outerApiService.VerifyNoOtherCalls();
+        _cacheService.VerifyAll();
+        _cacheService.VerifyNoOtherCalls();
     }
 }
