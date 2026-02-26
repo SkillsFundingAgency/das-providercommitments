@@ -17,5 +17,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public bool? HasSelectedRpl { get; set; }
         public DateTime? ApprenticeshipStartDate { get; set; }
         public long? LearnerDataId { get; set; }
+        public string OriginalSelectedOption { get; set; }
+
+        public string DisplayUpdateMessage()
+        {
+            if (string.IsNullOrEmpty(OriginalSelectedOption) && !string.IsNullOrEmpty(SelectedOption))
+                return "Reference added";
+            if (!string.IsNullOrEmpty(OriginalSelectedOption) && string.IsNullOrEmpty(SelectedOption))
+                return "Reference removed";
+            if (OriginalSelectedOption != SelectedOption)
+                return "Reference changed";
+            return null;
+        }
+        public bool HasChanged() => SelectedOption != OriginalSelectedOption;
     }
 }

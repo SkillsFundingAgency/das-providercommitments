@@ -641,7 +641,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if(request.LearnerDataId is not null)
             {                
-                TempData[UpdatedBanner] = "Standard option changed";
+                TempData[UpdatedBanner] =  model.DisplayUpdateMessage();
 
                 return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
                 {
