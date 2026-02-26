@@ -89,8 +89,6 @@
                             <p class="govuk-notification-banner__heading">
                                 Apprentice details have been changed in the ILR. To continue you need to
                                 <form method="post" asp-route="@RouteNames.DraftApprenticeshipEdit" asp-route-providerId="@Model.ProviderId" style="display: inline;">
-                                    <input type="hidden" name="CohortId" value="@Model.CohortId" />
-                                    <input type="hidden" name="DraftApprenticeshipId" value="@Model.DraftApprenticeshipId" />
                                     <input type="hidden" name="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
                                     <input type="hidden" name="CohortReference" value="@Model.CohortReference" />
                                     <input type="hidden" name="Operation" value="SyncLearnerData" />
@@ -121,7 +119,6 @@
                 <form id="addEmail" novalidate method="post">
 
                     <input type="hidden" asp-for="ProviderId" />
-                    <input type="hidden" asp-for="EmployerAccountLegalEntityPublicHashedId" />
                     <input type="hidden" asp-for="HasMultipleDeliveryModelOptions" />
                     <input type="hidden" asp-for="HasLearnerDataChanges" />
                     <input type="hidden" asp-for="LastLearnerDataSync" />
@@ -186,13 +183,6 @@
                                     @Html.HiddenFor(x => x.BirthDay)
                                     @Html.HiddenFor(x => x.BirthMonth)
                                     @Html.HiddenFor(x => x.BirthYear)
-                                    @Html.HiddenFor(x => x.StartMonth)
-                                    @Html.HiddenFor(x => x.StartYear)
-                                    @Html.HiddenFor(x => x.EndDay)
-                                    @Html.HiddenFor(x => x.EndMonth)
-                                    @Html.HiddenFor(x => x.EndYear)
-                                    @Html.HiddenFor(x => x.FirstName)
-                                    @Html.HiddenFor(x => x.LastName)
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
                                     <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> date of birth</span></a>
@@ -264,6 +254,9 @@
                                         @(Model.StartDate.HasValue && Model.StartDate.Date.HasValue ? Model.StartDate.Date.Value.ToString("MMMM yyyy") : "")
                                     @Html.HiddenFor(x => x.StartMonth)
                                     @Html.HiddenFor(x => x.StartYear)
+                                    @Html.HiddenFor(x => x.ActualStartDay)
+                                    @Html.HiddenFor(x => x.ActualStartMonth)
+                                    @Html.HiddenFor(x => x.ActualStartYear)
                                 <dd class="govuk-summary-list__actions">
                                     <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> start date</span></a>
                                 </dd>
