@@ -1,4 +1,4 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -27,7 +27,7 @@ public class CreateCohortWithDraftApprenticeshipRequestFromLearnerSelectedReques
         cacheItem.Uln = learner.Uln.ToString();
         cacheItem.EndPointAssessmentPrice = learner.EpaoPrice;
         cacheItem.TrainingPrice = learner.TrainingPrice;
-        cacheItem.CourseCode = learner.StandardCode.ToString();
+        cacheItem.CourseCode = learner.TrainingCode;
         cacheItem.Cost = learner.TrainingPrice + learner.EpaoPrice;
         cacheItem.LearnerDataId = source.LearnerDataId;
         await cacheStorage.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
