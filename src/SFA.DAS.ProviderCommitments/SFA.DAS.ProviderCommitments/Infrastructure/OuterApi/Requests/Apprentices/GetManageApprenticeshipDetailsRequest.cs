@@ -89,6 +89,8 @@ public class GetManageApprenticeshipDetailsResponse
         public int? DurationReducedByHours { get; set; }
         public int? TrainingTotalHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
+        public int? EmployerVerificationStatus { get; set; }
+        public string EmployerVerificationNotes { get; set; }
     }
 
     public class PriceEpisode

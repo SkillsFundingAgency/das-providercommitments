@@ -1,4 +1,4 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
@@ -125,7 +125,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     LearnerStatus = data.LearnerStatusDetails.LearnerStatus,
                     WithdrawalChangedDate = data.LearnerStatusDetails.WithdrawalChangedDate,
                     LastCensusDateOfLearning = data.LearnerStatusDetails.LastCensusDateOfLearning,
-                    LastDayOfLearning = data.LearnerStatusDetails.LastDayOfLearning
+                    LastDayOfLearning = data.LearnerStatusDetails.LastDayOfLearning,
+                    EmploymentStatus = MapEmploymentStatus(data.Apprenticeship.EmployerVerificationStatus, data.Apprenticeship.EmployerVerificationNotes)
                 };
             }
             catch (Exception e)
@@ -235,6 +236,34 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var optionsCount = trainingProgrammeVersionResponse?.TrainingProgramme?.Options.Count;
             return (optionsCount == 1, optionsCount > 0);
 
+        }
+
+        private static string MapEmploymentStatus(int? status, string notes)
+        {
+            if (status == null)
+            {
+                return string.Empty;
+            }
+
+            if (status == 2)
+            {
+                return "Employed";
+            }
+
+            if (status == 0)
+            {
+                return "Check Pending";
+            }
+
+            return notes switch
+            {
+                "NinoAndPAYENotFound" => "Not Verified - No PAYE Scheme and invalid NINO",
+                "NinoFailure" => "Not Verified - missing or invalid NINO",
+                "NinoInvalid" => "Not Verified - missing or invalid NINO",
+                "NinoNotFound" => "Not Verified - missing or invalid NINO",
+                "PAYENotFound" => "Not Verified - No PAYE Scheme",
+                _ => "Not Verified"
+            };
         }
     }
 }
