@@ -292,7 +292,7 @@ public class LearnerSummary
             Uln = v.Uln,
             CourseName = v.Course,
             StartDate = v.StartDate,
-            LearningType = v.LearningType?.ToEnum<LearningType>().ToDisplayString()
+            LearningType = v.LearningType?.ToEnum<LearningType>().GetEnumDescription() ?? string.Empty
         };
     }
 }
