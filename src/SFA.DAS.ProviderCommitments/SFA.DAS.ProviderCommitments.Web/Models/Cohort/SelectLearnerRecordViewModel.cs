@@ -7,6 +7,8 @@ using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using static SFA.DAS.ProviderCommitments.Constants;
 using System.Net;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
+using SFA.DAS.ProviderCommitments.Extensions;
+using SFA.DAS.Common.Domain.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -278,6 +280,7 @@ public class LearnerSummary
     public long Uln { get; set; }
     public string CourseName { get; set; }
     public DateTime StartDate { get; set; }
+    public string LearningType { get; set; }
 
     public static explicit operator LearnerSummary(GetLearnerSummary v)
     {
@@ -288,7 +291,8 @@ public class LearnerSummary
             LastName = v.LastName,
             Uln = v.Uln,
             CourseName = v.Course,
-            StartDate = v.StartDate
+            StartDate = v.StartDate,
+            LearningType = v.LearningType?.ToEnum<LearningType>().ToDisplayString()
         };
     }
 }

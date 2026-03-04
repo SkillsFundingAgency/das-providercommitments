@@ -148,7 +148,10 @@
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    Course
+                    Training type
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    Training course
                 </th>
                 <th scope="col" class="govuk-table__header">
                     <a class="@(Model.FilterModel.SortField == "StartDate" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
@@ -172,6 +175,9 @@
                     </td>
                     <td class="govuk-table__cell" data-label="ULN">
                         @apprenticeship.Uln
+                    </td>
+                    <td class="govuk-table__cell" data-label="Apprenticeship training type">
+                        @apprenticeship.LearningType
                     </td>
                     <td class="govuk-table__cell" data-label="Apprenticeship training course">
                         @apprenticeship.CourseName
