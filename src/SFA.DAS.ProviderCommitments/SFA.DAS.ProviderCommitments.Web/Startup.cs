@@ -81,8 +81,7 @@ public class Startup
         services.AddCommitmentPermissionsAuthorization(_configuration.UseLocalRegistry());
 
         services.AddEncodingServices(_configuration);
-        services.AddApplicationServices();
-
+        services.AddApplicationServices();        
         services.Configure<CookieTempDataProviderOptions>(options =>
         {
             options.Cookie.HttpOnly = true;
