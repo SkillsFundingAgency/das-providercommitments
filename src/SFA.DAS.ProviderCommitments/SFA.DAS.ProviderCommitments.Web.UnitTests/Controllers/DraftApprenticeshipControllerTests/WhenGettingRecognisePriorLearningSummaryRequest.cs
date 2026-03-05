@@ -24,7 +24,7 @@ public class WhenGettingRecognisePriorLearningSummaryRequest
         _request = autoFixture.Create<PriorLearningSummaryRequest>();
         _modelMapperMock = new Mock<IModelMapper>();
         _viewModel = autoFixture.Create<PriorLearningSummaryViewModel>();
-
+        _viewModel.RplPriceReductionError = true;
         _modelMapperMock
             .Setup(x => x.Map<PriorLearningSummaryViewModel>(_request))
             .ReturnsAsync(_viewModel);
