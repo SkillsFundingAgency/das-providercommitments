@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoFixture;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -139,6 +140,9 @@ public class SelectLearnerRecordViewModelTests
     [Test]
     public void MapsIlrLearnerSummary_ToIlrApprenticeshipSummary()
     {
+        _fixture.Customize<GetLearnerSummary>(c =>
+            c.With(x => x.LearningType, "Apprenticeship"));
+
         var ilrLearner = _fixture.Create<GetLearnerSummary>();
         var apprenticeship = (LearnerSummary)ilrLearner;
 
@@ -148,6 +152,7 @@ public class SelectLearnerRecordViewModelTests
         apprenticeship.LastName.Should().Be(ilrLearner.LastName);
         apprenticeship.Uln.Should().Be(ilrLearner.Uln);
         apprenticeship.CourseName.Should().Be(ilrLearner.Course);
+        apprenticeship.LearningType.Should().Be(ilrLearner.LearningType);
     }
 
     [TestCase(0, false)]

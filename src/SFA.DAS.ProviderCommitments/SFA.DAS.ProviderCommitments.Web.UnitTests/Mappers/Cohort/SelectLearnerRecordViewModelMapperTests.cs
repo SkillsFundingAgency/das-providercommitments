@@ -19,6 +19,9 @@ public class SelectLearnerRecordViewModelMapperTests
     {
         var fixture = new Fixture();
 
+        fixture.Customize<GetLearnerSummary>(c =>
+            c.With(x => x.LearningType, "Apprenticeship"));
+
         _request = fixture.Create<SelectLearnerRecordRequest>();
         _apiResponse = fixture.Create<GetLearnerDetailsForProviderResponse>();
 
