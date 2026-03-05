@@ -29,6 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public DateTime? EmploymentEndDate { get; set; }
         public bool HasLearnerDataChanges { get; set; }
         public DateTime? LastLearnerDataSync { get; set; }
+        public bool ShowRplAddLink { get; set; }
 
         public bool ExceedsFundingBandCap
         {
@@ -96,5 +97,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         {
             public DateTime? CreatedOn { get; set; }
         }
+        public bool? RecognisePriorLearning { get; set; }
+        public ApprenticeshipType ApprenticeshipType { get; set; }
+    }
+
+    public enum ApprenticeshipType
+    {
+        Unknown,
+        Apprenticeship,
+        FoundationApprenticeship,
+        ApprenticeshipUnit
     }
 }

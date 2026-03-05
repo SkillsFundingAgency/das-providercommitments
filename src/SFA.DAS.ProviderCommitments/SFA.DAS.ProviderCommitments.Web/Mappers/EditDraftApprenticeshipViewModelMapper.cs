@@ -15,6 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers;
 public class EditDraftApprenticeshipViewModelMapper(
     IEncodingService encodingService,
     IOuterApiClient outerApiClient,
+    IOuterApiService outerApiService,
     ITempDataStorageService storageService,
     ICacheStorageService cacheStorageService)
     : IMapper<EditDraftApprenticeshipRequest, IDraftApprenticeshipViewModel>
@@ -27,6 +28,8 @@ public class EditDraftApprenticeshipViewModelMapper(
 
             var apiRequest = new GetEditDraftApprenticeshipRequest(source.Request.ProviderId, source.Request.CohortId, source.Request.DraftApprenticeshipId, cachedModel?.CourseCode);
             var apiResponse = await outerApiClient.Get<GetEditDraftApprenticeshipResponse>(apiRequest);
+
+            var rplRequirements = await outerApiService.GetRplRequirements(source.Request.ProviderId, source.Request.CohortId, source.Request.DraftApprenticeshipId, apiResponse.CourseCode);
 
             var newModel = new EditDraftApprenticeshipViewModel(apiResponse.DateOfBirth, apiResponse.StartDate, apiResponse.ActualStartDate, apiResponse.EndDate, apiResponse.EmploymentEndDate)
             {
@@ -63,7 +66,12 @@ public class EditDraftApprenticeshipViewModelMapper(
                 EmailAddressConfirmed = apiResponse.EmailAddressConfirmed,
                 LearnerDataId = apiResponse.LearnerDataId,
                 HasLearnerDataChanges = apiResponse.HasLearnerDataChanges,
-                LastLearnerDataSync = apiResponse.LastLearnerDataSync
+                LastLearnerDataSync = apiResponse.LastLearnerDataSync,
+                TrainingTotalHours = apiResponse.TrainingTotalHours,
+                DurationReducedByHours = apiResponse.DurationReducedByHours,
+                IsDurationReducedByRpl = apiResponse.IsDurationReducedByRpl,
+                TrainingCourseVersion = apiResponse.TrainingCourseVersion,
+                IsRplRequired = rplRequirements?.IsRequired ?? true
             };
 
             if (cachedModel != null)
