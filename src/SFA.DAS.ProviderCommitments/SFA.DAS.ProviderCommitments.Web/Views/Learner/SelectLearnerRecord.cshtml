@@ -1,3 +1,4 @@
+@using SFA.DAS.ProviderCommitments.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
@@ -177,7 +178,7 @@
                         @apprenticeship.Uln
                     </td>
                     <td class="govuk-table__cell" data-label="Apprenticeship training type">
-                        @apprenticeship.LearningType
+                        @apprenticeship.LearningType?.GetEnumDescription()
                     </td>
                     <td class="govuk-table__cell" data-label="Apprenticeship training course">
                         @apprenticeship.CourseName

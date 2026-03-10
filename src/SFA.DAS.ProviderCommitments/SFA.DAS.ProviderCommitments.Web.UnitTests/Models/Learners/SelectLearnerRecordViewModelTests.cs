@@ -1,5 +1,6 @@
 ﻿using System;
-using AutoFixture;
+using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -152,7 +153,7 @@ public class SelectLearnerRecordViewModelTests
         apprenticeship.LastName.Should().Be(ilrLearner.LastName);
         apprenticeship.Uln.Should().Be(ilrLearner.Uln);
         apprenticeship.CourseName.Should().Be(ilrLearner.Course);
-        apprenticeship.LearningType.Should().Be(ilrLearner.LearningType);
+        apprenticeship.LearningType.Should().Be(ilrLearner.LearningType.ToEnum<LearningType>());
     }
 
     [TestCase(0, false)]

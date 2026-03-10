@@ -280,7 +280,7 @@ public class LearnerSummary
     public long Uln { get; set; }
     public string CourseName { get; set; }
     public DateTime StartDate { get; set; }
-    public string LearningType { get; set; }
+    public LearningType? LearningType { get; set; }
 
     public static explicit operator LearnerSummary(GetLearnerSummary v)
     {
@@ -292,7 +292,7 @@ public class LearnerSummary
             Uln = v.Uln,
             CourseName = v.Course,
             StartDate = v.StartDate,
-            LearningType = v.LearningType?.ToEnum<LearningType>().GetEnumDescription() ?? string.Empty
+            LearningType = v.LearningType?.ToEnum<LearningType>()
         };
     }
 }
