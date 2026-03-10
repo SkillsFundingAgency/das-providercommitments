@@ -43,6 +43,13 @@ public class DetailsViewModelMapperTests
     }
 
     [Test]
+    public async Task ThenApprenticeshipTypeMappedCorrectly()
+    {
+        await _fixture.Map();
+        _fixture.Result.ApprenticeshipType.Should().Be(_fixture.ApiResponse.Apprenticeship.ApprenticeshipType);
+    }
+
+    [Test]
     public async Task ThenEmployerIsMappedCorrectly()
     {
         await _fixture.Map();
