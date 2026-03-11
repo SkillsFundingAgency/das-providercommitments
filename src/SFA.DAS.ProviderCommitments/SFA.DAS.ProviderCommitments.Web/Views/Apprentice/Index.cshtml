@@ -319,10 +319,10 @@ else
                         </a>
                     </th>
                     <th scope="col" class="govuk-table__header">
-                        Status
+                        Employment status
                     </th>
                     <th scope="col" class="govuk-table__header">
-                        Employment status
+                        Status
                     </th>
                     <th scope="col" class="govuk-table__header">
                         Alerts
@@ -356,13 +356,13 @@ else
                     <td class="govuk-table__cell" data-label="Apprentice confirmation">
                         @apprenticeship.ConfirmationStatus.ToDisplayString()
                     </td>
+                    <td class="govuk-table__cell" data-label="Employment status">
+                        @apprenticeship.EmploymentStatus
+                    </td>
                     <td class="govuk-table__cell" data-label="Status">
                         <strong class="govuk-tag @apprenticeship.Status.GetDisplayClass()">
                             @apprenticeship.Status.GetDescription().ToUpper()
                         </strong>
-                    </td>
-                    <td class="govuk-table__cell" data-label="Employment status">
-                        @apprenticeship.EmploymentStatus
                     </td>
                     <td class="govuk-table__cell" data-label="Alerts">
                         @for (var index = 0; index < apprenticeship.Alerts.Count(); index++)
