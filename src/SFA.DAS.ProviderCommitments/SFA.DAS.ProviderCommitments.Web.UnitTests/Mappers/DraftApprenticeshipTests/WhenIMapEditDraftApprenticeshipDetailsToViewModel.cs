@@ -3,6 +3,7 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -18,6 +19,7 @@ public class WhenIMapEditDraftApprenticeshipDetailsToViewModel
     private Func<Task<EditDraftApprenticeshipViewModel>> _act;
     private GetEditDraftApprenticeshipResponse _apiResponse;
     private Mock<ITempDataStorageService> _tempDataStorageService;
+    private GetRplRequirementsResponse _rplRequirementsResponse;
 
     [SetUp]
     public void Arrange()
@@ -30,13 +32,20 @@ public class WhenIMapEditDraftApprenticeshipDetailsToViewModel
                 x.Get<GetEditDraftApprenticeshipResponse>(It.IsAny<GetEditDraftApprenticeshipRequest>()))
             .ReturnsAsync(_apiResponse);
 
+        _rplRequirementsResponse = fixture.Build<GetRplRequirementsResponse>().Create();
+        var outerApiService = new Mock<IOuterApiService>();
+        outerApiService.Setup(x =>
+                x.GetRplRequirements(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<string>()))
+            .ReturnsAsync(() => _rplRequirementsResponse);
+
         _tempDataStorageService = new Mock<ITempDataStorageService>();
         _tempDataStorageService.Setup(x => x.RetrieveFromCache<EditDraftApprenticeshipViewModel>())
             .Returns(() => null);
 
         _mapper = new EditDraftApprenticeshipViewModelMapper(
             Mock.Of<IEncodingService>(), 
-            commitmentsApiClient.Object, 
+            commitmentsApiClient.Object,
+            outerApiService.Object,
             _tempDataStorageService.Object,
             Mock.Of<ICacheStorageService>());
         _source = fixture.Build<EditDraftApprenticeshipRequest>().Create();
@@ -340,5 +349,12 @@ public class WhenIMapEditDraftApprenticeshipDetailsToViewModel
     {
         var result = await _act();
         result.LearnerDataId.Should().Be(_apiResponse.LearnerDataId);
+    }
+
+    [Test]
+    public async Task ThenIsRplRequiredIsMappedCorrectly()
+    {
+        var result = await _act();
+        result.IsRplRequired.Should().Be(_rplRequirementsResponse.IsRequired);
     }
 }

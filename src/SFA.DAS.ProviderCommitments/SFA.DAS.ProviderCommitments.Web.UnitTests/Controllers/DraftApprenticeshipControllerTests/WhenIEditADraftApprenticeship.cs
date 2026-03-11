@@ -105,5 +105,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             // Assert
             _fixture.VerifyEditDraftApprenticeshipViewModelIsSentToViewResult();
         }
+
+        [Test]
+        public async Task AndWhenUpdateDraft_Apprenticeship()
+        { 
+           
+
+            _fixture.SetUpUpdateDraftApprenticeship();
+
+            // Act
+            await _fixture.PostToEditDraftApprenticeship();
+
+            // Assert
+            _fixture.VerifyRedirectedToCohortDetails();
+        }
     }
 }

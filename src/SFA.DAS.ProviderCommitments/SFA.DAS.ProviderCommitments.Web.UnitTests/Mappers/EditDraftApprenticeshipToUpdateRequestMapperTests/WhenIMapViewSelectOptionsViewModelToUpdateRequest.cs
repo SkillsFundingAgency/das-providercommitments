@@ -1,9 +1,11 @@
-using System;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprenticeshipToUpdateRequestMapperTests
 {
@@ -13,7 +15,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
         private ViewSelectOptionsViewModelToUpdateRequestMapper _mapper;
         private Func<Task<UpdateDraftApprenticeshipApimRequest>> _act;
         private Mock<ICommitmentsApiClient> _commitmentsApiClient;
-        private GetDraftApprenticeshipResponse _apiResponse;
+        private GetEditDraftApprenticeshipResponse _apiResponse;
+        private Mock<IOuterApiClient> _outerApiClient;
 
         [SetUp]
         public void Arrange()
@@ -21,12 +24,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
             var fixture = new Fixture();
             _source = fixture.Build<ViewSelectOptionsViewModel>()
                 .Create();
-            _apiResponse = fixture.Build<GetDraftApprenticeshipResponse>().Create();
+            _apiResponse = fixture.Build<GetEditDraftApprenticeshipResponse>().Create();
             _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            _commitmentsApiClient
-                .Setup(x => x.GetDraftApprenticeship(_source.CohortId, _source.DraftApprenticeshipId,
-                    CancellationToken.None)).ReturnsAsync(_apiResponse);
-            _mapper = new ViewSelectOptionsViewModelToUpdateRequestMapper(_commitmentsApiClient.Object);
+            _outerApiClient = new Mock<IOuterApiClient>();
+            _outerApiClient
+                .Setup(x => x.Get<GetEditDraftApprenticeshipResponse>(It.IsAny< GetEditDraftApprenticeshipRequest>())).ReturnsAsync(_apiResponse);
+
+            _mapper = new ViewSelectOptionsViewModelToUpdateRequestMapper(_outerApiClient.Object);
             
             _act = async () => await _mapper.Map(TestHelper.Clone(_source));
         }
@@ -43,6 +47,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
                     .Excluding(c=>c.DateOfBirth)
                     .Excluding(c=>c.StandardUId)
                     .Excluding(c=>c.DeliveryModel)
+                    .Excluding(c => c.HasLearnerDataChanges)
+                    .Excluding(c => c.LastLearnerDataSync)
             );
             result.CourseOption.Should().Be(_source.SelectedOption);
         }

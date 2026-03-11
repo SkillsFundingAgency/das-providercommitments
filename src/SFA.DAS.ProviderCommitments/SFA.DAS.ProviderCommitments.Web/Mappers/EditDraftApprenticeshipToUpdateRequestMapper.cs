@@ -1,4 +1,4 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -30,7 +30,7 @@ public class EditDraftApprenticeshipToUpdateRequestMapper : IMapper<EditDraftApp
             EndDate = source.EndDate.Date,
             Reference = source.Reference,
             CourseOption = source.TrainingCourseOption == "-1" ? string.Empty : source.TrainingCourseOption,
-            DeliveryModel = source.DeliveryModel.Value,
+            DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel)source.DeliveryModel.Value,
             EmploymentEndDate = source.EmploymentEndDate.Date,
             EmploymentPrice = source.EmploymentPrice,
             HasLearnerDataChanges = source.HasLearnerDataChanges,
