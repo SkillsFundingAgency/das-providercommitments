@@ -1,22 +1,18 @@
-using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class ViewSelectOptionsViewModelToUpdateRequestMapper : IMapper<ViewSelectOptionsViewModel, UpdateDraftApprenticeshipApimRequest>
-    {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
-
-        public ViewSelectOptionsViewModelToUpdateRequestMapper (ICommitmentsApiClient commitmentsApiClient)
-        {
-            _commitmentsApiClient = commitmentsApiClient;
-        }
+    public class ViewSelectOptionsViewModelToUpdateRequestMapper(IOuterApiClient outerApiClient) : IMapper<ViewSelectOptionsViewModel, UpdateDraftApprenticeshipApimRequest>
+    {       
         public async Task<UpdateDraftApprenticeshipApimRequest> Map(ViewSelectOptionsViewModel source)
         {
-            var apiResponse = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
-            
+            var apiRequest = new GetEditDraftApprenticeshipRequest(source.ProviderId, (long)source.CohortId, (long)source.DraftApprenticeshipId, null);
+            var apiResponse = await outerApiClient.Get<GetEditDraftApprenticeshipResponse>(apiRequest);
+
             return new UpdateDraftApprenticeshipApimRequest
             {
                 ReservationId = apiResponse.ReservationId,
@@ -32,11 +28,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ActualStartDate = apiResponse.ActualStartDate,
                 StartDate = apiResponse.StartDate?.Date,
                 EndDate = apiResponse.EndDate?.Date,
-                Reference = apiResponse.Reference,
+                Reference = apiResponse.ProviderReference,
                 CourseOption = source.SelectedOption == "-1" ? string.Empty : source.SelectedOption,
                 DeliveryModel = apiResponse.DeliveryModel,
                 EmploymentEndDate = apiResponse.EmploymentEndDate,
-                EmploymentPrice = apiResponse.EmploymentPrice
+                EmploymentPrice = apiResponse.EmploymentPrice,
+                LearnerDataId = apiResponse.LearnerDataId,               
             };
         }
     }
