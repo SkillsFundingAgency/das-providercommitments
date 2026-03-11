@@ -880,13 +880,14 @@ public class DetailsViewModelMapperTests
             var commitmentsApiClient = new Mock<IOuterApiClient>();
 
             commitmentsApiClient.Setup(x =>
-                    x.Get<GetManageApprenticeshipDetailsResponse>(It.IsAny<GetManageApprenticeshipDetailsRequest>()))
+                    x.Get<GetManageApprenticeshipDetailsResponse>(It.Is<GetManageApprenticeshipDetailsRequest>(r =>
+                        r.ProviderId == Source.ProviderId && r.ApprenticeshipId == Source.ApprenticeshipId)))
                 .ReturnsAsync(ApiResponse);
 
-            apiClient.Setup(x => x.GetNewerTrainingProgrammeVersions(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            apiClient.Setup(x => x.GetNewerTrainingProgrammeVersions(ApiResponse.Apprenticeship.StandardUId, default))
                 .ReturnsAsync(GetNewerTrainingProgrammeVersionsResponse);
 
-            apiClient.Setup(x => x.GetTrainingProgrammeVersionByStandardUId(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            apiClient.Setup(x => x.GetTrainingProgrammeVersionByStandardUId(ApiResponse.Apprenticeship.StandardUId, default))
                 .ReturnsAsync(GetTrainingProgrammeByStandardUIdResponse);
 
             _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, commitmentsApiClient.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
