@@ -26,13 +26,14 @@ public class DetailsViewModel : IAuthorizationContextModel
     public IReadOnlyCollection<DetailsViewCourseGroupingModel> Courses { get; set; }
     public string PageTitle { get; set; }
     public CohortDetailsOptions? Selection { get; set; }
+    public bool RplVerified { get; set; }
     public string SendMessage { get; set; }
     public string ApproveMessage { get; set; }
     public bool IsApprovedByEmployer{ get; set; }
     public int TotalCost => Courses?.Sum(g => g.DraftApprenticeships.Sum(a => a.Cost ?? 0)) ?? 0;
     public string DisplayTotalCost => TotalCost.ToGdsCostFormat();
     public bool IsAgreementSigned { get; set; }
-    public string OptionsTitle => ProviderCanApprove ? "Approve these details?" : "Submit to employer?";
+    public string OptionsTitle => ProviderCanApprove ? "Do you want to send these details to the employer?" : "Submit to employer?";
     public bool ShowViewAgreementOption => !IsAgreementSigned;
     public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider && !HasOverlappingUln && !HasEmailOverlaps && !ShowRofjaaRemovalBanner && !ShowInvalidProviderCoursesBanner && !HasApprenticesWithLearnerDataChanges; // to be added back when RPL is no longer a warning && NumberOfRplErrors == 0;
     public bool ShowApprovalOptionMessage => ProviderCanApprove && IsApprovedByEmployer;
