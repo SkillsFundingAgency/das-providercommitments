@@ -5,7 +5,6 @@ using FluentAssertions.Execution;
 using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
@@ -46,7 +45,7 @@ public class DetailsViewModelMapperTests
     public async Task ThenApprenticeshipTypeMappedCorrectly()
     {
         await _fixture.Map();
-        _fixture.Result.ApprenticeshipType.Should().Be(_fixture.ApiResponse.Apprenticeship.ApprenticeshipType);
+        _fixture.Result.LearningType.Should().Be(_fixture.ApiResponse.Apprenticeship.LearningType);
     }
 
     [Test]
@@ -105,7 +104,7 @@ public class DetailsViewModelMapperTests
         await _fixture.Map();
         _fixture.Result.AgreementId.Should().Be(_fixture.AgreementId);
     }
-    
+
     [Test]
     public async Task ThenDateOfBirthIsMappedCorrectly()
     {
@@ -437,7 +436,6 @@ public class DetailsViewModelMapperTests
         _fixture.Result.AvailableTriageOption.Should().Be(expectedTriageOption);
     }
 
-
     [TestCase(false, DataLockErrorCode.Dlock04, DataLockErrorCode.Dlock07, DetailsViewModel.TriageOption.Update)]
     [TestCase(true, DataLockErrorCode.Dlock04, DataLockErrorCode.Dlock07, DetailsViewModel.TriageOption.Both)]
     [TestCase(true, DataLockErrorCode.Dlock03, DataLockErrorCode.Dlock03 | DataLockErrorCode.Dlock07, DetailsViewModel.TriageOption.Restart)]
@@ -505,7 +503,7 @@ public class DetailsViewModelMapperTests
 
         _fixture.Result.HasPendingChangeOfPartyRequest.Should().BeFalse();
     }
-      
+
     [TestCase(null, false)]
     [TestCase(OverlappingTrainingDateRequestStatus.Resolved, false)]
     [TestCase(OverlappingTrainingDateRequestStatus.Rejected, false)]
@@ -677,7 +675,7 @@ public class DetailsViewModelMapperTests
     public async Task ThenPaymentStatusIsMappedCorrectly(bool paymentsFrozen, bool waitingToStart, string expectedStatus)
     {
         _fixture.WithPaymentsFrozenSetTo(paymentsFrozen);
-        _fixture.WithLearnerStatusDetailsSetTo(waitingToStart ? new LearnerStatusDetails{ LearnerStatus = LearnerStatus.WaitingToStart } : new LearnerStatusDetails { LearnerStatus = LearnerStatus.InLearning });
+        _fixture.WithLearnerStatusDetailsSetTo(waitingToStart ? new LearnerStatusDetails { LearnerStatus = LearnerStatus.WaitingToStart } : new LearnerStatusDetails { LearnerStatus = LearnerStatus.InLearning });
 
         await _fixture.Map();
 
@@ -749,7 +747,7 @@ public class DetailsViewModelMapperTests
         public IEnumerable<GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate> ApprenticeshipUpdates { get; private set; }
         public IEnumerable<GetManageApprenticeshipDetailsResponse.DataLock> DataLocks { get; private set; }
         public IEnumerable<GetManageApprenticeshipDetailsResponse.ChangeOfPartyRequest> ChangeOfPartyRequests { get; private set; }
-        public IEnumerable<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequests{ get; private set; }
+        public IEnumerable<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequests { get; private set; }
         public IEnumerable<GetManageApprenticeshipDetailsResponse.ChangeOfEmployerLink> ChangeOfEmployerChain { get; private set; }
         public GetNewerTrainingProgrammeVersionsResponse GetNewerTrainingProgrammeVersionsResponse { get; private set; }
         public GetTrainingProgrammeResponse GetTrainingProgrammeByStandardUIdResponse { get; private set; }
@@ -1012,7 +1010,7 @@ public class DetailsViewModelMapperTests
 
             return this;
         }
-            
+
         public DetailsViewModelMapperFixture WithOverlappingTrainingDateRequests(OverlappingTrainingDateRequestStatus status)
         {
             var draftApprenticeshipId = Fixture.Create<long>();
@@ -1030,7 +1028,7 @@ public class DetailsViewModelMapperTests
                     ActionedOn = null
                 }
             };
-              
+
             return this;
         }
 
@@ -1118,7 +1116,7 @@ public class DetailsViewModelMapperTests
                 TrainingPrice = 3248,
                 Initiator = "Provider"
             };
-                
+
             return this;
         }
 

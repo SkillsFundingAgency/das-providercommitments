@@ -1,8 +1,9 @@
-using SFA.DAS.Apprenticeships.Types;
-using SFA.DAS.CommitmentsV2.Types;
 using System;
 using System.Collections.Generic;
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Enums;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 
@@ -89,7 +90,7 @@ public class GetManageApprenticeshipDetailsResponse
         public int? DurationReducedByHours { get; set; }
         public int? TrainingTotalHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
-        public string ApprenticeshipType { get; set; }
+        public LearningType? LearningType { get; set; }
     }
 
     public class PriceEpisode
@@ -193,7 +194,6 @@ public class GetManageApprenticeshipDetailsResponse
         public string ReasonFrozen { get; set; }
         public DateTime? FrozenOn { get; set; }
     }
-
 }
 
 public class LearnerStatusDetails

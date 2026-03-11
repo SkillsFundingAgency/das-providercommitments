@@ -1,6 +1,6 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@using ApprenticeshipType = SFA.DAS.ProviderCommitments.Web.Models.Cohort.ApprenticeshipType;
+@using SFA.DAS.ProviderCommitments.Enums;
 
 @{
     ViewData["Title"] = "Apprentice Details";
@@ -8,7 +8,7 @@
     ViewBag.GaData.Org = Model.Employer;   
 }
 
-@if(Model.ApprenticeshipType == nameof(ApprenticeshipType.ApprenticeshipUnit))
+@if (Model.LearningType is not null && Model.LearningType == LearningType.ApprenticeshipUnit)
 {
     <partial name="DetailsPartials/_ViewApprenticeUnitDetails" />
 }
