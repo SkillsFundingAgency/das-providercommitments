@@ -1,19 +1,18 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers
-{
-    public class SelectDeliveryModelViewModelFromEditDraftApprenticeshipViewModelMapper : IMapper<EditDraftApprenticeshipViewModel, SelectDeliveryModelViewModel>    {
-        private readonly ISelectDeliveryModelMapperHelper _helper;
+namespace SFA.DAS.ProviderCommitments.Web.Mappers;
 
-        public SelectDeliveryModelViewModelFromEditDraftApprenticeshipViewModelMapper(ISelectDeliveryModelMapperHelper helper)
-        {
-            _helper = helper;
-        }
+public class SelectDeliveryModelViewModelFromEditDraftApprenticeshipViewModelMapper : IMapper<EditDraftApprenticeshipViewModel, SelectDeliveryModelViewModel>    {
+    private readonly ISelectDeliveryModelMapperHelper _helper;
 
-        public Task<SelectDeliveryModelViewModel> Map(EditDraftApprenticeshipViewModel source)
-        {
-            return _helper.Map(source.ProviderId, source.CourseCode, source.AccountLegalEntityId, source.DeliveryModel);
-        }
+    public SelectDeliveryModelViewModelFromEditDraftApprenticeshipViewModelMapper(ISelectDeliveryModelMapperHelper helper)
+    {
+        _helper = helper;
+    }
+
+    public Task<SelectDeliveryModelViewModel> Map(EditDraftApprenticeshipViewModel source)
+    {
+        return _helper.Map(source.ProviderId, source.CourseCode, source.AccountLegalEntityId, source.DeliveryModel);
     }
 }

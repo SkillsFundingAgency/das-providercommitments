@@ -11,123 +11,122 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+
+public class WithEmployerViewModelMapper : IMapper<CohortsByProviderRequest, WithEmployerViewModel>
 {
-    public class WithEmployerViewModelMapper : IMapper<CohortsByProviderRequest, WithEmployerViewModel>
+    private readonly ICommitmentsApiClient _commitmentsApiClient;
+    private readonly IApprovalsOuterApiClient _approvalsOuterApiClient;
+    private readonly IUrlHelper _urlHelper;
+    private readonly IPasAccountApiClient _pasAccountApiClient;
+    private readonly IEncodingService _encodingService;
+    private readonly IOuterApiClient _outerApiClient;
+
+    public WithEmployerViewModelMapper(
+        ICommitmentsApiClient commitmentApiClient,
+        IApprovalsOuterApiClient approvalsOuterApiClient,
+        IUrlHelper urlHelper,
+        IPasAccountApiClient pasAccountApiClient,
+        IEncodingService encodingSummary,
+        IOuterApiClient outerApiClient)
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IApprovalsOuterApiClient _approvalsOuterApiClient;
-        private readonly IUrlHelper _urlHelper;
-        private readonly IPasAccountApiClient _pasAccountApiClient;
-        private readonly IEncodingService _encodingService;
-        private readonly IOuterApiClient _outerApiClient;
-
-        public WithEmployerViewModelMapper(
-            ICommitmentsApiClient commitmentApiClient,
-            IApprovalsOuterApiClient approvalsOuterApiClient,
-            IUrlHelper urlHelper,
-            IPasAccountApiClient pasAccountApiClient,
-            IEncodingService encodingSummary,
-             IOuterApiClient outerApiClient)
-        {
-            _commitmentsApiClient = commitmentApiClient;
-            _approvalsOuterApiClient = approvalsOuterApiClient;
-            _urlHelper = urlHelper;
-            _pasAccountApiClient = pasAccountApiClient;
-            _encodingService = encodingSummary;
-            _outerApiClient = outerApiClient;
-        }
-
-        public async Task<WithEmployerViewModel> Map(CohortsByProviderRequest source)
-        {
-            async Task<(CohortSummary[] Cohorts, bool HasRelationship, ProviderStatusType providerStatus)> GetData()
-            {
-                var getCohortsTask = _commitmentsApiClient.GetCohorts(new GetCohortsRequest { ProviderId = source.ProviderId });
-                var hasRelationshipTask = _approvalsOuterApiClient.GetHasRelationshipWithPermission(source.ProviderId);
-                var providerStatusTask = _outerApiClient.Get<GetProviderDetailsResponse>(new GetProviderDetailsRequest(source.ProviderId));
-
-                await Task.WhenAll(getCohortsTask, hasRelationshipTask, providerStatusTask);
-                return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result.HasPermission, (ProviderStatusType)providerStatusTask.Result.ProviderStatusTypeId);
-            }
-
-            var (cohorts, hasRelationship, providerAgreementStatus) = await GetData();
-            var withEmployerViewModel = new WithEmployerViewModel
-            {
-                ProviderId = source.ProviderId,
-                SortField = source.SortField,
-                ReverseSort = source.ReverseSort,
-                ApprenticeshipRequestsHeaderViewModel = cohorts.GetCohortCardLinkViewModel(_urlHelper, source.ProviderId, CohortStatus.WithEmployer, hasRelationship, providerAgreementStatus),
-                Cohorts = cohorts
-                    .Where(x => x.GetStatus() == CohortStatus.WithEmployer)
-                    .Select(y => new WithEmployerSummaryViewModel
-                    {
-                        CohortReference = _encodingService.Encode(y.CohortId, EncodingType.CohortReference),
-                        EmployerName = y.LegalEntityName,
-                        NumberOfApprentices = y.NumberOfDraftApprentices,
-                        LastMessage = GetMessage(y.LatestMessageFromProvider),
-                        DateSentToEmployer = y.LatestMessageFromProvider?.SentOn ?? y.CreatedOn
-                    })
-                    .ApplyOrder(source.SortField, source.ReverseSort)
-                    .ToList()
-            };
-
-            return withEmployerViewModel;
-        }
-
-        private static string GetMessage(Message latestMessageFromProvider)
-        {
-            return !string.IsNullOrWhiteSpace(latestMessageFromProvider?.Text)
-                ? latestMessageFromProvider.Text
-                : "No message added";
-        }
+        _commitmentsApiClient = commitmentApiClient;
+        _approvalsOuterApiClient = approvalsOuterApiClient;
+        _urlHelper = urlHelper;
+        _pasAccountApiClient = pasAccountApiClient;
+        _encodingService = encodingSummary;
+        _outerApiClient = outerApiClient;
     }
 
-    internal static class WithEmployerViewModelMapperExtension
+    public async Task<WithEmployerViewModel> Map(CohortsByProviderRequest source)
     {
-        internal static IOrderedEnumerable<WithEmployerSummaryViewModel> ApplyOrder(this IEnumerable<WithEmployerSummaryViewModel> cohorts, string sortField, bool reverse)
+        async Task<(CohortSummary[] Cohorts, bool HasRelationship, ProviderStatusType providerStatus)> GetData()
         {
-            switch (sortField)
+            var getCohortsTask = _commitmentsApiClient.GetCohorts(new GetCohortsRequest { ProviderId = source.ProviderId });
+            var hasRelationshipTask = _approvalsOuterApiClient.GetHasRelationshipWithPermission(source.ProviderId);
+            var providerStatusTask = _outerApiClient.Get<GetProviderDetailsResponse>(new GetProviderDetailsRequest(source.ProviderId));
+
+            await Task.WhenAll(getCohortsTask, hasRelationshipTask, providerStatusTask);
+            return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result.HasPermission, (ProviderStatusType)providerStatusTask.Result.ProviderStatusTypeId);
+        }
+
+        var (cohorts, hasRelationship, providerAgreementStatus) = await GetData();
+        var withEmployerViewModel = new WithEmployerViewModel
+        {
+            ProviderId = source.ProviderId,
+            SortField = source.SortField,
+            ReverseSort = source.ReverseSort,
+            ApprenticeshipRequestsHeaderViewModel = cohorts.GetCohortCardLinkViewModel(_urlHelper, source.ProviderId, CohortStatus.WithEmployer, hasRelationship, providerAgreementStatus),
+            Cohorts = cohorts
+                .Where(x => x.GetStatus() == CohortStatus.WithEmployer)
+                .Select(y => new WithEmployerSummaryViewModel
+                {
+                    CohortReference = _encodingService.Encode(y.CohortId, EncodingType.CohortReference),
+                    EmployerName = y.LegalEntityName,
+                    NumberOfApprentices = y.NumberOfDraftApprentices,
+                    LastMessage = GetMessage(y.LatestMessageFromProvider),
+                    DateSentToEmployer = y.LatestMessageFromProvider?.SentOn ?? y.CreatedOn
+                })
+                .ApplyOrder(source.SortField, source.ReverseSort)
+                .ToList()
+        };
+
+        return withEmployerViewModel;
+    }
+
+    private static string GetMessage(Message latestMessageFromProvider)
+    {
+        return !string.IsNullOrWhiteSpace(latestMessageFromProvider?.Text)
+            ? latestMessageFromProvider.Text
+            : "No message added";
+    }
+}
+
+internal static class WithEmployerViewModelMapperExtension
+{
+    internal static IOrderedEnumerable<WithEmployerSummaryViewModel> ApplyOrder(this IEnumerable<WithEmployerSummaryViewModel> cohorts, string sortField, bool reverse)
+    {
+        switch (sortField)
+        {
+            case "Employer":
             {
-                case "Employer":
-                    {
-                        if (reverse)
-                            return cohorts
-                                .OrderByDescending(c => c.EmployerName)
-                                .ThenBy(c => c.DateSentToEmployer.Date)
-                                .ThenBy(c => c.CohortReference);
+                if (reverse)
+                    return cohorts
+                        .OrderByDescending(c => c.EmployerName)
+                        .ThenBy(c => c.DateSentToEmployer.Date)
+                        .ThenBy(c => c.CohortReference);
 
-                        return cohorts
-                            .OrderBy(c => c.EmployerName)
-                            .ThenBy(c => c.DateSentToEmployer.Date)
-                            .ThenBy(c => c.CohortReference);
-                    }
-
-                case "CohortReference":
-                    {
-                        return reverse
-                            ? cohorts.OrderByDescending(c => c.CohortReference)
-                            : cohorts.OrderBy(c => c.CohortReference);
-                    }
-
-                case "DateSentToEmployer":
-                    {
-                        if (reverse)
-                            return cohorts
-                                .OrderByDescending(c => c.DateSentToEmployer.Date)
-                                .ThenBy(c => c.EmployerName)
-                                .ThenBy(c => c.CohortReference);
-
-                        return cohorts
-                            .OrderBy(c => c.DateSentToEmployer.Date)
-                            .ThenBy(c => c.EmployerName)
-                            .ThenBy(c => c.CohortReference);
-                    }
+                return cohorts
+                    .OrderBy(c => c.EmployerName)
+                    .ThenBy(c => c.DateSentToEmployer.Date)
+                    .ThenBy(c => c.CohortReference);
             }
 
-            return cohorts
-                .OrderBy(c => c.DateSentToEmployer.Date)
-                .ThenBy(c => c.EmployerName)
-                .ThenBy(c => c.CohortReference);
+            case "CohortReference":
+            {
+                return reverse
+                    ? cohorts.OrderByDescending(c => c.CohortReference)
+                    : cohorts.OrderBy(c => c.CohortReference);
+            }
+
+            case "DateSentToEmployer":
+            {
+                if (reverse)
+                    return cohorts
+                        .OrderByDescending(c => c.DateSentToEmployer.Date)
+                        .ThenBy(c => c.EmployerName)
+                        .ThenBy(c => c.CohortReference);
+
+                return cohorts
+                    .OrderBy(c => c.DateSentToEmployer.Date)
+                    .ThenBy(c => c.EmployerName)
+                    .ThenBy(c => c.CohortReference);
+            }
         }
+
+        return cohorts
+            .OrderBy(c => c.DateSentToEmployer.Date)
+            .ThenBy(c => c.EmployerName)
+            .ThenBy(c => c.CohortReference);
     }
 }

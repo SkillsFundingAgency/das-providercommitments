@@ -2,45 +2,44 @@
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers
+namespace SFA.DAS.ProviderCommitments.Web.Mappers;
+
+public class AttachApimUserInfoToSaveRequests<TFrom, TTo> : IMapper<TFrom, TTo> 
+    where TFrom : class
+    where TTo : class
 {
-    public class AttachApimUserInfoToSaveRequests<TFrom, TTo> : IMapper<TFrom, TTo> 
-        where TFrom : class
-        where TTo : class
+    private readonly IMapper<TFrom, TTo> _innerMapper;
+    private readonly IAuthenticationService _authenticationService;
+
+    public AttachApimUserInfoToSaveRequests(IMapper<TFrom, TTo> innerMapper, IAuthenticationService authenticationService)
     {
-        private readonly IMapper<TFrom, TTo> _innerMapper;
-        private readonly IAuthenticationService _authenticationService;
+        _innerMapper = innerMapper;
+        _authenticationService = authenticationService;
+    }
 
-        public AttachApimUserInfoToSaveRequests(IMapper<TFrom, TTo> innerMapper, IAuthenticationService authenticationService)
+    public async Task<TTo> Map(TFrom source)
+    {
+        var to = await _innerMapper.Map(source);
+
+        if (to is ApimSaveDataRequest saveDataRequest)
         {
-            _innerMapper = innerMapper;
-            _authenticationService = authenticationService;
+            saveDataRequest.UserInfo = GetUserInfo();
         }
+        return to;
+    }
 
-        public async Task<TTo> Map(TFrom source)
+    protected ApimUserInfo GetUserInfo()
+    {
+        if (_authenticationService.IsUserAuthenticated())
         {
-            var to = await _innerMapper.Map(source);
-
-            if (to is ApimSaveDataRequest saveDataRequest)
+            return new ApimUserInfo
             {
-                saveDataRequest.UserInfo = GetUserInfo();
-            }
-            return to;
+                UserId = _authenticationService.UserId,
+                UserDisplayName = _authenticationService.UserName,
+                UserEmail = _authenticationService.UserEmail
+            };
         }
 
-        protected ApimUserInfo GetUserInfo()
-        {
-            if (_authenticationService.IsUserAuthenticated())
-            {
-                return new ApimUserInfo
-                {
-                    UserId = _authenticationService.UserId,
-                    UserDisplayName = _authenticationService.UserName,
-                    UserEmail = _authenticationService.UserEmail
-                };
-            }
-
-            return null;
-        }
+        return null;
     }
 }
