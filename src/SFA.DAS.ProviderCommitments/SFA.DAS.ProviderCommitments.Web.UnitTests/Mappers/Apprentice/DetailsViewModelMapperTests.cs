@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions.Execution;
@@ -773,7 +773,7 @@ public class DetailsViewModelMapperTests
         _fixture.WithEmployerVerificationStatus(4, "NinoAndPAYENotFound");
         await _fixture.Map();
 
-        _fixture.Result.EmploymentStatus.Should().Be("Not Verified - No PAYE Scheme and invalid NINO");
+        _fixture.Result.EmploymentStatus.Should().Be("Not verified - missing PAYE scheme and invalid NINO");
     }
 
     [Test]
@@ -782,7 +782,7 @@ public class DetailsViewModelMapperTests
         _fixture.WithEmployerVerificationStatus(4, "PAYENotFound");
         await _fixture.Map();
 
-        _fixture.Result.EmploymentStatus.Should().Be("Not Verified - No PAYE Scheme");
+        _fixture.Result.EmploymentStatus.Should().Be("Not verified - missing PAYE scheme");
     }
 
     [Test]
