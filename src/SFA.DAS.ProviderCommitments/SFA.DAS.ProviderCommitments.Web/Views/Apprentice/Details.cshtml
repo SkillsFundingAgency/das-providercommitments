@@ -8,7 +8,7 @@
     ViewBag.GaData.Org = Model.Employer;   
 }
 
-@if (Model.LearningType is not null && Model.LearningType == LearningType.ApprenticeshipUnit)
+@if (Model.LearningType == LearningType.ApprenticeshipUnit)
 {
     <partial name="DetailsPartials/_ViewApprenticeUnitDetails" />
 }
