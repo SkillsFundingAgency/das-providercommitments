@@ -1,4 +1,4 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.EditDraftApprenticeshipViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.EditDraftApprenticeshipViewModel
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.TagHelpers
 
@@ -55,8 +55,7 @@
                     </h2>
                 </div>
                 <div class="govuk-notification-banner__content">
-                    <p class="govuk-notification-banner__heading">
-                        Apprentice details have been changed in the ILR. To continue you need to 
+                    <p class="govuk-notification-banner__heading">Apprentice details have been changed in the ILR. To continue you need to</p>
                         <form method="post" asp-route="@RouteNames.DraftApprenticeshipEdit" asp-route-providerId="@Model.ProviderId" style="display: inline;">
                             <input type="hidden" name="CohortId" value="@Model.CohortId" />
                             <input type="hidden" name="DraftApprenticeshipId" value="@Model.DraftApprenticeshipId" />
@@ -67,7 +66,7 @@
                                 update now
                             </button>
                         </form>
-                    </p>
+              
                 </div>
             </div>
         }
@@ -91,6 +90,8 @@
         <form id="addApprenticeship" novalidate method="post" asp-route="@RouteNames.DraftApprenticeshipEdit" asp-route-providerId="@Model.ProviderId">
             
             <input type="hidden" asp-for="ProviderId"/>
+            <input type="hidden" asp-for="CohortReference"/>
+            <input type="hidden" asp-for="DraftApprenticeshipHashedId"/>
             <input type="hidden" asp-for="EmployerAccountLegalEntityPublicHashedId"/>
             <input type="hidden" asp-for="HasMultipleDeliveryModelOptions"/>
             <input type="hidden" asp-for="HasLearnerDataChanges"/>

@@ -1,5 +1,6 @@
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -12,16 +13,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
     {
         public async Task<SelectEmployerViewModel> Map(SelectEmployerRequest source)
         {
+            var pageNumber = source.PageNumber < 1 ? 1 : source.PageNumber;
             var apiRequest = new GetSelectEmployerRequest(
                 source.ProviderId,
                 source.SearchTerm,
                 source.SortField,
                 source.ReverseSort,
-                source.UseLearnerData);
+                source.UseLearnerData,
+                pageNumber,
+                Constants.SelectEmployer.NumberOfEmployersPerPage);
 
             var apiResponse = await approvalsOuterApiClient.GetSelectEmployer(apiRequest);
 
-            var accountProviderLegalEntities = apiResponse.AccountProviderLegalEntities.ConvertAll(x =>
+            var accountProviderLegalEntities = (apiResponse.AccountProviderLegalEntities ?? []).ConvertAll(x =>
                 new AccountProviderLegalEntityViewModel
                 {
                     EmployerAccountLegalEntityName = x.AccountLegalEntityName,
@@ -38,7 +42,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ReverseSort = source.ReverseSort,
                 CurrentlySortedByField = source.SortField,
                 UseLearnerData = source.UseLearnerData,
-                Employers = apiResponse.Employers
+                ProviderId = source.ProviderId,
+                PageNumber = pageNumber,
+                TotalEmployersFound = apiResponse.TotalCount,
+                Employers = apiResponse.Employers ?? []
             };
 
             return new SelectEmployerViewModel

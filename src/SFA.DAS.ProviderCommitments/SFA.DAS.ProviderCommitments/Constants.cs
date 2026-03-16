@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.ProviderCommitments
+namespace SFA.DAS.ProviderCommitments
 {
     public static class Constants
     {
@@ -20,6 +20,11 @@
         public static class LearnerRecordSearch
         {
             public const int NumberOfLearnersPerSearchPage = 50;
+        }
+
+        public static class SelectEmployer
+        {
+            public const int NumberOfEmployersPerPage = 50;
         }
     }
 }

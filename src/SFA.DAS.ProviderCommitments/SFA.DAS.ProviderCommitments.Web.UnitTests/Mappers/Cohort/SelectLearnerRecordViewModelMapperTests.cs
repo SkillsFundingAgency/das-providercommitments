@@ -35,7 +35,7 @@ public class SelectLearnerRecordViewModelMapperTests
            t.CourseCode == _request.CourseCode)))
            .ReturnsAsync(_apiResponse);
 
-        _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
+        _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object, Mock.Of<ILogger<SelectLearnerRecordViewModelMapper>>());
     }
 
     [Test]

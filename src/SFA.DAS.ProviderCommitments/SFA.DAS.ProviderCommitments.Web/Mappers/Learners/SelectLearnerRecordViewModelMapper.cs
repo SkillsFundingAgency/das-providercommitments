@@ -7,7 +7,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 
-public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
+public class SelectLearnerRecordViewModelMapper(IOuterApiService client, ILogger<SelectLearnerRecordViewModelMapper> logger)
     : IMapper<SelectLearnerRecordRequest, SelectLearnerRecordViewModel>
 {
     public async Task<SelectLearnerRecordViewModel> Map(SelectLearnerRecordRequest source)
@@ -26,7 +26,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
         };
 
         var response = await client.GetLearnerDetailsForProvider(source.ProviderId,learnerRequest);
-
+     
         var filterModel = new LearnerRecordsFilterModel()
         {
             ProviderId = source.ProviderId,
@@ -50,6 +50,8 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client)
                 })],
             CourseCode = source.CourseCode,
         };
+
+        logger.LogInformation("Response for 1st record", response.Learners.FirstOrDefault()?.Course);
 
         var model = new SelectLearnerRecordViewModel
         {
