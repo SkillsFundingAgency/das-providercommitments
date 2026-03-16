@@ -163,7 +163,7 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
 
     public async Task<PostApprenticeshipsCSVResponse> GetApprenticeshipsCSV(PostApprenticeshipsCSVRequest request)
     {
-      return await outerApiClient.Post<PostApprenticeshipsCSVResponse>(request);
+        return await outerApiClient.Post<PostApprenticeshipsCSVResponse>(request);
     }
 
     // <inherit-doc />
@@ -241,9 +241,9 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         return response.HasApprenticeshipAccess;
     }
 
-    public async Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, long? accountLegalEntityId, long? cohortId, string searchTerm, string sortColumn, bool sortDesc, int page, int? startMonth, int startYear)
+    public async Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, SelectLearnersRequest learnerRequest)
     {
-        var request = new GetLearnerDetailsForProviderRequest(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDesc, page, startMonth, startYear);
+        var request = new GetLearnerDetailsForProviderRequest(providerId, learnerRequest);
 
         var response = await outerApiClient.Get<GetLearnerDetailsForProviderResponse>(request);
 
@@ -315,14 +315,14 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         {
             Data = request
         };
-        
+
         return await outerApiClient.Put<ValidateEditApprenticeshipResponse>(apiRequest);
     }
 
     public async Task<ConfirmEditApprenticeshipResponse> ConfirmEditApprenticeship(long providerId, long apprenticeshipId, ConfirmEditApprenticeshipRequest request)
     {
         var apiRequest = new PostConfirmEditApprenticeshipRequest(providerId, apprenticeshipId, request);
-        
+
         return await outerApiClient.Post<ConfirmEditApprenticeshipResponse>(apiRequest);
     }
 }
