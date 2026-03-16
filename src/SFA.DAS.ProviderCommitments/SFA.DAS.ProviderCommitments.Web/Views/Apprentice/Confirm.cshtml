@@ -28,14 +28,14 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
 
-        <p class="gov-uk-body">Check you have entered the correct training dates and the correct apprentice details.</p>
+        <p class="gov-uk-body">Check you have entered the correct training dates and the correct learner details.</p>
 
         @if (Model.ExceedsFundingBandCap)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
-                <h3 class="govuk-heading-s">This apprenticeship is above the funding band maximum</h3>
+                <h3 class="govuk-heading-s">This training is above the funding band maximum</h3>
                 <p>
-                    The new agreed apprenticeship price is above the @Model.FundingBandCap.Value.ToGdsCostFormat() <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands">maximum value of the funding band</a> for this apprenticeship.
+                    The new agreed training price is above the @Model.FundingBandCap.Value.ToGdsCostFormat() <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands">maximum value of the funding band</a> for this training.
                     You'll need to ask the new employer to pay the difference directly to you - this can't be funded from their account.
                 </p>
             </div>
@@ -44,7 +44,7 @@
         <table class="govuk-table">
             <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice name</th>
+                <th scope="row" class="govuk-table__header das-table-cell-width-45">Name</th>
                 <td class="govuk-table__cell das-table-cell-width-40">@Model.ApprenticeName</td>
                 <td class="govuk-table__cell">&nbsp;</td>
             </tr>
@@ -95,7 +95,7 @@
                 <td class="govuk-table__cell">&nbsp;</td>
             </tr>
             <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                <th scope="row" class="govuk-table__header">Total agreed training price</th>
                 <td class="govuk-table__cell">@Model.OldPrice.ToGdsCostFormat()</td>
                 <td class="govuk-table__cell">&nbsp;</td>
             </tr>
@@ -133,7 +133,7 @@
             </tr>
             <tr class="govuk-table__row">
                 <th asp-show="@isRegular" scope="row" class="govuk-table__header">New training end date</th>
-                <th asp-hide="@isRegular" scope="row" class="govuk-table__header">Projected apprenticeship training end date</th>
+                <th asp-hide="@isRegular" scope="row" class="govuk-table__header">Projected training end date</th>
                 <td class="govuk-table__cell">@DisplayDate(Model.NewEndDateTime)</td>
                 <td class="govuk-table__cell">
                     <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, changeData)">Change</a>
@@ -147,8 +147,8 @@
                 </td>
             </tr>
             <tr class="govuk-table__row">
-                <th asp-show="@isRegular" scope="row" class="govuk-table__header">New agreed apprenticeship price</th>
-                <th asp-hide="@isRegular" scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                <th asp-show="@isRegular" scope="row" class="govuk-table__header">New agreed training price</th>
+                <th asp-hide="@isRegular" scope="row" class="govuk-table__header">Total agreed training price</th>
                 <td class="govuk-table__cell">@Model.NewPrice.ToGdsCostFormat()</td>
                 <td class="govuk-table__cell">
                     <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, changeData)">Change</a>
