@@ -1,4 +1,7 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -9,16 +12,21 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client, ILogger
 {
     public async Task<SelectLearnerRecordViewModel> Map(SelectLearnerRecordRequest source)
     {
-        logger.LogInformation("Mapping SelectLearnerRecordViewModel for provider {ProviderId} and cohort {CohortReference}", source.ProviderId, source.CohortReference);
-        logger.LogInformation("Request details: AccountLegalEntityId: {AccountLegalEntityId}, CohortId: {CohortId}, SearchTerm: {SearchTerm}, SortField: {SortField}, ReverseSort: {ReverseSort}, Page: {Page}, StartMonth: {StartMonth}, StartYear: {StartYear}",
-            source.AccountLegalEntityId, source.CohortId, source.SearchTerm, source.SortField, source.ReverseSort, source.Page, source.StartMonth, source.StartYear);
-        var response = await client.GetLearnerDetailsForProvider(source.ProviderId, source.AccountLegalEntityId,
-            source.CohortId, source.SearchTerm, source.SortField, source.ReverseSort, source.Page, source.StartMonth, source.StartYear);
+        var learnerRequest = new SelectLearnersRequest()
+        {
+            AccountLegalEntityId = source.AccountLegalEntityId,
+            CohortId = source.CohortId,
+            SearchTerm = source.SearchTerm,
+            SortColumn = source.SortField,
+            ReverseSort = source.ReverseSort,
+            Page = source.Page,
+            StartMonth = source.StartMonth,
+            StartYear = source.StartYear,
+            CourseCode = source.CourseCode
+        };
 
-        logger.LogInformation("Received response for provider {ProviderId} and cohort {CohortReference}: Total: {Total}, Page: {Page}, PageSize: {PageSize}, TotalPages: {TotalPages}, AccountLegalEntityId: {AccountLegalEntityId}, EmployerName: {EmployerName}, LearnersCount: {LearnersCount}, FutureMonths: {FutureMonths}",
-            source.ProviderId, source.CohortReference, response.Total, response.Page, response.PageSize, response.TotalPages, response.AccountLegalEntityId, response.EmployerName, response.Learners.Count, response.FutureMonths);
-
-
+        var response = await client.GetLearnerDetailsForProvider(source.ProviderId,learnerRequest);
+     
         var filterModel = new LearnerRecordsFilterModel()
         {
             ProviderId = source.ProviderId,
@@ -32,7 +40,15 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client, ILogger
             ReverseSort = source.ReverseSort,
             SearchTerm = source.SearchTerm,
             StartMonth = source.StartMonth.ToString(),
-            StartYear = source.StartYear.ToString()
+            StartYear = source.StartYear.ToString(),
+            Courses = [new SelectListItem("All", ""),
+            .. response.TrainingCourses
+                .Select(m => new SelectListItem
+                {
+                    Text = m.Name,
+                    Value = m.CourseCode
+                })],
+            CourseCode = source.CourseCode,
         };
 
         logger.LogInformation("Response for 1st record", response.Learners.FirstOrDefault()?.Course);
@@ -48,7 +64,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client, ILogger
             Learners = response.Learners.ConvertAll(x => (LearnerSummary)x),
             LastIlrSubmittedOn = response.LastSubmissionDate,
             FilterModel = filterModel,
-            FutureMonths = response.FutureMonths
+            FutureMonths = response.FutureMonths         
         };
         model.SortedByHeader();
         return model;
