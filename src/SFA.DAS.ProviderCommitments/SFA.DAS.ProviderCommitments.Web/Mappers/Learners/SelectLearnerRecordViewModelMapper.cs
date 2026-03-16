@@ -51,7 +51,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client, ILogger
             CourseCode = source.CourseCode,
         };
 
-        logger.LogInformation("Response for 1st record", response.Learners.FirstOrDefault()?.Course);
+        logger.LogInformation("Response for 1st record {course}", response.Learners.FirstOrDefault()?.Course);
 
         var model = new SelectLearnerRecordViewModel
         {
