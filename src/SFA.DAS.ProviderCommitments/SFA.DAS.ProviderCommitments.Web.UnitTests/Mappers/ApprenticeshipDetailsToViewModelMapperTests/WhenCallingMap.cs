@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.Encoding;
@@ -166,7 +166,7 @@ public class WhenCallingMap
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Maps_EmploymentStatus_Pending_ReturnsCheckPending(
+    public async Task Then_Maps_EmploymentStatus_Pending_ReturnsEmpty(
         GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
         ApprenticeshipDetailsToViewModelMapper mapper)
     {
@@ -177,7 +177,7 @@ public class WhenCallingMap
         var result = await mapper.Map(source);
 
         // Assert
-        result.EmploymentStatus.Should().Be("Check Pending");
+        result.EmploymentStatus.Should().Be(string.Empty);
     }
 
     [Test, MoqAutoData]
