@@ -27,7 +27,7 @@ public class CreateCohortWithDraftApprenticeshipRequestFromLearnerSelectedReques
         cacheItem.Uln = learner.Uln.ToString();
         cacheItem.EndPointAssessmentPrice = learner.EpaoPrice;
         cacheItem.TrainingPrice = learner.TrainingPrice;
-        cacheItem.CourseCode = learner.StandardCode.ToString();
+        cacheItem.CourseCode = learner.TrainingCode;
         cacheItem.Cost = learner.TrainingPrice + learner.EpaoPrice;
         cacheItem.LearnerDataId = source.LearnerDataId;
         await cacheStorage.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
