@@ -7,6 +7,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.Common.Domain.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -49,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var courseDetails = courseDetailsTask.Result;
             var accountDetails = accountDetailsTask.Result;
 
-            var courses = accountDetails.LevyStatus == ApprenticeshipEmployerType.NonLevy || editApprenticeship.IsFundedByTransfer
+            var courses = accountDetails.LevyStatus == CommitmentsV2.Types.ApprenticeshipEmployerType.NonLevy || editApprenticeship.IsFundedByTransfer
                 ? (await _commitmentsApiClient.GetAllTrainingProgrammeStandards(CancellationToken.None)).TrainingProgrammes
                 : (await _commitmentsApiClient.GetAllTrainingProgrammes(CancellationToken.None)).TrainingProgrammes;
 
@@ -63,8 +64,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                                     ||
                                     IsPausedAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer)
                                     ||
-                                    IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer);
-
+                                    IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer)
+                                    ||
+                                    editApprenticeship.LearningType == LearningType.ApprenticeshipUnit;
             
             var result = new EditApprenticeshipRequestViewModel(apprenticeship.DateOfBirth, apprenticeship.StartDate, apprenticeship.EndDate, apprenticeship.EmploymentEndDate)
             {
