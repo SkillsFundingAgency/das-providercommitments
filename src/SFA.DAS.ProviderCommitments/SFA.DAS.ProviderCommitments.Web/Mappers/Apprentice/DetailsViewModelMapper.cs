@@ -252,7 +252,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             if (status == 0)
             {
-                return "Check Pending";
+                return string.Empty;
             }
 
             return notes switch

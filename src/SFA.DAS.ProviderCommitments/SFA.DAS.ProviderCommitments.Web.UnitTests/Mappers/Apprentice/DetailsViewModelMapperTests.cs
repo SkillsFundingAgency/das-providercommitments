@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions.Execution;
@@ -741,12 +741,12 @@ public class DetailsViewModelMapperTests
     }
 
     [Test]
-    public async Task ThenEmploymentStatusIsCheckPending_WhenStatusPending()
+    public async Task ThenEmploymentStatusIsBlank_WhenStatusPending()
     {
         _fixture.WithEmployerVerificationStatus(0, null); // Pending
         await _fixture.Map();
 
-        _fixture.Result.EmploymentStatus.Should().Be("Check Pending");
+        _fixture.Result.EmploymentStatus.Should().BeNullOrEmpty();
     }
 
     [Test]
