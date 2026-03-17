@@ -319,6 +319,9 @@ else
                         </a>
                     </th>
                     <th scope="col" class="govuk-table__header">
+                        Employment status
+                    </th>
+                    <th scope="col" class="govuk-table__header">
                         Status
                     </th>
                     <th scope="col" class="govuk-table__header">
@@ -352,6 +355,9 @@ else
                     </td>
                     <td class="govuk-table__cell" data-label="Apprentice confirmation">
                         @apprenticeship.ConfirmationStatus.ToDisplayString()
+                    </td>
+                    <td class="govuk-table__cell" data-label="Employment status">
+                        @apprenticeship.EmploymentStatus
                     </td>
                     <td class="govuk-table__cell" data-label="Status">
                         <strong class="govuk-tag @apprenticeship.Status.GetDisplayClass()">

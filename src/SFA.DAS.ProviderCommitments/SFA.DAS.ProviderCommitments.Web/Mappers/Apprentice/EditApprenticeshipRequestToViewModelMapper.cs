@@ -8,173 +8,172 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+
+public class EditApprenticeshipRequestToViewModelMapper : IMapper<EditApprenticeshipRequest, EditApprenticeshipRequestViewModel>
 {
-    public class EditApprenticeshipRequestToViewModelMapper : IMapper<EditApprenticeshipRequest, EditApprenticeshipRequestViewModel>
+    private readonly ICommitmentsApiClient _commitmentsApiClient;
+    private readonly IAcademicYearDateProvider _academicYearDateProvider;
+    private readonly ICurrentDateTime _currentDateTime;
+    private readonly IEncodingService _encodingService;
+    private readonly IOuterApiClient _apiClient;
+
+    public EditApprenticeshipRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IAcademicYearDateProvider academicYearDateProvider, ICurrentDateTime currentDateTime, IEncodingService encodingService, IOuterApiClient apiClient)
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IAcademicYearDateProvider _academicYearDateProvider;
-        private readonly ICurrentDateTime _currentDateTime;
-        private readonly IEncodingService _encodingService;
-        private readonly IOuterApiClient _apiClient;
+        _commitmentsApiClient = commitmentsApiClient;
+        _academicYearDateProvider = academicYearDateProvider;
+        _currentDateTime = currentDateTime;
+        _encodingService = encodingService;
+        _apiClient = apiClient;
+    }
 
-        public EditApprenticeshipRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IAcademicYearDateProvider academicYearDateProvider, ICurrentDateTime currentDateTime, IEncodingService encodingService, IOuterApiClient apiClient)
-        {
-            _commitmentsApiClient = commitmentsApiClient;
-            _academicYearDateProvider = academicYearDateProvider;
-            _currentDateTime = currentDateTime;
-            _encodingService = encodingService;
-            _apiClient = apiClient;
-        }
-
-        public async Task<EditApprenticeshipRequestViewModel> Map(EditApprenticeshipRequest source)
-        {
-            var apiRequest = new GetEditApprenticeshipRequest(source.ProviderId, source.ApprenticeshipId);
+    public async Task<EditApprenticeshipRequestViewModel> Map(EditApprenticeshipRequest source)
+    {
+        var apiRequest = new GetEditApprenticeshipRequest(source.ProviderId, source.ApprenticeshipId);
             
-            var editApprenticeshipTask = _apiClient.Get<GetEditApprenticeshipResponse>(apiRequest);
-            var apprenticeshipTask = _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId, CancellationToken.None);
-            var priceEpisodesTask = _commitmentsApiClient.GetPriceEpisodes(source.ApprenticeshipId, CancellationToken.None);
+        var editApprenticeshipTask = _apiClient.Get<GetEditApprenticeshipResponse>(apiRequest);
+        var apprenticeshipTask = _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId, CancellationToken.None);
+        var priceEpisodesTask = _commitmentsApiClient.GetPriceEpisodes(source.ApprenticeshipId, CancellationToken.None);
 
-            await Task.WhenAll(editApprenticeshipTask, apprenticeshipTask, priceEpisodesTask);
+        await Task.WhenAll(editApprenticeshipTask, apprenticeshipTask, priceEpisodesTask);
 
-            var apprenticeship = apprenticeshipTask.Result;
-            var editApprenticeship = editApprenticeshipTask.Result;
-            var priceEpisodes = priceEpisodesTask.Result;
+        var apprenticeship = apprenticeshipTask.Result;
+        var editApprenticeship = editApprenticeshipTask.Result;
+        var priceEpisodes = priceEpisodesTask.Result;
 
-            var courseDetailsTask = _commitmentsApiClient.GetTrainingProgramme(apprenticeship.CourseCode);
-            var accountDetailsTask = _commitmentsApiClient.GetAccount(apprenticeship.EmployerAccountId);
+        var courseDetailsTask = _commitmentsApiClient.GetTrainingProgramme(apprenticeship.CourseCode);
+        var accountDetailsTask = _commitmentsApiClient.GetAccount(apprenticeship.EmployerAccountId);
 
-            await Task.WhenAll(courseDetailsTask, accountDetailsTask);
+        await Task.WhenAll(courseDetailsTask, accountDetailsTask);
 
-            var courseDetails = courseDetailsTask.Result;
-            var accountDetails = accountDetailsTask.Result;
+        var courseDetails = courseDetailsTask.Result;
+        var accountDetails = accountDetailsTask.Result;
 
-            var courses = accountDetails.LevyStatus == ApprenticeshipEmployerType.NonLevy || editApprenticeship.IsFundedByTransfer
-                ? (await _commitmentsApiClient.GetAllTrainingProgrammeStandards(CancellationToken.None)).TrainingProgrammes
-                : (await _commitmentsApiClient.GetAllTrainingProgrammes(CancellationToken.None)).TrainingProgrammes;
+        var courses = accountDetails.LevyStatus == ApprenticeshipEmployerType.NonLevy || editApprenticeship.IsFundedByTransfer
+            ? (await _commitmentsApiClient.GetAllTrainingProgrammeStandards(CancellationToken.None)).TrainingProgrammes
+            : (await _commitmentsApiClient.GetAllTrainingProgrammes(CancellationToken.None)).TrainingProgrammes;
 
-            var isLockedForUpdate = IsLiveAndHasHadDataLockSuccess(apprenticeship)
-                                    ||
-                                    IsLiveAndIsNotWithInFundingPeriod(apprenticeship)
-                                    ||
-                                    IsPausedAndHasHadDataLockSuccess(apprenticeship)
-                                    ||
-                                    IsPausedAndIsNotWithInFundingPeriod(apprenticeship)
-                                    ||
-                                    IsPausedAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer)
-                                    ||
-                                    IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer);
+        var isLockedForUpdate = IsLiveAndHasHadDataLockSuccess(apprenticeship)
+                                ||
+                                IsLiveAndIsNotWithInFundingPeriod(apprenticeship)
+                                ||
+                                IsPausedAndHasHadDataLockSuccess(apprenticeship)
+                                ||
+                                IsPausedAndIsNotWithInFundingPeriod(apprenticeship)
+                                ||
+                                IsPausedAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer)
+                                ||
+                                IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer);
 
             
-            var result = new EditApprenticeshipRequestViewModel(apprenticeship.DateOfBirth, apprenticeship.StartDate, apprenticeship.EndDate, apprenticeship.EmploymentEndDate)
-            {
-                FirstName = apprenticeship.FirstName,
-                LastName = apprenticeship.LastName,
-                Email = apprenticeship.Email,
-                ULN = apprenticeship.Uln,
-                CourseCode = apprenticeship.CourseCode,
-                Version = apprenticeship.Version,
-                Option = apprenticeship.Option == string.Empty ? "TBC" : apprenticeship.Option,
-                Cost = priceEpisodes.PriceEpisodes.GetPrice(),
-                ProviderReference = apprenticeship.ProviderReference,
-                Courses = courses,
-                IsContinuation = apprenticeship.IsContinuation,
-                IsLockedForUpdate = isLockedForUpdate,
-                IsUpdateLockedForStartDateAndCourse = editApprenticeship.IsFundedByTransfer && !apprenticeship.HasHadDataLockSuccess,
-                IsEndDateLockedForUpdate = IsEndDateLocked(isLockedForUpdate, apprenticeship.HasHadDataLockSuccess, apprenticeship.Status),
-                TrainingName = courseDetails.TrainingProgramme.Name,
-                ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                EmployerName = apprenticeship.EmployerName,
-                ProviderId = apprenticeship.ProviderId,
-                EmailAddressConfirmedByApprentice = apprenticeship.EmailAddressConfirmedByApprentice,
-                EmailShouldBePresent = apprenticeship.EmailShouldBePresent,
-                DeliveryModel = apprenticeship.DeliveryModel,
-                EmploymentPrice = apprenticeship.EmploymentPrice,
-                EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(apprenticeship.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
-                HasMultipleDeliveryModelOptions = editApprenticeship.HasMultipleDeliveryModelOptions,
-                CourseName = editApprenticeship.CourseName
-            };
-
-            return result;
-        }
-
-        private bool IsPausedAndHasHadDataLockSuccessAndIsFundedByTransfer(GetApprenticeshipResponse apprenticeship, bool isFundedByTransfer)
+        var result = new EditApprenticeshipRequestViewModel(apprenticeship.DateOfBirth, apprenticeship.StartDate, apprenticeship.EndDate, apprenticeship.EmploymentEndDate)
         {
-            if (CheckWaitingToStart(apprenticeship)) return isFundedByTransfer && HasHadDataLockSuccess(apprenticeship) && IsPaused(apprenticeship); else return false;
-        }
+            FirstName = apprenticeship.FirstName,
+            LastName = apprenticeship.LastName,
+            Email = apprenticeship.Email,
+            ULN = apprenticeship.Uln,
+            CourseCode = apprenticeship.CourseCode,
+            Version = apprenticeship.Version,
+            Option = apprenticeship.Option == string.Empty ? "TBC" : apprenticeship.Option,
+            Cost = priceEpisodes.PriceEpisodes.GetPrice(),
+            ProviderReference = apprenticeship.ProviderReference,
+            Courses = courses,
+            IsContinuation = apprenticeship.IsContinuation,
+            IsLockedForUpdate = isLockedForUpdate,
+            IsUpdateLockedForStartDateAndCourse = editApprenticeship.IsFundedByTransfer && !apprenticeship.HasHadDataLockSuccess,
+            IsEndDateLockedForUpdate = IsEndDateLocked(isLockedForUpdate, apprenticeship.HasHadDataLockSuccess, apprenticeship.Status),
+            TrainingName = courseDetails.TrainingProgramme.Name,
+            ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+            EmployerName = apprenticeship.EmployerName,
+            ProviderId = apprenticeship.ProviderId,
+            EmailAddressConfirmedByApprentice = apprenticeship.EmailAddressConfirmedByApprentice,
+            EmailShouldBePresent = apprenticeship.EmailShouldBePresent,
+            DeliveryModel = apprenticeship.DeliveryModel,
+            EmploymentPrice = apprenticeship.EmploymentPrice,
+            EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(apprenticeship.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
+            HasMultipleDeliveryModelOptions = editApprenticeship.HasMultipleDeliveryModelOptions,
+            CourseName = editApprenticeship.CourseName
+        };
 
-        private bool IsPausedAndHasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
+        return result;
+    }
+
+    private bool IsPausedAndHasHadDataLockSuccessAndIsFundedByTransfer(GetApprenticeshipResponse apprenticeship, bool isFundedByTransfer)
+    {
+        if (CheckWaitingToStart(apprenticeship)) return isFundedByTransfer && HasHadDataLockSuccess(apprenticeship) && IsPaused(apprenticeship); else return false;
+    }
+
+    private bool IsPausedAndHasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
+    {
+        if (!CheckWaitingToStart(apprenticeship)) return IsPaused(apprenticeship) && HasHadDataLockSuccess(apprenticeship); else return false;
+    }
+
+    private bool IsPausedAndIsNotWithInFundingPeriod(GetApprenticeshipResponse apprenticeship)
+    {
+        if (!CheckWaitingToStart(apprenticeship)) return IsPaused(apprenticeship) && !IsWithInFundingPeriod(apprenticeship.StartDate.Value); else return false;
+    }
+
+    private static bool IsPaused(GetApprenticeshipResponse apprenticeship)
+    {
+        return apprenticeship.Status == ApprenticeshipStatus.Paused;
+    }
+
+    private bool CheckWaitingToStart(GetApprenticeshipResponse apprenticeship)
+    {
+        return apprenticeship.StartDate.Value > new DateTime(_currentDateTime.UtcNow.Year, _currentDateTime.UtcNow.Month, 1);
+    }
+
+    private static bool IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(GetApprenticeshipResponse apprenticeship, bool isFundedByTransfer)
+    {
+        return isFundedByTransfer
+               && HasHadDataLockSuccess(apprenticeship)
+               && IsWaitingToStart(apprenticeship);
+    }
+
+    private static bool IsLiveAndHasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
+    {
+        return IsLive(apprenticeship) && HasHadDataLockSuccess(apprenticeship);
+    }
+
+    private bool IsLiveAndIsNotWithInFundingPeriod(GetApprenticeshipResponse apprenticeship)
+    {
+        return IsLive(apprenticeship) && !IsWithInFundingPeriod(apprenticeship.StartDate.Value);
+    }
+
+    private static bool IsWaitingToStart(GetApprenticeshipResponse apprenticeship)
+    {
+        return apprenticeship.Status == ApprenticeshipStatus.WaitingToStart;
+    }
+
+    private static bool IsLive(GetApprenticeshipResponse apprenticeship)
+    {
+        return apprenticeship.Status == ApprenticeshipStatus.Live;
+    }
+
+    private static bool HasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
+    {
+        return apprenticeship.HasHadDataLockSuccess;
+    }
+
+    private static bool IsEndDateLocked(bool isLockedForUpdate, bool hasHadDataLockSuccess, ApprenticeshipStatus status)
+    {
+        var result = isLockedForUpdate;
+        if (hasHadDataLockSuccess)
         {
-            if (!CheckWaitingToStart(apprenticeship)) return IsPaused(apprenticeship) && HasHadDataLockSuccess(apprenticeship); else return false;
+            result = status == ApprenticeshipStatus.WaitingToStart;
         }
 
-        private bool IsPausedAndIsNotWithInFundingPeriod(GetApprenticeshipResponse apprenticeship)
+        return result;
+    }
+
+    private bool IsWithInFundingPeriod(DateTime trainingStartDate)
+    {
+        if (trainingStartDate < _academicYearDateProvider.CurrentAcademicYearStartDate &&
+            _currentDateTime.UtcNow > _academicYearDateProvider.LastAcademicYearFundingPeriod)
         {
-            if (!CheckWaitingToStart(apprenticeship)) return IsPaused(apprenticeship) && !IsWithInFundingPeriod(apprenticeship.StartDate.Value); else return false;
+            return false;
         }
 
-        private static bool IsPaused(GetApprenticeshipResponse apprenticeship)
-        {
-            return apprenticeship.Status == ApprenticeshipStatus.Paused;
-        }
-
-        private bool CheckWaitingToStart(GetApprenticeshipResponse apprenticeship)
-        {
-            return apprenticeship.StartDate.Value > new DateTime(_currentDateTime.UtcNow.Year, _currentDateTime.UtcNow.Month, 1);
-        }
-
-        private static bool IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(GetApprenticeshipResponse apprenticeship, bool isFundedByTransfer)
-        {
-            return isFundedByTransfer
-                    && HasHadDataLockSuccess(apprenticeship)
-                    && IsWaitingToStart(apprenticeship);
-        }
-
-        private static bool IsLiveAndHasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
-        {
-            return IsLive(apprenticeship) && HasHadDataLockSuccess(apprenticeship);
-        }
-
-        private bool IsLiveAndIsNotWithInFundingPeriod(GetApprenticeshipResponse apprenticeship)
-        {
-            return IsLive(apprenticeship) && !IsWithInFundingPeriod(apprenticeship.StartDate.Value);
-        }
-
-        private static bool IsWaitingToStart(GetApprenticeshipResponse apprenticeship)
-        {
-            return apprenticeship.Status == ApprenticeshipStatus.WaitingToStart;
-        }
-
-        private static bool IsLive(GetApprenticeshipResponse apprenticeship)
-        {
-            return apprenticeship.Status == ApprenticeshipStatus.Live;
-        }
-
-        private static bool HasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
-        {
-            return apprenticeship.HasHadDataLockSuccess;
-        }
-
-        private static bool IsEndDateLocked(bool isLockedForUpdate, bool hasHadDataLockSuccess, ApprenticeshipStatus status)
-        {
-            var result = isLockedForUpdate;
-            if (hasHadDataLockSuccess)
-            {
-                result = status == ApprenticeshipStatus.WaitingToStart;
-            }
-
-            return result;
-        }
-
-        private bool IsWithInFundingPeriod(DateTime trainingStartDate)
-        {
-            if (trainingStartDate < _academicYearDateProvider.CurrentAcademicYearStartDate &&
-                 _currentDateTime.UtcNow > _academicYearDateProvider.LastAcademicYearFundingPeriod)
-            {
-                return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 }

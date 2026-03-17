@@ -11,115 +11,114 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+
+public class DraftRequestViewModelMapper : IMapper<CohortsByProviderRequest, DraftViewModel>
 {
-    public class DraftRequestViewModelMapper : IMapper<CohortsByProviderRequest, DraftViewModel>
+    private readonly ICommitmentsApiClient _commitmentsApiClient;
+    private readonly IApprovalsOuterApiClient _approvalsOuterApiClient;
+    private readonly IUrlHelper _urlHelper;
+    private readonly IPasAccountApiClient _pasAccountApiClient;
+    private readonly IEncodingService _encodingService;
+    private readonly IOuterApiClient _outerApiClient;
+
+    public DraftRequestViewModelMapper(
+        ICommitmentsApiClient commitmentApiClient,
+        IApprovalsOuterApiClient approvalsOuterApiClient,
+        IUrlHelper urlHelper,
+        IPasAccountApiClient pasAccountApiClient,
+        IEncodingService encodingSummary,
+        IOuterApiClient outerApiClient)
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IApprovalsOuterApiClient _approvalsOuterApiClient;
-        private readonly IUrlHelper _urlHelper;
-        private readonly IPasAccountApiClient _pasAccountApiClient;
-        private readonly IEncodingService _encodingService;
-        private readonly IOuterApiClient _outerApiClient;
-
-        public DraftRequestViewModelMapper(
-            ICommitmentsApiClient commitmentApiClient,
-            IApprovalsOuterApiClient approvalsOuterApiClient,
-            IUrlHelper urlHelper,
-            IPasAccountApiClient pasAccountApiClient,
-            IEncodingService encodingSummary,
-            IOuterApiClient outerApiClient)
-        {
-            _commitmentsApiClient = commitmentApiClient;
-            _approvalsOuterApiClient = approvalsOuterApiClient;
-            _urlHelper = urlHelper;
-            _pasAccountApiClient = pasAccountApiClient;
-            _encodingService = encodingSummary;
-            _outerApiClient = outerApiClient;
-        }
-
-        public async Task<DraftViewModel> Map(CohortsByProviderRequest source)
-        {
-            async Task<(CohortSummary[] Cohorts, bool HasRelationship, ProviderStatusType providerStatus)> GetData()
-            {
-                var getCohortsTask = _commitmentsApiClient.GetCohorts(new GetCohortsRequest { ProviderId = source.ProviderId });
-                var hasRelationshipTask = _approvalsOuterApiClient.GetHasRelationshipWithPermission(source.ProviderId);
-                var providerStatusTask = _outerApiClient.Get<GetProviderDetailsResponse>(new GetProviderDetailsRequest(source.ProviderId));
-
-                await Task.WhenAll(getCohortsTask, hasRelationshipTask, providerStatusTask);
-                return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result.HasPermission,(ProviderStatusType) providerStatusTask.Result.ProviderStatusTypeId);
-            }
-
-            var (cohorts, hasRelationship, providerStatus) = await GetData();
-            var reviewViewModel = new DraftViewModel
-            {
-                ProviderId = source.ProviderId,
-                SortField = source.SortField,
-                ReverseSort = source.ReverseSort,
-                ApprenticeshipRequestsHeaderViewModel = cohorts.GetCohortCardLinkViewModel(_urlHelper, source.ProviderId, CohortStatus.Draft, hasRelationship, providerStatus),
-                Cohorts = cohorts
-                    .Where(x => x.GetStatus() == CohortStatus.Draft)
-                    .Select(y => new DraftCohortSummaryViewModel
-                    {
-                        CohortReference = _encodingService.Encode(y.CohortId, EncodingType.CohortReference),
-                        EmployerName = y.LegalEntityName,
-                        NumberOfApprentices = y.NumberOfDraftApprentices,
-                        DateCreated = y.CreatedOn
-                    })
-                    .ApplyOrder(source.SortField, source.ReverseSort)
-                    .ToList()
-            };
-
-            return reviewViewModel;
-        }
+        _commitmentsApiClient = commitmentApiClient;
+        _approvalsOuterApiClient = approvalsOuterApiClient;
+        _urlHelper = urlHelper;
+        _pasAccountApiClient = pasAccountApiClient;
+        _encodingService = encodingSummary;
+        _outerApiClient = outerApiClient;
     }
 
-    internal static class DraftRequestViewModelMapperExtension
+    public async Task<DraftViewModel> Map(CohortsByProviderRequest source)
     {
-        internal static IOrderedEnumerable<DraftCohortSummaryViewModel> ApplyOrder(this IEnumerable<DraftCohortSummaryViewModel> cohorts, string sortField, bool reverse)
+        async Task<(CohortSummary[] Cohorts, bool HasRelationship, ProviderStatusType providerStatus)> GetData()
         {
-            switch (sortField)
+            var getCohortsTask = _commitmentsApiClient.GetCohorts(new GetCohortsRequest { ProviderId = source.ProviderId });
+            var hasRelationshipTask = _approvalsOuterApiClient.GetHasRelationshipWithPermission(source.ProviderId);
+            var providerStatusTask = _outerApiClient.Get<GetProviderDetailsResponse>(new GetProviderDetailsRequest(source.ProviderId));
+
+            await Task.WhenAll(getCohortsTask, hasRelationshipTask, providerStatusTask);
+            return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result.HasPermission,(ProviderStatusType) providerStatusTask.Result.ProviderStatusTypeId);
+        }
+
+        var (cohorts, hasRelationship, providerStatus) = await GetData();
+        var reviewViewModel = new DraftViewModel
+        {
+            ProviderId = source.ProviderId,
+            SortField = source.SortField,
+            ReverseSort = source.ReverseSort,
+            ApprenticeshipRequestsHeaderViewModel = cohorts.GetCohortCardLinkViewModel(_urlHelper, source.ProviderId, CohortStatus.Draft, hasRelationship, providerStatus),
+            Cohorts = cohorts
+                .Where(x => x.GetStatus() == CohortStatus.Draft)
+                .Select(y => new DraftCohortSummaryViewModel
+                {
+                    CohortReference = _encodingService.Encode(y.CohortId, EncodingType.CohortReference),
+                    EmployerName = y.LegalEntityName,
+                    NumberOfApprentices = y.NumberOfDraftApprentices,
+                    DateCreated = y.CreatedOn
+                })
+                .ApplyOrder(source.SortField, source.ReverseSort)
+                .ToList()
+        };
+
+        return reviewViewModel;
+    }
+}
+
+internal static class DraftRequestViewModelMapperExtension
+{
+    internal static IOrderedEnumerable<DraftCohortSummaryViewModel> ApplyOrder(this IEnumerable<DraftCohortSummaryViewModel> cohorts, string sortField, bool reverse)
+    {
+        switch (sortField)
+        {
+            case "Employer":
             {
-                case "Employer":
-                    {
-                        if (reverse)
-                            return cohorts
-                                .OrderByDescending(c => c.EmployerName)
-                                .ThenBy(c => c.DateCreated.Date)
-                                .ThenBy(c => c.CohortReference);
+                if (reverse)
+                    return cohorts
+                        .OrderByDescending(c => c.EmployerName)
+                        .ThenBy(c => c.DateCreated.Date)
+                        .ThenBy(c => c.CohortReference);
 
-                        return cohorts
-                            .OrderBy(c => c.EmployerName)
-                            .ThenBy(c => c.DateCreated.Date)
-                            .ThenBy(c => c.CohortReference);
-                    }
-
-                case "CohortReference":
-                    {
-                        return reverse
-                            ? cohorts.OrderByDescending(c => c.CohortReference)
-                            : cohorts.OrderBy(c => c.CohortReference);
-                    }
-
-                case "DateCreated":
-                    {
-                        if (reverse)
-                            return cohorts
-                                .OrderByDescending(c => c.DateCreated.Date)
-                                .ThenBy(c => c.EmployerName)
-                                .ThenBy(c => c.CohortReference);
-
-                        return cohorts
-                            .OrderBy(c => c.DateCreated.Date)
-                            .ThenBy(c => c.EmployerName)
-                            .ThenBy(c => c.CohortReference);
-                    }
+                return cohorts
+                    .OrderBy(c => c.EmployerName)
+                    .ThenBy(c => c.DateCreated.Date)
+                    .ThenBy(c => c.CohortReference);
             }
 
-            return cohorts
-                .OrderBy(c => c.DateCreated.Date)
-                .ThenBy(c => c.EmployerName)
-                .ThenBy(c => c.CohortReference);
+            case "CohortReference":
+            {
+                return reverse
+                    ? cohorts.OrderByDescending(c => c.CohortReference)
+                    : cohorts.OrderBy(c => c.CohortReference);
+            }
+
+            case "DateCreated":
+            {
+                if (reverse)
+                    return cohorts
+                        .OrderByDescending(c => c.DateCreated.Date)
+                        .ThenBy(c => c.EmployerName)
+                        .ThenBy(c => c.CohortReference);
+
+                return cohorts
+                    .OrderBy(c => c.DateCreated.Date)
+                    .ThenBy(c => c.EmployerName)
+                    .ThenBy(c => c.CohortReference);
+            }
         }
+
+        return cohorts
+            .OrderBy(c => c.DateCreated.Date)
+            .ThenBy(c => c.EmployerName)
+            .ThenBy(c => c.CohortReference);
     }
 }
