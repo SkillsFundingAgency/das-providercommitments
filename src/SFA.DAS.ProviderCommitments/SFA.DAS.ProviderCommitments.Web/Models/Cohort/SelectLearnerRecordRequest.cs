@@ -18,4 +18,5 @@ public class SelectLearnerRecordRequest : IAuthorizationContextModel
     public int? StartMonth { get; set; }
     public int StartYear { get; set; } = DateTime.UtcNow.Year;
     public string CourseCode { get; set; }
+    public string LearningTypeValue { get; set; }
 }

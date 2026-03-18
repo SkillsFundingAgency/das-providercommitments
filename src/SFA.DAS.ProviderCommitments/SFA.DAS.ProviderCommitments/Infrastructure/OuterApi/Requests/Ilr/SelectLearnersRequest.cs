@@ -13,4 +13,5 @@ public class SelectLearnersRequest
     public long? CohortId { get; set; }
     public string SearchTerm { get; set; } = string.Empty;
     public bool ReverseSort { get; set; } = false;
+    public string LearningType { get; set; } = string.Empty;
 }
