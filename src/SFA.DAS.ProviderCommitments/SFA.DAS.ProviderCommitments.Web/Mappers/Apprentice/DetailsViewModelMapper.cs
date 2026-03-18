@@ -1,4 +1,4 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
@@ -7,8 +7,6 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
-using Azure;
 using SFA.DAS.Apprenticeships.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
@@ -203,7 +201,7 @@ public class DetailsViewModelMapper : IMapper<DetailsRequest, DetailsViewModel>
         return DetailsViewModel.TriageOption.Update;
     }
 
-    private async Task<GetManageApprenticeshipDetailsResponse> GetAapppprenticeshipData(long apprenticeshipId, long providerId)
+    private async Task<GetManageApprenticeshipDetailsResponse> GetApprenticeshipData(long apprenticeshipId, long providerId)
     {
         var apiRequest = new GetManageApprenticeshipDetailsRequest(providerId, apprenticeshipId);
         var apprenticeshipDetails = await _apiClient.Get<GetManageApprenticeshipDetailsResponse>(apiRequest);
