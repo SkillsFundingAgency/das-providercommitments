@@ -66,7 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                                     ||
                                     IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer)
                                     ||
-                                    editApprenticeship.LearningType == LearningType.ApprenticeshipUnit;
+                                    IsAppUnitAndHasHadDataLockSuccess(editApprenticeship, apprenticeship);
             
             var result = new EditApprenticeshipRequestViewModel(apprenticeship.DateOfBirth, apprenticeship.StartDate, apprenticeship.EndDate, apprenticeship.EmploymentEndDate)
             {
@@ -94,7 +94,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EmploymentPrice = apprenticeship.EmploymentPrice,
                 EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(apprenticeship.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                 HasMultipleDeliveryModelOptions = editApprenticeship.HasMultipleDeliveryModelOptions,
-                CourseName = editApprenticeship.CourseName
+                CourseName = editApprenticeship.CourseName,
+                LearningType = editApprenticeship.LearningType ?? LearningType.Apprenticeship
             };
 
             return result;
@@ -156,6 +157,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             return apprenticeship.HasHadDataLockSuccess;
         }
+
+        private static bool IsAppUnitAndHasHadDataLockSuccess(GetEditApprenticeshipResponse editResponse, GetApprenticeshipResponse apprenticeship)
+        {
+            return editResponse.LearningType == LearningType.ApprenticeshipUnit && HasHadDataLockSuccess(apprenticeship);
+        }
+
 
         private static bool IsEndDateLocked(bool isLockedForUpdate, bool hasHadDataLockSuccess, ApprenticeshipStatus status)
         {
