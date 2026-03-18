@@ -40,6 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Learners
                     { nameof(filterModel.ReverseSort), filterModel.ReverseSort.ToString() },
                     { nameof(filterModel.EmployerAccountLegalEntityPublicHashedId), filterModel.EmployerAccountLegalEntityPublicHashedId },
                     { nameof(filterModel.CohortReference), filterModel.CohortReference },
+                    { nameof(filterModel.LearningTypeValue), filterModel.LearningTypeValue },
                     { "page", (index + 1).ToString() }
                 });
             }
