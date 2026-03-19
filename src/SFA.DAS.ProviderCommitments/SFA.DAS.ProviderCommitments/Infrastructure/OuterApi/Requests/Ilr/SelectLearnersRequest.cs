@@ -1,4 +1,8 @@
-﻿namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using SFA.DAS.Common.Domain.Types;
+
+namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 
 public class SelectLearnersRequest
 {
@@ -13,5 +17,6 @@ public class SelectLearnersRequest
     public long? CohortId { get; set; }
     public string SearchTerm { get; set; } = string.Empty;
     public bool ReverseSort { get; set; } = false;
-    public string LearningType { get; set; } = string.Empty;
+    [JsonConverter(typeof(StringEnumConverter))]
+    public LearningType? LearningType { get; set; }
 }

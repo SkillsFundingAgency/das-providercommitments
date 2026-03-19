@@ -17,7 +17,7 @@
                 "startmonth" => "",
                 "startyear" => "",
                 "coursecode" => "",
-                "learningtypevalue" => "",
+                "learningtype" => "",
                 _ => q.Value.ToString()
             };
         });
@@ -114,8 +114,8 @@
                 <div class="govuk-grid-row">
                     <div class="govuk-grid-column-one-third">
                         <div class="govuk-form-group">
-                            <label class="govuk-label" for="FilterModel.LearningType">Training type</label>
-                            <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.LearningTypeValue" name="LearningTypeValue" asp-items="Model.FilterModel.LearningType">
+                            <label class="govuk-label" for="FilterModel.LearningTypes">Training type</label>
+                            <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.LearningType" name="LearningType" asp-items="Model.FilterModel.LearningTypes">
                             </select>
                         </div>
                     </div>
@@ -126,7 +126,7 @@
 
                     <button class="govuk-button govuk-!-margin-0 govuk-!-margin-top-1" type="submit">Apply filters</button>
 
-                    @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm) || !string.IsNullOrWhiteSpace(Model.FilterModel.StartMonth) || Model.FilterModel.StartYear != DateTime.Now.Year.ToString() || !string.IsNullOrWhiteSpace(Model.FilterModel.CourseCode) || !string.IsNullOrWhiteSpace(Model.FilterModel.LearningTypeValue))
+                    @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm) || !string.IsNullOrWhiteSpace(Model.FilterModel.StartMonth) || Model.FilterModel.StartYear != DateTime.Now.Year.ToString() || !string.IsNullOrWhiteSpace(Model.FilterModel.CourseCode) || Model.FilterModel.LearningType.HasValue)
                     {
                         <a class="govuk-link govuk-link--no-visited-state govuk-!-margin-left-2 govuk-!-margin-top-2 govuk-!-font-size-19" style="display:inline-block" asp-route="@RouteNames.SelectLearnerRecord" asp-all-route-data="@routeValues">Clear search and filters</a>
                     }

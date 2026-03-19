@@ -124,7 +124,7 @@ public class SelectLearnerRecordViewModelTests
         routeData["CohortReference"].Should().Be(_viewModel.FilterModel.CohortReference);
         routeData["StartMonth"].Should().Be(_viewModel.FilterModel.StartMonth);
         routeData["StartYear"].Should().Be(_viewModel.FilterModel.StartYear);
-        routeData["LearningTypeValue"].Should().Be(_viewModel.FilterModel.LearningTypeValue);
+        routeData["LearningType"].Should().Be(_viewModel.FilterModel.LearningType.ToString());
     }
 
     [Test]

@@ -9,6 +9,7 @@ using System.Net;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.Common.Domain.Types;
+using FluentAssertions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -100,8 +101,8 @@ public class LearnerRecordsFilterModel
     public List<SelectListItem> YearNames { get; set; }
     public string CourseCode { get; set; }
     public List<SelectListItem> Courses { get; set; }
-    public string LearningTypeValue { get; set; }
-    public List<SelectListItem> LearningType { get; set; }
+    public LearningType? LearningType { get; set; }
+    public List<SelectListItem> LearningTypes { get; set; }
 
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
@@ -125,14 +126,14 @@ public class LearnerRecordsFilterModel
                     Value = m.ToString()
                 }).ToList();
 
-        LearningType = new List<SelectListItem>
+        LearningTypes = new List<SelectListItem>
         {
             new SelectListItem("All", "")
         };
 
         foreach (var value in Enum.GetValues<LearningType>())
         {
-            LearningType.Add(new SelectListItem(value.GetEnumDescription(), value.ToString()));
+            LearningTypes.Add(new SelectListItem(value.GetEnumDescription(), ((byte)value).ToString()));
         }
     }
 
@@ -162,7 +163,7 @@ public class LearnerRecordsFilterModel
 
         routeData.Add(nameof(StartMonth), StartMonth);
         routeData.Add(nameof(StartYear), StartYear);
-        routeData.Add(nameof(LearningTypeValue), LearningTypeValue);
+        routeData.Add(nameof(LearningType), LearningType.ToString());
 
         return routeData;
     }
@@ -299,9 +300,9 @@ public class LearnerRecordsFilterModel
             }
         }
 
-        if (!string.IsNullOrWhiteSpace(LearningTypeValue))
+        if (LearningType.HasValue)
         {
-            var item = LearningType.FirstOrDefault(x => x.Value == LearningTypeValue);
+            var item = LearningTypes.FirstOrDefault(x => x.Value == LearningType.ToString());
             if (item != null)
             {
                 filters.Add(WebUtility.HtmlEncode(item.Text));
