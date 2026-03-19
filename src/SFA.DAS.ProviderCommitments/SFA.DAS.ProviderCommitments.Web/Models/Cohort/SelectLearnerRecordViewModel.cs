@@ -57,9 +57,10 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
             var timeString = britishDateTime.ToString("h:mmtt");
             // Ensure consistent AM/PM format across platforms
             timeString = timeString.Replace("am", "AM").Replace("pm", "PM");
-            return $"Last updated {timeString} on {britishDateTime:dddd d MMMM}";
+            return $"List updated: {timeString} on {britishDateTime:dd MMM yyyy}";
         }
     }
+
     public bool ShowPageLinks => FilterModel.TotalNumberOfLearnersFound > Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
     public LearnerRecordsFilterModel FilterModel { get; set; }
@@ -75,6 +76,7 @@ public class LearnerRecordsFilterModel
     public int PageNumber { get; set; } = 1;
     public string SearchTerm { get; set; }
     public int TotalNumberOfLearnersFound { get; set; }
+
     public HtmlString TotalNumberOfApprenticeshipsFoundDescription =>
         new HtmlString($"{TotalNumberOfLearnersFound} apprentice records found " + GetFiltersUsedMessage());
 
@@ -88,6 +90,8 @@ public class LearnerRecordsFilterModel
     public string StartYear { get; set; } = DateTime.UtcNow.Year.ToString();
     public List<SelectListItem> MonthNames { get; set; }
     public List<SelectListItem> YearNames { get; set; }
+    public string CourseCode { get; set; }
+    public List<SelectListItem> Courses { get; set; }
 
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
@@ -256,14 +260,23 @@ public class LearnerRecordsFilterModel
 
         if (!string.IsNullOrWhiteSpace(StartMonth))
         {
-            var item = MonthNames.FirstOrDefault(x=>x.Value == StartMonth);
-            if(item != null)
+            var item = MonthNames.FirstOrDefault(x => x.Value == StartMonth);
+            if (item != null)
             {
                 filters.Add(WebUtility.HtmlEncode(item.Text));
             }
         }
 
         filters.Add(WebUtility.HtmlEncode(StartYear));
+
+        if (!string.IsNullOrWhiteSpace(CourseCode))
+        {
+            var item = Courses.FirstOrDefault(x => x.Value == CourseCode);
+            if (item != null)
+            {
+                filters.Add(WebUtility.HtmlEncode(item.Text));
+            }
+        }
 
         return filters;
     }
