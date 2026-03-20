@@ -83,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 IsContinuation = apprenticeship.IsContinuation,
                 IsLockedForUpdate = isLockedForUpdate,
                 IsUpdateLockedForStartDateAndCourse = editApprenticeship.IsFundedByTransfer && !apprenticeship.HasHadDataLockSuccess,
-                IsEndDateLockedForUpdate = IsEndDateLocked(isLockedForUpdate, apprenticeship.HasHadDataLockSuccess, apprenticeship.Status),
+                IsEndDateLockedForUpdate = IsEndDateLocked(isLockedForUpdate, apprenticeship.HasHadDataLockSuccess, apprenticeship.Status, editApprenticeship.LearningType),
                 TrainingName = courseDetails.TrainingProgramme.Name,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 EmployerName = apprenticeship.EmployerName,
@@ -164,10 +164,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         }
 
 
-        private static bool IsEndDateLocked(bool isLockedForUpdate, bool hasHadDataLockSuccess, ApprenticeshipStatus status)
+        private static bool IsEndDateLocked(bool isLockedForUpdate, bool hasHadDataLockSuccess, ApprenticeshipStatus status, LearningType? learningType)
         {
             var result = isLockedForUpdate;
-            if (hasHadDataLockSuccess)
+            if (hasHadDataLockSuccess && learningType != LearningType.ApprenticeshipUnit)
             {
                 result = status == ApprenticeshipStatus.WaitingToStart;
             }

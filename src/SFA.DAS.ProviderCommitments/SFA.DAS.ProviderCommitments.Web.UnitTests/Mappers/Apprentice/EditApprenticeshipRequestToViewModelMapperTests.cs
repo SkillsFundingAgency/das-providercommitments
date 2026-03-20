@@ -359,6 +359,27 @@ public class EditApprenticeshipRequestToViewModelMapperTests
         viewModel.IsEndDateLockedForUpdate.Should().Be(expectedIsEndDateLockedForUpdate);
     }
 
+    [TestCase(LearningType.Apprenticeship, true)]
+    [TestCase(LearningType.FoundationApprenticeship, true)]
+    [TestCase(LearningType.ApprenticeshipUnit, true)]
+    public async Task IsEndDateLockedForUpdateWhenWaitingToStart_Is_Mapped(LearningType learningType, bool expectedIsEndDateLockedForUpdate)
+    {
+        var status = ApprenticeshipStatus.WaitingToStart;
+
+        _fixture
+            .NotTransferSender()
+            .SetApprenticeshipStatus(status)
+            .SetLearningType(learningType)
+            .SetDataLockSuccess(true);
+
+        //Act
+        var viewModel = await _fixture.Map();
+
+        //Assert
+        viewModel.IsEndDateLockedForUpdate.Should().Be(expectedIsEndDateLockedForUpdate);
+    }
+
+
     [Test]
     public async Task AccountLegalEntity_IsMapped()
     {
