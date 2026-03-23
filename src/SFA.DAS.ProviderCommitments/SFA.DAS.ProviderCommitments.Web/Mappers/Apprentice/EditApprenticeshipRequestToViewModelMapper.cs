@@ -7,6 +7,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.Common.Domain.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -49,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var courseDetails = courseDetailsTask.Result;
             var accountDetails = accountDetailsTask.Result;
 
-            var courses = accountDetails.LevyStatus == ApprenticeshipEmployerType.NonLevy || editApprenticeship.IsFundedByTransfer
+            var courses = accountDetails.LevyStatus == CommitmentsV2.Types.ApprenticeshipEmployerType.NonLevy || editApprenticeship.IsFundedByTransfer
                 ? (await _commitmentsApiClient.GetAllTrainingProgrammeStandards(CancellationToken.None)).TrainingProgrammes
                 : (await _commitmentsApiClient.GetAllTrainingProgrammes(CancellationToken.None)).TrainingProgrammes;
 
@@ -63,8 +64,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                                     ||
                                     IsPausedAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer)
                                     ||
-                                    IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer);
-
+                                    IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer)
+                                    ||
+                                    IsAppUnitAndHasHadDataLockSuccess(editApprenticeship, apprenticeship);
             
             var result = new EditApprenticeshipRequestViewModel(apprenticeship.DateOfBirth, apprenticeship.StartDate, apprenticeship.EndDate, apprenticeship.EmploymentEndDate)
             {
@@ -92,7 +94,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EmploymentPrice = apprenticeship.EmploymentPrice,
                 EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(apprenticeship.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                 HasMultipleDeliveryModelOptions = editApprenticeship.HasMultipleDeliveryModelOptions,
-                CourseName = editApprenticeship.CourseName
+                CourseName = editApprenticeship.CourseName,
+                LearningType = editApprenticeship.LearningType ?? LearningType.Apprenticeship
             };
 
             return result;
@@ -154,6 +157,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             return apprenticeship.HasHadDataLockSuccess;
         }
+
+        private static bool IsAppUnitAndHasHadDataLockSuccess(GetEditApprenticeshipResponse editResponse, GetApprenticeshipResponse apprenticeship)
+        {
+            return editResponse.LearningType == LearningType.ApprenticeshipUnit && HasHadDataLockSuccess(apprenticeship);
+        }
+
 
         private static bool IsEndDateLocked(bool isLockedForUpdate, bool hasHadDataLockSuccess, ApprenticeshipStatus status)
         {

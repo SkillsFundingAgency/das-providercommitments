@@ -301,8 +301,7 @@
                                     Maximum funding band for this course
                                 </dt>
                                 <dd class="govuk-summary-list__value" id="cost-value">
-                                    @DisplayCost(Model.Cost)
-                                    @Html.HiddenFor(x => x.Cost)
+                                    @DisplayCost(Model.ProposedMaxFunding)
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
                                     <a class="govuk-link" href="#"><span class="govuk-visually-hidden"> Apprenticeship training course</span></a>
@@ -415,6 +414,7 @@
                                     </dt>
                                     <dd class="govuk-summary-list__value">
                                         @DisplayCost(@Model.Cost)
+                                        @Html.HiddenFor(x => x.Cost)
                                     </dd>
                                     <dd class="govuk-summary-list__actions">
                                         <a class="govuk-link" href="#">
