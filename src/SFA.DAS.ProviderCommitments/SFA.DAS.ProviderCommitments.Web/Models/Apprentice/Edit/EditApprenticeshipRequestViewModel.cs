@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 
@@ -99,5 +100,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
 
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public LearningType LearningType { get; set; }
     }
 }
