@@ -75,5 +75,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
         public int? DurationReducedByHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
         public string TrainingCourseVersion { get; set; }
+        public int? ProposedMaxFunding { get; set; }
     }
 }

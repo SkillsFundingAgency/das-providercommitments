@@ -4,6 +4,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
@@ -290,6 +291,24 @@ public class EditApprenticeshipRequestToViewModelMapperTests
         viewModel.IsLockedForUpdate.Should().Be(expectedIsLockedForUpdated);
     }
 
+    [TestCase(LearningType.Apprenticeship, false)]
+    [TestCase(LearningType.FoundationApprenticeship, false)]
+    [TestCase(LearningType.ApprenticeshipUnit, true)]
+    public async Task IsLockedForUpdate_DependingOnLearningType_And_WaitingToStart(LearningType learningType, bool expectedIsLockedForUpdated)
+    {
+        _fixture.NotTransferSender()
+            .IsWaitingToStartAndIsNotWithInFundingPeriod()
+            .SetLearningType(learningType)
+            .SetDataLockSuccess(true);
+
+        //Act
+        var viewModel = await _fixture.Map();
+
+        //Assert
+        viewModel.IsLockedForUpdate.Should().Be(expectedIsLockedForUpdated);
+    }
+
+
     [TestCase(ApprenticeshipStatus.WaitingToStart, true, true)]
     [TestCase(ApprenticeshipStatus.WaitingToStart, false, false)]
     public async Task IsLockedForUpdate_Is_Mapped_With_ApprenticeshipStatus_And_IsFundedByTransfer_And_HasDataLockSuccess_Condition(ApprenticeshipStatus status, bool hasHadDataLockSuccess, bool expectedIsLockedForUpdated)
@@ -409,13 +428,13 @@ public class EditApprenticeshipRequestToViewModelMapperTestsFixture
 
     internal EditApprenticeshipRequestToViewModelMapperTestsFixture SetUpLevyAccount()
     {
-        _accountResponse.LevyStatus = ApprenticeshipEmployerType.Levy;
+        _accountResponse.LevyStatus = CommitmentsV2.Types.ApprenticeshipEmployerType.Levy;
         return this;
     }
 
     internal EditApprenticeshipRequestToViewModelMapperTestsFixture SetUpNonLevyAccount()
     {
-        _accountResponse.LevyStatus = ApprenticeshipEmployerType.NonLevy;
+        _accountResponse.LevyStatus = CommitmentsV2.Types.ApprenticeshipEmployerType.NonLevy;
         return this;
     }
 
@@ -566,6 +585,12 @@ public class EditApprenticeshipRequestToViewModelMapperTestsFixture
     internal EditApprenticeshipRequestToViewModelMapperTestsFixture SetApprenticeshipStatus(ApprenticeshipStatus status)
     {
         ApprenticeshipResponse.Status = status;
+        return this;
+    }
+
+    internal EditApprenticeshipRequestToViewModelMapperTestsFixture SetLearningType(LearningType learningType)
+    {
+        _editApprenticeshipResponse.LearningType = learningType;
         return this;
     }
 
