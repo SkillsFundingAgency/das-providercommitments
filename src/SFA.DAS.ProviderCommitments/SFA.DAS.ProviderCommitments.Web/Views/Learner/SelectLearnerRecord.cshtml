@@ -1,3 +1,4 @@
+@using SFA.DAS.ProviderCommitments.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
@@ -181,7 +182,10 @@
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    Course
+                    Training type
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    Training course
                 </th>
                 <th scope="col" class="govuk-table__header">
                     <a class="@(Model.FilterModel.SortField == "StartDate" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
@@ -206,11 +210,18 @@
                     <td class="govuk-table__cell" data-label="ULN">
                         @apprenticeship.Uln
                     </td>
+                    <td class="govuk-table__cell" data-label="Apprenticeship training type">
+                        <nobr>
+                            @apprenticeship.LearningType?.GetEnumDescription()
+                        </nobr>
+                    </td>
                     <td class="govuk-table__cell" data-label="Apprenticeship training course">
                         @apprenticeship.CourseName
                     </td>
                     <td class="govuk-table__cell" data-label="StartDate">
-                        @apprenticeship.StartDate.ToString("dd MMM yyyy")
+                        <nobr>
+                            @apprenticeship.StartDate.ToString("dd MMM yyyy")
+                        </nobr>
                     </td>
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
                         @if (string.IsNullOrWhiteSpace(Model.CohortReference))
