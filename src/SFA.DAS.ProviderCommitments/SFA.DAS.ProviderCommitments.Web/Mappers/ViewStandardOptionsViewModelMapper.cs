@@ -11,13 +11,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IOuterApiClient _outerApiClient;
 
-        public ViewStandardOptionsViewModelMapper (ICommitmentsApiClient commitmentsApiClient, IOuterApiClient outerApiClient)
+        public ViewStandardOptionsViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IOuterApiClient outerApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _outerApiClient = outerApiClient;
         }
+
         public async Task<ViewSelectOptionsViewModel> Map(SelectOptionsRequest source)
-        {            
+        {
             var apiRequest = new GetEditDraftApprenticeshipRequest(source.ProviderId, (long)source.CohortId, (long)source.DraftApprenticeshipId, null);
             var draftApprenticeship = await _outerApiClient.Get<GetEditDraftApprenticeshipResponse>(apiRequest);
 
@@ -37,7 +38,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 SelectedOption = draftApprenticeship.TrainingCourseOption == string.Empty ? "-1" : draftApprenticeship.TrainingCourseOption,
                 HasSelectedRpl = draftApprenticeship.RecognisePriorLearning,
                 ApprenticeshipStartDate = draftApprenticeship.StartDate,
-                LearnerDataId = draftApprenticeship.LearnerDataId
+                LearnerDataId = draftApprenticeship.LearnerDataId,
+                OriginalSelectedOption = draftApprenticeship.TrainingCourseOption == string.Empty ? "-1" : draftApprenticeship.TrainingCourseOption,
             };
         }
     }
