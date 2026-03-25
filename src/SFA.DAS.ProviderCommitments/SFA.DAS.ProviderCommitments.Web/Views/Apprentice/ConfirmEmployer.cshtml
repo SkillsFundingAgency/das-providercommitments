@@ -36,7 +36,7 @@
                 <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            Is this the new employer you'd like to move the apprentice record to?
+                            Is this the new employer you'd like to move the learner record to?
                         </legend>
                         @Html.ValidationMessageFor(m => m.Confirm, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Confirm) })
                         <div class="govuk-radios">

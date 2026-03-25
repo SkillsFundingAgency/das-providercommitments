@@ -4,6 +4,7 @@ public class SelectEmployerFilterModel
 {
     public const string EmployerAccountLegalEntityNameConst = "EmployerAccountLegalEntityName";
     public const string EmployerAccountNameConst = "EmployerAccountName";
+    public const string AgreementId = "AgreementId";
 
     private static readonly int PageSize = Constants.SelectEmployer.NumberOfEmployersPerPage;
 
