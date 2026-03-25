@@ -1,25 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 
 public class GetLearnerDetailsForProviderRequest(
     long? providerId,
-    long? accountLegalEntityId,
-    long? cohortId,
-    string searchTerm,
-    string sortColumn,
-    bool sortDesc,
-    int page, 
-    int? startMonth, 
-    int startYear)
+    SelectLearnersRequest request)
     : IGetApiRequest
 {
     public string GetUrl =>
-        $"providers/{providerId}/unapproved/add/learners/select?AccountLegalEntityId={accountLegalEntityId}&cohortId={cohortId}&SearchTerm={WebUtility.UrlEncode(searchTerm)}" +
-        $"&SortColumn={WebUtility.UrlEncode(sortColumn)}&SortDescending={sortDesc}&Page={page}&pageSize={Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage}" +
-        $"&startMonth={startMonth}&startYear={startYear}";
+        $"providers/{providerId}/unapproved/add/learners/select?AccountLegalEntityId={request.AccountLegalEntityId}&cohortId={request.CohortId}&SearchTerm={WebUtility.UrlEncode(request.SearchTerm)}" +
+        $"&SortColumn={WebUtility.UrlEncode(request.SortColumn)}&SortDescending={request.SortDescending}&Page={request.Page}&pageSize={Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage}" +
+        $"&startMonth={request.StartMonth}&startYear={request.StartYear}&courseCode={request.CourseCode}";
 }
 
 public class GetLearnerDetailsForProviderResponse
@@ -33,6 +27,7 @@ public class GetLearnerDetailsForProviderResponse
     public string EmployerName { get; set; }
     public List<GetLearnerSummary> Learners { get; set; }
     public int FutureMonths { get; set; }
+    public IEnumerable<TrainingCourse> TrainingCourses { get; set; }
 }
 
 public class GetLearnerSummary
