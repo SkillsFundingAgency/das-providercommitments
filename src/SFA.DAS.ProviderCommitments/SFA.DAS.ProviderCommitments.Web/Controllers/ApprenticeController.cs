@@ -6,6 +6,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
@@ -396,6 +397,11 @@ public class ApprenticeController(
     public async Task<IActionResult> EditApprenticeship(EditApprenticeshipRequest request)
     {
         var viewModel = TempData.Get<EditApprenticeshipRequestViewModel>(ViewModelForEdit) ?? await modelMapper.Map<EditApprenticeshipRequestViewModel>(request);
+
+        if(viewModel.LearningType == LearningType.ApprenticeshipUnit)
+        {
+            return View("EditApprenticeshipForAppUnit", viewModel);
+        }
         return View(viewModel);
     }
 
