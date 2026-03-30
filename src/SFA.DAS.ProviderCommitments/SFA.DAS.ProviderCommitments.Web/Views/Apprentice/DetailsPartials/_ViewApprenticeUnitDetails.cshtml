@@ -8,15 +8,46 @@
 @{
     ViewData["Title"] = "Apprentice Details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
-    ViewBag.GaData.Org = Model.Employer;    
+    ViewBag.GaData.Org = Model.Employer;
 }
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
-    <div class="govuk-grid-column-two-thirds">        
+    <div class="govuk-grid-column-two-thirds">
 
         <h1 class="govuk-heading-l">View details for @Model.ApprenticeName</h1>
 
-        <p>Edit details if there's a change in learner or training circumstances.</p>
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Help with your changes to the learner's employer
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <p class="govuk-body">
+                    If a learner needs to move to a new employer you should:
+                </p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>
+                        contact their original employer and ask them to stop the learner
+                        record
+                    </li>
+                    <li>
+                        speak to the new employer to agree new training dates and
+                        price
+                    </li>
+
+                    <li>
+                        request permission to move the learner to the new employer's
+                        Apprenticeship service account.
+                    </li>
+                </ul>
+                <p>Once you've agreed these details, you can change the employer.</p>
+                <p>
+                    Non-levy employers will not need apprenticeship funding reserved when taking on an learner from another
+                    employer.
+                </p>
+            </div>
+        </details>
 
         <h2 class="govuk-heading-m">Learner status</h2>
 
@@ -62,13 +93,13 @@
                     <th scope="row" class="govuk-table__header">Agreement ID</th>
                     <td id="apprenticeship-agreement-id" class="govuk-table__cell">@Model.AgreementId</td>
                     <td class="govuk-table__cell"></td>
-                </tr> 
+                </tr>
             </tbody>
         </table>
 
         <div class="govuk-grid-row govuk-!-margin-bottom-2">
             <div class="govuk-grid-column-two-thirds">
-                <h2 class="govuk-heading-m">Training details</h2>
+                <h2 class="govuk-heading-m">Learner details</h2>
             </div>
             <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
                 @if (Model.AllowEditApprentice)
@@ -89,7 +120,14 @@
                     </td>
                     <td class="govuk-table__cell"></td>
                 </tr>
-                
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Email</th>
+                    <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-55">
+                        @Model.Email
+                    </td>
+                    <td class="govuk-table__cell"></td>
+                </tr>
+
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Date of birth</th>
                     <td id="apprentice-dob" class="govuk-table__cell">@Model.DateOfBirth.ToGdsFormat()</td>
@@ -104,7 +142,7 @@
                     <th scope="row" class="govuk-table__header">Training course</th>
                     <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
                     <td class="govuk-table__cell"></td>
-                </tr>               
+                </tr>
 
                 @if (!Model.HasPendingStartDateChange)
                 {
@@ -124,17 +162,24 @@
                     <th scope="row" class="govuk-table__header">Planned training end date</th>
                     <td id="apprentice-end-date" class="govuk-table__cell">@Model.EndDate.ToGdsFormatWithoutDay()</td>
                     <td class="govuk-table__cell"></td>
-                </tr>               
+                </tr>
 
                 @if (!Model.HasPendingPriceChange)
-                {                   
+                {
                     <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                        <th scope="row" class="govuk-table__header">Total agreed training price</th>
                         <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
                         <td class="govuk-table__cell"></td>
                     </tr>
-                }               
+                }
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Your reference</th>
+                    <td id="apprentice-end-date" class="govuk-table__cell">@Model.ProviderRef</td>
+                    <td class="govuk-table__cell"></td>
+                </tr>
+
             </tbody>
-        </table> 
+        </table>
     </div>
 </div>
