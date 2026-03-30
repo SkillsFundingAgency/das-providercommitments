@@ -34,8 +34,8 @@ public class FileUploadMapperBase(IEncodingService encodingService, IOuterApiSer
             RecognisePriorLearningAsString = csvRecord.RecognisePriorLearning,
             TrainingTotalHoursAsString = csvRecord.TrainingTotalHours,
             TrainingHoursReductionAsString = csvRecord.TrainingHoursReduction,
-            IsDurationReducedByRPLAsString = DefaultIsDurationReducedByRplToAppropriateValueIfNotSetBasedOnDurationReducedByValue(csvRecord),
-            DurationReducedByAsString = BlankDurationReducedByIfItsSetToZeroAndIsDurationReducedByRplIsNotSet(csvRecord),
+            IsDurationReducedByRPLAsString = default,
+            DurationReducedByAsString = default,
             PriceReducedByAsString = csvRecord.PriceReducedBy,
         }).ToList();
     }

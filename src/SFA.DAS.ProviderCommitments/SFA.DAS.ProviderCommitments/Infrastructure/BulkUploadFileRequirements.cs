@@ -19,13 +19,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             nameof(CsvRecord.AgreementId),
             nameof(CsvRecord.EmailAddress),
             nameof(CsvRecord.RecognisePriorLearning),
-            nameof(CsvRecord.DurationReducedBy),
             nameof(CsvRecord.PriceReducedBy),
         };
 
         public static readonly string[] OptionalHeaders = {
             nameof(CsvRecord.TrainingTotalHours),
             nameof(CsvRecord.IsDurationReducedByRPL),
+            nameof(CsvRecord.DurationReducedBy),
             nameof(CsvRecord.TrainingHoursReduction)
         };
 
@@ -57,7 +57,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
                     headers.Contains(nameof(CsvRecord.DurationReducedBy), StringComparer.InvariantCultureIgnoreCase) &&
                     headers.Contains(nameof(CsvRecord.PriceReducedBy), StringComparer.InvariantCultureIgnoreCase) && 
                     headers.Contains(nameof(CsvRecord.TrainingTotalHours), StringComparer.InvariantCultureIgnoreCase) &&
-                    headers.Contains(nameof(CsvRecord.IsDurationReducedByRPL), StringComparer.InvariantCultureIgnoreCase) &&
                     headers.Contains(nameof(CsvRecord.TrainingHoursReduction), StringComparer.InvariantCultureIgnoreCase);
         }
     }
