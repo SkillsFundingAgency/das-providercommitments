@@ -124,7 +124,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     WithdrawalChangedDate = data.LearnerStatusDetails.WithdrawalChangedDate,
                     LastCensusDateOfLearning = data.LearnerStatusDetails.LastCensusDateOfLearning,
                     LastDayOfLearning = data.LearnerStatusDetails.LastDayOfLearning,
-                    EmploymentStatus = MapEmploymentStatus(data.Apprenticeship.EmployerVerificationStatus, data.Apprenticeship.EmployerVerificationNotes)
+                    EmploymentStatus = MapEmploymentStatus(data.Apprenticeship.EmployerVerificationStatus, data.Apprenticeship.EmployerVerificationNotes),
                     LearningType = data.Apprenticeship.LearningType,
                 };
             }
