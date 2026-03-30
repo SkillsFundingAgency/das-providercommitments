@@ -357,4 +357,11 @@ public class WhenIMapEditDraftApprenticeshipDetailsToViewModel
         var result = await _act();
         result.IsRplRequired.Should().Be(_rplRequirementsResponse.IsRequired);
     }
+
+    [Test]
+    public async Task ThenProposedMaxFundingIsMappedCorrectly()
+    {
+        var result = await _act();
+        result.ProposedMaxFunding.Should().Be(_apiResponse.ProposedMaxFunding);
+    }
 }
