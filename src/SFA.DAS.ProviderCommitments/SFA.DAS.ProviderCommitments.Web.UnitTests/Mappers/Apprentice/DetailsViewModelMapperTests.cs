@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions.Execution;
@@ -736,6 +736,78 @@ public class DetailsViewModelMapperTests
         _fixture.Result.LastCensusDateOfLearning.Should().Be(_fixture.ApiResponse.LearnerStatusDetails.LastCensusDateOfLearning);
     }
 
+    [Test]
+    public async Task ThenEmploymentStatusIsBlank_WhenNoEmployerVerificationStatus()
+    {
+        _fixture.WithEmployerVerificationStatus(null, null);
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().BeNullOrEmpty();
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsBlank_WhenStatusPending()
+    {
+        _fixture.WithEmployerVerificationStatus(0, null); // Pending
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().BeNullOrEmpty();
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsEmployed_WhenStatusPassed()
+    {
+        _fixture.WithEmployerVerificationStatus(2, null); // Passed
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().Be("Employed");
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsNotVerified_WhenStatusFailed()
+    {
+        _fixture.WithEmployerVerificationStatus(3, null); // Failed
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().Be("Not Verified");
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsNotVerifiedPayeAndNino_WhenErrorNinoAndPAYENotFound()
+    {
+        _fixture.WithEmployerVerificationStatus(4, "NinoAndPAYENotFound");
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().Be("Not verified - missing PAYE scheme and invalid NINO");
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsNotVerifiedNoPaye_WhenErrorPayeNotFound()
+    {
+        _fixture.WithEmployerVerificationStatus(4, "PAYENotFound");
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().Be("Not verified - missing PAYE scheme");
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsNotVerifiedNino_WhenErrorNinoNotes()
+    {
+        _fixture.WithEmployerVerificationStatus(4, "NinoFailure");
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().Be("Not Verified - missing or invalid NINO");
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsNotVerified_WhenErrorHmrcFailure()
+    {
+        _fixture.WithEmployerVerificationStatus(4, "HmrcFailure");
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().Be("Not Verified");
+    }
+
     public class DetailsViewModelMapperFixture
     {
         private DetailsViewModelMapper _sut;
@@ -813,13 +885,14 @@ public class DetailsViewModelMapperTests
             var commitmentsApiClient = new Mock<IOuterApiClient>();
 
             commitmentsApiClient.Setup(x =>
-                    x.Get<GetManageApprenticeshipDetailsResponse>(It.IsAny<GetManageApprenticeshipDetailsRequest>()))
+                    x.Get<GetManageApprenticeshipDetailsResponse>(It.Is<GetManageApprenticeshipDetailsRequest>(r =>
+                        r.ProviderId == Source.ProviderId && r.ApprenticeshipId == Source.ApprenticeshipId)))
                 .ReturnsAsync(ApiResponse);
 
-            apiClient.Setup(x => x.GetNewerTrainingProgrammeVersions(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            apiClient.Setup(x => x.GetNewerTrainingProgrammeVersions(ApiResponse.Apprenticeship.StandardUId, default))
                 .ReturnsAsync(GetNewerTrainingProgrammeVersionsResponse);
 
-            apiClient.Setup(x => x.GetTrainingProgrammeVersionByStandardUId(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            apiClient.Setup(x => x.GetTrainingProgrammeVersionByStandardUId(ApiResponse.Apprenticeship.StandardUId, default))
                 .ReturnsAsync(GetTrainingProgrammeByStandardUIdResponse);
 
             _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, commitmentsApiClient.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
@@ -1129,6 +1202,13 @@ public class DetailsViewModelMapperTests
         public DetailsViewModelMapperFixture WithLearnerStatusDetailsSetTo(LearnerStatusDetails learnerStatusDetails)
         {
             ApiResponse.LearnerStatusDetails = learnerStatusDetails;
+            return this;
+        }
+
+        public DetailsViewModelMapperFixture WithEmployerVerificationStatus(int? status, string notes)
+        {
+            ApiResponse.Apprenticeship.EmployerVerificationStatus = status;
+            ApiResponse.Apprenticeship.EmployerVerificationNotes = notes;
             return this;
         }
     }
