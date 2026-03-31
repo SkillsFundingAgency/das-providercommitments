@@ -92,7 +92,7 @@ public class GetManageApprenticeshipDetailsResponse
         public bool? IsDurationReducedByRpl { get; set; }
         public int? EmployerVerificationStatus { get; set; }
         public string EmployerVerificationNotes { get; set; }
-        public LearningType? LearningType { get; set; }
+        public Common.Domain.Types.LearningType? LearningType { get; set; }
     }
 
     public class PriceEpisode

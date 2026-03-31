@@ -96,7 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime? WithdrawalChangedDate { get; set; }
         public DateTime? LastCensusDateOfLearning { get; set; }
         public DateTime? LastDayOfLearning { get; set; }
-        public LearningType? LearningType { get; set; }
+        public Common.Domain.Types.LearningType? LearningType { get; set; }
 
         public enum DataLockSummaryStatus
         {

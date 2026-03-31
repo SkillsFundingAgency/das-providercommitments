@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
@@ -19,7 +19,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.13" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.13" />
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-        <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
+        <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.113" />
         <PackageReference Include="SFA.DAS.DfESignIn.Auth" Version="17.1.142" />
         <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="17267.0.559" />
         <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="17267.0.559" />
