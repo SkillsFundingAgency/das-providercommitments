@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using AutoFixture.Dsl;
-using FluentAssertions.Execution;
 using Microsoft.Extensions.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
