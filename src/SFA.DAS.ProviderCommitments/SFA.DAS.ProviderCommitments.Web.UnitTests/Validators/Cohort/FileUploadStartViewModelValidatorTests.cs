@@ -2,8 +2,6 @@
 using System.IO;
 using System.Linq.Expressions;
 using System.Text;
-using FluentAssertions.Execution;
-using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.Http;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
