@@ -228,14 +228,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         {
             _mockModelMapper.Setup(m => m.Map<UpdateDraftApprenticeshipApimRequest>(It.Is<EditDraftApprenticeshipViewModel>(x => x.Uln == _model.Uln))).ReturnsAsync(_updateDraftApprenticeshipRequest);
             return this;
-        }
-
-        public OverlappingTrainingDateRequestControllerTestFixture SetupChangeOfEmployerNotified(NextAction nextAction)
-        {
-            _changeOfEmployerNotifiedViewModel.NextAction = nextAction;
-            _actionResult = _controller.ChangeOfEmployerNotified(_changeOfEmployerNotifiedViewModel);
-            return this;
-        }
+        }       
 
         public OverlappingTrainingDateRequestControllerTestFixture GetChangeOfEmployerNotified()
         {
