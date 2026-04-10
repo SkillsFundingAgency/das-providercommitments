@@ -1,12 +1,12 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Microsoft.AspNetCore.Html;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using static SFA.DAS.ProviderCommitments.Constants;
-using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ApprenticesFilterModel;
 using System.Net;
+using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -57,9 +57,10 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
             var timeString = britishDateTime.ToString("h:mmtt");
             // Ensure consistent AM/PM format across platforms
             timeString = timeString.Replace("am", "AM").Replace("pm", "PM");
-            return $"Last updated {timeString} on {britishDateTime:dddd d MMMM}";
+            return $"List updated: {timeString} on {britishDateTime:dd MMM yyyy}";
         }
     }
+
     public bool ShowPageLinks => FilterModel.TotalNumberOfLearnersFound > Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
     public LearnerRecordsFilterModel FilterModel { get; set; }
@@ -75,6 +76,7 @@ public class LearnerRecordsFilterModel
     public int PageNumber { get; set; } = 1;
     public string SearchTerm { get; set; }
     public int TotalNumberOfLearnersFound { get; set; }
+
     public HtmlString TotalNumberOfApprenticeshipsFoundDescription =>
         new HtmlString($"{TotalNumberOfLearnersFound} apprentice records found " + GetFiltersUsedMessage());
 
@@ -88,6 +90,8 @@ public class LearnerRecordsFilterModel
     public string StartYear { get; set; } = DateTime.UtcNow.Year.ToString();
     public List<SelectListItem> MonthNames { get; set; }
     public List<SelectListItem> YearNames { get; set; }
+    public string CourseCode { get; set; }
+    public List<SelectListItem> Courses { get; set; }
 
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
@@ -142,17 +146,17 @@ public class LearnerRecordsFilterModel
         return routeData;
     }
 
-    public IEnumerable<PageLink> PageLinks
+    public IEnumerable<PaginationPageLink> PageLinks
     {
         get
         {
-            var links = new List<PageLink>();
+            var links = new List<PaginationPageLink>();
             var totalPages = (int)Math.Ceiling((double)TotalNumberOfLearnersFound / PageSize);
             var totalPageLinks = totalPages < 5 ? totalPages : 5;
 
             if (totalPages > 1 && PageNumber > 1)
             {
-                links.Add(new PageLink
+                links.Add(new PaginationPageLink
                 {
                     Label = "Previous",
                     AriaLabel = "Previous page",
@@ -170,7 +174,7 @@ public class LearnerRecordsFilterModel
 
             for (var i = 0; i < totalPageLinks; i++)
             {
-                var link = new PageLink
+                var link = new PaginationPageLink
                 {
                     Label = (pageNumberSeed + i).ToString(),
                     AriaLabel = $"Page {pageNumberSeed + i}",
@@ -183,7 +187,7 @@ public class LearnerRecordsFilterModel
             //next link
             if (totalPages > 1 && PageNumber < totalPages)
             {
-                links.Add(new PageLink
+                links.Add(new PaginationPageLink
                 {
                     Label = "Next",
                     AriaLabel = "Next page",
@@ -256,14 +260,23 @@ public class LearnerRecordsFilterModel
 
         if (!string.IsNullOrWhiteSpace(StartMonth))
         {
-            var item = MonthNames.FirstOrDefault(x=>x.Value == StartMonth);
-            if(item != null)
+            var item = MonthNames.FirstOrDefault(x => x.Value == StartMonth);
+            if (item != null)
             {
                 filters.Add(WebUtility.HtmlEncode(item.Text));
             }
         }
 
         filters.Add(WebUtility.HtmlEncode(StartYear));
+
+        if (!string.IsNullOrWhiteSpace(CourseCode))
+        {
+            var item = Courses.FirstOrDefault(x => x.Value == CourseCode);
+            if (item != null)
+            {
+                filters.Add(WebUtility.HtmlEncode(item.Text));
+            }
+        }
 
         return filters;
     }

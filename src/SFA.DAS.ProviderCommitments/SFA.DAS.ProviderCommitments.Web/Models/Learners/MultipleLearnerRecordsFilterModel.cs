@@ -3,8 +3,8 @@ using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using static SFA.DAS.ProviderCommitments.Constants;
-using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ApprenticesFilterModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Learners;
 public class MultipleLearnerRecordsFilterModel
@@ -62,17 +62,17 @@ public class MultipleLearnerRecordsFilterModel
         return routeData;
     }
 
-    public IEnumerable<PageLink> PageLinks
+    public IEnumerable<PaginationPageLink> PageLinks
     {
         get
         {
-            var links = new List<PageLink>();
+            var links = new List<PaginationPageLink>();
             var totalPages = (int)Math.Ceiling((double)TotalNumberOfLearnersFound / PageSize);
             var totalPageLinks = totalPages < 5 ? totalPages : 5;
 
             if (totalPages > 1 && PageNumber > 1)
             {
-                links.Add(new PageLink
+                links.Add(new PaginationPageLink
                 {
                     Label = "Previous",
                     AriaLabel = "Previous page",
@@ -90,7 +90,7 @@ public class MultipleLearnerRecordsFilterModel
 
             for (var i = 0; i < totalPageLinks; i++)
             {
-                var link = new PageLink
+                var link = new PaginationPageLink
                 {
                     Label = (pageNumberSeed + i).ToString(),
                     AriaLabel = $"Page {pageNumberSeed + i}",
@@ -103,7 +103,7 @@ public class MultipleLearnerRecordsFilterModel
             //next link
             if (totalPages > 1 && PageNumber < totalPages)
             {
-                links.Add(new PageLink
+                links.Add(new PaginationPageLink
                 {
                     Label = "Next",
                     AriaLabel = "Next page",

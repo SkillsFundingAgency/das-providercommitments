@@ -47,6 +47,7 @@ public static class RouteNames
     public const string DraftApprenticeshipAddAnother = "draft-apprenticeship-add-another";
     public const string CohortAddApprenticeship = "cohort-add-apprenticeship";
     public const string RecognisePriorLearningData = "recognise-prior-learning-data";
+    public const string RecognisePriorLearningDataRemove = "recognise-prior-learning-data-remove";
     public const string RecognisePriorLearning = "recognise-prior-learning";
     public const string SelectStandardOption = "select-standard-option";
     public const string Dashboard = "provider-dashboard";
@@ -58,4 +59,6 @@ public static class RouteNames
     public const string SelectMultipleChangeEmployer = "change-employer";
     public const string SelectMultipleChangeEmployerRedirect = "change-employer-redirect";
     public const string CreateCohortAndAddFirstApprenticeship = "create-cohort-add-apprenticeship";
+    public const string ApprenticeEmail = "apprentice-email";
+    public const string setReference = "set-reference";
 }

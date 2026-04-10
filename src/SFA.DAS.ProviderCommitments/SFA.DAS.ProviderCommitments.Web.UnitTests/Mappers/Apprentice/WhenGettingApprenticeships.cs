@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Linq;
-using AutoFixture.NUnit3;
-using FluentAssertions.Execution;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.Testing.AutoFixture;
 using ApiRequests = SFA.DAS.CommitmentsV2.Api.Types.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice;

@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Learners;
@@ -13,10 +14,20 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
     {
         var cacheItem = await cacheStorage.RetrieveFromCache<SelectMultipleLearnerRecordsCacheItem>(source.CacheKey.Value);
 
-        var response = await client.GetLearnerDetailsForProvider(cacheItem.ProviderId, cacheItem.AccountLegalEntityId,
-            cacheItem.CohortId, cacheItem.SearchTerm, cacheItem.SortField, cacheItem.ReverseSort, source.Page,
-            int.TryParse(cacheItem.StartMonth, out var m) ? m : null,
-            int.Parse(cacheItem.StartYear));
+        var learnerRequest = new SelectLearnersRequest()
+        {
+            AccountLegalEntityId = cacheItem.AccountLegalEntityId,
+            CohortId = cacheItem.CohortId,
+            SearchTerm = cacheItem.SearchTerm,
+            SortColumn = cacheItem.SortField,
+            ReverseSort = cacheItem.ReverseSort,
+            Page = source.Page,
+            StartMonth = int.TryParse(cacheItem.StartMonth, out var m) ? m : null,
+            StartYear = int.Parse(cacheItem.StartYear)
+            //CourseCode = source.CourseCode
+        };
+
+        var response = await client.GetLearnerDetailsForProvider(cacheItem.ProviderId, learnerRequest);
 
         var filterModel = new MultipleLearnerRecordsFilterModel()
         {

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
+using LearningType = SFA.DAS.Common.Domain.Types.LearningType;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests;
 
@@ -14,12 +15,15 @@ public class WhenCallingEditApprenticeshipTests
         _fixture = new WhenCallingEditApprenticeshipTestsFixture();
     }
 
-    [Test]
-    public async Task ThenTheCorrectViewIsReturned()
+    [TestCase(LearningType.Apprenticeship, null)]
+    [TestCase(LearningType.FoundationApprenticeship, null)]
+    [TestCase(LearningType.ApprenticeshipUnit, "EditApprenticeshipForAppUnit")]
+    public async Task ThenTheCorrectViewIsReturned(LearningType learningType, string viewName)
     {
-        var result = await _fixture.EditApprenticeship();
+        var result = await _fixture.WithLearningType(learningType).EditApprenticeship();
 
         _fixture.VerifyViewModel(result as ViewResult);
+        (result as ViewResult).ViewName.Should().Be(viewName);
     }
 
     [Test]
@@ -48,6 +52,13 @@ public class WhenCallingEditApprenticeshipTestsFixture : ApprenticeControllerTes
 
         MockMapper.Setup(m => m.Map<EditApprenticeshipRequestViewModel>(_request))
             .ReturnsAsync(_viewModel);
+    }
+
+
+    public WhenCallingEditApprenticeshipTestsFixture WithLearningType(LearningType learningType)
+    {
+        _viewModel.LearningType = learningType;
+        return this;
     }
 
     public async Task<IActionResult> EditApprenticeship()

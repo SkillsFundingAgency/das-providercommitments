@@ -17,4 +17,5 @@ public class SelectLearnerRecordRequest : IAuthorizationContextModel
     public long? CohortId { get; set; }
     public int? StartMonth { get; set; }
     public int StartYear { get; set; } = DateTime.UtcNow.Year;
+    public string CourseCode { get; set; }
 }

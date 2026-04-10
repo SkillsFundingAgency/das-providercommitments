@@ -1,11 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentAssertions.Execution;
 using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
@@ -40,6 +38,13 @@ public class DetailsViewModelMapperTests
     {
         await _fixture.Map();
         _fixture.Result.ApprenticeName.Should().Be(_fixture.ApiResponse.Apprenticeship.FirstName + " " + _fixture.ApiResponse.Apprenticeship.LastName);
+    }
+
+    [Test]
+    public async Task ThenApprenticeshipTypeMappedCorrectly()
+    {
+        await _fixture.Map();
+        _fixture.Result.LearningType.Should().Be(_fixture.ApiResponse.Apprenticeship.LearningType);
     }
 
     [Test]
@@ -98,7 +103,7 @@ public class DetailsViewModelMapperTests
         await _fixture.Map();
         _fixture.Result.AgreementId.Should().Be(_fixture.AgreementId);
     }
-    
+
     [Test]
     public async Task ThenDateOfBirthIsMappedCorrectly()
     {
@@ -430,7 +435,6 @@ public class DetailsViewModelMapperTests
         _fixture.Result.AvailableTriageOption.Should().Be(expectedTriageOption);
     }
 
-
     [TestCase(false, DataLockErrorCode.Dlock04, DataLockErrorCode.Dlock07, DetailsViewModel.TriageOption.Update)]
     [TestCase(true, DataLockErrorCode.Dlock04, DataLockErrorCode.Dlock07, DetailsViewModel.TriageOption.Both)]
     [TestCase(true, DataLockErrorCode.Dlock03, DataLockErrorCode.Dlock03 | DataLockErrorCode.Dlock07, DetailsViewModel.TriageOption.Restart)]
@@ -498,7 +502,7 @@ public class DetailsViewModelMapperTests
 
         _fixture.Result.HasPendingChangeOfPartyRequest.Should().BeFalse();
     }
-      
+
     [TestCase(null, false)]
     [TestCase(OverlappingTrainingDateRequestStatus.Resolved, false)]
     [TestCase(OverlappingTrainingDateRequestStatus.Rejected, false)]
@@ -670,7 +674,7 @@ public class DetailsViewModelMapperTests
     public async Task ThenPaymentStatusIsMappedCorrectly(bool paymentsFrozen, bool waitingToStart, string expectedStatus)
     {
         _fixture.WithPaymentsFrozenSetTo(paymentsFrozen);
-        _fixture.WithLearnerStatusDetailsSetTo(waitingToStart ? new LearnerStatusDetails{ LearnerStatus = LearnerStatus.WaitingToStart } : new LearnerStatusDetails { LearnerStatus = LearnerStatus.InLearning });
+        _fixture.WithLearnerStatusDetailsSetTo(waitingToStart ? new LearnerStatusDetails { LearnerStatus = LearnerStatus.WaitingToStart } : new LearnerStatusDetails { LearnerStatus = LearnerStatus.InLearning });
 
         await _fixture.Map();
 
@@ -731,6 +735,78 @@ public class DetailsViewModelMapperTests
         _fixture.Result.LastCensusDateOfLearning.Should().Be(_fixture.ApiResponse.LearnerStatusDetails.LastCensusDateOfLearning);
     }
 
+    [Test]
+    public async Task ThenEmploymentStatusIsBlank_WhenNoEmployerVerificationStatus()
+    {
+        _fixture.WithEmployerVerificationStatus(null, null);
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().BeNullOrEmpty();
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsBlank_WhenStatusPending()
+    {
+        _fixture.WithEmployerVerificationStatus(0, null); // Pending
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().BeNullOrEmpty();
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsEmployed_WhenStatusPassed()
+    {
+        _fixture.WithEmployerVerificationStatus(2, null); // Passed
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().Be("Employed");
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsNotVerified_WhenStatusFailed()
+    {
+        _fixture.WithEmployerVerificationStatus(3, null); // Failed
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().Be("Not Verified");
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsNotVerifiedPayeAndNino_WhenErrorNinoAndPAYENotFound()
+    {
+        _fixture.WithEmployerVerificationStatus(4, "NinoAndPAYENotFound");
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().Be("Not verified - missing PAYE scheme and invalid NINO");
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsNotVerifiedNoPaye_WhenErrorPayeNotFound()
+    {
+        _fixture.WithEmployerVerificationStatus(4, "PAYENotFound");
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().Be("Not verified - missing PAYE scheme");
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsNotVerifiedNino_WhenErrorNinoNotes()
+    {
+        _fixture.WithEmployerVerificationStatus(4, "NinoFailure");
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().Be("Not Verified - missing or invalid NINO");
+    }
+
+    [Test]
+    public async Task ThenEmploymentStatusIsNotVerified_WhenErrorHmrcFailure()
+    {
+        _fixture.WithEmployerVerificationStatus(4, "HmrcFailure");
+        await _fixture.Map();
+
+        _fixture.Result.EmploymentStatus.Should().Be("Not Verified");
+    }
+
     public class DetailsViewModelMapperFixture
     {
         private DetailsViewModelMapper _sut;
@@ -742,7 +818,7 @@ public class DetailsViewModelMapperTests
         public IEnumerable<GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate> ApprenticeshipUpdates { get; private set; }
         public IEnumerable<GetManageApprenticeshipDetailsResponse.DataLock> DataLocks { get; private set; }
         public IEnumerable<GetManageApprenticeshipDetailsResponse.ChangeOfPartyRequest> ChangeOfPartyRequests { get; private set; }
-        public IEnumerable<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequests{ get; private set; }
+        public IEnumerable<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequests { get; private set; }
         public IEnumerable<GetManageApprenticeshipDetailsResponse.ChangeOfEmployerLink> ChangeOfEmployerChain { get; private set; }
         public GetNewerTrainingProgrammeVersionsResponse GetNewerTrainingProgrammeVersionsResponse { get; private set; }
         public GetTrainingProgrammeResponse GetTrainingProgrammeByStandardUIdResponse { get; private set; }
@@ -808,13 +884,14 @@ public class DetailsViewModelMapperTests
             var commitmentsApiClient = new Mock<IOuterApiClient>();
 
             commitmentsApiClient.Setup(x =>
-                    x.Get<GetManageApprenticeshipDetailsResponse>(It.IsAny<GetManageApprenticeshipDetailsRequest>()))
+                    x.Get<GetManageApprenticeshipDetailsResponse>(It.Is<GetManageApprenticeshipDetailsRequest>(r =>
+                        r.ProviderId == Source.ProviderId && r.ApprenticeshipId == Source.ApprenticeshipId)))
                 .ReturnsAsync(ApiResponse);
 
-            apiClient.Setup(x => x.GetNewerTrainingProgrammeVersions(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            apiClient.Setup(x => x.GetNewerTrainingProgrammeVersions(ApiResponse.Apprenticeship.StandardUId, default))
                 .ReturnsAsync(GetNewerTrainingProgrammeVersionsResponse);
 
-            apiClient.Setup(x => x.GetTrainingProgrammeVersionByStandardUId(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            apiClient.Setup(x => x.GetTrainingProgrammeVersionByStandardUId(ApiResponse.Apprenticeship.StandardUId, default))
                 .ReturnsAsync(GetTrainingProgrammeByStandardUIdResponse);
 
             _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, commitmentsApiClient.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
@@ -1005,7 +1082,7 @@ public class DetailsViewModelMapperTests
 
             return this;
         }
-            
+
         public DetailsViewModelMapperFixture WithOverlappingTrainingDateRequests(OverlappingTrainingDateRequestStatus status)
         {
             var draftApprenticeshipId = Fixture.Create<long>();
@@ -1023,7 +1100,7 @@ public class DetailsViewModelMapperTests
                     ActionedOn = null
                 }
             };
-              
+
             return this;
         }
 
@@ -1111,7 +1188,7 @@ public class DetailsViewModelMapperTests
                 TrainingPrice = 3248,
                 Initiator = "Provider"
             };
-                
+
             return this;
         }
 
@@ -1124,6 +1201,13 @@ public class DetailsViewModelMapperTests
         public DetailsViewModelMapperFixture WithLearnerStatusDetailsSetTo(LearnerStatusDetails learnerStatusDetails)
         {
             ApiResponse.LearnerStatusDetails = learnerStatusDetails;
+            return this;
+        }
+
+        public DetailsViewModelMapperFixture WithEmployerVerificationStatus(int? status, string notes)
+        {
+            ApiResponse.Apprenticeship.EmployerVerificationStatus = status;
+            ApiResponse.Apprenticeship.EmployerVerificationNotes = notes;
             return this;
         }
     }
