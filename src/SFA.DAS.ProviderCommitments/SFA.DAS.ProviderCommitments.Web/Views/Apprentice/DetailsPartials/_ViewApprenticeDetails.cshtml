@@ -74,6 +74,15 @@
                         @Model.ConfirmationStatus.ToDisplayString()
                     </td>
                 </tr>
+                @if (!string.IsNullOrEmpty(Model.EmploymentStatus))
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header das-table-cell-width-45">Employment status</th>
+                        <td id="employment-status" class="govuk-table__cell das-table-cell-width-55">
+                            @Model.EmploymentStatus
+                        </td>
+                    </tr>
+                }
                 @if (Model.Status == ApprenticeshipStatus.Stopped)
                 {
                     <tr class="govuk-table__row">

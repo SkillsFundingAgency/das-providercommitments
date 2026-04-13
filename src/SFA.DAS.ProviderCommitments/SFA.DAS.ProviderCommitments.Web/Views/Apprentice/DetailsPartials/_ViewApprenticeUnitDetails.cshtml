@@ -55,6 +55,15 @@
             <tbody class="govuk-table__body">
 
                 <partial name="DetailsPartials/_ApprenticeshipStatus" />
+                @if (!string.IsNullOrEmpty(Model.EmploymentStatus))
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header das-table-cell-width-45">Employment status</th>
+                        <td id="employment-status" class="govuk-table__cell das-table-cell-width-55">
+                            @Model.EmploymentStatus
+                        </td>
+                    </tr>
+                }
 
             </tbody>
         </table>
