@@ -232,7 +232,7 @@ public class WhenCallingMap
         var result = await mapper.Map(source);
 
         // Assert
-        result.EmploymentStatus.Should().Be("Not Employed");
+        result.EmploymentStatus.Should().Be("Not employed");
     }
 
     [Test, MoqAutoData]

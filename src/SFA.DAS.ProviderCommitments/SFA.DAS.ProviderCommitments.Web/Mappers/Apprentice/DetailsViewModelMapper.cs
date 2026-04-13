@@ -247,7 +247,7 @@ public class DetailsViewModelMapper(
 
         if (status == 3)
         {
-            return "Not Employed";
+            return "Not employed";
         }
 
         return notes switch

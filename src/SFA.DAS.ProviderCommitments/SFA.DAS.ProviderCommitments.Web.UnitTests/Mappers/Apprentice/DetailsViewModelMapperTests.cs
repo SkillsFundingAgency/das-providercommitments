@@ -768,7 +768,7 @@ public class DetailsViewModelMapperTests
         _fixture.WithEmployerVerificationStatus(3, null); // Failed
         await _fixture.Map();
 
-        _fixture.Result.EmploymentStatus.Should().Be("Not Employed");
+        _fixture.Result.EmploymentStatus.Should().Be("Not employed");
     }
 
     [Test]
