@@ -763,12 +763,12 @@ public class DetailsViewModelMapperTests
     }
 
     [Test]
-    public async Task ThenEmploymentStatusIsNotVerified_WhenStatusFailed()
+    public async Task ThenEmploymentStatusIsNotEmployed_WhenStatusFailed()
     {
         _fixture.WithEmployerVerificationStatus(3, null); // Failed
         await _fixture.Map();
 
-        _fixture.Result.EmploymentStatus.Should().Be("Not Verified");
+        _fixture.Result.EmploymentStatus.Should().Be("Not Employed");
     }
 
     [Test]

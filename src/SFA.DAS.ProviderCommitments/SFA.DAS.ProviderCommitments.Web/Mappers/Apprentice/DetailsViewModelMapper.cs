@@ -245,6 +245,11 @@ public class DetailsViewModelMapper(
             return string.Empty;
         }
 
+        if (status == 3)
+        {
+            return "Not Employed";
+        }
+
         return notes switch
         {
             "NinoAndPAYENotFound" => "Not verified - missing PAYE scheme and invalid NINO",
