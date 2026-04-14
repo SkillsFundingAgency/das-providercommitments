@@ -8,7 +8,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 
-public class SelectEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOuterApiClient)
+public class SelectEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOuterApiClient, IConfiguration configuration)
     : IMapper<SelectEmployerRequest, SelectEmployerViewModel>
 {
     public async Task<SelectEmployerViewModel> Map(SelectEmployerRequest source)
@@ -34,7 +34,7 @@ public class SelectEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOut
                 AccountHashedId = x.AccountHashedId,
                 LevyStatus = ParseApprenticeshipEmployerType(x.ApprenticeshipEmployerType)
             });
-            //var ilrSelectMultipleFeatureEnabled = configuration.GetValue<bool>("ILRSelectMultipleFeatureEnabled");
+        var ilrSelectMultipleFeatureEnabled = configuration.GetValue<bool>("ILRSelectMultipleFeatureEnabled");
 
         var filterModel = new SelectEmployerFilterModel
         {
@@ -45,7 +45,8 @@ public class SelectEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOut
             ProviderId = source.ProviderId,
             PageNumber = pageNumber,
             TotalEmployersFound = apiResponse.TotalCount,
-            Employers = apiResponse.Employers ?? []
+            Employers = apiResponse.Employers ?? [],
+            IsMultiSelectJourney = source.IsMultiSelectJourney
         };
 
         return new SelectEmployerViewModel
@@ -53,7 +54,9 @@ public class SelectEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOut
             AccountProviderLegalEntities = accountProviderLegalEntities,
             ProviderId = source.ProviderId,
             SelectEmployerFilterModel = filterModel,
-            UseLearnerData = source.UseLearnerData
+            UseLearnerData = source.UseLearnerData,
+            IlrSelectMultipleFeatureEnabled = ilrSelectMultipleFeatureEnabled,
+            IsMultiSelectJourney = source.IsMultiSelectJourney
         };
     }
 

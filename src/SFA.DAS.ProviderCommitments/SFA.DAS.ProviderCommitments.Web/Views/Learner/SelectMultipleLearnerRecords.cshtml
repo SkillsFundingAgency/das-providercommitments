@@ -229,12 +229,6 @@
 }
 
 @section breadcrumb {
-    @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
-    {
-        <a id="back-link" class="govuk-back-link" href=@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })>Back</a>
-    }
-    else
-    {
-        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", "Cohort", new { @Model.ProviderId, UseLearnerData = true })>Back</a>
-    }
+
+    <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", "Cohort", new { @Model.ProviderId, UseLearnerData = true, IsMultiSelectJourney = true })>Back</a>
 }

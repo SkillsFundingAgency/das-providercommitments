@@ -232,8 +232,7 @@ public class WhenIMapSelectEmployerRequestToViewModel
             _configurationMock = new Mock<IConfiguration>();
             _configurationMock.Setup(c => c.GetSection("ILRSelectMultipleFeatureEnabled")).Returns(_configurationSectionMock.Object);
 
-            //_sut = new SelectEmployerViewModelMapper(_approvalsOuterApiClientMock.Object,_configurationMock.Object);
-            _sut = new SelectEmployerViewModelMapper(_approvalsOuterApiClientMock.Object);
+            _sut = new SelectEmployerViewModelMapper(_approvalsOuterApiClientMock.Object, _configurationMock.Object);
         }
 
         public SelectEmployerViewModelMapperFixture WithRequest(SelectEmployerRequest selectEmployerRequest)

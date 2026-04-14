@@ -26,6 +26,7 @@ public class SelectEmployerFilterModel
     }
 
     public bool ShowPageLinks => TotalEmployersFound > PageSize;
+    public bool IsMultiSelectJourney { get; set; }
 
     public Dictionary<string, string> BuildSortRouteData(string sortByThisField)
     {
@@ -40,6 +41,7 @@ public class SelectEmployerFilterModel
         routeData.Add("SortField", sortByThisField);
         routeData.Add(nameof(SearchTerm), SearchTerm ?? string.Empty);
         routeData.Add(nameof(PageNumber), "1");
+        routeData.Add(nameof(IsMultiSelectJourney), IsMultiSelectJourney.ToString());
 
         return routeData;
     }
@@ -53,7 +55,8 @@ public class SelectEmployerFilterModel
             { nameof(ReverseSort), ReverseSort.ToString() },
             { "SortField", CurrentlySortedByField ?? string.Empty },
             { nameof(SearchTerm), SearchTerm ?? string.Empty },
-            { nameof(PageNumber), pageNumber.ToString() }
+            { nameof(PageNumber), pageNumber.ToString() },
+            { nameof(IsMultiSelectJourney), IsMultiSelectJourney.ToString() }
         };
         return routeData;
     }
