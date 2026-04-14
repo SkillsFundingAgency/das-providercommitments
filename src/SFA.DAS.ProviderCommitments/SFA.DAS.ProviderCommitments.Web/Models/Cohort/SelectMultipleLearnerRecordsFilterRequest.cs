@@ -10,4 +10,5 @@ public class SelectMultipleLearnerRecordsFilterRequest : IAuthorizationContextMo
     public int? StartMonth { get; set; }
     public int StartYear { get; set; } = DateTime.UtcNow.Year;
     public bool ClearFilter { get; set; }
+    public string CourseCode { get; set; }
 }

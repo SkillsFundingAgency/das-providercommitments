@@ -46,6 +46,7 @@ public class SelectMultipleLearnerRecordsFilterRequestMapperTests
         _cacheItem.SearchTerm = "old";
         _cacheItem.StartMonth = "3";
         _cacheItem.StartYear = "2020";
+        _source.CourseCode = "123";
 
         var result = await _mapper.Map(_source);
 
@@ -60,6 +61,7 @@ public class SelectMultipleLearnerRecordsFilterRequestMapperTests
         _cacheItem.SearchTerm.Should().Be("");
         _cacheItem.StartMonth.Should().BeNull();
         _cacheItem.StartYear.Should().Be(expectedYear);
+        _cacheItem.CourseCode.Should().BeNull();
 
         result.ProviderId.Should().Be(_cacheItem.ProviderId);
         result.CacheKey.Should().Be(_source.CacheKey);
@@ -72,12 +74,14 @@ public class SelectMultipleLearnerRecordsFilterRequestMapperTests
         _source.SearchTerm = "abc";
         _source.StartMonth = 5;
         _source.StartYear = 2024;
+        _source.CourseCode = "123";
 
         var result = await _mapper.Map(_source);
 
         _cacheItem.SearchTerm.Should().Be("abc");
         _cacheItem.StartMonth.Should().Be("5");
         _cacheItem.StartYear.Should().Be("2024");
+        _cacheItem.CourseCode.Should().Be("123");
 
         _cacheStorage.Verify(x =>
             x.SaveToCache(_cacheItem.Key.ToString(), _cacheItem, 1),

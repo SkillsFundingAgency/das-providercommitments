@@ -98,6 +98,15 @@
                             </select>
                         </div>
                     </div>
+                    <div class="govuk-grid-column-one-third">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="CourseCode">Course name</label>
+                            <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.CourseCode" name="CourseCode" asp-items="Model.FilterModel.Courses">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="govuk-grid-row">
                     <div class="govuk-grid-column-one-third" style="justify-content: flex-end;">
                         <label class="govuk-label">&nbsp;</label>
                         <div class="govuk-form-group">
@@ -106,7 +115,8 @@
                     </div>
                 </div>
             </div>
-            @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm) || !string.IsNullOrWhiteSpace(Model.FilterModel.StartMonth) || Model.FilterModel.StartYear != DateTime.Now.Year.ToString())
+            @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm) || !string.IsNullOrWhiteSpace(Model.FilterModel.StartMonth)
+                        || Model.FilterModel.StartYear != DateTime.Now.Year.ToString() || !string.IsNullOrWhiteSpace(Model.FilterModel.CourseCode))
             {
                 <p class="govuk-body">
                     <button class="das-button--inline-link" data-module="govuk-button" type="submit" name="clearFilter" value="true">

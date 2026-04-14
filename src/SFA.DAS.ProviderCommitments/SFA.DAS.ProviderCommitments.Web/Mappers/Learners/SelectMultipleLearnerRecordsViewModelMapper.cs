@@ -1,4 +1,5 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -23,8 +24,8 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             ReverseSort = cacheItem.ReverseSort,
             Page = source.Page,
             StartMonth = int.TryParse(cacheItem.StartMonth, out var m) ? m : null,
-            StartYear = int.Parse(cacheItem.StartYear)
-            //CourseCode = source.CourseCode
+            StartYear = int.Parse(cacheItem.StartYear),
+            CourseCode = cacheItem.CourseCode
         };
 
         var response = await client.GetLearnerDetailsForProvider(cacheItem.ProviderId, learnerRequest);
@@ -41,7 +42,15 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             ReverseSort = cacheItem.ReverseSort,
             SearchTerm = cacheItem.SearchTerm,
             StartMonth = cacheItem.StartMonth,
-            StartYear = cacheItem.StartYear
+            StartYear = cacheItem.StartYear,
+            CourseCode = cacheItem.CourseCode,
+            Courses = [new SelectListItem("All", ""),
+            .. response.TrainingCourses
+                .Select(m => new SelectListItem
+                {
+                    Text = m.Name,
+                    Value = m.CourseCode
+                })]
         };
 
         var model = new SelectMultipleLearnerRecordsViewModel

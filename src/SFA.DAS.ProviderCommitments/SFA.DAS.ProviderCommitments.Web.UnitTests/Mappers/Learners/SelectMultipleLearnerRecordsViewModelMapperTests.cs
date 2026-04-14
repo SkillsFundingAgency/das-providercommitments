@@ -28,9 +28,14 @@ public class SelectMultipleLearnerRecordsViewModelMapperTests
         _cacheItem = fixture.Build<SelectMultipleLearnerRecordsCacheItem>()
             .With(x => x.StartMonth, "1")
             .With(x => x.StartYear, "2025")
+            .With(x => x.CourseCode, "12")
             .Create();
 
         _apiResponse = fixture.Create<GetLearnerDetailsForProviderResponse>();
+        foreach (var learner in _apiResponse.Learners)
+        {
+            learner.LearningType = "Apprenticeship";
+        }
 
         _outerApiService = new Mock<IOuterApiService>();
         _cacheStorage = new Mock<ICacheStorageService>();
@@ -47,8 +52,8 @@ public class SelectMultipleLearnerRecordsViewModelMapperTests
             t.ReverseSort == _cacheItem.ReverseSort &&
             t.Page == _request.Page &&
             t.StartMonth == 1 &&
-            t.StartYear == 2025)))//&&
-                                  //t.CourseCode == _request.CourseCode)))
+            t.StartYear == 2025 &&
+            t.CourseCode == _cacheItem.CourseCode)))
             .ReturnsAsync(_apiResponse);
 
         _mapper = new SelectMultipleLearnerRecordsViewModelMapper(_outerApiService.Object, _cacheStorage.Object);
@@ -74,6 +79,7 @@ public class SelectMultipleLearnerRecordsViewModelMapperTests
 
         result.FilterModel.StartMonth.Should().Be(_cacheItem.StartMonth);
         result.FilterModel.StartYear.Should().Be(_cacheItem.StartYear);
+        result.FilterModel.CourseCode.Should().Be(_cacheItem.CourseCode);
     }
 
     [Test]
@@ -88,6 +94,8 @@ public class SelectMultipleLearnerRecordsViewModelMapperTests
         result.EmployerAccountName.Should().Be(_cacheItem.EmployerAccountName);
         result.LastIlrSubmittedOn.Should().Be(_apiResponse.LastSubmissionDate);
         result.FutureMonths.Should().Be(_apiResponse.FutureMonths);
+        result.FilterModel.Courses.Where(c => c.Text != "All").Select(x => x.Text).
+           Should().BeEquivalentTo(_apiResponse.TrainingCourses.Select(y => y.Name));
     }
 
     [Test]

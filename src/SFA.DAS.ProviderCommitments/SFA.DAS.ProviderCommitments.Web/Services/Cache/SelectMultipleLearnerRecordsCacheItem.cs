@@ -23,4 +23,5 @@ public class SelectMultipleLearnerRecordsCacheItem : ICacheModel
     public bool ReverseSort { get; set; }
     public string StartMonth { get; set; }
     public string StartYear { get; set; } = DateTime.UtcNow.Year.ToString();
+    public string CourseCode { get; set; }
 }

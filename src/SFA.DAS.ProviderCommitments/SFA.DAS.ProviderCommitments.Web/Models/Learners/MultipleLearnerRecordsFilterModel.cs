@@ -27,6 +27,8 @@ public class MultipleLearnerRecordsFilterModel
     public string StartYear { get; set; } = DateTime.UtcNow.Year.ToString();
     public List<SelectListItem> MonthNames { get; set; }
     public List<SelectListItem> YearNames { get; set; }
+    public string CourseCode { get; set; }
+    public List<SelectListItem> Courses { get; set; }
 
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
@@ -165,6 +167,15 @@ public class MultipleLearnerRecordsFilterModel
         }
 
         filters.Add(WebUtility.HtmlEncode(StartYear));
+
+        if (!string.IsNullOrWhiteSpace(CourseCode))
+        {
+            var item = Courses.FirstOrDefault(x => x.Value == CourseCode);
+            if (item != null)
+            {
+                filters.Add(WebUtility.HtmlEncode(item.Text));
+            }
+        }
 
         return filters;
     }

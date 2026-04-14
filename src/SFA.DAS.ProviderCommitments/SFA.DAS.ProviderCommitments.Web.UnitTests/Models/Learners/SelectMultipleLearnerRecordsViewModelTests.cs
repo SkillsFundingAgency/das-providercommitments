@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Learners;
@@ -62,16 +64,22 @@ public class SelectMultipleLearnerRecordsViewModelTests
         _viewModel.FilterModel.TotalNumberOfApprenticeshipsFoundDescription.ToString().Should().EndWith("<strong>2025</strong>");
     }
 
-    [TestCase("", "", "<strong>2025</strong>")]
-    [TestCase("XXX", "", "<strong>‘XXX’</strong> and <strong>2025</strong>")]
-    [TestCase("XXX", "1", "<strong>‘XXX’</strong>, <strong>January</strong> and <strong>2025</strong>")]
-    [TestCase(null, "5", "<strong>May</strong> and <strong>2025</strong>")]
-    public void GettingFiltersUsed_MatchesExpected(string searchTerm, string startMonth, string expected)
+    [TestCase("", "", "", "<strong>2025</strong>")]
+    [TestCase("XXX", "", "", "<strong>‘XXX’</strong> and <strong>2025</strong>")]
+    [TestCase("XXX", "1", "", "<strong>‘XXX’</strong>, <strong>January</strong> and <strong>2025</strong>")]
+    [TestCase(null, "5", "", "<strong>May</strong> and <strong>2025</strong>")]
+    [TestCase(null, "5", "123", "<strong>May</strong>, <strong>2025</strong> and <strong>Florist, Level: 2</strong>")]
+    public void GettingFiltersUsed_MatchesExpected(string searchTerm, string startMonth, string courseCode, string expected)
     {
         _viewModel.FilterModel = new MultipleLearnerRecordsFilterModel();
+        _viewModel.FilterModel.Courses = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "123", Text = "Florist, Level: 2" }
+        };
         _viewModel.FilterModel.SearchTerm = searchTerm;
         _viewModel.FilterModel.StartMonth = startMonth;
         _viewModel.FilterModel.StartYear = "2025";
+        _viewModel.FilterModel.CourseCode = courseCode;
         _viewModel.FilterModel.TotalNumberOfApprenticeshipsFoundDescription.ToString().Should().EndWith(expected);
     }
 
@@ -93,6 +101,7 @@ public class SelectMultipleLearnerRecordsViewModelTests
     public void MapsIlrLearnerSummary_ToIlrApprenticeshipSummary()
     {
         var ilrLearner = _fixture.Create<GetLearnerSummary>();
+        ilrLearner.LearningType = "Apprenticeship";
         var apprenticeship = (LearnerSummary)ilrLearner;
 
         apprenticeship.Should().NotBeNull();
