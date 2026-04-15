@@ -490,9 +490,9 @@ public class CohortController : Controller
     [HttpGet]
     [Route("add/before-you-continue-multi-select")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public IActionResult BeforeYouContinueMultiSelect(BeforeYouContinueRequest request)
+    public async Task<IActionResult> BeforeYouContinueMultiSelect(BeforeYouContinueMultiSelectRequest request)
     {
-        var model = new BeforeYouContinueViewModel { ProviderId = request.ProviderId };
+        var model = await _modelMapper.Map<BeforeYouContinueMultiSelectViewModel>(request);
         return View(model);
     }
 
