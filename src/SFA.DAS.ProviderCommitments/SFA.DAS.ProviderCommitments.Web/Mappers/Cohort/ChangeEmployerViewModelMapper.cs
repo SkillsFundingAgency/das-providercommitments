@@ -12,11 +12,14 @@ public class ChangeEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOut
 {
     public async Task<ChangeEmployerViewModel> Map(ChangeEmployerRequest source)
     {
+        var pageNumber = source.PageNumber < 1 ? 1 : source.PageNumber;
         var apiRequest = new GetSelectEmployerRequest(
             source.ProviderId,
             source.SearchTerm,
             source.SortField,
-            source.ReverseSort);
+            source.ReverseSort,
+            pageNumber,
+            Constants.SelectEmployer.NumberOfEmployersPerPage);
 
         var apiResponse = await approvalsOuterApiClient.GetSelectEmployer(apiRequest);
 
@@ -36,7 +39,11 @@ public class ChangeEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOut
             SearchTerm = source.SearchTerm,
             ReverseSort = source.ReverseSort,
             CurrentlySortedByField = source.SortField,
-            Employers = apiResponse.Employers
+            ProviderId = source.ProviderId,
+            PageNumber = pageNumber,
+            TotalEmployersFound = apiResponse.TotalCount,
+            Employers = apiResponse.Employers,
+            CacheKey = source.CacheKey
         };
 
         return new ChangeEmployerViewModel

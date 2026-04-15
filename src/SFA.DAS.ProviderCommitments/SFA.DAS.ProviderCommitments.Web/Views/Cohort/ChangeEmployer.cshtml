@@ -93,7 +93,17 @@
                 }
             </tbody>
         </table>
-    }
+        @await Html.PartialAsync("_PaginationNav", new PaginationNavViewModel
+        {
+            RouteName = RouteNames.SelectMultipleChangeEmployer,
+            ShowPageLinks = Model.SelectEmployerFilterModel.ShowPageLinks,
+            PageLinks = Model.SelectEmployerFilterModel.PageLinks,
+            PagedRecordsFrom = Model.SelectEmployerFilterModel.PagedRecordsFrom,
+            PagedRecordsTo = Model.SelectEmployerFilterModel.PagedRecordsTo,
+            TotalCount = Model.SelectEmployerFilterModel.TotalEmployersFound,
+            SummaryLabel = Model.SelectEmployerFilterModel.TotalEmployersFound == 1 ? " employer" : " employers"
+        })
+        }
     else
     {
         <p class="govuk-body">0 employers match <b>'@Model.SelectEmployerFilterModel.SearchTerm'</b></p>
