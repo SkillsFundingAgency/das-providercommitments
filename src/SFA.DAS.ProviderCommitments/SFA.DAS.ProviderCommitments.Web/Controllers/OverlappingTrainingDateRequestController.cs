@@ -181,20 +181,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var vm = new ChangeOfEmployerNotifiedViewModel { ProviderId = request.ProviderId };
             return View(vm);
-        }
-
-        [HttpPost]
-        [Route("change-of-employer-notified")]
-        public IActionResult ChangeOfEmployerNotified(ChangeOfEmployerNotifiedViewModel vm)
-        {
-            switch (vm.NextAction)
-            {
-                case NextAction.ViewAllCohorts:
-                    return RedirectToAction("Review", "Cohort", new { vm.ProviderId });
-                default:
-                    return Redirect(_urlHelper.ProviderApprenticeshipServiceLink("/account"));
-            }
-        }
+        }       
 
         [HttpGet]
         [Route("{cohortReference}/employer-notified")]
