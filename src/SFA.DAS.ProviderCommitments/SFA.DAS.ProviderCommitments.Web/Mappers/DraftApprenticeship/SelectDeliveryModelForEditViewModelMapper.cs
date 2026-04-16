@@ -5,37 +5,36 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Services;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
+
+public class SelectDeliveryModelForEditViewModelMapper : IMapper<DraftApprenticeshipRequest, SelectDeliveryModelForEditViewModel>
 {
-    public class SelectDeliveryModelForEditViewModelMapper : IMapper<DraftApprenticeshipRequest, SelectDeliveryModelForEditViewModel>
+    private readonly IOuterApiClient _outerApiClient;
+    private readonly ITempDataStorageService _storageService;
+
+    public SelectDeliveryModelForEditViewModelMapper(IOuterApiClient outerApiClient, ITempDataStorageService storageService)
     {
-        private readonly IOuterApiClient _outerApiClient;
-        private readonly ITempDataStorageService _storageService;
+        _outerApiClient = outerApiClient;
+        _storageService = storageService;
+    }
 
-        public SelectDeliveryModelForEditViewModelMapper(IOuterApiClient outerApiClient, ITempDataStorageService storageService)
-        {
-            _outerApiClient = outerApiClient;
-            _storageService = storageService;
-        }
-
-        public async Task<SelectDeliveryModelForEditViewModel> Map(DraftApprenticeshipRequest source)
-        {
-            var editModel = _storageService.RetrieveFromCache<EditDraftApprenticeshipViewModel>();
+    public async Task<SelectDeliveryModelForEditViewModel> Map(DraftApprenticeshipRequest source)
+    {
+        var editModel = _storageService.RetrieveFromCache<EditDraftApprenticeshipViewModel>();
           
-            var apiRequest = new GetEditDraftApprenticeshipSelectDeliveryModelRequest(source.ProviderId, source.CohortId, source.DraftApprenticeshipId, editModel.CourseCode);
-            var apiResponse = await _outerApiClient.Get<GetEditDraftApprenticeshipSelectDeliveryModelResponse>(apiRequest);
+        var apiRequest = new GetEditDraftApprenticeshipSelectDeliveryModelRequest(source.ProviderId, source.CohortId, source.DraftApprenticeshipId, editModel.CourseCode);
+        var apiResponse = await _outerApiClient.Get<GetEditDraftApprenticeshipSelectDeliveryModelResponse>(apiRequest);
 
-            return new SelectDeliveryModelForEditViewModel
-            {
-                DeliveryModel = apiResponse.DeliveryModel,
-                DeliveryModels = apiResponse.DeliveryModels,
-                HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && editModel.DeliveryModel == CommitmentsV2.Types.DeliveryModel.FlexiJobAgency,
-                LegalEntityName = apiResponse.EmployerName,
-                CourseCode = editModel.CourseCode,
-                ShowFlexiJobAgencyDeliveryModelConfirmation = apiResponse.HasUnavailableDeliveryModel &&
-                                                              apiResponse.DeliveryModel == DeliveryModel.FlexiJobAgency &&
-                                                              apiResponse.DeliveryModels.Count == 1
-            };
-        }
+        return new SelectDeliveryModelForEditViewModel
+        {
+            DeliveryModel = apiResponse.DeliveryModel,
+            DeliveryModels = apiResponse.DeliveryModels,
+            HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && editModel.DeliveryModel == CommitmentsV2.Types.DeliveryModel.FlexiJobAgency,
+            LegalEntityName = apiResponse.EmployerName,
+            CourseCode = editModel.CourseCode,
+            ShowFlexiJobAgencyDeliveryModelConfirmation = apiResponse.HasUnavailableDeliveryModel &&
+                                                          apiResponse.DeliveryModel == DeliveryModel.FlexiJobAgency &&
+                                                          apiResponse.DeliveryModels.Count == 1
+        };
     }
 }

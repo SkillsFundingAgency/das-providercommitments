@@ -4,13 +4,13 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using static SFA.DAS.CommitmentsV2.Api.Types.Responses.GetPriceEpisodesResponse;
+using LearningType = SFA.DAS.Common.Domain.Types.LearningType;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice;
 
@@ -358,6 +358,27 @@ public class EditApprenticeshipRequestToViewModelMapperTests
         //Assert
         viewModel.IsEndDateLockedForUpdate.Should().Be(expectedIsEndDateLockedForUpdate);
     }
+
+    [TestCase(LearningType.Apprenticeship, true)]
+    [TestCase(LearningType.FoundationApprenticeship, true)]
+    [TestCase(LearningType.ApprenticeshipUnit, true)]
+    public async Task IsEndDateLockedForUpdateWhenWaitingToStart_Is_Mapped(LearningType learningType, bool expectedIsEndDateLockedForUpdate)
+    {
+        var status = ApprenticeshipStatus.WaitingToStart;
+
+        _fixture
+            .NotTransferSender()
+            .SetApprenticeshipStatus(status)
+            .SetLearningType(learningType)
+            .SetDataLockSuccess(true);
+
+        //Act
+        var viewModel = await _fixture.Map();
+
+        //Assert
+        viewModel.IsEndDateLockedForUpdate.Should().Be(expectedIsEndDateLockedForUpdate);
+    }
+
 
     [Test]
     public async Task AccountLegalEntity_IsMapped()
