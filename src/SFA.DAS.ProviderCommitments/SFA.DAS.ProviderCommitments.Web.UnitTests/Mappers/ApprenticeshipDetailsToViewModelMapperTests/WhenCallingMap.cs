@@ -220,7 +220,7 @@ public class WhenCallingMap
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Maps_EmploymentStatus_FailedNoNotes_ReturnsNotVerified(
+    public async Task Then_Maps_EmploymentStatus_FailedNoNotes_ReturnsNotEmployed(
         GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
         ApprenticeshipDetailsToViewModelMapper mapper)
     {
@@ -232,7 +232,7 @@ public class WhenCallingMap
         var result = await mapper.Map(source);
 
         // Assert
-        result.EmploymentStatus.Should().Be("Not Verified");
+        result.EmploymentStatus.Should().Be("Not employed");
     }
 
     [Test, MoqAutoData]

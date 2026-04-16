@@ -1,125 +1,73 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
-
-public class SelectEmployerViewModelMapper : IMapper<SelectEmployerRequest, SelectEmployerViewModel>
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    private readonly IApprovalsOuterApiClient _approvalsOuterApiClient;
-    private readonly ICommitmentsApiClient _commitmentsApiClient;
-
-    public SelectEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOuterApiClient, ICommitmentsApiClient commitmentsApiClient)
+    public class SelectEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOuterApiClient)
+        : IMapper<SelectEmployerRequest, SelectEmployerViewModel>
     {
-        _approvalsOuterApiClient = approvalsOuterApiClient;
-        _commitmentsApiClient = commitmentsApiClient;
-    }
+        public async Task<SelectEmployerViewModel> Map(SelectEmployerRequest source)
+        {
+            var pageNumber = source.PageNumber < 1 ? 1 : source.PageNumber;
 
-    public async Task<SelectEmployerViewModel> Map(SelectEmployerRequest source)
-    {
-        var apprenticeshipTask = _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
-        var legalEntities = await GetLegalEntitiesWithCreatePermission(source.ProviderId);
-        var apprenticeship = await apprenticeshipTask;
+            var apiRequest = new GetSelectNewEmployerRequest(
+            source.ApprenticeshipId,
+            source.ProviderId,
+            source.SearchTerm,
+            source.SortField,
+            source.ReverseSort,
+            pageNumber,
+            Constants.SelectEmployer.NumberOfEmployersPerPage);
 
-        var accountProviderLegalEntities = legalEntities
-            .Where(x => x.AccountLegalEntityId != apprenticeship.AccountLegalEntityId)
-            .Select(x => new AccountProviderLegalEntityViewModel
+            var apiResponse = await approvalsOuterApiClient.GetSelectNewEmployer(apiRequest);
+
+            var accountProviderLegalEntities = (apiResponse.AccountProviderLegalEntities ?? []).ConvertAll(x =>
+                new AccountProviderLegalEntityViewModel
+                {
+                    EmployerAccountLegalEntityName = x.AccountLegalEntityName,
+                    EmployerAccountLegalEntityPublicHashedId = x.AccountLegalEntityPublicHashedId,
+                    EmployerAccountName = x.AccountName,
+                    EmployerAccountPublicHashedId = x.AccountPublicHashedId,
+                    AccountHashedId = x.AccountHashedId,
+                    LevyStatus = ParseApprenticeshipEmployerType(x.ApprenticeshipEmployerType)
+                });
+
+            var filterModel = new SelectEmployerFilterModel
             {
-                EmployerAccountLegalEntityName = x.AccountLegalEntityName,
-                EmployerAccountLegalEntityPublicHashedId = x.AccountLegalEntityPublicHashedId,
-                EmployerAccountName = x.AccountName,
-                EmployerAccountPublicHashedId = x.AccountPublicHashedId
-            })
-            .ToList();
+                SearchTerm = source.SearchTerm,
+                ReverseSort = source.ReverseSort,
+                CurrentlySortedByField = source.SortField,
+                ProviderId = source.ProviderId,
+                PageNumber = pageNumber,
+                TotalEmployersFound = apiResponse.TotalCount,
+                Employers = apiResponse.Employers ?? []
+            };
 
-        var filterModel = new SelectEmployerFilterModel
-        {
-            SearchTerm = source.SearchTerm,
-            ReverseSort = source.ReverseSort,
-            CurrentlySortedByField = source.SortField,
-            Employers = accountProviderLegalEntities.SelectMany(x => (new List<string> { x.EmployerAccountLegalEntityName, x.EmployerAccountName }).Distinct()).ToList()
-        };
-
-        accountProviderLegalEntities = ApplySearch(source, accountProviderLegalEntities, filterModel);
-
-        accountProviderLegalEntities = ApplySort(accountProviderLegalEntities, filterModel);
-
-        return new SelectEmployerViewModel
-        {
-            LegalEntityName = apprenticeship.EmployerName,
-            AccountProviderLegalEntities = accountProviderLegalEntities,
-            SelectEmployerFilterModel = filterModel,
-        };
-    }
-
-    private async Task<IEnumerable<GetProviderAccountLegalEntityItem>> GetLegalEntitiesWithCreatePermission(
-        long providerId)
-    {
-        var result = await _approvalsOuterApiClient.GetProviderAccountLegalEntities((int)providerId);
-
-        if (result == null)
-        {
-            return new List<GetProviderAccountLegalEntityItem>();
+            return new SelectEmployerViewModel
+            {
+                AccountProviderLegalEntities = accountProviderLegalEntities,
+                LegalEntityName = apiResponse.EmployerName,
+                SelectEmployerFilterModel = filterModel,
+            };
         }
 
-        return result.AccountProviderLegalEntities;
-    }
-
-    private static List<AccountProviderLegalEntityViewModel> ApplySort(List<AccountProviderLegalEntityViewModel> accountProviderLegalEntities, SelectEmployerFilterModel filterModel)
-    {
-        if (!string.IsNullOrWhiteSpace(filterModel.CurrentlySortedByField))
+        private static ApprenticeshipEmployerType ParseApprenticeshipEmployerType(string apprenticeshipEmployerType)
         {
-            if (filterModel.CurrentlySortedByField == SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst)
+            if (string.IsNullOrWhiteSpace(apprenticeshipEmployerType))
             {
-                accountProviderLegalEntities = (filterModel.ReverseSort
-                    ? accountProviderLegalEntities.OrderByDescending(x => x.EmployerAccountLegalEntityName)
-                        .ThenBy(x => x.EmployerAccountName)
-                        .ThenBy(x => x.EmployerAccountLegalEntityPublicHashedId)
-
-                    : accountProviderLegalEntities.OrderBy(x => x.EmployerAccountLegalEntityName)
-                        .ThenBy(x => x.EmployerAccountName)
-                        .ThenBy(x => x.EmployerAccountLegalEntityPublicHashedId)).ToList();
+                return ApprenticeshipEmployerType.NonLevy;
             }
-            else
+
+            if (Enum.TryParse<ApprenticeshipEmployerType>(apprenticeshipEmployerType, out var levyStatus))
             {
-                accountProviderLegalEntities = (filterModel.ReverseSort
-                    ? accountProviderLegalEntities.OrderByDescending(x => x.EmployerAccountName)
-                        .ThenBy(x => x.EmployerAccountLegalEntityName)
-                        .ThenBy(x => x.EmployerAccountLegalEntityPublicHashedId)
-
-                    : accountProviderLegalEntities.OrderBy(x => x.EmployerAccountName)
-                        .ThenBy(x => x.EmployerAccountLegalEntityName)
-                        .ThenBy(x => x.EmployerAccountLegalEntityPublicHashedId)).ToList();
+                return levyStatus;
             }
+
+            return ApprenticeshipEmployerType.NonLevy;
         }
-
-        return accountProviderLegalEntities;
-    }
-
-    private static List<AccountProviderLegalEntityViewModel> ApplySearch(SelectEmployerRequest source, List<AccountProviderLegalEntityViewModel> accountProviderLegalEntities, SelectEmployerFilterModel filterModel)
-    {
-        if (!string.IsNullOrWhiteSpace(source.SearchTerm))
-        {
-            if (!string.IsNullOrWhiteSpace(filterModel.SearchAccountName))
-            {
-                accountProviderLegalEntities = accountProviderLegalEntities.Where(
-                    x => x.EmployerAccountLegalEntityName.Contains(filterModel.SearchEmployerName, StringComparison.CurrentCultureIgnoreCase)
-                         && x.EmployerAccountName.Contains(filterModel.SearchAccountName, StringComparison.CurrentCultureIgnoreCase)).ToList();
-            }
-            else
-            {
-                accountProviderLegalEntities = accountProviderLegalEntities
-                    .Where(
-                        x => x.EmployerAccountName.Contains(filterModel.SearchEmployerName, StringComparison.CurrentCultureIgnoreCase) 
-                             || x.EmployerAccountLegalEntityName.Contains(filterModel.SearchEmployerName, StringComparison.CurrentCultureIgnoreCase)
-                             || x.EmployerAccountLegalEntityPublicHashedId.Contains(filterModel.SearchEmployerName, StringComparison.CurrentCultureIgnoreCase)
-                    ).ToList();
-            }
-        }
-
-        return accountProviderLegalEntities;
     }
 }

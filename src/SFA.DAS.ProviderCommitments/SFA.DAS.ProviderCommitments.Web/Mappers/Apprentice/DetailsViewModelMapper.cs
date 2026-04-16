@@ -1,3 +1,4 @@
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
@@ -7,9 +8,6 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
-using Azure;
-using SFA.DAS.Apprenticeships.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 
@@ -117,7 +115,8 @@ public class DetailsViewModelMapper(
                 WithdrawalChangedDate = data.LearnerStatusDetails.WithdrawalChangedDate,
                 LastCensusDateOfLearning = data.LearnerStatusDetails.LastCensusDateOfLearning,
                 LastDayOfLearning = data.LearnerStatusDetails.LastDayOfLearning,
-                EmploymentStatus = MapEmploymentStatus(data.Apprenticeship.EmployerVerificationStatus, data.Apprenticeship.EmployerVerificationNotes)
+                EmploymentStatus = MapEmploymentStatus(data.Apprenticeship.EmployerVerificationStatus, data.Apprenticeship.EmployerVerificationNotes),
+                LearningType = data.Apprenticeship.LearningType,
             };
         }
         catch (Exception e)
@@ -244,6 +243,11 @@ public class DetailsViewModelMapper(
         if (status == 0)
         {
             return string.Empty;
+        }
+
+        if (status == 3)
+        {
+            return "Not employed";
         }
 
         return notes switch
