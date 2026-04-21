@@ -172,5 +172,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string Banner { get; set; }
         public string TrainingCourseVersion { get; set; }
         public bool IsRplRequired { get; set; }
+        public int? ProposedMaxFunding { get; set; }
     }
 }
