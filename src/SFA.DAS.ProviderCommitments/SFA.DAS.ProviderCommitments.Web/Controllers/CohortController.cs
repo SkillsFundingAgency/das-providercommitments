@@ -493,6 +493,12 @@ public class CohortController : Controller
     public async Task<IActionResult> BeforeYouContinueMultiSelect(BeforeYouContinueMultiSelectRequest request)
     {
         var model = await _modelMapper.Map<BeforeYouContinueMultiSelectViewModel>(request);
+
+        if (model.HasNoDeclaredStandards)
+        {
+            return RedirectToAction(nameof(NoDeclaredStandards), new { request.ProviderId });
+        }
+
         return View(model);
     }
 
