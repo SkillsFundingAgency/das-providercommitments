@@ -211,13 +211,17 @@
                         @apprenticeship.Uln
                     </td>
                     <td class="govuk-table__cell" data-label="Apprenticeship training type">
-                        @apprenticeship.LearningType?.GetEnumDescription()
+                        <nobr>
+                            @apprenticeship.LearningType?.GetEnumDescription()
+                        </nobr>
                     </td>
                     <td class="govuk-table__cell" data-label="Apprenticeship training course">
                         @apprenticeship.CourseName
                     </td>
                     <td class="govuk-table__cell" data-label="StartDate">
-                        @apprenticeship.StartDate.ToString("dd MMM yyyy")
+                        <nobr>
+                            @apprenticeship.StartDate.ToString("dd MMM yyyy")
+                        </nobr>
                     </td>
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
                         @if (string.IsNullOrWhiteSpace(Model.CohortReference))
