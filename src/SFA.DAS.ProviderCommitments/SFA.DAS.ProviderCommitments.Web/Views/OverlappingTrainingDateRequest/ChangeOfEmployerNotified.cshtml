@@ -1,4 +1,6 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@inject ILinkGenerator LinkGenerator
 @model ChangeOfEmployerNotifiedViewModel
 
 @{
@@ -8,7 +10,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="_ValidationSummary"/>
+        <partial name="_ValidationSummary" />
         <div class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
                 Request sent to employer
@@ -26,38 +28,18 @@
                 we will send a reminder to the previous employer in 1 week
             </li>
             <li>
-                a draft apprenticeship record has been saved but you cannot approve it until the overlapping date has been resolved
+                a draft learner record has been saved but you cannot approve it until the overlapping date has been resolved
             </li>
             <li>
                 you will be notified when the record is updated
             </li>
         </ul>
-        <form method="post">
-            <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m ">
-                        What do you want to do next?
-                    </legend>
-                    @Html.ValidationMessageFor(m => m.NextAction, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.NextAction) })
-                    <div class="govuk-radios govuk-radios--conditional" data-module="radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="radio-view-all-cohorts" name="NextAction" type="radio" value="@NextAction.ViewAllCohorts" data-aria-controls="conditional-approve">
-                            <label class="govuk-label govuk-radios__label" for="radio-view-all-cohorts">
-                                View apprentice details
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="radio-view-dashboard" name="NextAction" type="radio" value="@NextAction.ViewDashBoard" data-aria-controls="conditional-approve">
-                            <label class="govuk-label govuk-radios__label" for="radio-view-dashboard">
-                                Return to dashboard
-                            </label>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-            <button class="govuk-button" data-module="govuk-button" type="submit">
-                Continue
-            </button>
-        </form>
+
+        <div class="govuk-!-margin-bottom-6">
+
+            <a class="govuk-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("/account")">Return to Dashboard</a>
+        </div>
+        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.Cohort, new { Model.ProviderId })"> View learner details</a>
+
     </div>
 </div>

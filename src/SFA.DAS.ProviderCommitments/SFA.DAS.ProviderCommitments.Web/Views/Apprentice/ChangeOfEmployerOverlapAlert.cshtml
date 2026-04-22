@@ -30,14 +30,14 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
         <p>
-            Check you have entered the apprentice details and training dates.
+            Check you have entered the learner details and training dates.
         </p>
         @if (Model.ExceedsFundingBandCap)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
-                <h3 class="govuk-heading-s">This apprenticeship is above the funding band maximum</h3>
+                <h3 class="govuk-heading-s">This training is above the funding band maximum</h3>
                 <p>
-                    The new agreed apprenticeship price is above the @Model.FundingBandCap.Value.ToGdsCostFormat() <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands">maximum value of the funding band</a> for this apprenticeship.
+                    The new agreed training price is above the @Model.FundingBandCap.Value.ToGdsCostFormat() <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands">maximum value of the funding band</a> for this training.
                     You'll need to ask the new employer to pay the difference directly to you - this can't be funded from their account.
                 </p>
             </div>
@@ -45,7 +45,7 @@
         <div class="govuk-summary-card">
             <div class="govuk-summary-card__title-wrapper">
                 <h2 class="govuk-summary-card__title">
-                    Apprentice details
+                    Learner details
                 </h2>
                 <ul class="govuk-summary-card__actions">
                     <li class="govuk-summary-card__action">
@@ -57,7 +57,7 @@
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Apprentice Name
+                            Name
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @Model.ApprenticeName
@@ -155,7 +155,7 @@
                     }
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Total agreed apprenticeship price
+                            Total agreed training price
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @Model.OldPrice.ToGdsCostFormat()
@@ -224,7 +224,7 @@
                     }
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            @(isRegular ? "New training end date" : "Projected apprenticeship training end date")
+                            @(isRegular ? "New training end date" : "Projected training end date")
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @DisplayDate(Model.NewEndDateTime)
@@ -249,7 +249,7 @@
                     }
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            @(isRegular ? "New agreed apprenticeship price" : "Total agreed apprenticeship price")
+                            @(isRegular ? "New agreed training price" : "Total agreed training price")
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @Model.NewPrice.ToGdsCostFormat()

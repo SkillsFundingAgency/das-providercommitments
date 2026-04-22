@@ -3,31 +3,30 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+
+public class TrainingDatesViewModelToPriceRequestMapper : IMapper<TrainingDatesViewModel, PriceRequest>
 {
-    public class TrainingDatesViewModelToPriceRequestMapper : IMapper<TrainingDatesViewModel, PriceRequest>
+    private readonly ICacheStorageService _cacheStorage;
+
+    public TrainingDatesViewModelToPriceRequestMapper(ICacheStorageService cacheStorage) =>
+        _cacheStorage = cacheStorage;
+
+    public async Task<PriceRequest> Map(TrainingDatesViewModel source)
     {
-        private readonly ICacheStorageService _cacheStorage;
+        var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
 
-        public TrainingDatesViewModelToPriceRequestMapper(ICacheStorageService cacheStorage) =>
-            _cacheStorage = cacheStorage;
+        cacheItem.StartDate = source.StartDate.MonthYear;
+        cacheItem.EndDate = source.EndDate.MonthYear;
+        cacheItem.EmploymentEndDate = source.EmploymentEndDate.MonthYear;
 
-        public async Task<PriceRequest> Map(TrainingDatesViewModel source)
+        await _cacheStorage.SaveToCache(cacheItem.Key, cacheItem, 1);
+
+        return new PriceRequest
         {
-            var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
-
-            cacheItem.StartDate = source.StartDate.MonthYear;
-            cacheItem.EndDate = source.EndDate.MonthYear;
-            cacheItem.EmploymentEndDate = source.EmploymentEndDate.MonthYear;
-
-            await _cacheStorage.SaveToCache(cacheItem.Key, cacheItem, 1);
-
-            return new PriceRequest
-            {
-                ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                ProviderId = source.ProviderId,
-                CacheKey = source.CacheKey
-            };
-        }
+            ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+            ProviderId = source.ProviderId,
+            CacheKey = source.CacheKey
+        };
     }
 }
