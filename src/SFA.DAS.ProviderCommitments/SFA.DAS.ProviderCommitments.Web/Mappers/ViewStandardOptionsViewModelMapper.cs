@@ -4,12 +4,12 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers
+namespace SFA.DAS.ProviderCommitments.Web.Mappers;
+
+public class ViewStandardOptionsViewModelMapper : IMapper<SelectOptionsRequest, ViewSelectOptionsViewModel>
 {
-    public class ViewStandardOptionsViewModelMapper : IMapper<SelectOptionsRequest, ViewSelectOptionsViewModel>
-    {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IOuterApiClient _outerApiClient;
+    private readonly ICommitmentsApiClient _commitmentsApiClient;
+    private readonly IOuterApiClient _outerApiClient;
 
         public ViewStandardOptionsViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IOuterApiClient outerApiClient)
         {
@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             var apiRequest = new GetEditDraftApprenticeshipRequest(source.ProviderId, (long)source.CohortId, (long)source.DraftApprenticeshipId, null);
             var draftApprenticeship = await _outerApiClient.Get<GetEditDraftApprenticeshipResponse>(apiRequest);
 
-            var trainingProgramme = await _commitmentsApiClient.GetTrainingProgrammeVersionByStandardUId(draftApprenticeship.StandardUId);
+        var trainingProgramme = await _commitmentsApiClient.GetTrainingProgrammeVersionByStandardUId(draftApprenticeship.StandardUId);
 
             return new ViewSelectOptionsViewModel
             {

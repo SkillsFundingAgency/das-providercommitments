@@ -20,6 +20,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using SFA.DAS.ProviderUrlHelper;
+using LearningType = SFA.DAS.Common.Domain.Types.LearningType;
 using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Apprentice.SelectDeliveryModelViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -396,6 +397,11 @@ public class ApprenticeController(
     public async Task<IActionResult> EditApprenticeship(EditApprenticeshipRequest request)
     {
         var viewModel = TempData.Get<EditApprenticeshipRequestViewModel>(ViewModelForEdit) ?? await modelMapper.Map<EditApprenticeshipRequestViewModel>(request);
+
+        if(viewModel.LearningType == LearningType.ApprenticeshipUnit)
+        {
+            return View("EditApprenticeshipForAppUnit", viewModel);
+        }
         return View(viewModel);
     }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using FluentAssertions.Execution;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
@@ -357,5 +356,12 @@ public class WhenIMapEditDraftApprenticeshipDetailsToViewModel
     {
         var result = await _act();
         result.IsRplRequired.Should().Be(_rplRequirementsResponse.IsRequired);
+    }
+
+    [Test]
+    public async Task ThenProposedMaxFundingIsMappedCorrectly()
+    {
+        var result = await _act();
+        result.ProposedMaxFunding.Should().Be(_apiResponse.ProposedMaxFunding);
     }
 }

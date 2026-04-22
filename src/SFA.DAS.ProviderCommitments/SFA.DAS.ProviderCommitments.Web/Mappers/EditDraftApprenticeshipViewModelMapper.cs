@@ -71,7 +71,8 @@ public class EditDraftApprenticeshipViewModelMapper(
                 DurationReducedByHours = apiResponse.DurationReducedByHours,
                 IsDurationReducedByRpl = apiResponse.IsDurationReducedByRpl,
                 TrainingCourseVersion = apiResponse.TrainingCourseVersion,
-                IsRplRequired = rplRequirements?.IsRequired ?? true
+                IsRplRequired = rplRequirements?.IsRequired ?? true,
+                ProposedMaxFunding = apiResponse.ProposedMaxFunding
             };
 
             if (cachedModel != null)

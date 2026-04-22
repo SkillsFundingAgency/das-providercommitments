@@ -1,4 +1,6 @@
 ﻿using System;
+using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -49,7 +51,7 @@ public class SelectLearnerRecordViewModelTests
     public void LastSubmittedOnIsNotBlank_DescIsCorrect()
     {
         _viewModel.LastIlrSubmittedOn = new DateTime(2025, 4, 10);
-        _viewModel.LastIlrSubmittedOnDesc.Should().Be("Last updated 1:00AM on Thursday 10 April");
+        _viewModel.LastIlrSubmittedOnDesc.Should().Be("List updated: 1:00AM on 10 Apr 2025");
     }
 
     [TestCase(1, "1 apprentice records")]
@@ -139,6 +141,9 @@ public class SelectLearnerRecordViewModelTests
     [Test]
     public void MapsIlrLearnerSummary_ToIlrApprenticeshipSummary()
     {
+        _fixture.Customize<GetLearnerSummary>(c =>
+            c.With(x => x.LearningType, "Apprenticeship"));
+
         var ilrLearner = _fixture.Create<GetLearnerSummary>();
         var apprenticeship = (LearnerSummary)ilrLearner;
 
@@ -148,6 +153,7 @@ public class SelectLearnerRecordViewModelTests
         apprenticeship.LastName.Should().Be(ilrLearner.LastName);
         apprenticeship.Uln.Should().Be(ilrLearner.Uln);
         apprenticeship.CourseName.Should().Be(ilrLearner.Course);
+        apprenticeship.LearningType.Should().Be(ilrLearner.LearningType.ToEnum<LearningType>());
     }
 
     [TestCase(0, false)]
