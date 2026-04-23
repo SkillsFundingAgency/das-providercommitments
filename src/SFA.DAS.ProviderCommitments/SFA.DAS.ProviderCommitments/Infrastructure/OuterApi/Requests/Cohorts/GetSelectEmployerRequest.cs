@@ -8,13 +8,12 @@ public class GetSelectEmployerRequest(
     string searchTerm,
     string sortField,
     bool reverseSort,
-    bool useLearnerData)
-    : IGetApiRequest
+    bool useLearnerData,
+    int pageNumber = 1,
+    int pageSize = 50)
+    : GetSelectEmployersRequest(providerId, searchTerm, sortField, reverseSort, pageNumber, pageSize)
+    , IGetApiRequest
 {
-    private long ProviderId { get; } = providerId;
-    private string SearchTerm { get; } = searchTerm;
-    private string SortField { get; } = sortField;
-    private bool ReverseSort { get; } = reverseSort;
     private bool UseLearnerData { get; } = useLearnerData;
 
     public string GetUrl
@@ -22,41 +21,23 @@ public class GetSelectEmployerRequest(
         get
         {
             var queryParams = new List<string>();
-            
+
             if (!string.IsNullOrWhiteSpace(SearchTerm))
             {
                 queryParams.Add($"searchTerm={WebUtility.UrlEncode(SearchTerm)}");
             }
-            
+
             if (!string.IsNullOrWhiteSpace(SortField))
             {
                 queryParams.Add($"sortField={WebUtility.UrlEncode(SortField)}");
             }
-            
+
             queryParams.Add($"reverseSort={ReverseSort}");
             queryParams.Add($"useLearnerData={UseLearnerData}");
+            queryParams.Add($"pageNumber={PageNumber}");
+            queryParams.Add($"pageSize={PageSize}");
 
-            var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
-            return $"provider/{ProviderId}/unapproved/add/select-employer{queryString}";
+            return $"provider/{ProviderId}/unapproved/add/select-employer?{string.Join("&", queryParams)}";
         }
     }
-}
-
-public class GetSelectEmployerResponse
-{
-    public List<AccountProviderLegalEntityResponseItem> AccountProviderLegalEntities { get; init; } = [];
-    public List<string> Employers { get; init; } = [];
-}
-
-public class AccountProviderLegalEntityResponseItem
-{
-    public long AccountId { get; set; }
-    public string AccountPublicHashedId { get; set; }
-    public string AccountHashedId { get; set; }
-    public string AccountName { get; set; }
-    public long AccountLegalEntityId { get; set; }
-    public string AccountLegalEntityPublicHashedId { get; set; }
-    public string AccountLegalEntityName { get; set; }
-    public long AccountProviderId { get; set; }
-    public string ApprenticeshipEmployerType { get; set; }
 }

@@ -19,17 +19,27 @@ public class SelectLearnerRecordViewModelMapperTests
     {
         var fixture = new Fixture();
 
+        fixture.Customize<GetLearnerSummary>(c =>
+            c.With(x => x.LearningType, "Apprenticeship"));
+
         _request = fixture.Create<SelectLearnerRecordRequest>();
         _apiResponse = fixture.Create<GetLearnerDetailsForProviderResponse>();
 
         _outerApiService = new Mock<IOuterApiService>();
 
-        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId, _request.AccountLegalEntityId,
-                _request.CohortId, _request.SearchTerm, _request.SortField,
-                _request.ReverseSort, _request.Page, _request.StartMonth, _request.StartYear))
+        _outerApiService.Setup(x => x.GetLearnerDetailsForProvider(_request.ProviderId,
+            It.Is<SelectLearnersRequest>(t => t.AccountLegalEntityId == _request.AccountLegalEntityId &&
+            t.CohortId == _request.CohortId &&
+            t.SearchTerm == _request.SearchTerm &&
+            t.SortColumn == _request.SortField &&
+            t.ReverseSort == _request.ReverseSort &&
+            t.Page == _request.Page &&
+            t.StartMonth == _request.StartMonth &&
+            t.StartYear == _request.StartYear &&
+            t.CourseCode == _request.CourseCode)))
             .ReturnsAsync(_apiResponse);
 
-        _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object);
+        _mapper = new SelectLearnerRecordViewModelMapper(_outerApiService.Object, Mock.Of<ILogger<SelectLearnerRecordViewModelMapper>>());
     }
 
     [Test]
@@ -47,6 +57,7 @@ public class SelectLearnerRecordViewModelMapperTests
         result.FilterModel.ReverseSort.Should().Be(_request.ReverseSort);
         result.FilterModel.SearchTerm.Should().Be(_request.SearchTerm);
         result.FilterModel.CacheKey.Should().Be(_request.CacheKey);
+        result.FilterModel.CourseCode.Should().Be(_request.CourseCode);
     }
 
     [Test]
@@ -60,12 +71,14 @@ public class SelectLearnerRecordViewModelMapperTests
         result.EmployerAccountName.Should().Be(_apiResponse.EmployerName);
         result.LastIlrSubmittedOn.Should().Be(_apiResponse.LastSubmissionDate);
         result.FutureMonths.Should().Be(_apiResponse.FutureMonths);
+        result.FilterModel.Courses.Where(c => c.Text != "All").Select(x => x.Text).
+            Should().BeEquivalentTo(_apiResponse.TrainingCourses.Select(y => y.Name));
     }
 
     [Test]
     public async Task MapLearnersCorrectly()
     {
         var result = await _mapper.Map(_request);
-        result.Learners.Should().BeEquivalentTo(_apiResponse.Learners.Select(x=>(LearnerSummary)x).ToList());
+        result.Learners.Should().BeEquivalentTo(_apiResponse.Learners.Select(x => (LearnerSummary)x).ToList());
     }
 }

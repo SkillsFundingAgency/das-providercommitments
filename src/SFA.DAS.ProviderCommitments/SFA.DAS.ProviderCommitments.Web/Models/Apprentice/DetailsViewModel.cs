@@ -1,9 +1,8 @@
-﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Enums;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
-using SFA.DAS.Apprenticeships.Types;
+using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -92,10 +91,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string PendingStartDateChangeRoute => $"provider/{ProviderId}/ChangeOfStartDate/{ApprenticeshipHashedId}/pending";
         public bool? CanActualStartDateBeChanged { get; set; }
         public ApprenticeDetailsBanners ShowBannersFlags { get; set; } = 0;
+        public string EmploymentStatus { get; set; }
         public LearnerStatus LearnerStatus { get; set; }
         public DateTime? WithdrawalChangedDate { get; set; }
         public DateTime? LastCensusDateOfLearning { get; set; }
         public DateTime? LastDayOfLearning { get; set; }
+        public Common.Domain.Types.LearningType? LearningType { get; set; }
 
         public enum DataLockSummaryStatus
         {
