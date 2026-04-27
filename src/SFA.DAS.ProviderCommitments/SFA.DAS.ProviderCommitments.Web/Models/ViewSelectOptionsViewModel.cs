@@ -1,21 +1,30 @@
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
+using StructureMap.Query;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class ViewSelectOptionsViewModel : IAuthorizationContextModel
     {
-        public List<string> Options { get ; set ; }
-        public long CohortId { get ; set ; }
+        public List<string> Options { get; set; }
+        public long CohortId { get; set; }
         public string CohortReference { get; set; }
-        public long DraftApprenticeshipId { get ; set ; }
-        public string DraftApprenticeshipHashedId { get ; set ; }
-        public long ProviderId { get ; set ; }
-        public string TrainingCourseName { get ; set ; }
-        public string TrainingCourseVersion { get ; set ; }
-        public string SelectedOption { get ; set ; }
+        public long DraftApprenticeshipId { get; set; }
+        public string DraftApprenticeshipHashedId { get; set; }
+        public long ProviderId { get; set; }
+        public string TrainingCourseName { get; set; }
+        public string TrainingCourseVersion { get; set; }
+        public string SelectedOption { get; set; }
         public string StandardPageUrl { get; set; }
         public bool? HasSelectedRpl { get; set; }
         public DateTime? ApprenticeshipStartDate { get; set; }
         public long? LearnerDataId { get; set; }
+        public string OriginalSelectedOption { get; set; }
+
+        public bool HasChanged() => SelectedOption != OriginalSelectedOption;
+
+        public string DisplayUpdateMessage()
+        {
+            return ( OriginalSelectedOption is null || OriginalSelectedOption == "-1") ? "Standard option added" : "Standard option changed";
+        }
     }
 }
