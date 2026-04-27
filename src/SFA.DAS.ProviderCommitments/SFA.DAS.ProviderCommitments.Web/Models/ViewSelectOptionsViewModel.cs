@@ -20,9 +20,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public long? LearnerDataId { get; set; }
         public string OriginalSelectedOption { get; set; }
 
+        public bool HasChanged() => SelectedOption != OriginalSelectedOption;
+
         public string DisplayUpdateMessage()
         {
-            return OriginalSelectedOption == "-1" ? "Standard option added" : "Standard option changed";
+            return ( OriginalSelectedOption is null || OriginalSelectedOption == "-1") ? "Standard option added" : "Standard option changed";
         }
     }
 }

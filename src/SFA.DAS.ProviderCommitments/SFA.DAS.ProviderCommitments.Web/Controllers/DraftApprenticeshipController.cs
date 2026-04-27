@@ -639,7 +639,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (request.LearnerDataId is not null)
             {
-                TempData[UpdatedBanner] = model.DisplayUpdateMessage();
+                if (model.HasChanged())
+                {
+                    TempData[UpdatedBanner] = model.DisplayUpdateMessage();
+                }
 
                 return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
                 {
