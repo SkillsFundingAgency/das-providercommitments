@@ -24,7 +24,7 @@ public class SelectLearnerRecordViewModel : IAuthorizationContextModel
     public Guid? ReservationId { get; set; }
 
     public List<LearnerSummary> Learners { get; set; } = new();
-    public string PageTitle => $"Select apprentices from ILR for {EmployerAccountName}";
+    public string PageTitle => $"Select learners from ILR for {EmployerAccountName}";
 
     public string SortedByHeaderClassName { get; set; }
     public const string HeaderClassName = "das-table__sort";
@@ -80,7 +80,7 @@ public class LearnerRecordsFilterModel
     public int TotalNumberOfLearnersFound { get; set; }
 
     public HtmlString TotalNumberOfApprenticeshipsFoundDescription =>
-        new HtmlString($"{TotalNumberOfLearnersFound} apprentice records found " + GetFiltersUsedMessage());
+        new HtmlString($"{TotalNumberOfLearnersFound} learner records found " + GetFiltersUsedMessage());
 
     public string SortField { get; set; }
     public bool ReverseSort { get; set; }
