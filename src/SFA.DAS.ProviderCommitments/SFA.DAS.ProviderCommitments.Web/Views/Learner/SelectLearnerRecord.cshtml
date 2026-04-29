@@ -28,31 +28,17 @@
         <h1 class="govuk-heading-xl">@Model.PageTitle</h1>
 
         <p class="govuk-body">
-            If you cannot find the apprentice you're looking for, try:
+            If you cannot find the learner you're looking for, try:
         </p>
 
         <ul class="govuk-list govuk-list--bullet xgovuk-list--spaced">
             <li>refreshing this page</li>
             <li>updating the ILR</li>
-            <li>
-                @if (!string.IsNullOrWhiteSpace(Model.CohortReference))
-                {
-                    <a href="@Url.Action("AddDraftApprenticeshipCourse", "DraftApprenticeship", new { Model.ProviderId, Model.CohortReference, Model.ReservationId, Model.CacheKey })" class="govuk-link">
-                        manually adding your apprentice
-                    </a>
-                }
-                else
-                {
-                    <a href="@Url.Action("SelectCourse", "Cohort", new { Model.ProviderId, Model.CacheKey, Model.ReservationId })" class="govuk-link">
-                        manually adding your apprentice
-                    </a>
-                }
-            </li>
         </ul>
         @if (Model.IsNonLevy)
         {
             <p class="govuk-body">
-                You will not see apprentices with non-levy employers that have a future start date outside of the @Model.FutureMonths month reservation window.
+                You will not see learners with non-levy employers that have a future start date outside of the @Model.FutureMonths month reservation window.
             </p>
         }
     </div>
@@ -62,7 +48,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
-                <label for="searchTerm" class="govuk-label">Search apprentice name or unique learner number (ULN)</label>
+                <label for="searchTerm" class="govuk-label">Search name or ULN of learner</label>
                 <div class="das-search-form__group">
                     <input class="govuk-input das-search-form__input" id="searchTerm" name="searchTerm" type="text" value="@Model.FilterModel.SearchTerm">
                     <div class="das-search-form__button-wrap">
@@ -204,18 +190,18 @@
             @foreach (var apprenticeship in Model.Learners)
             {
                 <tr class="govuk-table__row">
-                    <td class="govuk-table__cell" data-label="Apprentice name">
+                    <td class="govuk-table__cell" data-label="Learner name">
                         @apprenticeship.Name
                     </td>
                     <td class="govuk-table__cell" data-label="ULN">
                         @apprenticeship.Uln
                     </td>
-                    <td class="govuk-table__cell" data-label="Apprenticeship training type">
+                    <td class="govuk-table__cell" data-label="Training type">
                         <nobr>
                             @apprenticeship.LearningType?.GetEnumDescription()
                         </nobr>
                     </td>
-                    <td class="govuk-table__cell" data-label="Apprenticeship training course">
+                    <td class="govuk-table__cell" data-label="Training course">
                         @apprenticeship.CourseName
                     </td>
                     <td class="govuk-table__cell" data-label="StartDate">
