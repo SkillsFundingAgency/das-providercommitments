@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -8,7 +12,7 @@ using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 
-public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client, ICacheStorageService cacheStorage)
+public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client, ICacheStorageService cacheStorage, IValidator<SelectMultipleLearnerRecordsViewModel> validator)
     : IMapper<SelectMultipleLearnerRecordsRequest, SelectMultipleLearnerRecordsViewModel>
 {
     public async Task<SelectMultipleLearnerRecordsViewModel> Map(SelectMultipleLearnerRecordsRequest source)
@@ -53,6 +57,13 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
                 })]
         };
 
+        var maxSelectableLearners = cacheItem.LevyStatus switch
+        {
+            ApprenticeshipEmployerType.Levy => 2,
+            ApprenticeshipEmployerType.NonLevy => 0,//calculate 
+            _ => 0
+        };
+
         var model = new SelectMultipleLearnerRecordsViewModel
         {
             ProviderId = cacheItem.ProviderId,
@@ -61,10 +72,20 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             CacheKey = source.CacheKey,
             EmployerAccountName = cacheItem.EmployerAccountName,
             Learners = response.Learners.ConvertAll(x => (LearnerSummary)x),
+            SelectedLearnersIds = cacheItem.SelectedLearnersIds,
             LastIlrSubmittedOn = response.LastSubmissionDate,
             FilterModel = filterModel,
-            FutureMonths = response.FutureMonths
+            FutureMonths = response.FutureMonths,
+            LevyStatus = cacheItem.LevyStatus,
+            MaxSelectableLearners = maxSelectableLearners
         };
+
+        ValidationResult validationResult = await validator.ValidateAsync(model);
+        if (!validationResult.IsValid)
+        {
+            model.ValidationErrors = validationResult.Errors;
+        }
+
         model.SortedByHeader();
         return model;
     }

@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+﻿@using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectMultipleLearnerRecordsViewModel
@@ -10,7 +11,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
+        <partial name="_ValidationSummary" />
         <h1 class="govuk-heading-1">@Model.PageTitle</h1>
 
         <dl class="govuk-summary-list">
@@ -43,12 +44,76 @@
             </div>
         </details>
 
-        @if (Model.IsNonLevy)
+        @if (Model.LevyStatus == ApprenticeshipEmployerType.NonLevy)
         {
             <p class="govuk-body">
-                You will not see apprentices with non-levy employers that have a future start date outside of the @Model.FutureMonths month reservation window.
+                You will not see learners with non-levy employers that have a future start date outside of the @Model.FutureMonths month reservation window.
             </p>
         }
+    </div>
+</div>
+
+<div class="govuk-grid-row  @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
+    <div class="govuk-grid-column">
+        <h3 class="govuk-heading-m">Learners in cohort (@Model.SelectedLearners.Count)</h3>
+        @Html.ValidationMessageFor(m => m.SelectedLearnersIds, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SelectedLearnersIds) })
+        @if (Model.LevyStatus == ApprenticeshipEmployerType.Levy)
+        {
+            <p class="govuk-body">
+                You can select up to 100 learners
+            </p>
+        }
+
+        <table class="govuk-table das-table--responsive das-table--double-arrows das-table--condensed">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Name</th>
+                    <th scope="col" class="govuk-table__header">ULN</th>
+                    <th scope="col" class="govuk-table__header">Course</th>
+                    <th scope="col" class="govuk-table__header">Start date</th>
+                    <th scope="col" class="govuk-table__header"></th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var apprenticeship in Model.SelectedLearners)
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell" data-label="Apprentice name">
+                            @apprenticeship.Name
+                        </td>
+                        <td class="govuk-table__cell" data-label="ULN">
+                            @apprenticeship.Uln
+                        </td>
+                        <td class="govuk-table__cell" data-label="Apprenticeship training course">
+                            @apprenticeship.CourseName
+                        </td>
+                        <td class="govuk-table__cell" data-label="StartDate">
+                            @apprenticeship.StartDate.ToString("dd MMM yyyy")
+                        </td>
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Remove">
+                            <a href="@Url.Action("SelectMultipleLearnerRecordsRemove", new { @Model.ProviderId, @Model.CacheKey, LearnerId = apprenticeship.Id })" class="govuk-link">
+                                Remove
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @if (@Model.SelectedLearners.Count == 0)
+        {
+            <p class="govuk-body">
+                No learners added
+            </p>
+        }
+        else
+        {
+            <div>
+                <button class="govuk-button govuk-!-margin-0"> Save and continue</button>
+            </div>
+            <br />
+        }
+        <hr class="govuk-section-break govuk-section-break--visible">
+        <br />
     </div>
 </div>
 
@@ -59,7 +124,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
-                <label for="searchTerm" class="govuk-label">Search apprentice name or unique learner number (ULN)</label>
+                <label for="searchTerm" class="govuk-label">Search learner name or unique learner number (ULN)</label>
                 <div class="das-search-form__group">
                     <input class="govuk-input das-search-form__input" id="searchTerm" name="searchTerm" type="text" value="@Model.FilterModel.SearchTerm">
                     <div class="das-search-form__button-wrap">
@@ -131,7 +196,7 @@
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-one-half">
         <p class="govuk-body">
-            @Model.FilterModel.TotalNumberOfApprenticeshipsFoundDescription
+            @Model.FilterModel.TotalNumberOfLearnersFoundDescription
         </p>
     </div>
     <div class="govuk-grid-column-one-half das-!-text-align-right--from-tablet">
@@ -183,7 +248,7 @@
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-            @foreach (var apprenticeship in Model.Learners)
+            @foreach (var apprenticeship in Model.AvailableForSelectionLearners)
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Apprentice name">
@@ -198,19 +263,10 @@
                     <td class="govuk-table__cell" data-label="StartDate">
                         @apprenticeship.StartDate.ToString("dd MMM yyyy")
                     </td>
-                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select">
-                        @if (string.IsNullOrWhiteSpace(Model.CohortReference))
-                        {
-                            <a href="@Url.Action("LearnerSelectedForNewCohort", new { Model.ProviderId, Model.CacheKey, Model.EmployerAccountLegalEntityPublicHashedId, LearnerDataId = apprenticeship.Id })" class="govuk-link">
-                                Select
-                            </a>
-                        }
-                        else
-                        {
-                            <a href="@Url.Action("LearnerToBeAddedToCohort", new { Model.ProviderId, Model.CacheKey, Model.CohortReference, LearnerDataId = apprenticeship.Id })" class="govuk-link">
-                                Select
-                            </a>
-                        }
+                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Add">
+                        <a href="@Url.Action("SelectMultipleLearnerRecordsAdd", new { @Model.ProviderId, @Model.CacheKey, LearnerId = apprenticeship.Id })" class="govuk-link">
+                            Add
+                        </a>
                     </td>
                 </tr>
             }

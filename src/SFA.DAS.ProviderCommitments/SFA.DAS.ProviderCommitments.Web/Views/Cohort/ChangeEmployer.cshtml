@@ -85,7 +85,7 @@
                         <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
                         <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
                         <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
-                            <a href="@Url.Action("ContinueMultipleLearnerSelection", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, viewModel.EmployerAccountName, Model.CacheKey })" class="govuk-link">
+                            <a href="@Url.Action("ContinueMultipleLearnerSelection", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, viewModel.EmployerAccountName, Model.CacheKey, viewModel.LevyStatus })" class="govuk-link">
                                 Select <span class="govuk-visually-hidden">@viewModel.EmployerAccountLegalEntityName</span>
                             </a>
                         </td>

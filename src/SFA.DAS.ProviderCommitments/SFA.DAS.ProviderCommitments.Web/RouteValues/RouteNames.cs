@@ -56,6 +56,8 @@ public static class RouteNames
     public const string SelectMultipleLearnerRecords = "select-multiple-ilr";
     public const string SelectMultipleLearnerRecordsFilter = "select-multiple-ilr-filter";
     public const string SelectMultipleLearnerRecordsSort = "select-multiple-ilr-sort";
+    public const string SelectMultipleLearnerRecordsAdd = "select-multiple-ilr-add";
+    public const string SelectMultipleLearnerRecordsRemove = "select-multiple-ilr-remove";
     public const string SelectMultipleChangeEmployer = "change-employer";
     public const string SelectMultipleChangeEmployerRedirect = "change-employer-redirect";
     public const string CreateCohortAndAddFirstApprenticeship = "create-cohort-add-apprenticeship";
