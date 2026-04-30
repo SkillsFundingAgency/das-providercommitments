@@ -97,7 +97,7 @@
         }
 
     }
-        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.Cohort, new { Model.ProviderId})"> Go to apprentice requests</a>
+        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.Cohort, new { Model.ProviderId})"> Go to learner requests</a>
 
     <br />
     <br />
@@ -105,3 +105,24 @@
         <a class="govuk-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("/account")">Go to homepage</a>
 </div>
 </div>
+
+<div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+    <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Help us improve this service
+        </h2>
+    </div>
+    <div class="govuk-notification-banner__content">
+        <p class="govuk-body">
+            Take a 3 minute survey about adding apprentices so that we can improve the service
+            <a class="govuk-link" href="https://dferesearch.fra1.qualtrics.com/jfe/form/SV_4SCNJixibnF1oCG" target="_blank" rel="noopener noreferrer">
+                Take the survey
+            </a>.
+        </p>
+    </div>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectDraftApprenticeshipsEntryMethod", new { Model.ProviderId })>Back</a>
+}
