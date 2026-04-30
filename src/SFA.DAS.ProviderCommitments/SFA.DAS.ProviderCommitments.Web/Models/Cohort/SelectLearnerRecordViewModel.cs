@@ -9,6 +9,7 @@ using System.Net;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.Common.Domain.Types;
+using FluentAssertions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -80,7 +81,13 @@ public class LearnerRecordsFilterModel
     public int TotalNumberOfLearnersFound { get; set; }
 
     public HtmlString TotalNumberOfApprenticeshipsFoundDescription =>
-        new HtmlString($"{TotalNumberOfLearnersFound} apprentice records found " + GetFiltersUsedMessage());
+        new HtmlString(
+            TotalNumberOfLearnersFound switch
+            {
+                1 => $"{TotalNumberOfLearnersFound} record found " + GetFiltersUsedMessage(),
+                _ => $"{TotalNumberOfLearnersFound} records found " + GetFiltersUsedMessage()
+            });
+            
 
     public string SortField { get; set; }
     public bool ReverseSort { get; set; }
@@ -94,6 +101,8 @@ public class LearnerRecordsFilterModel
     public List<SelectListItem> YearNames { get; set; }
     public string CourseCode { get; set; }
     public List<SelectListItem> Courses { get; set; }
+    public LearningType? LearningType { get; set; }
+    public List<SelectListItem> LearningTypes { get; set; }
 
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
@@ -116,6 +125,16 @@ public class LearnerRecordsFilterModel
                     Text = m.ToString(),
                     Value = m.ToString()
                 }).ToList();
+
+        LearningTypes = new List<SelectListItem>
+        {
+            new SelectListItem("All", "")
+        };
+
+        foreach (var value in Enum.GetValues<LearningType>())
+        {
+            LearningTypes.Add(new SelectListItem(value.GetEnumDescription(), ((byte)value).ToString()));
+        }
     }
 
     private Dictionary<string, string> BuildRouteData()
@@ -144,6 +163,7 @@ public class LearnerRecordsFilterModel
 
         routeData.Add(nameof(StartMonth), StartMonth);
         routeData.Add(nameof(StartYear), StartYear);
+        routeData.Add(nameof(LearningType), LearningType.ToString());
 
         return routeData;
     }
@@ -274,6 +294,15 @@ public class LearnerRecordsFilterModel
         if (!string.IsNullOrWhiteSpace(CourseCode))
         {
             var item = Courses.FirstOrDefault(x => x.Value == CourseCode);
+            if (item != null)
+            {
+                filters.Add(WebUtility.HtmlEncode(item.Text));
+            }
+        }
+
+        if (LearningType.HasValue)
+        {
+            var item = LearningTypes.FirstOrDefault(x => x.Value == LearningType.ToString());
             if (item != null)
             {
                 filters.Add(WebUtility.HtmlEncode(item.Text));
