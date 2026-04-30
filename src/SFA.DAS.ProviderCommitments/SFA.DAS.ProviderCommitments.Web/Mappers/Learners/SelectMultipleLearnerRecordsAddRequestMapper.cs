@@ -12,7 +12,10 @@ public class SelectMultipleLearnerRecordsAddRequestMapper(ICacheStorageService c
     {
         var cacheItem = await cacheStorage.RetrieveFromCache<SelectMultipleLearnerRecordsCacheItem>(source.CacheKey.Value);
 
-        cacheItem.SelectedLearnersIds.Add(source.LearnerId);
+        if (cacheItem.SelectedLearners.All(x => x.Id != source.Learner.Id))
+        {
+            cacheItem.SelectedLearners.Add(source.Learner);
+        }
 
         await cacheStorage.SaveToCache(cacheItem.Key.ToString(), cacheItem, 1);
 

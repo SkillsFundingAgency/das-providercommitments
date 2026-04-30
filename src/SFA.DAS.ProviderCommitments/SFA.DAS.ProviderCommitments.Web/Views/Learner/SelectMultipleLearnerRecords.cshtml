@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.CommitmentsV2.Types
+﻿@using Microsoft.AspNetCore.Routing
+@using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
@@ -56,7 +57,7 @@
 <div class="govuk-grid-row  @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
     <div class="govuk-grid-column">
         <h3 class="govuk-heading-m">Learners in cohort (@Model.SelectedLearners.Count)</h3>
-        @Html.ValidationMessageFor(m => m.SelectedLearnersIds, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SelectedLearnersIds) })
+        @Html.ValidationMessageFor(m => m.SelectedLearners, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SelectedLearners) })
         @if (Model.LevyStatus == ApprenticeshipEmployerType.Levy)
         {
             <p class="govuk-body">
@@ -248,7 +249,7 @@
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-            @foreach (var apprenticeship in Model.AvailableForSelectionLearners)
+            @foreach (var apprenticeship in Model.Learners)
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Apprentice name">
@@ -264,7 +265,18 @@
                         @apprenticeship.StartDate.ToString("dd MMM yyyy")
                     </td>
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Add">
-                        <a href="@Url.Action("SelectMultipleLearnerRecordsAdd", new { @Model.ProviderId, @Model.CacheKey, LearnerId = apprenticeship.Id })" class="govuk-link">
+                        <a href="@Url.Action("SelectMultipleLearnerRecordsAdd",
+                            new RouteValueDictionary
+                                {
+                                    ["ProviderId"] = Model.ProviderId,
+                                    ["CacheKey"] = Model.CacheKey,
+                                    ["Learner.Id"] = apprenticeship.Id,
+                                    ["Learner.FirstName"] = apprenticeship.FirstName,
+                                    ["Learner.LastName"] = apprenticeship.LastName,
+                                    ["Learner.Uln"] = apprenticeship.Uln,
+                                    ["Learner.CourseName"] = apprenticeship.CourseName,
+                                    ["Learner.StartDate"] = apprenticeship.StartDate.ToString("O")
+                                })" class="govuk-link">
                             Add
                         </a>
                     </td>

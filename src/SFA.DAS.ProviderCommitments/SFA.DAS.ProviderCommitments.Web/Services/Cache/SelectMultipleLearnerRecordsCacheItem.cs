@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Services.Cache;
 public class SelectMultipleLearnerRecordsCacheItem : ICacheModel
@@ -25,6 +26,6 @@ public class SelectMultipleLearnerRecordsCacheItem : ICacheModel
     public string StartMonth { get; set; }
     public string StartYear { get; set; } = DateTime.UtcNow.Year.ToString();
     public string CourseCode { get; set; }
-    public List<long> SelectedLearnersIds { get; set; } = new List<long>();
+    public List<LearnerSummary> SelectedLearners { get; set; } = new();
     public ApprenticeshipEmployerType LevyStatus { get; set; }
 }

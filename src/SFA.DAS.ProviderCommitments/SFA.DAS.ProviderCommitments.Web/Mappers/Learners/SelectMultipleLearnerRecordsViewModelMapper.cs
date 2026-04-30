@@ -72,7 +72,7 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             CacheKey = source.CacheKey,
             EmployerAccountName = cacheItem.EmployerAccountName,
             Learners = response.Learners.ConvertAll(x => (LearnerSummary)x),
-            SelectedLearnersIds = cacheItem.SelectedLearnersIds,
+            SelectedLearners = cacheItem.SelectedLearners,
             LastIlrSubmittedOn = response.LastSubmissionDate,
             FilterModel = filterModel,
             FutureMonths = response.FutureMonths,

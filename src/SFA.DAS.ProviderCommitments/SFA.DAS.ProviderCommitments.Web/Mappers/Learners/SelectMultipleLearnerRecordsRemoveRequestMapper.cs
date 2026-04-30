@@ -12,9 +12,10 @@ public class SelectMultipleLearnerRecordsRemoveRequestMapper(ICacheStorageServic
     {
         var cacheItem = await cacheStorage.RetrieveFromCache<SelectMultipleLearnerRecordsCacheItem>(source.CacheKey.Value);
 
-        if (cacheItem.SelectedLearnersIds.Contains(source.LearnerId))
+        var learnerToRemove = cacheItem.SelectedLearners.FirstOrDefault(l => l.Id == source.LearnerId);
+        if (learnerToRemove != null)
         {
-            cacheItem.SelectedLearnersIds.Remove(source.LearnerId);
+            cacheItem.SelectedLearners.Remove(learnerToRemove);
             await cacheStorage.SaveToCache(cacheItem.Key.ToString(), cacheItem, 1);
         }
 

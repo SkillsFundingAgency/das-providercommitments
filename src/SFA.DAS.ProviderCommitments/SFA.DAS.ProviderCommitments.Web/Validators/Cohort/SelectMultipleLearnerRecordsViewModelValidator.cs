@@ -6,10 +6,9 @@ public class SelectMultipleLearnerRecordsViewModelValidator : AbstractValidator<
 {
     public SelectMultipleLearnerRecordsViewModelValidator()
     {
-        RuleFor(x => x.SelectedLearnersIds)
-            .Must((model, selectedLearnerIds) =>
-                 selectedLearnerIds.Count <= model.MaxSelectableLearners)
+        RuleFor(x => x.SelectedLearners)
+            .Must((model, selectedLearners) =>
+                 selectedLearners.Count <= model.MaxSelectableLearners)
             .WithMessage(model => $"You can select up to {model.MaxSelectableLearners} learners. Remove learners to keep adding.");
-
     }
 }

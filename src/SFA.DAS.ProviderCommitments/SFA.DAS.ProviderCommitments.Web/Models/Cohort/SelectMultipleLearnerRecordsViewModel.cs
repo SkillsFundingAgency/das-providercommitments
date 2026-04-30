@@ -17,9 +17,7 @@ public class SelectMultipleLearnerRecordsViewModel : IAuthorizationContextModel
     public Guid? ReservationId { get; set; }
 
     public List<LearnerSummary> Learners { get; set; } = new();
-    public List<long> SelectedLearnersIds { get; set; } = new List<long>();
-    public List<LearnerSummary> SelectedLearners => Learners.Where(l => SelectedLearnersIds.Contains(l.Id)).ToList();
-    public List<LearnerSummary> AvailableForSelectionLearners => Learners.Where(l => !SelectedLearnersIds.Contains(l.Id)).ToList();
+    public List<LearnerSummary> SelectedLearners { get; set; } = new();
     public string PageTitle => $"Select learners from the ILR";
 
     public string SortedByHeaderClassName { get; set; }
