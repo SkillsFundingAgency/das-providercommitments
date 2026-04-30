@@ -106,23 +106,18 @@
 </div>
 </div>
 
-<div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-    <div class="govuk-notification-banner__header">
-        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-            Help us improve this service
-        </h2>
-    </div>
-    <div class="govuk-notification-banner__content">
-        <p class="govuk-body">
-            Take a 3 minute survey about adding apprentices so that we can improve the service
-            <a class="govuk-link" href="https://dferesearch.fra1.qualtrics.com/jfe/form/SV_4SCNJixibnF1oCG" target="_blank" rel="noopener noreferrer">
-                Take the survey
-            </a>.
-        </p>
-    </div>
+
+<div class="govuk-inset-text das-inset-text--filled">
+    <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
+        Help us improve this service
+    </h3>
+    <p class="govuk-body">Take a 3 minute survey about adding apprentices so that we can improve the service.</p>
+    <a class="govuk-button" href="https://dferesearch.fra1.qualtrics.com/jfe/form/SV_4SCNJixibnF1oCG">Take the survey</a>
 </div>
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectDraftApprenticeshipsEntryMethod", new { Model.ProviderId })>Back</a>
+    <a id="back-link" class="govuk-back-link" href=@Url.Action("Review", new { Model.ProviderId })>Back</a>
+    <br />
+
 }
