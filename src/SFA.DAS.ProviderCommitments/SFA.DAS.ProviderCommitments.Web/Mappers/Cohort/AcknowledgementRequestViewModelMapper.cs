@@ -41,7 +41,7 @@ public class AcknowledgementRequestViewModelMapper : IMapper<AcknowledgementRequ
                 });
                 break;
             case SaveStatus.ApproveAndSend:
-                result.WhatHappensNext.Add("The employer has 2 weeks to review and approve the cohort. If they don’t do this within 2 weeks, the cohort will automatically go into your ready for review requests.");
+                result.WhatHappensNext.Add("The employer has 2 weeks to review and approve the cohort. If they don’t do this within 2 weeks, the request will be sent back to your ready for review requests.");
                 break;
             default:
                 result.WhatHappensNext.Add("The employer has 2 weeks to review the cohort. If they don’t do this within 2 weeks, the cohort will automatically go into your ready for review requests.");
