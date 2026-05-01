@@ -15,8 +15,8 @@ public class MultipleLearnerRecordsFilterModel
     public int PageNumber { get; set; } = 1;
     public string SearchTerm { get; set; }
     public int TotalNumberOfLearnersFound { get; set; }
-    public HtmlString TotalNumberOfApprenticeshipsFoundDescription =>
-        new HtmlString($"{TotalNumberOfLearnersFound} apprentice records found " + GetFiltersUsedMessage());
+    public HtmlString TotalNumberOfLearnersFoundDescription =>
+        new HtmlString($"{TotalNumberOfLearnersFound} learner records found " + GetFiltersUsedMessage());
 
     public string SortField { get; set; }
     public bool ReverseSort { get; set; }

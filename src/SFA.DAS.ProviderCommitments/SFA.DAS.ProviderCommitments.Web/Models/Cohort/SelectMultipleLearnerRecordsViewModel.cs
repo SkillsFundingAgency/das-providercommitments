@@ -1,4 +1,6 @@
-﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
+﻿using FluentValidation.Results;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using SFA.DAS.ProviderCommitments.Web.Models.Learners;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -15,6 +17,7 @@ public class SelectMultipleLearnerRecordsViewModel : IAuthorizationContextModel
     public Guid? ReservationId { get; set; }
 
     public List<LearnerSummary> Learners { get; set; } = new();
+    public List<LearnerSummary> SelectedLearners { get; set; } = new();
     public string PageTitle => $"Select learners from the ILR";
 
     public string SortedByHeaderClassName { get; set; }
@@ -57,5 +60,7 @@ public class SelectMultipleLearnerRecordsViewModel : IAuthorizationContextModel
 
     public MultipleLearnerRecordsFilterModel FilterModel { get; set; }
     public int FutureMonths { get; set; }
-    public bool IsNonLevy => FutureMonths > 0;
+    public ApprenticeshipEmployerType LevyStatus { get; set; }
+    public List<ValidationFailure> ValidationErrors { get; set; } = new List<ValidationFailure>();
+    public int MaxSelectableLearners { get; set; }
 }

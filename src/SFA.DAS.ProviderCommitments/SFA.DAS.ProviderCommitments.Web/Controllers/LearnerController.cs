@@ -26,6 +26,15 @@ public class LearnerController(IModelMapper modelMapper) : Controller
     public async Task<IActionResult> SelectMultipleLearnerRecords(SelectMultipleLearnerRecordsRequest request)
     {
         var model = await modelMapper.Map<SelectMultipleLearnerRecordsViewModel>(request);
+
+        if (model.ValidationErrors != null && model.ValidationErrors.Any())
+        {
+            foreach (var error in model.ValidationErrors)
+            {
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+        }
+
         return View(model);
     }
 
@@ -47,6 +56,24 @@ public class LearnerController(IModelMapper modelMapper) : Controller
         return RedirectToAction("SelectMultipleLearnerRecords", redirectRequest);
     }
 
+    [HttpGet]
+    [Route("add/learners/select-multiple-add", Name = RouteNames.SelectMultipleLearnerRecordsAdd)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> SelectMultipleLearnerRecordsAdd(SelectMultipleLearnerRecordsAddRequest request)
+    {
+        var redirectRequest = await modelMapper.Map<SelectMultipleLearnerRecordsRequest>(request);
+        return RedirectToAction("SelectMultipleLearnerRecords", redirectRequest);
+    }
+
+    [HttpGet]
+    [Route("add/learners/select-multiple-remove", Name = RouteNames.SelectMultipleLearnerRecordsRemove)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> SelectMultipleLearnerRecordsRemove(SelectMultipleLearnerRecordsRemoveRequest request)
+    {
+        var redirectRequest = await modelMapper.Map<SelectMultipleLearnerRecordsRequest>(request);
+        return RedirectToAction("SelectMultipleLearnerRecords", redirectRequest);
+    }
+    
     [HttpGet]
     [Route("add/learners/select/{learnerDataId}")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
