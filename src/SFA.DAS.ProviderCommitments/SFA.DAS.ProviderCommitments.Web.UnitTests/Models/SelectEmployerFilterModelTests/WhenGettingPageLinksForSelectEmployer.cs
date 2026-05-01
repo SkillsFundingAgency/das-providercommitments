@@ -39,7 +39,9 @@ public class WhenGettingPageLinksForSelectEmployer
                 { nameof(filterModel.ReverseSort), filterModel.ReverseSort.ToString() },
                 { "SortField", filterModel.CurrentlySortedByField ?? string.Empty },
                 { nameof(filterModel.SearchTerm), filterModel.SearchTerm ?? string.Empty },
-                { nameof(filterModel.PageNumber), (index + 1).ToString() }
+                { nameof(filterModel.PageNumber), (index + 1).ToString() },
+                { nameof(filterModel.IsMultiSelectJourney), filterModel.IsMultiSelectJourney.ToString() },
+                { nameof(filterModel.CacheKey), filterModel.CacheKey?.ToString() ?? string.Empty }
             });
         }
     }

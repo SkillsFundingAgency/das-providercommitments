@@ -8,5 +8,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string SearchTerm { get; set; }
         public bool UseLearnerData { get; set; }
         public int PageNumber { get; set; } = 1;
+        public bool IsMultiSelectJourney { get; set; }
     }
 }
