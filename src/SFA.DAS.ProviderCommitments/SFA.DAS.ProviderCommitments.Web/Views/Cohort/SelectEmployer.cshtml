@@ -129,5 +129,14 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("SelectAddDraftApprenticeshipJourney", "Cohort", new { Model.ProviderId, UseLearnerData = Model.UseLearnerData })">Back</a>
+    @if (Model.IlrSelectMultipleFeatureEnabled && Model.IsMultiSelectJourney)
+    {
+
+        <a id="back-link" class="govuk-back-link" href="@Url.Action("BeforeYouContinueMultiSelect", "Cohort", new { Model.ProviderId })">Back</a>
+    }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href="@Url.Action("SelectAddDraftApprenticeshipJourney", "Cohort", new { Model.ProviderId, UseLearnerData = Model.UseLearnerData })">Back</a>
+    }
+
 }
