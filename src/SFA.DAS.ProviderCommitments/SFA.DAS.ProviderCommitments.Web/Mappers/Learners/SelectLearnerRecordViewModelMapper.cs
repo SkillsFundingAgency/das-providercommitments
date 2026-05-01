@@ -46,8 +46,8 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client, ILogger
             .. response.TrainingCourses
                 .Select(m => new SelectListItem
                 {
-                    Text = m.Name,
-                    Value = m.CourseCode
+                    Text = m.TrainingName,
+                    Value = m.TrainingCode
                 })],
             CourseCode = source.CourseCode,
             LearningType = source.LearningType
