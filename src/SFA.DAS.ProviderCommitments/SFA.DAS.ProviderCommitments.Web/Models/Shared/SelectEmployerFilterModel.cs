@@ -73,7 +73,8 @@ public class SelectEmployerFilterModel
             { nameof(ReverseSort), false.ToString() },
             { "SortField", string.Empty },
             { nameof(SearchTerm), string.Empty },
-            { nameof(PageNumber), "1" }
+            { nameof(PageNumber), "1" },
+            { nameof(IsMultiSelectJourney), IsMultiSelectJourney.ToString() }
         };
     }
 
