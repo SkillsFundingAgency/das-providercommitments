@@ -1,4 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
+﻿using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -18,4 +19,5 @@ public class SelectLearnerRecordRequest : IAuthorizationContextModel
     public int? StartMonth { get; set; }
     public int StartYear { get; set; } = DateTime.UtcNow.Year;
     public string CourseCode { get; set; }
+    public LearningType? LearningType { get; set; }
 }
