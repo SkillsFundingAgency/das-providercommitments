@@ -13,7 +13,7 @@ public class GetLearnerDetailsForProviderRequest(
     public string GetUrl =>
         $"providers/{providerId}/unapproved/add/learners/select?AccountLegalEntityId={request.AccountLegalEntityId}&cohortId={request.CohortId}&SearchTerm={WebUtility.UrlEncode(request.SearchTerm)}" +
         $"&SortColumn={WebUtility.UrlEncode(request.SortColumn)}&SortDescending={request.SortDescending}&Page={request.Page}&pageSize={Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage}" +
-        $"&startMonth={request.StartMonth}&startYear={request.StartYear}&courseCode={request.CourseCode}";
+        $"&startMonth={request.StartMonth}&startYear={request.StartYear}&courseCode={request.CourseCode}&learningType={request.LearningType}";
 }
 
 public class GetLearnerDetailsForProviderResponse

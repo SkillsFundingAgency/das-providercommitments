@@ -22,7 +22,8 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client, ILogger
             Page = source.Page,
             StartMonth = source.StartMonth,
             StartYear = source.StartYear,
-            CourseCode = source.CourseCode
+            CourseCode = source.CourseCode,
+            LearningType = source.LearningType
         };
 
         var response = await client.GetLearnerDetailsForProvider(source.ProviderId,learnerRequest);
@@ -49,6 +50,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client, ILogger
                     Value = m.CourseCode
                 })],
             CourseCode = source.CourseCode,
+            LearningType = source.LearningType
         };
 
         logger.LogInformation("Response for 1st record {course}", response.Learners.FirstOrDefault()?.Course);
