@@ -1,5 +1,4 @@
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
-using StructureMap.Query;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
