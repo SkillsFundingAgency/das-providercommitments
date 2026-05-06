@@ -36,7 +36,11 @@
 
     @if (!string.IsNullOrWhiteSpace(Model.SelectEmployerFilterModel.SearchTerm))
     {
-        <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.SelectMultipleChangeEmployer">Clear search</a></p>
+        <p class="govuk-body">
+            <a class="govuk-link govuk-link--no-visited-state"
+               asp-route="@RouteNames.SelectMultipleChangeEmployer"
+               asp-all-route-data="@Model.SelectEmployerFilterModel.BuildClearSearchRouteData()">Clear search</a>
+        </p>
     }
 
     @if (Model.AccountProviderLegalEntities.Count > 0)

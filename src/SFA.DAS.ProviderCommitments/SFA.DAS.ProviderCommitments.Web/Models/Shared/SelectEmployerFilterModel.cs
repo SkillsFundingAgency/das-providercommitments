@@ -74,7 +74,8 @@ public class SelectEmployerFilterModel
             { "SortField", string.Empty },
             { nameof(SearchTerm), string.Empty },
             { nameof(PageNumber), "1" },
-            { nameof(IsMultiSelectJourney), IsMultiSelectJourney.ToString() }
+            { nameof(IsMultiSelectJourney), IsMultiSelectJourney.ToString() },
+            { nameof(CacheKey), CacheKey?.ToString() ?? string.Empty }
         };
     }
 
