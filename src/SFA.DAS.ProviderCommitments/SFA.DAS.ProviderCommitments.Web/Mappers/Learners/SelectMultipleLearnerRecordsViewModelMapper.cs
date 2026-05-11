@@ -29,7 +29,8 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             Page = source.Page,
             StartMonth = int.TryParse(cacheItem.StartMonth, out var m) ? m : null,
             StartYear = int.Parse(cacheItem.StartYear),
-            CourseCode = cacheItem.CourseCode
+            CourseCode = cacheItem.CourseCode,
+            ExcludeUlns = cacheItem.SelectedLearners.Select(x => x.Uln).ToList()
         };
 
         var response = await client.GetLearnerDetailsForProvider(cacheItem.ProviderId, learnerRequest);
