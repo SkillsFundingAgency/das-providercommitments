@@ -12,7 +12,7 @@ using System.Linq;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipTests;
 
 public class WhenMappingSelectOptionsRequestToViewSelectOptionsViewModel
-{   
+{
     private GetTrainingProgrammeResponse _standardOptionsResponse;
     private SelectOptionsRequest _selectOptionsRequest;
     private ViewStandardOptionsViewModelMapper _mapper;
@@ -24,11 +24,11 @@ public class WhenMappingSelectOptionsRequestToViewSelectOptionsViewModel
     [SetUp]
     public void Arrange()
     {
-        var fixture = new Fixture();        
+        var fixture = new Fixture();
         _draftApprenticeshipApiResponse = fixture.Build<GetEditDraftApprenticeshipResponse>().Create();
         _standardOptionsResponse = fixture.Build<GetTrainingProgrammeResponse>().Create();
         _selectOptionsRequest = fixture.Build<SelectOptionsRequest>().Create();
-            
+
         _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
         _outerApiClient = new Mock<IOuterApiClient>();
         _commitmentsApiClient
@@ -67,7 +67,7 @@ public class WhenMappingSelectOptionsRequestToViewSelectOptionsViewModel
 
         result.DraftApprenticeshipHashedId.Should().Be(_selectOptionsRequest.DraftApprenticeshipHashedId);
     }
-        
+
     [Test]
     public async Task Then_The_Cohort_Reference_Is_Mapped()
     {
@@ -83,7 +83,7 @@ public class WhenMappingSelectOptionsRequestToViewSelectOptionsViewModel
 
         result.CohortId.Should().Be(_selectOptionsRequest.CohortId);
     }
-        
+
     [Test]
     public async Task Then_The_Provider_Id_Is_Mapped()
     {
@@ -107,7 +107,7 @@ public class WhenMappingSelectOptionsRequestToViewSelectOptionsViewModel
 
         result.TrainingCourseVersion.Should().Be(_draftApprenticeshipApiResponse.TrainingCourseVersion);
     }
-        
+
     [Test]
     public async Task Then_The_Standard_IFate_Link_Is_Mapped()
     {
@@ -123,7 +123,7 @@ public class WhenMappingSelectOptionsRequestToViewSelectOptionsViewModel
         _commitmentsApiClient
             .Setup(x => x.GetTrainingProgrammeVersionByStandardUId(_draftApprenticeshipApiResponse.StandardUId, CancellationToken.None))
             .ReturnsAsync(_standardOptionsResponse);
-            
+
         var result = await _act();
 
         result.Options.Should().BeEmpty();
@@ -141,17 +141,17 @@ public class WhenMappingSelectOptionsRequestToViewSelectOptionsViewModel
     public async Task Then_If_The_Selected_Option_Is_Empty_Then_Set_To_Minus_One()
     {
         _draftApprenticeshipApiResponse.TrainingCourseOption = "";
-                
+
         var result = await _act();
 
         result.SelectedOption.Should().Be("-1");
     }
-        
+
     [Test]
     public async Task Then_If_The_Selected_Option_Is_Null_Then_Set_To_Null()
     {
         _draftApprenticeshipApiResponse.TrainingCourseOption = null;
-                
+
         var result = await _act();
 
         result.SelectedOption.Should().BeNull();
@@ -165,5 +165,25 @@ public class WhenMappingSelectOptionsRequestToViewSelectOptionsViewModel
         var result = await _act();
 
         result.LearnerDataId.Should().Be(_draftApprenticeshipApiResponse.LearnerDataId);
+    }
+
+    [Test]
+    public async Task Then_If_The_OriginalSelectedOption_Is_Not_Set_Then_Display_Messaged()
+    {
+        _draftApprenticeshipApiResponse.TrainingCourseOption = string.Empty;
+
+        var result = await _act();
+
+        result.DisplayUpdateMessage().Should().Be("Standard option added");
+    }
+
+    [Test]
+    public async Task Then_If_The_OriginalSelectedOption_Is_Set_then_Display_Dhanged_Messaged()
+    {
+        _draftApprenticeshipApiResponse.TrainingCourseOption = "Teaching";
+
+        var result = await _act();
+
+        result.DisplayUpdateMessage().Should().Be("Standard option changed");
     }
 }
