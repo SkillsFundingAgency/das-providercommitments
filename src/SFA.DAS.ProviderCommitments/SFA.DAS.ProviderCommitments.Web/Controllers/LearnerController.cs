@@ -27,7 +27,7 @@ public class LearnerController(IModelMapper modelMapper) : Controller
     {
         var model = await modelMapper.Map<SelectMultipleLearnerRecordsViewModel>(request);
 
-        if (model.ValidationErrors != null && model.ValidationErrors.Any())
+        if (model.ValidationErrors != null && model.ValidationErrors.Count > 0)
         {
             foreach (var error in model.ValidationErrors)
             {
