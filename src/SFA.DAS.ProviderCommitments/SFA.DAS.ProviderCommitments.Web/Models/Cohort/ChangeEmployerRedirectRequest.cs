@@ -1,4 +1,4 @@
-﻿using SFA.DAS.CommitmentsV2.Types;
+﻿using SFA.DAS.Common.Domain.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 public class ChangeEmployerRedirectRequest

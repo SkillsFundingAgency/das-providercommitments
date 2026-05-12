@@ -1,5 +1,5 @@
 ﻿using FluentValidation.Results;
-using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using SFA.DAS.ProviderCommitments.Web.Models.Learners;
 

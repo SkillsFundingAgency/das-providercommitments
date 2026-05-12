@@ -16,7 +16,7 @@ public class SelectLearnersRequest
     public long? AccountLegalEntityId { get; set; }
     public long? CohortId { get; set; }
     public string SearchTerm { get; set; } = string.Empty;
-    public bool ReverseSort { get; set; } = false;
+    public bool SortDescending { get; set; } = false;
     [JsonConverter(typeof(StringEnumConverter))]
     public LearningType? LearningType { get; set; }
     public List<long> ExcludeUlns { get; set; } = new();

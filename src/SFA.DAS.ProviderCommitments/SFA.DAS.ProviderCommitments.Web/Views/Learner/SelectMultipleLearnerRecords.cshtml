@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Routing
-@using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.Common.Domain.Types;
+@using SFA.DAS.ProviderCommitments.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
@@ -55,7 +56,7 @@
 </div>
 
 <div class="govuk-grid-row  @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
-    <div class="govuk-grid-column">
+    <div class="govuk-grid-column-full">
         <h3 class="govuk-heading-m">Learners in cohort (@Model.SelectedLearners.Count)</h3>
         @Html.ValidationMessageFor(m => m.SelectedLearners, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SelectedLearners) })
         @if (Model.LevyStatus == ApprenticeshipEmployerType.Levy)
@@ -70,7 +71,8 @@
                 <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header">Name</th>
                     <th scope="col" class="govuk-table__header">ULN</th>
-                    <th scope="col" class="govuk-table__header">Course</th>
+                    <th scope="col" class="govuk-table__header">Training type</th>
+                    <th scope="col" class="govuk-table__header">Training course</th>
                     <th scope="col" class="govuk-table__header">Start date</th>
                     <th scope="col" class="govuk-table__header"></th>
                 </tr>
@@ -85,7 +87,10 @@
                         <td class="govuk-table__cell" data-label="ULN">
                             @apprenticeship.Uln
                         </td>
-                        <td class="govuk-table__cell" data-label="Apprenticeship training course">
+                        <td class="govuk-table__cell" data-label="training type">
+                            @apprenticeship.LearningType?.GetEnumDescription()
+                        </td>
+                        <td class="govuk-table__cell" data-label="Training course">
                             @apprenticeship.CourseName
                         </td>
                         <td class="govuk-table__cell" data-label="StartDate">
@@ -136,7 +141,7 @@
         </div>
     </div>
     <input type="hidden" value="@Model.CacheKey" name="CacheKey" />
-    <input type="hidden" value="@Model.ProviderId" name="ProviderId" />
+    @* <input type="hidden" value="@Model.ProviderId" name="ProviderId" /> *@
 
     @if (!string.IsNullOrWhiteSpace(Model.EmployerAccountLegalEntityPublicHashedId))
     {
@@ -173,6 +178,15 @@
                     </div>
                 </div>
                 <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-third">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="FilterModel.LearningTypes">Training type</label>
+                            <select class="govuk-select govuk-!-width-full" asp-for="FilterModel.LearningType" name="LearningType" asp-items="Model.FilterModel.LearningTypes">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="govuk-grid-row">
                     <div class="govuk-grid-column-one-third" style="justify-content: flex-end;">
                         <label class="govuk-label">&nbsp;</label>
                         <div class="govuk-form-group">
@@ -182,7 +196,8 @@
                 </div>
             </div>
             @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm) || !string.IsNullOrWhiteSpace(Model.FilterModel.StartMonth)
-                        || Model.FilterModel.StartYear != DateTime.Now.Year.ToString() || !string.IsNullOrWhiteSpace(Model.FilterModel.CourseCode))
+                        || Model.FilterModel.StartYear != DateTime.Now.Year.ToString() || !string.IsNullOrWhiteSpace(Model.FilterModel.CourseCode)
+                        || Model.FilterModel.LearningType.HasValue)
             {
                 <p class="govuk-body">
                     <button class="das-button--inline-link" data-module="govuk-button" type="submit" name="clearFilter" value="true">
@@ -231,7 +246,10 @@
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    Course
+                    Training type
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    Training course
                 </th>
                 <th scope="col" class="govuk-table__header">
                     <a class="@(Model.FilterModel.SortField == "StartDate" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
@@ -258,7 +276,10 @@
                     <td class="govuk-table__cell" data-label="ULN">
                         @apprenticeship.Uln
                     </td>
-                    <td class="govuk-table__cell" data-label="Apprenticeship training course">
+                    <td class="govuk-table__cell" data-label="training type">
+                        @apprenticeship.LearningType?.GetEnumDescription()
+                    </td>
+                    <td class="govuk-table__cell" data-label="training course">
                         @apprenticeship.CourseName
                     </td>
                     <td class="govuk-table__cell" data-label="StartDate">
@@ -275,7 +296,8 @@
                                     ["Learner.LastName"] = apprenticeship.LastName,
                                     ["Learner.Uln"] = apprenticeship.Uln,
                                     ["Learner.CourseName"] = apprenticeship.CourseName,
-                                    ["Learner.StartDate"] = apprenticeship.StartDate.ToString("O")
+                                    ["Learner.StartDate"] = apprenticeship.StartDate.ToString("O"),
+                                    ["Learner.LearningType"] = apprenticeship.LearningType
                                 })" class="govuk-link">
                             Add
                         </a>

@@ -39,14 +39,14 @@ public class SelectMultipleLearnerRecordsSortRequestMapperTests
     public async Task Map_WhenSortFieldMatches_AndReverseSortWasFalse_TogglesReverseSortToTrue()
     {
         _cacheItem.SortField = "FirstName";
-        _cacheItem.ReverseSort = false;
+        _cacheItem.SortDescending = false;
 
         _source.SortField = "FirstName";
 
         var result = await _mapper.Map(_source);
 
         _cacheItem.SortField.Should().Be("FirstName");
-        _cacheItem.ReverseSort.Should().BeTrue();
+        _cacheItem.SortDescending.Should().BeTrue();
 
         _cacheStorage.Verify(x =>
             x.RetrieveFromCache<SelectMultipleLearnerRecordsCacheItem>(_source.CacheKey.Value),
@@ -64,14 +64,14 @@ public class SelectMultipleLearnerRecordsSortRequestMapperTests
     public async Task Map_WhenSortFieldMatches_AndReverseSortWasTrue_SetsReverseSortToFalse()
     {
         _cacheItem.SortField = "FirstName";
-        _cacheItem.ReverseSort = true;
+        _cacheItem.SortDescending = true;
 
         _source.SortField = "FirstName";
 
         await _mapper.Map(_source);
 
         _cacheItem.SortField.Should().Be("FirstName");
-        _cacheItem.ReverseSort.Should().BeFalse();
+        _cacheItem.SortDescending.Should().BeFalse();
 
         _cacheStorage.Verify(x =>
             x.SaveToCache(_cacheItem.Key.ToString(), _cacheItem, 1),
@@ -82,14 +82,14 @@ public class SelectMultipleLearnerRecordsSortRequestMapperTests
     public async Task Map_WhenSortFieldDiffers_SetsReverseSortToFalse()
     {
         _cacheItem.SortField = "FirstName";
-        _cacheItem.ReverseSort = true;
+        _cacheItem.SortDescending = true;
 
         _source.SortField = "Uln";
 
         await _mapper.Map(_source);
 
         _cacheItem.SortField.Should().Be("Uln");
-        _cacheItem.ReverseSort.Should().BeFalse();
+        _cacheItem.SortDescending.Should().BeFalse();
 
         _cacheStorage.Verify(x =>
             x.SaveToCache(_cacheItem.Key.ToString(), _cacheItem, 1),

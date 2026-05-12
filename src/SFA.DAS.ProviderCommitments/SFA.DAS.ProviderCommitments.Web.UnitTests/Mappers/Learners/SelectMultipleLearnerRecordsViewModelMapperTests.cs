@@ -53,7 +53,7 @@ public class SelectMultipleLearnerRecordsViewModelMapperTests
             t.CohortId == _cacheItem.CohortId &&
             t.SearchTerm == _cacheItem.SearchTerm &&
             t.SortColumn == _cacheItem.SortField &&
-            t.ReverseSort == _cacheItem.ReverseSort &&
+            t.SortDescending == _cacheItem.SortDescending &&
             t.Page == _request.Page &&
             t.StartMonth == 1 &&
             t.StartYear == 2025 &&
@@ -83,7 +83,7 @@ public class SelectMultipleLearnerRecordsViewModelMapperTests
         result.FilterModel.PageNumber.Should().Be(_request.Page);
 
         result.FilterModel.SortField.Should().Be(_cacheItem.SortField);
-        result.FilterModel.ReverseSort.Should().Be(_cacheItem.ReverseSort);
+        result.FilterModel.ReverseSort.Should().Be(_cacheItem.SortDescending);
         result.FilterModel.SearchTerm.Should().Be(_cacheItem.SearchTerm);
 
         result.FilterModel.StartMonth.Should().Be(_cacheItem.StartMonth);

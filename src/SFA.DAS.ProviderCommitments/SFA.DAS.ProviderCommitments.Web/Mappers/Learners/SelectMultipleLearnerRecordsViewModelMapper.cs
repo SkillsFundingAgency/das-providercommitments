@@ -1,9 +1,8 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -25,12 +24,13 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             CohortId = cacheItem.CohortId,
             SearchTerm = cacheItem.SearchTerm,
             SortColumn = cacheItem.SortField,
-            ReverseSort = cacheItem.ReverseSort,
+            SortDescending = cacheItem.SortDescending,
             Page = source.Page,
             StartMonth = int.TryParse(cacheItem.StartMonth, out var m) ? m : null,
             StartYear = int.Parse(cacheItem.StartYear),
             CourseCode = cacheItem.CourseCode,
-            ExcludeUlns = cacheItem.SelectedLearners.Select(x => x.Uln).ToList()
+            ExcludeUlns = cacheItem.SelectedLearners.Select(x => x.Uln).ToList(),
+            LearningType = cacheItem.LearningType
         };
 
         var response = await client.GetLearnerDetailsForProvider(cacheItem.ProviderId, learnerRequest);
@@ -44,7 +44,7 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             TotalNumberOfLearnersFound = response.Total,
             PageNumber = source.Page,
             SortField = cacheItem.SortField,
-            ReverseSort = cacheItem.ReverseSort,
+            ReverseSort = cacheItem.SortDescending,
             SearchTerm = cacheItem.SearchTerm,
             StartMonth = cacheItem.StartMonth,
             StartYear = cacheItem.StartYear,
@@ -55,12 +55,13 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
                 {
                     Text = m.Name,
                     Value = m.CourseCode
-                })]
+                })],
+            LearningType = cacheItem.LearningType
         };
 
         var maxSelectableLearners = cacheItem.LevyStatus switch
         {
-            ApprenticeshipEmployerType.Levy => 2,
+            ApprenticeshipEmployerType.Levy => 100,
             ApprenticeshipEmployerType.NonLevy => 0,//calculate 
             _ => 0
         };
