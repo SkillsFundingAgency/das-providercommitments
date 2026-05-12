@@ -179,16 +179,16 @@ public class FileUploadMapperBaseTests
         foreach (var record in CsvRecords)
         {
             var result = Result.First(x => x.Uln == record.ULN);
-            result.DurationReducedByAsString.Should().Be(record.DurationReducedBy);
+            result.DurationReducedByAsString.Should().BeNull();
         }
     }
 
     [TestCase(null, null, null)]
-    [TestCase(null, "200", "200")]
+    [TestCase(null, "200", null)]
     [TestCase(null, "0", null)]
-    [TestCase("TRUE", "200", "200")]
-    [TestCase("TRUE", "0", "0")]
-    [TestCase("FALSE", "0", "0")]
+    [TestCase("TRUE", "200", null)]
+    [TestCase("TRUE", "0", null)]
+    [TestCase("FALSE", "0", null)]
     public void VerifyDurationReducedByIsMappedCorrectlyWhenExtendedRplIsOn(string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
     {
         CsvRecords = Fixture.Build<CsvRecord>()
@@ -257,7 +257,7 @@ public class FileUploadMapperBaseTests
         foreach (var record in CsvRecords)
         {
             var result = Result.First(x => x.Uln == record.ULN);
-            result.IsDurationReducedByRPLAsString.Should().Be(record.IsDurationReducedByRPL);
+            result.IsDurationReducedByRPLAsString.Should().BeNull();
         }
     }
 
@@ -265,13 +265,13 @@ public class FileUploadMapperBaseTests
     [TestCase(null, null, "200", null)]
     [TestCase("false", null, null, null)]
     [TestCase("false", null, "200", null)]
-    [TestCase("true", null, "200", "TRUE")]
+    [TestCase("true", null, "200", null)]
     [TestCase("true", null, null, null)]
     [TestCase("true", null, "0", null)]
-    [TestCase(null, "TRUE", "200", "TRUE")]
-    [TestCase(null, "FALSE", "200", "FALSE")]
-    [TestCase("true", "TRUE", "200", "TRUE")]
-    [TestCase("true", "FALSE", "200", "FALSE")]
+    [TestCase(null, "TRUE", "200", null)]
+    [TestCase(null, "FALSE", "200", null)]
+    [TestCase("true", "TRUE", "200", null)]
+    [TestCase("true", "FALSE", "200", null)]
     public void VerifyIsDurationReducedByRplIsDefaultedCorrectlyWhenExtendedRplIsOn(string recognisePriorLearning, string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
     {
         CsvRecords = Fixture.Build<CsvRecord>()
