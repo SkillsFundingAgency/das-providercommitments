@@ -50,7 +50,8 @@ public class AddDraftApprenticeshipViewModelMapper : IMapper<CreateCohortWithDra
             EndPointAssessmentPrice = cacheItem.EndPointAssessmentPrice,
             Reference = cacheItem.Reference,
             EmploymentPrice = cacheItem.EmploymentPrice,
-            LearnerDataId = cacheItem.LearnerDataId
+            LearnerDataId = cacheItem.LearnerDataId,
+            LearningType = cacheItem.LearningType
         };
 
         if (cacheItem.StartDate.HasValue)
