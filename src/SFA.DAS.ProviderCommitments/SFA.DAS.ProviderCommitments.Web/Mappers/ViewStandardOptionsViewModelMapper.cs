@@ -38,7 +38,8 @@ public class ViewStandardOptionsViewModelMapper : IMapper<SelectOptionsRequest, 
             SelectedOption = draftApprenticeship.TrainingCourseOption == string.Empty ? "-1" : draftApprenticeship.TrainingCourseOption,
             HasSelectedRpl = draftApprenticeship.RecognisePriorLearning,
             ApprenticeshipStartDate = draftApprenticeship.StartDate,
-            LearnerDataId = draftApprenticeship.LearnerDataId
+            LearnerDataId = draftApprenticeship.LearnerDataId,
+            OriginalSelectedOption = draftApprenticeship.TrainingCourseOption == string.Empty ? "-1" : draftApprenticeship.TrainingCourseOption,
         };
     }
 }
