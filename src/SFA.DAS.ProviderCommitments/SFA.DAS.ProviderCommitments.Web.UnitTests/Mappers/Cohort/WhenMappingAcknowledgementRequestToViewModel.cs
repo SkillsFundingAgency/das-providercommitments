@@ -110,7 +110,7 @@ public class WhenMappingAcknowledgementRequestToViewModel
                 };
                 break;
             case ExpectedWhatHappensNextType.EmployerWillReview:
-                expectedWhatHappensNext = new[] { "The employer has 2 weeks to review and approve the cohort. If they don’t do this within 2 weeks, the cohort will automatically go into your ready for review requests." };
+                expectedWhatHappensNext = new[] { "The employer has 2 weeks to review and approve the cohort. If they don’t do this within 2 weeks, the request will be sent back to your ready for review requests." };
                 break;
             case ExpectedWhatHappensNextType.UpdatedCohort:
                 expectedWhatHappensNext = new[] { "The employer has 2 weeks to review the cohort. If they don’t do this within 2 weeks, the cohort will automatically go into your ready for review requests." };
