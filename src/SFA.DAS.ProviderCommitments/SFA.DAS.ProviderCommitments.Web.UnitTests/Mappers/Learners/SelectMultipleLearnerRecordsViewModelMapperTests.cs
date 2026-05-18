@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using FluentValidation;
+using FluentValidation.Results;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
@@ -17,6 +19,8 @@ public class SelectMultipleLearnerRecordsViewModelMapperTests
     private SelectMultipleLearnerRecordsRequest _request;
     private SelectMultipleLearnerRecordsCacheItem _cacheItem;
     private GetLearnerDetailsForProviderResponse _apiResponse;
+    private Mock<IValidator<SelectMultipleLearnerRecordsViewModel>> _validator;
+    private ValidationResult _validationResult;
 
     [SetUp]
     public void Setup()
@@ -49,14 +53,19 @@ public class SelectMultipleLearnerRecordsViewModelMapperTests
             t.CohortId == _cacheItem.CohortId &&
             t.SearchTerm == _cacheItem.SearchTerm &&
             t.SortColumn == _cacheItem.SortField &&
-            t.ReverseSort == _cacheItem.ReverseSort &&
+            t.SortDescending == _cacheItem.SortDescending &&
             t.Page == _request.Page &&
             t.StartMonth == 1 &&
             t.StartYear == 2025 &&
             t.CourseCode == _cacheItem.CourseCode)))
             .ReturnsAsync(_apiResponse);
 
-        _mapper = new SelectMultipleLearnerRecordsViewModelMapper(_outerApiService.Object, _cacheStorage.Object);
+        _validationResult = new ValidationResult();
+        _validator = new Mock<IValidator<SelectMultipleLearnerRecordsViewModel>>();
+        _validator.Setup(x => x.ValidateAsync(It.IsAny<SelectMultipleLearnerRecordsViewModel>(), default))
+            .ReturnsAsync(_validationResult);
+
+        _mapper = new SelectMultipleLearnerRecordsViewModelMapper(_outerApiService.Object, _cacheStorage.Object, _validator.Object);
     }
 
     [Test]
@@ -74,7 +83,7 @@ public class SelectMultipleLearnerRecordsViewModelMapperTests
         result.FilterModel.PageNumber.Should().Be(_request.Page);
 
         result.FilterModel.SortField.Should().Be(_cacheItem.SortField);
-        result.FilterModel.ReverseSort.Should().Be(_cacheItem.ReverseSort);
+        result.FilterModel.ReverseSort.Should().Be(_cacheItem.SortDescending);
         result.FilterModel.SearchTerm.Should().Be(_cacheItem.SearchTerm);
 
         result.FilterModel.StartMonth.Should().Be(_cacheItem.StartMonth);
@@ -105,6 +114,5 @@ public class SelectMultipleLearnerRecordsViewModelMapperTests
 
         var expected = _apiResponse.Learners.Select(x => (LearnerSummary)x).ToList();
         result.Learners.Should().BeEquivalentTo(expected);
-
     }
 }

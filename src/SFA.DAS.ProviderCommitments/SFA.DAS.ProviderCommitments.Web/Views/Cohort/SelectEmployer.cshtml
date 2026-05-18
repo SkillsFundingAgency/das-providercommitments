@@ -90,9 +90,9 @@
                         <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
                             @if (Model.IlrSelectMultipleFeatureEnabled && Model.IsMultiSelectJourney)
                             {
-                                <a href="@Url.Action("BeginMultipleLearnerSelection", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, Model.UseLearnerData, viewModel.EmployerAccountName })" class="govuk-link">
+                                <a href="@Url.Action("BeginMultipleLearnerSelection", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, Model.UseLearnerData, viewModel.EmployerAccountName, viewModel.LevyStatus })" class="govuk-link">
                                     Select <span class="govuk-visually-hidden">@viewModel.EmployerAccountLegalEntityName</span>
-                                </a>                                                                
+                                </a>
                             }
                             else
                             {
