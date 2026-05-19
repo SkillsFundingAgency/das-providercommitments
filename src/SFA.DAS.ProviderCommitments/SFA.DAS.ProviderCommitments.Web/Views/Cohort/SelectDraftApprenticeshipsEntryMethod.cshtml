@@ -6,6 +6,8 @@
     ViewBag.Title = "Add Learner";
     ViewBag.ZendeskLabel = "add-apprentice-entry-method";
     ViewBag.GaData.Vpv = "/unapproved/add/entry-method";
+    var ilrFeaturesEnabled = Configuration.GetValue<bool>("ILRFeaturesEnabled");
+    var ilrSelectMultipleFeatureEnabled = Configuration.GetValue<bool>("ILRSelectMultipleFeatureEnabled");
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -22,15 +24,26 @@
                     </legend>
                     @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
                     <div class="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input asp-for="Selection" value="ILR" type="radio" class="govuk-radios__input" id="confirm-ILR"/>
-                            <label class="govuk-label govuk-radios__label" for="confirm-ILR">
-                                Choose details from ILR (individual learner record)
-                            </label>
-                            <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">
-                                For apprenticeships or apprenticeship units
+                        @if (ilrFeaturesEnabled)
+                        {
+                            <div class="govuk-radios__item">
+                                <input asp-for="Selection" value="ILR" type="radio" class="govuk-radios__input" id="confirm-ILR"/>
+                                <label class="govuk-label govuk-radios__label" for="confirm-ILR">
+                                    Choose details from ILR (individual learner record)
+                                </label>
+                                <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">Add new apprentice details imported from the ILR file you have submitted to Submit Learner Data</div>
                             </div>
-                        </div>
+                        }
+                        @if (ilrSelectMultipleFeatureEnabled)
+                        {
+                            <div class="govuk-radios__item">
+                                <input asp-for="Selection" value="multiSelectILR" type="radio" class="govuk-radios__input" id="confirm-multiSelectILR" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-multiSelectILR">
+                                    Select multiple learners from ILR
+                                </label>
+                                <div id="multi-select-ILR-hint" class="govuk-hint govuk-radios__hint">For apprenticeships or apprenticeship units</div>
+                            </div>
+                        }
                         <div class="govuk-radios__item">
                             <input asp-for="Selection" value="BulkCsv" type="radio" class="govuk-radios__input" id="confirm-BulkCsv"/>
                             <label class="govuk-label govuk-radios__label" for="confirm-BulkCsv">
