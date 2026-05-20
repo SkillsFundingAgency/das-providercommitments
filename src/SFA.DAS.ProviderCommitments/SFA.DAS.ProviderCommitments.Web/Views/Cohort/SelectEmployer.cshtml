@@ -1,6 +1,7 @@
 @using System.Linq
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@using Newtonsoft.Json
+@using SFA.DAS.ProviderCommitments.Web.Models.Shared
+@using Newtonsoft.Json;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
 
 @{
@@ -29,8 +30,9 @@
             </div>
         </div>
     </div>
-            
-    @Html.HiddenFor(m=>m.UseLearnerData)
+
+    @Html.HiddenFor(m => m.UseLearnerData)
+    @Html.HiddenFor(m => m.IsMultiSelectJourney)
     <input type="hidden" value="@Model.SelectEmployerFilterModel.CurrentlySortedByField" name="SortField" />
     <input type="hidden" value="@Model.SelectEmployerFilterModel.ReverseSort.ToString()" name="ReverseSort" />
     <input type="hidden" value="@Model.SelectEmployerFilterModel.PageNumber" name="PageNumber" />
@@ -68,30 +70,39 @@
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
-            @foreach (var viewModel in Model.AccountProviderLegalEntities)
-            {
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell" data-label="Employer">
-                        @viewModel.EmployerAccountLegalEntityName
-                        <br />
-                        @if (viewModel.LevyStatus == SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType.Levy)
-                        {
-                            <strong class="govuk-tag govuk-tag--blue govuk-!-margin-top-1 govuk-!-margin-bottom-1">Levy</strong>
-                        }
-                        else
-                        {
-                            <strong class="govuk-tag govuk-tag--purple govuk-!-margin-top-1 govuk-!-margin-bottom-1">Non-levy</strong>
-                        }
-                    </td>
-                    <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
-                    <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
-                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
-                        <a href="@Url.Action("ConfirmEmployer", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, Model.UseLearnerData })" class="govuk-link">
-                            Select <span class="govuk-visually-hidden">@viewModel.EmployerAccountLegalEntityName</span>
-                        </a>
-                    </td>
-                </tr>
-            }
+                @foreach (var viewModel in Model.AccountProviderLegalEntities)
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell" data-label="Employer">
+                            @viewModel.EmployerAccountLegalEntityName
+                            <br />
+                            @if (viewModel.LevyStatus == SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType.Levy)
+                            {
+                                <strong class="govuk-tag govuk-tag--blue govuk-!-margin-top-1 govuk-!-margin-bottom-1">Levy</strong>
+                            }
+                            else
+                            {
+                                <strong class="govuk-tag govuk-tag--purple govuk-!-margin-top-1 govuk-!-margin-bottom-1">Non-levy</strong>
+                            }
+                        </td>
+                        <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
+                        <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
+                            @if (Model.IlrSelectMultipleFeatureEnabled && Model.IsMultiSelectJourney)
+                            {
+                                <a href="@Url.Action("BeginMultipleLearnerSelection", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, Model.UseLearnerData, viewModel.EmployerAccountName })" class="govuk-link">
+                                    Select <span class="govuk-visually-hidden">@viewModel.EmployerAccountLegalEntityName</span>
+                                </a>                                                                
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("ConfirmEmployer", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId, Model.UseLearnerData })" class="govuk-link">
+                                    Select <span class="govuk-visually-hidden">@viewModel.EmployerAccountLegalEntityName</span>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
         @await Html.PartialAsync("_PaginationNav", new PaginationNavViewModel
@@ -118,5 +129,14 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("SelectAddDraftApprenticeshipJourney", "Cohort", new { Model.ProviderId, UseLearnerData = Model.UseLearnerData})">Back</a>
+    @if (Model.IlrSelectMultipleFeatureEnabled && Model.IsMultiSelectJourney)
+    {
+
+        <a id="back-link" class="govuk-back-link" href="@Url.Action("BeforeYouContinueMultiSelect", "Cohort", new { Model.ProviderId })">Back</a>
+    }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href="@Url.Action("SelectAddDraftApprenticeshipJourney", "Cohort", new { Model.ProviderId, UseLearnerData = Model.UseLearnerData })">Back</a>
+    }
+
 }

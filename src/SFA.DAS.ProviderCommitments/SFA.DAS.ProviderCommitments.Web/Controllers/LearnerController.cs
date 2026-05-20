@@ -21,6 +21,33 @@ public class LearnerController(IModelMapper modelMapper) : Controller
     }
 
     [HttpGet]
+    [Route("add/learners/select-multiple", Name = RouteNames.SelectMultipleLearnerRecords)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> SelectMultipleLearnerRecords(SelectMultipleLearnerRecordsRequest request)
+    {
+        var model = await modelMapper.Map<SelectMultipleLearnerRecordsViewModel>(request);
+        return View(model);
+    }
+
+    [HttpGet]
+    [Route("add/learners/select-multiple-filter", Name = RouteNames.SelectMultipleLearnerRecordsFilter)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> SelectMultipleLearnerRecordsFilter(SelectMultipleLearnerRecordsFilterRequest request)
+    {
+        var redirectRequest = await modelMapper.Map<SelectMultipleLearnerRecordsRequest>(request);
+        return RedirectToAction("SelectMultipleLearnerRecords", redirectRequest);
+    }
+
+    [HttpGet]
+    [Route("add/learners/select-multiple-sort", Name = RouteNames.SelectMultipleLearnerRecordsSort)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> SelectMultipleLearnerRecordsSort(SelectMultipleLearnerRecordsSortRequest request)
+    {
+        var redirectRequest = await modelMapper.Map<SelectMultipleLearnerRecordsRequest>(request);
+        return RedirectToAction("SelectMultipleLearnerRecords", redirectRequest);
+    }
+
+    [HttpGet]
     [Route("add/learners/select/{learnerDataId}")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> LearnerSelectedForNewCohort(LearnerSelectedRequest request)

@@ -7,14 +7,12 @@ public class GetSelectEmployerRequest(
     long providerId,
     string searchTerm,
     string sortField,
-    bool reverseSort,
-    bool useLearnerData,
+    bool reverseSort,    
     int pageNumber = 1,
     int pageSize = 50)
     : GetSelectEmployersRequest(providerId, searchTerm, sortField, reverseSort, pageNumber, pageSize)
     , IGetApiRequest
 {
-    private bool UseLearnerData { get; } = useLearnerData;
 
     public string GetUrl
     {
@@ -33,7 +31,6 @@ public class GetSelectEmployerRequest(
             }
 
             queryParams.Add($"reverseSort={ReverseSort}");
-            queryParams.Add($"useLearnerData={UseLearnerData}");
             queryParams.Add($"pageNumber={PageNumber}");
             queryParams.Add($"pageSize={PageSize}");
 

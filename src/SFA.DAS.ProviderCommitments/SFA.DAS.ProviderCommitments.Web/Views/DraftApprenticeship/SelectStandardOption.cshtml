@@ -36,6 +36,7 @@
     <input asp-for="LearnerDataId" type="hidden" />
     <input asp-for="TrainingCourseName" type="hidden" />
     <input asp-for="TrainingCourseVersion" type="hidden" />
+    <input asp-for="OriginalSelectedOption" type="hidden" />
 
     <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.SelectedOption, "govuk-form-group--error")">
         <fieldset class="govuk-fieldset" aria-describedby="select-standard-hint">
