@@ -137,6 +137,14 @@ public class WhenIMapCreateCohortRequest
     }
 
     [Test]
+    public async Task ThenLearnerDataIdIsMappedCorrectly()
+    {
+        var result = await _act();
+        result.LearnerDataId.Should().Be(_source.LearnerDataId);
+    }
+
+
+    [Test]
     public async Task ThenStartDateIsMappedCorrectly()
     {
         var result = await _act();
