@@ -143,7 +143,6 @@ public class WhenIMapCreateCohortRequest
         result.LearnerDataId.Should().Be(_source.LearnerDataId);
     }
 
-
     [Test]
     public async Task ThenStartDateIsMappedCorrectly()
     {
