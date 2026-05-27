@@ -65,6 +65,7 @@ public class WhenIMapAddAnotherLearnerSelectedRequestToReservationsAddDraftAppre
         savedCacheItem.EndDate.Should().Be(response.PlannedEndDate);
         savedCacheItem.Uln.Should().Be(response.Uln.ToString());
         savedCacheItem.LearnerDataId.Should().Be(source.LearnerDataId);
+        savedCacheItem.LearningType.Should().Be(response.LearningType);
         savedCacheItem.EndPointAssessmentPrice.Should().Be(response.EpaoPrice);
         savedCacheItem.TrainingPrice.Should().Be(response.TrainingPrice);
         savedCacheItem.CourseCode.Should().Be(response.TrainingCode);

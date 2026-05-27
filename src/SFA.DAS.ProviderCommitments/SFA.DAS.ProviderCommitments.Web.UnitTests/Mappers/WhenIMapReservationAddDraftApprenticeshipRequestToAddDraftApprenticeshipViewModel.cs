@@ -212,4 +212,11 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
         var result = await _mapper.Map(_source);
         result.LearnerDataId.Should().Be(_cacheResponse.LearnerDataId);
     }
+
+    [Test]
+    public async Task AndHasCacheKeyThenLearningTypeIsMappedFromCache()
+    {
+        var result = await _mapper.Map(_source);
+        result.LearningType.Should().Be(_cacheResponse.LearningType);
+    }
 }
