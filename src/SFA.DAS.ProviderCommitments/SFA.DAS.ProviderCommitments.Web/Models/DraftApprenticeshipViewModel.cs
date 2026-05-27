@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
+using LearningType = SFA.DAS.Common.Domain.Types.LearningType;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
@@ -173,5 +175,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string TrainingCourseVersion { get; set; }
         public bool IsRplRequired { get; set; }
         public int? ProposedMaxFunding { get; set; }
+        public LearningType? LearningType { get; set; }
     }
 }
