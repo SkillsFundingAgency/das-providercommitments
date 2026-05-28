@@ -65,6 +65,12 @@
                 You can select up to 100 learners
             </p>
         }
+        else if (Model.LevyStatus == ApprenticeshipEmployerType.NonLevy)
+        {
+            <p class="govuk-body">
+                You can select up to @Model.MaxSelectableLearners learners based on your employer’s reservation limit
+            </p>
+        }
 
         <table class="govuk-table das-table--responsive das-table--double-arrows das-table--condensed">
             <thead class="govuk-table__head">
@@ -140,8 +146,7 @@
             </div>
         </div>
     </div>
-    <input type="hidden" value="@Model.CacheKey" name="CacheKey" />
-    @* <input type="hidden" value="@Model.ProviderId" name="ProviderId" /> *@
+    <input type="hidden" value="@Model.CacheKey" name="CacheKey" />    
 
     @if (!string.IsNullOrWhiteSpace(Model.EmployerAccountLegalEntityPublicHashedId))
     {

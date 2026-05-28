@@ -1,11 +1,12 @@
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 
-public class ChangeEmployerRedirectRequestMapper(ICacheStorageService cacheStorage)
+public class ChangeEmployerRedirectRequestMapper(ICacheStorageService cacheStorage, IEncodingService encodingService)
     : IMapper<ChangeEmployerRedirectRequest, SelectMultipleLearnerRecordsRequest>
 {
     public async Task<SelectMultipleLearnerRecordsRequest> Map(ChangeEmployerRedirectRequest source)
@@ -16,6 +17,7 @@ public class ChangeEmployerRedirectRequestMapper(ICacheStorageService cacheStora
         cacheItem.EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId;
         cacheItem.EmployerAccountName = source.EmployerAccountName;
         cacheItem.LevyStatus = source.LevyStatus;
+        cacheItem.AccountId = encodingService.Decode(source.AccountHashedId, EncodingType.AccountId);
 
         await cacheStorage.SaveToCache(cacheItem.Key.ToString(), cacheItem, 1);
 

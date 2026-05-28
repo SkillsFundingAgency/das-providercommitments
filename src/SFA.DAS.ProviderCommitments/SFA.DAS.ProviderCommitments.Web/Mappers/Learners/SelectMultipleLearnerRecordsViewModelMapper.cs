@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -62,7 +64,7 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
         var maxSelectableLearners = cacheItem.LevyStatus switch
         {
             ApprenticeshipEmployerType.Levy => 100,
-            ApprenticeshipEmployerType.NonLevy => 0,//calculate 
+            ApprenticeshipEmployerType.NonLevy => await GetRemainingReservationsCount(cacheItem.AccountId),
             _ => 0
         };
 
@@ -90,5 +92,10 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
 
         model.SortedByHeader();
         return model;
+    }
+    public async Task<int> GetRemainingReservationsCount(long accountId)
+    {
+        var fundingOptions = await client.GetAccountFundingOptions(accountId);
+        return fundingOptions.RemainingReservationsCount;
     }
 }
