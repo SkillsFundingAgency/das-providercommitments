@@ -117,6 +117,7 @@ public class DetailsViewModelMapper(
                 LastDayOfLearning = data.LearnerStatusDetails.LastDayOfLearning,
                 EmploymentStatus = MapEmploymentStatus(data.Apprenticeship.EmployerVerificationStatus, data.Apprenticeship.EmployerVerificationNotes),
                 LearningType = data.Apprenticeship.LearningType,
+                HasChangeHistory = data.Apprenticeship.HasChangeHistory,
             };
         }
         catch (Exception e)

@@ -2,6 +2,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Account;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
@@ -48,6 +49,11 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
         public Task<GetSelectEmployerResponse> GetSelectNewEmployer(GetSelectNewEmployerRequest request)
         {
             return client.Get<GetSelectEmployerResponse>(request.GetUrl);
+        }
+
+        public Task<GetChangeHistoryResponse> GetChangeHistory(long apprenticeshipId)
+        {
+            return client.Get<GetChangeHistoryResponse>($"changehistory/{apprenticeshipId}");
         }
     }
 }

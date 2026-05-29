@@ -717,6 +717,14 @@ public class ApprenticeController(
         });
     }
 
+    [Route("{apprenticeshipHashedId}/changehistory")]
+    [HttpGet]
+    public async Task<IActionResult> ChangeHistory(ChangeHistoryRequest request)
+    {
+        var viewModel = await modelMapper.Map<ChangeHistoryListViewModel>(request);
+        return View(viewModel);
+    }
+
     private async Task ValidateChangeOfEmployerOverlap(TrainingDatesViewModel model)
     {
         var apimRequest = await modelMapper.Map<ValidateChangeOfEmployerOverlapApimRequest>(model);
