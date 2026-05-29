@@ -21,18 +21,18 @@ public class DetailsViewModelMapper(
     public async Task<DetailsViewModel> Map(DetailsRequest source)
     {
         try
-        {                
+        {
             var data = await GetApprenticeshipData(source.ApprenticeshipId, source.ProviderId);
             var hasProviderUpdates = data.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Provider);
             var hasEmployerUpdates = data.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Employer);
 
             var dataLockSummaryStatus = data.DataLocks.GetDataLockSummaryStatus();
 
-            var allowEditApprentice = 
+            var allowEditApprentice =
                 (data.Apprenticeship.Status == ApprenticeshipStatus.Live ||
                  data.Apprenticeship.Status == ApprenticeshipStatus.WaitingToStart ||
                  data.Apprenticeship.Status == ApprenticeshipStatus.Paused) &&
-                !hasProviderUpdates && 
+                !hasProviderUpdates &&
                 !hasEmployerUpdates &&
                 dataLockSummaryStatus == DetailsViewModel.DataLockSummaryStatus.None;
 
@@ -181,7 +181,7 @@ public class DetailsViewModelMapper(
         var dataLockErrors = dataLocks.Where(x => x.IsUnresolvedError()).ToList();
 
         if (dataLockErrors.All(x => x.IsPrice()))
-            return  DetailsViewModel.TriageOption.Update;
+            return DetailsViewModel.TriageOption.Update;
 
         if (dataLockErrors.Any(x => x.IsCourseAndPrice()))
             return DetailsViewModel.TriageOption.Restart;
@@ -209,7 +209,7 @@ public class DetailsViewModelMapper(
         {
             return false;
         }
-            
+
         var newerVersions = await commitmentApiClient.GetNewerTrainingProgrammeVersions(apprenticeship.StandardUId);
 
         return newerVersions?.NewerVersions != null && newerVersions.NewerVersions.Any();
@@ -221,12 +221,11 @@ public class DetailsViewModelMapper(
         {
             return (false, false);
         }
-            
+
         var trainingProgrammeVersionResponse = await commitmentApiClient.GetTrainingProgrammeVersionByStandardUId(standardUId);
 
         var optionsCount = trainingProgrammeVersionResponse?.TrainingProgramme?.Options.Count;
         return (optionsCount == 1, optionsCount > 0);
-
     }
 
     private static string MapEmploymentStatus(int? status, string notes)

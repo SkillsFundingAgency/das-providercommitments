@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Enums;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 
