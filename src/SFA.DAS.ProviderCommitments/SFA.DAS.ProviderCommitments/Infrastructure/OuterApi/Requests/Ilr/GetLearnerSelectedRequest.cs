@@ -1,4 +1,10 @@
 using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Common.Domain.Types;
+using LearningType = SFA.DAS.Common.Domain.Types.LearningType;
+
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 
@@ -21,7 +27,8 @@ public class GetLearnerSelectedResponse
     public int TrainingPrice { get; set; }
     public string TrainingCode { get; set; }
     public string TrainingName { get; set; }
-    public string LearningType { get; set; }
+    [JsonConverter(typeof(StringEnumConverter))]
+    public LearningType? LearningType { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
 }

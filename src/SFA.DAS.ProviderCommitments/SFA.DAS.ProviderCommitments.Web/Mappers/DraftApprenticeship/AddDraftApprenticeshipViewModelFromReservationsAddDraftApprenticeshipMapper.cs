@@ -47,7 +47,8 @@ public class AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticesh
             ReservationId = source.ReservationId,
             CourseCode = source.CourseCode,
             DeliveryModel = source.DeliveryModel,
-            HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions
+            HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
+            LearningType = cacheItem?.LearningType
         };
 
         if (cacheItem != null)

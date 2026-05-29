@@ -305,6 +305,33 @@ public class CohortController : Controller
     }
 
     [HttpGet]
+    [Route("add/select-employer-redirect", Name = RouteNames.NewCohortSelectEmployerRedirect)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> BeginMultipleLearnerSelection(SelectEmployerRedirectRequest request)
+    {
+        var redirectModel = await _modelMapper.Map<SelectMultipleLearnerRecordsRequest>(request);
+        return RedirectToAction("SelectMultipleLearnerRecords", "Learner", redirectModel);
+    }
+
+    [HttpGet]
+    [Route("add/change-employer", Name = RouteNames.SelectMultipleChangeEmployer)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> ChangeEmployer(ChangeEmployerRequest request)
+    {
+        var model = await _modelMapper.Map<ChangeEmployerViewModel>(request);
+        return View(model);
+    }
+
+    [HttpGet]
+    [Route("add/change-employer-redirect", Name = RouteNames.SelectMultipleChangeEmployerRedirect)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> ContinueMultipleLearnerSelection(ChangeEmployerRedirectRequest request)
+    {
+        var redirectModel = await _modelMapper.Map<SelectMultipleLearnerRecordsRequest>(request);
+        return RedirectToAction("SelectMultipleLearnerRecords", "Learner", redirectModel);
+    }
+
+    [HttpGet]
     [Route("add/confirm-employer")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
@@ -438,6 +465,7 @@ public class CohortController : Controller
             AddDraftApprenticeshipEntryMethodOptions.ILR => RedirectToAction(nameof(BeforeYouContinue), new { viewModel.ProviderId }),
             AddDraftApprenticeshipEntryMethodOptions.BulkCsv => RedirectToAction(nameof(FileUploadInform), new { viewModel.ProviderId }),
             AddDraftApprenticeshipEntryMethodOptions.Manual => RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId }),
+            AddDraftApprenticeshipEntryMethodOptions.MultiSelectILR => RedirectToAction(nameof(BeforeYouContinueMultiSelect), new { viewModel.ProviderId }),
             _ => throw new InvalidOperationException()
         };
     }
@@ -457,6 +485,29 @@ public class CohortController : Controller
     public IActionResult BeforeYouContinue(BeforeYouContinueViewModel viewModel)
     {
         return RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId, UseLearnerData = true });
+    }
+
+    [HttpGet]
+    [Route("add/before-you-continue-multi-select")]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> BeforeYouContinueMultiSelect(BeforeYouContinueMultiSelectRequest request)
+    {
+        var model = await _modelMapper.Map<BeforeYouContinueMultiSelectViewModel>(request);
+
+        if (model.HasNoDeclaredStandards)
+        {
+            return RedirectToAction(nameof(NoDeclaredStandards), new { request.ProviderId });
+        }
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [Route("add/before-you-continue-multi-select")]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public IActionResult BeforeYouContinueMultiSelect(BeforeYouContinueViewModel viewModel)
+    {
+        return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId, UseLearnerData = true, IsMultiSelectJourney = true });
     }
 
     [HttpGet]
