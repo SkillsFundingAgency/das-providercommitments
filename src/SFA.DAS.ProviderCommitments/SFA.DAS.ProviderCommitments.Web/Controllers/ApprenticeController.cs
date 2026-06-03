@@ -715,7 +715,8 @@ public class ApprenticeController(
         });
     }
 
-    [Route("{apprenticeshipHashedId}/changehistory")]
+    [Route("{apprenticeshipHashedId}/change-history")]
+    [Authorize(Policy = nameof(PolicyNames.AccessApprenticeship))]
     [HttpGet]
     public async Task<IActionResult> ChangeHistory(ChangeHistoryRequest request)
     {
