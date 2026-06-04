@@ -107,14 +107,6 @@ public class DetailsViewModelMapper(
                 DurationReducedBy = data.Apprenticeship.DurationReducedBy,
                 PriceReducedBy = data.Apprenticeship.PriceReducedBy,
                 HasMultipleDeliveryModelOptions = data.HasMultipleDeliveryModelOptions,
-                PendingPriceChange = Map(data.PendingPriceChange),
-                PendingStartDateChange = MapPendingStartDateChange(data.PendingStartDateChange),
-                CanActualStartDateBeChanged = data.CanActualStartDateBeChanged,
-                PaymentStatus = Map(data),
-                LearnerStatus = data.LearnerStatusDetails.LearnerStatus,
-                WithdrawalChangedDate = data.LearnerStatusDetails.WithdrawalChangedDate,
-                LastCensusDateOfLearning = data.LearnerStatusDetails.LastCensusDateOfLearning,
-                LastDayOfLearning = data.LearnerStatusDetails.LastDayOfLearning,
                 EmploymentStatus = MapEmploymentStatus(data.Apprenticeship.EmployerVerificationStatus, data.Apprenticeship.EmployerVerificationNotes),
                 LearningType = data.Apprenticeship.LearningType,
             };
@@ -124,50 +116,6 @@ public class DetailsViewModelMapper(
             logger.LogError(e, $"Error mapping apprenticeship {source.ApprenticeshipId} to DetailsViewModel");
             throw;
         }
-    }
-
-    private static PendingPriceChange Map(GetManageApprenticeshipDetailsResponse.PendingPriceChangeDetails priceChangeDetails)
-    {
-        if (priceChangeDetails == null)
-        {
-            return null;
-        }
-
-        return new PendingPriceChange
-        {
-            Cost = priceChangeDetails.Cost,
-            EndPointAssessmentPrice = priceChangeDetails.EndPointAssessmentPrice,
-            TrainingPrice = priceChangeDetails.TrainingPrice,
-            PriceChangeInitiator = Enum.Parse<ChangeInitiatedBy>(priceChangeDetails.Initiator)
-        };
-    }
-
-    private static PendingStartDateChange MapPendingStartDateChange(GetManageApprenticeshipDetailsResponse.PendingStartDateChangeDetails startDateChangeDetails)
-    {
-        if (startDateChangeDetails == null)
-        {
-            return null;
-        }
-
-        return new PendingStartDateChange
-        {
-            PendingStartDate = startDateChangeDetails.PendingActualStartDate,
-            PendingEndDate = startDateChangeDetails.PendingPlannedEndDate,
-            ChangeInitiatedBy = Enum.Parse<ChangeInitiatedBy>(startDateChangeDetails.Initiator)
-        };
-    }
-
-    private static PaymentsStatus Map(GetManageApprenticeshipDetailsResponse source)
-    {
-        var paymentsStatusData = source.PaymentsStatus;
-        var paymentStatus = new PaymentsStatus
-        {
-            Status = source.PaymentsStatus.PaymentsFrozen ? "Withheld" : source.LearnerStatusDetails.LearnerStatus == LearnerStatus.WaitingToStart ? "Inactive" : "Active",
-            PaymentsFrozen = paymentsStatusData.PaymentsFrozen,
-            ReasonFrozen = paymentsStatusData.ReasonFrozen,
-            FrozenOn = paymentsStatusData.FrozenOn
-        };
-        return paymentStatus;
     }
 
     private static DetailsViewModel.TriageOption CalcTriageStatus(bool hasHadDataLockSuccess, IEnumerable<GetManageApprenticeshipDetailsResponse.DataLock> dataLocks)
