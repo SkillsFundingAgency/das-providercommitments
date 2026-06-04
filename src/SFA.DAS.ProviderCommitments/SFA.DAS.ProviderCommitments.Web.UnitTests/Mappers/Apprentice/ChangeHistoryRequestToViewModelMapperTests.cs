@@ -52,7 +52,7 @@ public class ChangeHistoryRequestToViewModelMapperTests
     {
         var viewModel = await _mapper.Map(_request);
 
-        viewModel.Name.Should().Be(_getChangeHistoryResponse.ChangeHistory.FirstOrDefault().LearnerName);
+        viewModel.Name.Should().Be(_getChangeHistoryResponse.ChangeHistory.FirstOrDefault()?.LearnerName);
     }
 
     [Test]

@@ -14,14 +14,14 @@ public class ChangeHistoryRequestToViewModelMapper(IApprovalsOuterApiClient appr
         {
             ApprenticeshipHashedId = source.ApprenticeshipHashedId,
             ProviderId = source.ProviderId,
-            ChangeHistory = [.. changeHistory.ChangeHistory.Select(x => new ChangeHistoryViewModel
+            ChangeHistory =  [.. changeHistory.ChangeHistory?.Select(x => new ChangeHistoryViewModel
              {
                  Description = x.Description,
                  AppliedDate = x.AppliedDate,
                  ChangeType = (LearningChangeType)x.ChangeType,
                  Id = x.Id
-             })],
-            Name = changeHistory.ChangeHistory.FirstOrDefault().LearnerName
+             })??[]],
+            Name = changeHistory.ChangeHistory.FirstOrDefault()?.LearnerName
         };
     }
 }
