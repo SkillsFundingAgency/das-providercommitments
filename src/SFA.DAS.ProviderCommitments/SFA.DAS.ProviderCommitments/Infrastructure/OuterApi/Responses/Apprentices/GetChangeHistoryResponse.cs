@@ -5,7 +5,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprenti
 
 public class GetChangeHistoryResponse
 {
-    public IEnumerable<GetChangeHistoryItem> ChangeHistory { get; set; } = [];
+    public List<GetChangeHistoryItem> ChangeHistory { get; set; } = new List<GetChangeHistoryItem>();
 }
 
 public class GetChangeHistoryItem
