@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -103,6 +104,16 @@ public class WhenIMapCreateCohortWithDraftApprenticeshipRequestToAddDraftApprent
         result.LearnerDataId.Should().Be(_cacheItem.LearnerDataId);
     }
 
+    [TestCase(null)]
+    [TestCase(LearningType.Apprenticeship)]
+    [TestCase(LearningType.FoundationApprenticeship)]
+    [TestCase(LearningType.ApprenticeshipUnit)]
+    public async Task ThenLearningTypeIsMappedCorrectly(LearningType? type)
+    {
+        _cacheItem.LearningType = type;
+        var result = await _mapper.Map(_source);
+        result.LearningType.Should().Be(_cacheItem.LearningType);
+    }
 
     [Test]
     public async Task ThenHasMultipleDeliveryModelOptionsIsMappedCorrectly()

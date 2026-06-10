@@ -1,4 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+﻿using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
@@ -32,5 +33,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
         public string Reference { get; set; }
         public bool? UseLearnerData { get; set; }
         public long? LearnerDataId { get; set; }
+        public LearningType? LearningType { get; set; }
     }
 }
