@@ -45,6 +45,6 @@
 
 @section breadcrumb
 {
-    @*     <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", "Cohort", new { Model.CohortReference, Model.ProviderId })">Back</a>
- *@
+    <a id="back-link" class="govuk-back-link" asp-external-subdomain="securefunding" asp-external-controller="reservations"
+        asp-external-action="manage"       asp-external-id="@Model.ProviderId">Back</a>
 }
