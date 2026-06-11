@@ -10,7 +10,7 @@
     <div class="govuk-grid-column-two-thirds">
         @if (!Model.HasExistingCohort && !Model.HasCreateCohortPermission)
         {
-            <h1 class="govuk-heading-xl">You cannot add apprentices</h1>
+            <h1 class="govuk-heading-xl">You cannot add learners</h1>
             <p class="govuk-body">
                 You will need to ask the employer to create a cohort or give you permission to do this on their behalf.
             </p>
@@ -28,7 +28,7 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                             <h1 class="govuk-fieldset__heading">
-                                Add apprentice details
+                                Do you want to create a new cohort?
                             </h1>
                         </legend>
                         @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
@@ -36,25 +36,30 @@
 
                         <div class="govuk-radios">
 
-                            @if (Model.HasExistingCohort)
-                            {
-                                <div class="govuk-radios__item">
-                                    <input asp-for="Selection" value="ExistingCohort" type="radio" class="govuk-radios__input" id="confirm-ExistingCohort" />
-                                    <label class="govuk-label govuk-radios__label" for="confirm-ExistingCohort">
-                                        Add to an existing cohort
-                                    </label>
-                                </div>
-                            }
-
                             @if (Model.HasCreateCohortPermission)
                             {
                                 <div class="govuk-radios__item">
                                     <input asp-for="Selection" value="NewCohort" type="radio" class="govuk-radios__input" id="confirm-NewCohort" />
                                     <label class="govuk-label govuk-radios__label" for="confirm-NewCohort">
-                                        Create a new cohort
+                                        Yes, create a new cohort
                                     </label>
                                 </div>
                             }
+
+                            @if (Model.HasExistingCohort)
+                            {
+                                <div class="govuk-radios__item">
+                                    <input asp-for="Selection" value="ExistingCohort" type="radio" class="govuk-radios__input" id="confirm-ExistingCohort" />
+                                    <label class="govuk-label govuk-radios__label" for="confirm-ExistingCohort">
+                                        No, add to an existing cohort
+                                    </label>
+                                    <div id="existing-cohort-input-hint" class="govuk-hint govuk-radios__hint">
+                                        Add to a cohort you or the employer have already set up
+                                    </div>
+
+                                </div>
+                            }
+
                         </div>
 
                         @if (!Model.HasCreateCohortPermission)
