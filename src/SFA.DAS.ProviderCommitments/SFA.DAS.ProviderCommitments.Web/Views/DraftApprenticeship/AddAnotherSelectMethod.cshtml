@@ -1,7 +1,7 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.SelectAddAnotherDraftApprenticeshipJourneyViewModel
 
 @{
-    ViewBag.Title = "Add Apprentice";
+    ViewBag.Title = "Add learner";
     ViewBag.GaData.Vpv = "/unapproved/add-another/select-option";
 }
 <div class="govuk-grid-row">
@@ -16,7 +16,7 @@
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                         <h1 class="govuk-fieldset__heading">
-                            Add apprentice details
+                            How do you want to add learner details?
                         </h1>
                     </legend>
                     @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
@@ -24,16 +24,16 @@
                         <div class="govuk-radios__item">
                             <input asp-for="Selection" value="ILR" type="radio" class="govuk-radios__input" id="confirm-ILR"/>
                             <label class="govuk-label govuk-radios__label" for="confirm-ILR">
-                                Select apprentices from ILR
+                                Choose details from ILR (Individual learner record)
                             </label>
-                            <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">Add new apprentice details imported from the ILR file you have submitted to Submit Learner Data</div>
+                            <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">For apprenticeships or apprenticeship units</div>
                         </div>
                         <div class="govuk-radios__item">
                             <input asp-for="Selection" value="Manual" type="radio" class="govuk-radios__input" id="confirm-Manual"/>
                             <label class="govuk-label govuk-radios__label" for="confirm-Manual">
-                                Manually
+                                Manually add details
                             </label>
-                            <div id="manual-input-hint" class="govuk-hint govuk-radios__hint">Add new apprentice details</div>
+                            <div id="manual-input-hint" class="govuk-hint govuk-radios__hint">For apprenticeships only</div>
                         </div>
                     </div>
                 </fieldset>
