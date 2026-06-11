@@ -12,7 +12,7 @@ public class ChangeHistoryListViewModel
 
     public long ProviderId { get; set; }
 
-    public DateTime ChangeHistoryAvailableFrom { get; set; } = DateTime.UtcNow;
+    public DateTime AvailableFrom { get; set; }
 }
 
 public class ChangeHistoryViewModel
