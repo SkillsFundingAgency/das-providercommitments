@@ -2,6 +2,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Account;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
 
 namespace SFA.DAS.ProviderCommitments.Interfaces;
@@ -25,4 +26,6 @@ public interface IApprovalsOuterApiClient
     Task<GetSelectEmployerResponse> GetSelectEmployer(GetSelectEmployerRequest request);
 
     Task<GetSelectEmployerResponse> GetSelectNewEmployer(GetSelectNewEmployerRequest request);
+
+    Task<GetChangeHistoryResponse> GetChangeHistory(long apprenticeshipId);
 }

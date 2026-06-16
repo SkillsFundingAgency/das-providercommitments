@@ -16,6 +16,14 @@
 
         <h1 class="govuk-heading-l">View details for @Model.ApprenticeName</h1>
 
+        @if (Model.HasChangeHistory)
+        {
+            <p>
+                <a class="govuk-link" asp-controller="Apprentice" asp-action="ChangeHistory" asp-route-providerId="@Model.ProviderId"
+                   asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">View change history for this learner.</a>
+            </p>
+        }
+
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
