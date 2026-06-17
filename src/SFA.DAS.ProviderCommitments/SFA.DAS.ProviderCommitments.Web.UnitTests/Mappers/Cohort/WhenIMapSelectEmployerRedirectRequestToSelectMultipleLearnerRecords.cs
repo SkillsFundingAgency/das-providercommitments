@@ -35,14 +35,13 @@ public class WhenIMapSelectEmployerRedirectRequestToSelectMultipleLearnerRecords
     private class SelectEmployerRedirectRequestMapperFixture
     {
         private readonly Mock<ICacheStorageService> _cacheStorageMock;
+        private readonly Mock<IEncodingService> _encodingServiceMock;
         private readonly SelectEmployerRedirectRequestMapper _sut;
         private SelectEmployerRedirectRequest _source;
 
         private string _savedKey;
         private SelectMultipleLearnerRecordsCacheItem _savedItem;
         private int _savedTtl;
-
-        private Mock<IEncodingService> _encodingServiceMock;
 
         public SelectEmployerRedirectRequestMapperFixture()
         {
