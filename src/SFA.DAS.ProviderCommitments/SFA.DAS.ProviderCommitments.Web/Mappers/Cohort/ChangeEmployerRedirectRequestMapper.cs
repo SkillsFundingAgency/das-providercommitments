@@ -13,11 +13,17 @@ public class ChangeEmployerRedirectRequestMapper(ICacheStorageService cacheStora
     {
         var cacheItem = await cacheStorage.RetrieveFromCache<SelectMultipleLearnerRecordsCacheItem>(source.CacheKey.Value);
 
+        if (cacheItem.EmployerAccountLegalEntityPublicHashedId != source.EmployerAccountLegalEntityPublicHashedId)
+        {
+            cacheItem.SelectedLearners = new List<LearnerSummary>();
+        }
+
         cacheItem.ProviderId = source.ProviderId;
         cacheItem.EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId;
         cacheItem.EmployerAccountName = source.EmployerAccountName;
         cacheItem.LevyStatus = source.LevyStatus;
         cacheItem.AccountId = encodingService.Decode(source.AccountHashedId, EncodingType.AccountId);
+        cacheItem.AccountLegalEntityId = encodingService.Decode(source.EmployerAccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
 
         await cacheStorage.SaveToCache(cacheItem.Key.ToString(), cacheItem, 1);
 
