@@ -18,7 +18,7 @@ public class SelectMultipleLearnerRecordsViewModel : IAuthorizationContextModel
 
     public List<LearnerSummary> Learners { get; set; } = new();
     public List<LearnerSummary> SelectedLearners { get; set; } = new();
-    public string PageTitle => $"Select learners from the ILR for {EmployerAccountName}";
+    public string PageTitle => $"Select learners from ILR for {EmployerAccountName}";
 
     public string SortedByHeaderClassName { get; set; }
     public const string HeaderClassName = "das-table__sort";
