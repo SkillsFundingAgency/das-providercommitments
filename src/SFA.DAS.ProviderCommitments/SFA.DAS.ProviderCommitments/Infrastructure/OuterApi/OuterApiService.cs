@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
@@ -11,6 +10,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.FundingOptions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
@@ -258,6 +258,12 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
 
         var response = await outerApiClient.Get<GetLearnerSelectedResponse>(request);
 
+        return response;
+    }
+    public async Task<GetAccountFundingOptionsQueryResult> GetAccountFundingOptions(long accountId)
+    {
+        var request = new GetAccountFundingOptionsRequest(accountId);
+        var response = await outerApiClient.Get<GetAccountFundingOptionsQueryResult>(request);
         return response;
     }
 

@@ -2,6 +2,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -59,6 +60,9 @@ public class SelectMultipleLearnerRecordsViewModelMapperTests
             t.StartYear == 2025 &&
             t.CourseCode == _cacheItem.CourseCode)))
             .ReturnsAsync(_apiResponse);
+
+        _outerApiService.Setup(x => x.GetAccountFundingOptions(It.IsAny<long>()))
+            .ReturnsAsync(new GetAccountFundingOptionsQueryResult { RemainingReservationsCount = 5 });
 
         _validationResult = new ValidationResult();
         _validator = new Mock<IValidator<SelectMultipleLearnerRecordsViewModel>>();

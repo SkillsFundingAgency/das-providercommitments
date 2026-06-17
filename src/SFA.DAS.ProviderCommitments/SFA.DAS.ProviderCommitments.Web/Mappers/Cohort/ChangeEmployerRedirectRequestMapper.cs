@@ -22,6 +22,7 @@ public class ChangeEmployerRedirectRequestMapper(ICacheStorageService cacheStora
         cacheItem.EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId;
         cacheItem.EmployerAccountName = source.EmployerAccountName;
         cacheItem.LevyStatus = source.LevyStatus;
+        cacheItem.AccountId = encodingService.Decode(source.AccountHashedId, EncodingType.AccountId);
         cacheItem.AccountLegalEntityId = encodingService.Decode(source.EmployerAccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
 
         await cacheStorage.SaveToCache(cacheItem.Key.ToString(), cacheItem, 1);
