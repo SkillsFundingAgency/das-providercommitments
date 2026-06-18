@@ -2,7 +2,7 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.BeforeYouContinueMultiSelectViewModel
 
 @{
-    ViewBag.Title = "Before you continue";
+    ViewBag.Title = "Add learners from ILR";
     ViewBag.ZendeskLabel = "add-apprentice-before-you-continue-multi-select";
     ViewBag.GaData.Vpv = "/unapproved/add/before-you-continue-multi-select";
 }
@@ -10,7 +10,7 @@
     <div class="govuk-grid-column-two-thirds">
         @if (!Model.HasCreateCohortPermission)
         {
-            <h1 class="govuk-heading-xl">You cannot add apprentices</h1>
+            <h1 class="govuk-heading-xl">You cannot add learners</h1>
             <p class="govuk-body">
                 You will need to ask the employer to create a cohort or give you permission to do this on their behalf.
             </p>
@@ -23,7 +23,10 @@
             <form method="post">
                 @Html.AntiForgeryToken()
                 <div class="govuk-form-group">
-                    <h1 class="govuk-heading-l">Before you continue multi select</h1>
+                    <h1 class="govuk-heading-l">Add learners from ILR</h1>
+                    <p class="govuk-body">
+                        Add multiple learners from the ILR for new cohorts, creating reservations automatically.
+                    </p>
                     <h2 class="govuk-heading-m">Check your permissions</h2>
 
                     <p class="govuk-body">You must have the employer’s permission to add apprentices.</p>
@@ -50,17 +53,15 @@
                     <h2 class="govuk-heading-m">Funding</h2>
                     <h3 class="govuk-heading-s">Reservations</h3>
                     <p class="govuk-body">
-                        If you’ve reserved funds and you’re only adding one apprentice, you’ll get the option to choose an existing
-                        reservation
-                        or reserve new funds.
-                    </p>
-                    <p class="govuk-body govuk-!-margin-bottom-6">
-                        If no reservations are set up or you’re adding multiple apprentices, funds will be automatically be reserved for
-                        you.
+                        Funds will automatically be reserved for you when you add multiple learners.
                     </p>
                     <h3 class="govuk-heading-s">Transfers</h3>
                     <p class="govuk-body">
-                        If you are using transfer funding, your employer will need to set up a cohort and send it to you first.
+                        If you’re using transfer funding, you can only
+                        <a href="@Url.Action("BeforeYouContinue", new { Model.ProviderId })" class="govuk-link">and 1 learner at a time</a>
+                    </p>
+                    <p class="govuk-body">
+                        Your employer will need to send a learner request first.
                     </p>
 
                     <h2 class="govuk-heading-m">Steps to follow</h2>
