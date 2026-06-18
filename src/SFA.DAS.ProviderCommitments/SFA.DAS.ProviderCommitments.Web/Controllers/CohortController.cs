@@ -465,7 +465,29 @@ public class CohortController : Controller
             AddDraftApprenticeshipEntryMethodOptions.ILR => RedirectToAction(nameof(BeforeYouContinue), new { viewModel.ProviderId }),
             AddDraftApprenticeshipEntryMethodOptions.BulkCsv => RedirectToAction(nameof(FileUploadInform), new { viewModel.ProviderId }),
             AddDraftApprenticeshipEntryMethodOptions.Manual => RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { viewModel.ProviderId }),
-            AddDraftApprenticeshipEntryMethodOptions.MultiSelectILR => RedirectToAction(nameof(BeforeYouContinueMultiSelect), new { viewModel.ProviderId }),
+            AddDraftApprenticeshipEntryMethodOptions.HowManyLearners => RedirectToAction(nameof(SelectHowManyLearnersToAdd), new { viewModel.ProviderId }),
+            _ => throw new InvalidOperationException()
+        };
+    }
+
+    [HttpGet]
+    [Route("add/how-many-learners")]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public IActionResult SelectHowManyLearnersToAdd(SelectAddDraftApprenticeshipJourneyRequest request)
+    {
+        var model = new SelectAddDraftApprenticeshipJourneyViewModel { ProviderId = request.ProviderId };
+        return View(model);
+    }
+
+    [HttpPost]
+    [Route("add/how-many-learners")]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public IActionResult SelectHowManyLearnersToAdd(SelectHowManyLearnersToAddViewModel viewModel)
+    {
+        return viewModel.Selection switch
+        {
+            HowManyLearnersToAddOptions.Single => RedirectToAction(nameof(BeforeYouContinue), new { viewModel.ProviderId }),
+            HowManyLearnersToAddOptions.Multiple => RedirectToAction(nameof(BeforeYouContinueMultiSelect), new { viewModel.ProviderId }),
             _ => throw new InvalidOperationException()
         };
     }

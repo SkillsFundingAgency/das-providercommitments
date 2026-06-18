@@ -1,9 +1,11 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.BeforeYouContinueViewModel
+@inject IConfiguration Configuration;
 
 @{
     ViewBag.Title = "Before you continue";
     ViewBag.ZendeskLabel = "add-apprentice-before-you-continue";
     ViewBag.GaData.Vpv = "/unapproved/add/before-you-continue";
+    var ilrSelectMultipleFeatureEnabled = Configuration.GetValue<bool>("ILRSelectMultipleFeatureEnabled");
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -74,5 +76,13 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectDraftApprenticeshipsEntryMethod", new { Model.ProviderId })>Back</a>
+    @if (ilrSelectMultipleFeatureEnabled)
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectHowManyLearnersToAdd", new { Model.ProviderId })>Back</a>
+    }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectDraftApprenticeshipsEntryMethod", new { Model.ProviderId })>Back</a>
+    }
+    
 }
