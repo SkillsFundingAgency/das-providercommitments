@@ -57,7 +57,7 @@
 
 <div class="govuk-grid-row  @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
     <div class="govuk-grid-column-full">
-        <h3 class="govuk-heading-m">Learners in cohort (@Model.SelectedLearners.Count)</h3>
+        <h3 class="govuk-heading-m">@Model.SelectedLearnersTitle</h3>
         @Html.ValidationMessageFor(m => m.SelectedLearners, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SelectedLearners) })
         @if (Model.LevyStatus == ApprenticeshipEmployerType.Levy)
         {
@@ -80,7 +80,7 @@
                     <th scope="col" class="govuk-table__header">Training type</th>
                     <th scope="col" class="govuk-table__header">Training course</th>
                     <th scope="col" class="govuk-table__header">Start date</th>
-                    <th scope="col" class="govuk-table__header"></th>
+                    <th scope="col" class="govuk-table__header">Action</th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
@@ -267,7 +267,7 @@
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-
+                    Action
                 </th>
             </tr>
         </thead>
