@@ -20,6 +20,17 @@ public class WhenGettingSelectHowManyLearnersToAdd
 
         result.VerifyReturnsViewModel();
     }
+
+    [Test]
+    public void ThenProviderIdIsMapped()
+    {
+        var fixture = new WhenGettingSelectHowManyLearnersToAddFixture();
+
+        var result = fixture.Act();
+
+        var model = result.VerifyReturnsViewModel().WithModel<SelectAddDraftApprenticeshipJourneyViewModel>();
+        model.ProviderId.Should().Be(fixture.ProviderId);
+    }
 }
 
 public class WhenGettingSelectHowManyLearnersToAddFixture
