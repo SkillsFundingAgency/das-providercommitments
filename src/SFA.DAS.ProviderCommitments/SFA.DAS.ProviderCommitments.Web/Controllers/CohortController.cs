@@ -495,9 +495,14 @@ public class CohortController : Controller
     [HttpGet]
     [Route("add/before-you-continue")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public IActionResult BeforeYouContinue(BeforeYouContinueRequest request)
+    public IActionResult BeforeYouContinue(BeforeYouContinueRequest request, [FromServices] IConfiguration configuration)
     {
+        var ilrSelectMultipleFeatureEnabled = configuration.GetValue<bool?>("ILRSelectMultipleFeatureEnabled");
         var model = new BeforeYouContinueViewModel { ProviderId = request.ProviderId };
+        if (ilrSelectMultipleFeatureEnabled.HasValue)
+        {
+            model.IlrSelectMultipleFeatureEnabled = ilrSelectMultipleFeatureEnabled.Value;
+        }
         return View(model);
     }
 
