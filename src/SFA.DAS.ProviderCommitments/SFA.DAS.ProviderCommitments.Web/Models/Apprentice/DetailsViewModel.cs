@@ -96,6 +96,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             Update,
             Both
         }
+
+        public bool HasChangeHistory { get; set; }
     }
 
     public class EmployerHistory

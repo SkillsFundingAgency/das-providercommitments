@@ -281,8 +281,8 @@ public class ApprenticeController(
         }
 
         TempData["ChangeEmployerModel"] = JsonConvert.SerializeObject(viewModel);
-            
-        return RedirectToRoute(RouteNames.ChangeEmployerDetails, new {request.ProviderId, request.ApprenticeshipHashedId});
+
+        return RedirectToRoute(RouteNames.ChangeEmployerDetails, new { request.ProviderId, request.ApprenticeshipHashedId });
     }
 
     [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
@@ -354,7 +354,7 @@ public class ApprenticeController(
     {
         var request = await modelMapper.Map<SentRequest>(viewModel);
         TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
-            
+
         return RedirectToRoute(RouteNames.ApprenticeSent, request);
     }
 
@@ -397,7 +397,7 @@ public class ApprenticeController(
     {
         var viewModel = TempData.Get<EditApprenticeshipRequestViewModel>(ViewModelForEdit) ?? await modelMapper.Map<EditApprenticeshipRequestViewModel>(request);
 
-        if(viewModel.LearningType == LearningType.ApprenticeshipUnit)
+        if (viewModel.LearningType == LearningType.ApprenticeshipUnit)
         {
             return View("EditApprenticeshipForAppUnit", viewModel);
         }
@@ -418,25 +418,23 @@ public class ApprenticeController(
 
         var editRequest = await modelMapper.Map<ValidateEditApprenticeshipRequest>(
             viewModel);
-            
+
         var response = await outerApiService.EditApprenticeship(
             viewModel.ProviderId,
             viewModel.ApprenticeshipId,
             editRequest);
-
 
         viewModel.HasOptions = response.HasOptions;
         viewModel.Version = response.Version;
 
         viewModel.Option = response.CourseOrStartDateChange ? null : viewModel.Option;
 
-        
         TempData.Put("EditApprenticeshipRequestViewModel", viewModel);
         if (response.HasOptions)
         {
             return RedirectToAction(nameof(ChangeOption), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
         }
-            
+
         return RedirectToAction(nameof(ConfirmEditApprenticeship), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
     }
 
@@ -714,6 +712,15 @@ public class ApprenticeController(
             ProviderId = request.ProviderId,
             ApprenticeshipHashedId = request.ApprenticeshipHashedId
         });
+    }
+
+    [Route("{apprenticeshipHashedId}/change-history")]
+    [Authorize(Policy = nameof(PolicyNames.AccessApprenticeship))]
+    [HttpGet]
+    public async Task<IActionResult> ChangeHistory(ChangeHistoryRequest request)
+    {
+        var viewModel = await modelMapper.Map<ChangeHistoryListViewModel>(request);
+        return View(viewModel);
     }
 
     private async Task ValidateChangeOfEmployerOverlap(TrainingDatesViewModel model)
