@@ -15,6 +15,24 @@
         <form method="post">
             @Html.AntiForgeryToken()
             @Html.HiddenFor(x => x.ProviderId)
+            @if (ilrSelectMultipleFeatureEnabled)
+            {
+                <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                    <div class="govuk-notification-banner__header">
+                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                            Important
+                        </h2>
+                    </div>
+                    <div class="govuk-notification-banner__content">
+                        <p class="govuk-notification-banner__heading">
+                            You can now add multiple learners from ILR
+                        </p>
+                        <p class="govuk-body">
+                            Choose 'Add 1 or more learners from ILR' to view your options.
+                        </p>
+                    </div>
+                </div>
+            }
             <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
@@ -24,7 +42,7 @@
                     </legend>
                     @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
                     <div class="govuk-radios">
-                        @if (ilrFeaturesEnabled)
+                        @if (ilrFeaturesEnabled && !ilrSelectMultipleFeatureEnabled)
                         {
                             <div class="govuk-radios__item">
                                 <input asp-for="Selection" value="ILR" type="radio" class="govuk-radios__input" id="confirm-ILR"/>
@@ -37,11 +55,11 @@
                         @if (ilrSelectMultipleFeatureEnabled)
                         {
                             <div class="govuk-radios__item">
-                                <input asp-for="Selection" value="multiSelectILR" type="radio" class="govuk-radios__input" id="confirm-multiSelectILR" />
-                                <label class="govuk-label govuk-radios__label" for="confirm-multiSelectILR">
-                                    Select multiple learners from ILR
+                                <input asp-for="Selection" value="HowManyLearners" type="radio" class="govuk-radios__input" id="confirm-HowManyLearners" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-HowManyLearners">
+                                    Add 1 or more learners from ILR (individual learner record)
                                 </label>
-                                <div id="multi-select-ILR-hint" class="govuk-hint govuk-radios__hint">For apprenticeships or apprenticeship units</div>
+                                <div id="how-many-learners-hint" class="govuk-hint govuk-radios__hint">For apprenticeships or apprenticeship units</div>
                             </div>
                         }
                         <div class="govuk-radios__item">
