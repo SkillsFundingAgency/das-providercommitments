@@ -110,6 +110,8 @@ public class DetailsViewModelMapper(
                 EmploymentStatus = MapEmploymentStatus(data.Apprenticeship.EmployerVerificationStatus, data.Apprenticeship.EmployerVerificationNotes),
                 LearningType = data.Apprenticeship.LearningType,
                 HasChangeHistory = data.Apprenticeship.HasChangeHistory,
+                PaymentsPaused = data.PaymentsStatus?.FreezeStatus ?? false,
+                PausedReason = data.PaymentsStatus?.ReasonFrozen,
             };
         }
         catch (Exception e)
