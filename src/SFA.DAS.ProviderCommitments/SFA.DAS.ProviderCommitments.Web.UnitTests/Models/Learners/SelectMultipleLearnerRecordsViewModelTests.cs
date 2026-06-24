@@ -47,12 +47,12 @@ public class SelectMultipleLearnerRecordsViewModelTests
         _viewModel.LastIlrSubmittedOnDesc.Should().Be("Last updated 1:00AM on Thursday 10 April");
     }
 
-    [TestCase(1, "1 apprentice records")]
-    [TestCase(100, "100 apprentice records")]
+    [TestCase(1, "1 learner record")]
+    [TestCase(100, "100 learner records")]
     public void TotalNumberOfApprenticesDescription_IsCorrect(int count, string expected)
     {
         _viewModel.FilterModel.TotalNumberOfLearnersFound = count;
-        _viewModel.FilterModel.TotalNumberOfApprenticeshipsFoundDescription.ToString().Should().StartWith(expected);
+        _viewModel.FilterModel.TotalNumberOfLearnersFoundDescription.ToString().Should().StartWith(expected);
     }
 
     [Test]
@@ -61,7 +61,7 @@ public class SelectMultipleLearnerRecordsViewModelTests
         _viewModel.FilterModel.SearchTerm = "";
         _viewModel.FilterModel.StartMonth = "";
         _viewModel.FilterModel.StartYear = "2025";
-        _viewModel.FilterModel.TotalNumberOfApprenticeshipsFoundDescription.ToString().Should().EndWith("<strong>2025</strong>");
+        _viewModel.FilterModel.TotalNumberOfLearnersFoundDescription.ToString().Should().EndWith("<strong>2025</strong>");
     }
 
     [TestCase("", "", "", "<strong>2025</strong>")]
@@ -80,7 +80,7 @@ public class SelectMultipleLearnerRecordsViewModelTests
         _viewModel.FilterModel.StartMonth = startMonth;
         _viewModel.FilterModel.StartYear = "2025";
         _viewModel.FilterModel.CourseCode = courseCode;
-        _viewModel.FilterModel.TotalNumberOfApprenticeshipsFoundDescription.ToString().Should().EndWith(expected);
+        _viewModel.FilterModel.TotalNumberOfLearnersFoundDescription.ToString().Should().EndWith(expected);
     }
 
     [TestCase("", 2)]
@@ -110,15 +110,5 @@ public class SelectMultipleLearnerRecordsViewModelTests
         apprenticeship.LastName.Should().Be(ilrLearner.LastName);
         apprenticeship.Uln.Should().Be(ilrLearner.Uln);
         apprenticeship.CourseName.Should().Be(ilrLearner.Course);
-    }
-
-    [TestCase(0, false)]
-    [TestCase(3, true)]
-    public void IsNonLevy_Calculation(int futureMonths, bool expected)
-    {
-        _viewModel.FutureMonths = futureMonths;
-
-        var isNonLevy = _viewModel.IsNonLevy;
-        isNonLevy.Should().Be(expected);
     }
 }

@@ -14,10 +14,10 @@ public class SelectMultipleLearnerRecordsSortRequestMapper(ICacheStorageService 
 
         var reverseSort = !string.IsNullOrEmpty(cacheItem.SortField)
                            && cacheItem.SortField.ToLower() == source.SortField.ToLower()
-                           && !cacheItem.ReverseSort;
+                           && !cacheItem.SortDescending;
 
         cacheItem.SortField = source.SortField;
-        cacheItem.ReverseSort = reverseSort;
+        cacheItem.SortDescending = reverseSort;
 
         await cacheStorage.SaveToCache(cacheItem.Key.ToString(), cacheItem, 1);
 

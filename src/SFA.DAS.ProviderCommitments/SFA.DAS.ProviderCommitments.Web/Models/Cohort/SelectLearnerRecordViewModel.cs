@@ -1,15 +1,14 @@
 using System.Globalization;
-using Microsoft.AspNetCore.Html;
+using System.Net;
 using System.Text;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
-using static SFA.DAS.ProviderCommitments.Constants;
-using System.Net;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
-using SFA.DAS.ProviderCommitments.Extensions;
-using SFA.DAS.Common.Domain.Types;
-using FluentAssertions;
+using static SFA.DAS.ProviderCommitments.Constants;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
