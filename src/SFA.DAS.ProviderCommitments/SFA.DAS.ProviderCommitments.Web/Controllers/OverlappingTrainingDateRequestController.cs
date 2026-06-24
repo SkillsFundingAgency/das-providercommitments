@@ -45,9 +45,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> OverlapOptionsForChangeEmployer(OverlapOptionsForChangeEmployerRequest request)
         {
             var apprenticeshipDetails = await _outerApiService.GetApprenticeship(request.ApprenticeshipId.Value, request.ProviderId);
-            DraftApprenticeshipViewModel model = request.ApprenticeshipHashedId == null
-               ? PeekStoredAddDraftApprenticeshipState()
-               : PeekStoredEditDraftApprenticeshipState();
 
             var viewModel = new OverlapOptionsForChangeEmployerViewModel
             {

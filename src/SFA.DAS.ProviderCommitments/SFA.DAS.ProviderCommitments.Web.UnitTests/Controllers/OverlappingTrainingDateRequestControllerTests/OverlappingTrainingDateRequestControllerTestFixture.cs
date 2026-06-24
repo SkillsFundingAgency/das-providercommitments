@@ -124,8 +124,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
                 Id = 1,
                 Status = ApprenticeshipStatus.Live
             };
-            // commitmentsApiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _apprenticeshipDetails);
-
+            
             _outerApiService.Setup(x => x.GetApprenticeship(It.Is<long>(t => t == _draftApprenticeshipOverlapOptionRequest.ApprenticeshipId.Value),
                 It.Is<long>(t => t == _draftApprenticeshipOverlapOptionRequest.ProviderId))).ReturnsAsync(_getApprenticeshipResponse);
 
