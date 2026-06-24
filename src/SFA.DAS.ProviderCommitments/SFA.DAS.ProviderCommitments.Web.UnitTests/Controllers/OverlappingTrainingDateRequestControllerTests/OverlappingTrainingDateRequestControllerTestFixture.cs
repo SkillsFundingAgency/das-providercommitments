@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         private readonly DraftApprenticeshipOverlapOptionRequest _draftApprenticeshipOverlapOptionRequest;
         private readonly OverlapOptionsForChangeEmployerRequest _overlapOptionsForChangeEmployerRequest;
         private GetApprenticeshipResponse _apprenticeshipDetails;
-        
+
         private readonly DraftApprenticeshipOverlapOptionWithPendingRequest _overlapRequest;
         private readonly DraftApprenticeshipOverlapOptionWithPendingRequestViewModel _overlapViewModel;
 
@@ -47,26 +47,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         private readonly DraftApprenticeshipOverlapAlertRequest _draftApprenticeshipOverlapAlertRequest;
         private readonly UpdateDraftApprenticeshipApimRequest _updateDraftApprenticeshipRequest;
 
+        private readonly Infrastructure.OuterApi.Responses.GetApprenticeshipResponse _getApprenticeshipResponse;
+
         public OverlappingTrainingDateRequestControllerTestFixture()
         {
             _autoFixture = new Fixture();
             _mockModelMapper = new Mock<IModelMapper>();
-            
+
             var linkGenerator = new Mock<ILinkGenerator>();
+
+            var providerId = _autoFixture.Create<long>();
+            var apprenticeShipId = _autoFixture.Create<long>();
 
             _draftApprenticeshipOverlapAlertRequest = _autoFixture.Create<DraftApprenticeshipOverlapAlertRequest>();
             _updateDraftApprenticeshipRequest = _autoFixture.Create<UpdateDraftApprenticeshipApimRequest>();
+            _getApprenticeshipResponse = _autoFixture.Create<Infrastructure.OuterApi.Responses.GetApprenticeshipResponse>();
 
             _model = new DraftApprenticeshipViewModel
             {
-                ProviderId = _autoFixture.Create<int>(),
+                ProviderId = providerId,
                 EmployerAccountLegalEntityPublicHashedId = _autoFixture.Create<string>(),
                 AccountLegalEntityId = _autoFixture.Create<long>(),
                 ReservationId = _autoFixture.Create<Guid>()
             };
 
-            _draftApprenticeshipOverlapOptionRequest = new DraftApprenticeshipOverlapOptionRequest() { DraftApprenticeshipHashedId = "XXXXX", ApprenticeshipId = 1 };
-            _overlapOptionsForChangeEmployerRequest = new OverlapOptionsForChangeEmployerRequest { ProviderId = 2, ApprenticeshipId = 1, CacheKey = Guid.NewGuid() };
+            _draftApprenticeshipOverlapOptionRequest = new DraftApprenticeshipOverlapOptionRequest() { DraftApprenticeshipHashedId = "XXXXX", ApprenticeshipId = apprenticeShipId, ProviderId = providerId };
+            _overlapOptionsForChangeEmployerRequest = new OverlapOptionsForChangeEmployerRequest { ProviderId = providerId, ApprenticeshipId = apprenticeShipId, CacheKey = Guid.NewGuid() };
 
             _tempData = new Mock<ITempDataDictionary>();
 
@@ -104,7 +110,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
                 .Returns(_linkGeneratorRedirectUrl)
                 .Callback((string value) => _ = value);
 
-
             _outerApiService = new Mock<IOuterApiService>();
             var commitmentsApiClient = new Mock<ICommitmentsApiClient>();
             var validateUlnOverlapResult = new ValidateUlnOverlapResult();
@@ -119,7 +124,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
                 Id = 1,
                 Status = ApprenticeshipStatus.Live
             };
-            commitmentsApiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _apprenticeshipDetails);
+            // commitmentsApiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _apprenticeshipDetails);
+
+            _outerApiService.Setup(x => x.GetApprenticeship(It.Is<long>(t => t == _draftApprenticeshipOverlapOptionRequest.ApprenticeshipId.Value),
+                It.Is<long>(t => t == _draftApprenticeshipOverlapOptionRequest.ProviderId))).ReturnsAsync(_getApprenticeshipResponse);
 
             _overlapRequest = _autoFixture.Create<DraftApprenticeshipOverlapOptionWithPendingRequest>();
             _overlapViewModel = _autoFixture.Create<DraftApprenticeshipOverlapOptionWithPendingRequestViewModel>();
@@ -143,7 +151,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
         public OverlappingTrainingDateRequestControllerTestFixture SetApprenticeshipStatus(ApprenticeshipStatus status)
         {
-            _apprenticeshipDetails.Status = status;
+            _getApprenticeshipResponse.Status = (short)status;
             return this;
         }
 
@@ -183,6 +191,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             viewResult.Should().NotBeNull();
             var model = viewResult.Model as OverlapOptionsForChangeEmployerViewModel;
             model.Should().NotBeNull();
+            return this;
+        }
+
+        public OverlappingTrainingDateRequestControllerTestFixture VerifyOverlapOptionsForChangeEmployerViewModelViewReturnedWithNoWithdrawnReasonCode()
+        {
+            var viewResult = _actionResult as ViewResult;
+            viewResult.Should().NotBeNull();
+            var model = viewResult.Model as OverlapOptionsForChangeEmployerViewModel;
+            model.HasWithdrawnStatusCode.Should().BeFalse();
             return this;
         }
 
@@ -228,7 +245,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         {
             _mockModelMapper.Setup(m => m.Map<UpdateDraftApprenticeshipApimRequest>(It.Is<EditDraftApprenticeshipViewModel>(x => x.Uln == _model.Uln))).ReturnsAsync(_updateDraftApprenticeshipRequest);
             return this;
-        }       
+        }
 
         public OverlappingTrainingDateRequestControllerTestFixture GetChangeOfEmployerNotified()
         {
@@ -289,8 +306,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             using (new AssertionScope())
             {
                 model.Should().NotBeNull();
-               _employerNotifiedRequest.CohortReference.Should().Be(model.CohortReference);
-               _employerNotifiedRequest.ProviderId.Should().Be(model.ProviderId);
+                _employerNotifiedRequest.CohortReference.Should().Be(model.CohortReference);
+                _employerNotifiedRequest.ProviderId.Should().Be(model.ProviderId);
             }
             return this;
         }
@@ -314,9 +331,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             return this;
         }
 
-        public OverlappingTrainingDateRequestControllerTestFixture GetOverlapOptionsForChangeEmployer()
+        public async Task<OverlappingTrainingDateRequestControllerTestFixture> GetOverlapOptionsForChangeEmployer()
         {
-            _actionResult = _controller.OverlapOptionsForChangeEmployer(_overlapOptionsForChangeEmployerRequest);
+            _actionResult = await _controller.OverlapOptionsForChangeEmployer(_overlapOptionsForChangeEmployerRequest);
             return this;
         }
 
@@ -339,7 +356,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             }
             return this;
         }
-        
+
         public OverlappingTrainingDateRequestControllerTestFixture GetDraftApprenticeshipOverlapAlert()
         {
             _actionResult = _controller.DraftApprenticeshipOverlapAlert(_draftApprenticeshipOverlapAlertRequest);
@@ -392,6 +409,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
                 _draftApprenticeshipOverlapOptionViewModel.DraftApprenticeshipId.Value,
                 It.Is<UpdateDraftApprenticeshipApimRequest>(u => u.Cost == _updateDraftApprenticeshipRequest.Cost)));
 
+            return this;
+        }
+
+        public OverlappingTrainingDateRequestControllerTestFixture SetupWithdrawnStatusCode(int? statusCode)
+        {
+            _getApprenticeshipResponse.WithdrawnReasonCode = statusCode;
             return this;
         }
     }
