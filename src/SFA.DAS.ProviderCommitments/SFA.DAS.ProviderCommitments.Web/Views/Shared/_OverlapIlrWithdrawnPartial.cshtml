@@ -12,7 +12,8 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
 
-        <form method="post">
+        <form method="post">            
+            @Html.HiddenFor(x=>x.HasWithdrawnStatusCode)
 
             <p>The learner's unique learner number (ULN) is already linked to a previous learner record which has been withdrawn through the ILR.</p>
         
@@ -50,8 +51,3 @@
     </div>
            
 </div>
-
-@section breadcrumb
-{
-    <div class="das-js-back-link"></div>
-}
