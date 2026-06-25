@@ -12,10 +12,17 @@
         }
 
         [Test]
-        public void AndWhenGetDraftApprenticeshipOverlapOptionsChangeEmployerEndpointIsCalled_CorrectViewModelIsReturned()
+        public async Task AndWhenGetDraftApprenticeshipOverlapOptionsChangeEmployerEndpointIsCalled_CorrectViewModelIsReturned()
         {
-            _fixture.GetOverlapOptionsForChangeEmployer();
+            await _fixture.GetOverlapOptionsForChangeEmployer();
             _fixture.VerifyOverlapOptionsForChangeEmployerViewModelViewReturned();
+        }
+
+        [Test]
+        public async Task AndWhenGetDraftApprenticeshipOverlapOptionsChangeEmployerEndpointIsCalled_NotWithdrawnFromIlrPreviousApprenticeship_CorrectViewModelIsReturned()
+        {
+            await _fixture.SetupWithdrawnStatusCode(null).GetOverlapOptionsForChangeEmployer();
+            _fixture.VerifyOverlapOptionsForChangeEmployerViewModelViewReturnedWithNoWithdrawnReasonCode();
         }
     }
 }

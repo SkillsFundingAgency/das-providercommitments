@@ -1,0 +1,53 @@
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model DraftApprenticeshipOverlapOptionViewModel
+
+@{
+    ViewBag.Title = "Planned start date overlaps with existing training";
+    ViewBag.GaData.Vpv = "/unapproved/add/apprenticeship/overlap-options-change-employer";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">@ViewBag.Title</h1>
+
+        <form method="post">            
+            @Html.HiddenFor(x=>x.HasWithdrawnStatusCode)
+
+            <p>The learner's unique learner number (ULN) is already linked to a previous learner record which has been withdrawn through the ILR.</p>
+        
+            <p>You cannot send a stop date request for this record because the stop date on the previous record has come from the ILR.</p>
+            
+            <h2 class="govuk-heading-m">What you can do next</h2>
+
+            <div id="todonextContent">
+                @if (Model.IsSameProvider)
+                {
+                    <div>
+                        <p class="govuk-body">As your organisation @Model.ProviderName is the training provider for the previous ILR record you can:</p>
+
+                        <ol class="govuk-list govuk-list--number">
+                            <li>Submit an updated ILR record through Submit Learner Data with the correct training and stop dates for this learner.</li>
+                            <li>After 15 minutes return to the Apprenticeship Service to add the learner again or change the planned training dates.</li>
+                        </ol>
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        <p> Change the training dates for the learner so there is no longer an overlap</p>
+
+                        <p>If this not possible, contact the support team on <b>0800 150 600</b>. Telephone lines are open <b>8am to 8pm, Monday to Friday.</b> </p>
+                    </div>
+                }
+            </div>
+
+         
+            <button class="govuk-button" type="submit" data-module="govuk-button">
+                Submit
+            </button>
+        </form>
+    </div>
+           
+</div>

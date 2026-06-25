@@ -123,12 +123,12 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
 
     public Task DraftApprenticeshipAddEmail(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeAddEmailApimRequest request)
     {
-       return outerApiClient.Put<object>(new DraftApprenticeAddEmailRequest(providerId, cohortId, apprenticeshipId) { Data = request });
+        return outerApiClient.Put<object>(new DraftApprenticeAddEmailRequest(providerId, cohortId, apprenticeshipId) { Data = request });
     }
 
-    public Task DraftApprenticeshipSetReference(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeshipSetReferenceApimRequest request )
+    public Task DraftApprenticeshipSetReference(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeshipSetReferenceApimRequest request)
     {
-       return outerApiClient.Put<object>(new PostDraftApprenticeshipSetReferenceRequest(providerId, cohortId, apprenticeshipId) { Data = request });
+        return outerApiClient.Put<object>(new PostDraftApprenticeshipSetReferenceRequest(providerId, cohortId, apprenticeshipId) { Data = request });
     }
 
     public async Task<AddDraftApprenticeshipResponse> AddDraftApprenticeship(long cohortId, AddDraftApprenticeshipApimRequest request)
@@ -324,5 +324,11 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         var apiRequest = new PostConfirmEditApprenticeshipRequest(providerId, apprenticeshipId, request);
 
         return await outerApiClient.Post<ConfirmEditApprenticeshipResponse>(apiRequest);
+    }
+
+    public async Task<GetApprenticeshipResponse> GetApprenticeship(long apprenticeshipId, long providerId)
+    {
+        var request = new GetApprenticeshipRequest(apprenticeshipId, providerId);
+        return await outerApiClient.Get<GetApprenticeshipResponse>(request);
     }
 }
