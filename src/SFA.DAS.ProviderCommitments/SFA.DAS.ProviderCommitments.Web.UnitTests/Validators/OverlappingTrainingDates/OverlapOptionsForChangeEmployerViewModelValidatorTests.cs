@@ -12,19 +12,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.OverlappingTraini
         [TestCase(1, true)]
         public void Validate_ProviderId_ShouldBeValidated(int providerId, bool expectedValid)
         {
-            var model = new OverlapOptionsForChangeEmployerViewModel { ProviderId = providerId };
+            var model = new OverlapOptionsForChangeEmployerViewModel { ProviderId = providerId, HasWithdrawnStatusCode = false };
             AssertValidationResult(request => request.ProviderId, model, expectedValid);
         }
-
 
         [TestCase(0, false)]
         [TestCase(1, true)]
         public void Validate_ApprenticeshipId_ShouldBeValidated(int apprenticeshipId, bool expectedValid)
         {
-            var model = new OverlapOptionsForChangeEmployerViewModel { ApprenticeshipId = apprenticeshipId };
+            var model = new OverlapOptionsForChangeEmployerViewModel { ApprenticeshipId = apprenticeshipId, HasWithdrawnStatusCode = false };
             AssertValidationResult(request => request.ApprenticeshipId, model, expectedValid);
         }
-
 
         [TestCase(null, false)]
         [TestCase(OverlapOptions.CompleteActionLater, true)]
@@ -32,8 +30,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.OverlappingTraini
         [TestCase(OverlapOptions.SendStopRequest, true)]
         public void Validate_Selection_ShouldBeValidated(OverlapOptions? selection, bool expectedValid)
         {
-            var model = new OverlapOptionsForChangeEmployerViewModel { OverlapOptions = selection };
+            var model = new OverlapOptionsForChangeEmployerViewModel { OverlapOptions = selection, HasWithdrawnStatusCode = false };
             AssertValidationResult(request => request.OverlapOptions, model, expectedValid);
+        }
+
+        [TestCase(0, true)]
+        public void Validate_ProviderId_ShouldBeValidated_HasWithdrawnStatusCode(int providerId, bool expectedValid)
+        {
+            var model = new OverlapOptionsForChangeEmployerViewModel { ProviderId = providerId, HasWithdrawnStatusCode = true };
+            AssertValidationResult(request => request.ProviderId, model, expectedValid);
         }
 
         private static void AssertValidationResult<T>(Expression<Func<OverlapOptionsForChangeEmployerViewModel, T>> property, OverlapOptionsForChangeEmployerViewModel instance, bool expectedValid)
