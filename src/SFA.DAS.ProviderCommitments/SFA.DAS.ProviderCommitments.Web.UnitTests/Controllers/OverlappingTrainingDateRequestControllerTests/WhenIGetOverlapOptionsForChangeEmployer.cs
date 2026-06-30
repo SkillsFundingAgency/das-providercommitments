@@ -21,8 +21,8 @@
         [Test]
         public async Task AndWhenGetDraftApprenticeshipOverlapOptionsChangeEmployerEndpointIsCalled_NotWithdrawnFromIlrPreviousApprenticeship_CorrectViewModelIsReturned()
         {
-            await _fixture.SetupWithdrawnStatusCode(null).GetOverlapOptionsForChangeEmployer();
+            await _fixture.SetupWithdrawnStatusCode(null).SetupHasOverlapWithIlrWithdrawnApprenticeship(false).GetOverlapOptionsForChangeEmployer();
             _fixture.VerifyOverlapOptionsForChangeEmployerViewModelViewReturnedWithNoWithdrawnReasonCode();
-        }
+        }       
     }
 }

@@ -4,12 +4,14 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -23,14 +25,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IAuthenticationService _authenticationService;
         private readonly IOuterApiService _outerApiService;
+        private readonly ICacheStorageService _cacheStorage;
 
         public OverlappingTrainingDateRequestController(IMediator mediator,
             IModelMapper modelMapper,
             ILinkGenerator urlHelper,
             ICommitmentsApiClient commitmentsApiClient,
             IAuthenticationService authenticationService,
-            IOuterApiService outerApiService
-            )
+            IOuterApiService outerApiService,
+            ICacheStorageService cacheStorage)
+
         {
             _mediator = mediator;
             _modelMapper = modelMapper;
@@ -38,13 +42,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _commitmentsApiClient = commitmentsApiClient;
             _authenticationService = authenticationService;
             _outerApiService = outerApiService;
+            _cacheStorage = cacheStorage;
         }
 
         [HttpGet]
         [Route("overlap-options-change-employer")]
         public async Task<IActionResult> OverlapOptionsForChangeEmployer(OverlapOptionsForChangeEmployerRequest request)
         {
-            var apprenticeshipDetails = await _outerApiService.GetApprenticeship(request.ApprenticeshipId.Value, request.ProviderId);
+            GetApprenticeshipResponse apprenticeshipDetails = new GetApprenticeshipResponse();
+
+            var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(request.CacheKey);
+
+            var validateUlnStartDateOverlapResponse = await _outerApiService.ValidateUlnOverlapOnStartDate(request.ProviderId, cacheItem.Uln, DateTimeExtensions.FormatMonthYearDateToDateFormat(cacheItem.StartDate), DateTimeExtensions.FormatMonthYearDateToDateFormat(cacheItem.EndDate));
+
+            if (validateUlnStartDateOverlapResponse.HasOverlapWithIlrWithdrawnApprenticeship)
+            {
+                apprenticeshipDetails = await _outerApiService.GetApprenticeship(validateUlnStartDateOverlapResponse.HasOverlapWithApprenticeshipId.Value, request.ProviderId);
+            }
 
             var viewModel = new OverlapOptionsForChangeEmployerViewModel
             {
@@ -54,9 +68,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 ProviderId = request.ProviderId,
                 CacheKey = request.CacheKey,
                 Status = request.Status,
-                HasWithdrawnStatusCode = apprenticeshipDetails.WithdrawnReasonCode.HasValue,
-                IsSameProvider = apprenticeshipDetails.ProviderId == request.ProviderId,
-                ProviderName = apprenticeshipDetails.ProviderName
+                HasWithdrawnStatusCode = validateUlnStartDateOverlapResponse.HasOverlapWithIlrWithdrawnApprenticeship,
+                IsSameProvider = apprenticeshipDetails?.ProviderId == request.ProviderId,
+                ProviderName = apprenticeshipDetails?.ProviderName
             };
 
             return View(viewModel);

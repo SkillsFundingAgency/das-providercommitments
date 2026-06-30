@@ -3,16 +3,9 @@
 @using SFA.DAS.CommitmentsV2.Types;
 @model OverlapOptionsForChangeEmployerViewModel
 
-@if (Model.HasWithdrawnStatusCode)
-{   
-    <partial name="_ChangeEmployerOverlapIlrWithdrawnPartial" model="Model" />
-}
-else
-{
-    <partial name="_OverlapOptionsForChangeEmployerPartial" />
-}   
+<partial name="@Model.GetTargetPartialViewName()" model="Model"></partial>
 
-@section breadcrumb
-{
-    <div class="das-js-back-link"></div>
-}
+    @section breadcrumb
+    {
+        <div class="das-js-back-link"></div>
+    }
