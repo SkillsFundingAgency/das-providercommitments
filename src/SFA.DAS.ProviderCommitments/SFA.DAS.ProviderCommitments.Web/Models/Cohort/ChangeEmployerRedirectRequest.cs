@@ -8,4 +8,5 @@ public class ChangeEmployerRedirectRequest
     public string EmployerAccountLegalEntityPublicHashedId { get; set; }
     public string EmployerAccountName { get; set; }
     public ApprenticeshipEmployerType LevyStatus { get; set; }
+    public string AccountHashedId { get; set; }
 }

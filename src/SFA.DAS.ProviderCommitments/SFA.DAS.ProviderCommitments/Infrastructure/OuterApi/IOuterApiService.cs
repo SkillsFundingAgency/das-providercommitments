@@ -52,6 +52,7 @@ public interface IOuterApiService
     Task<bool> CanAccessApprenticeship(long providerId, long apprenticeshipId);
     Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, SelectLearnersRequest request);
     Task<GetLearnerSelectedResponse> GetLearnerSelected(long providerId, long learnerId);
+    Task<GetAccountFundingOptionsQueryResult> GetAccountFundingOptions(long accountId);
     Task<GetRplRequirementsResponse> GetRplRequirements(long providerId, long cohortId, long draftApprenticeshipId, string courseCode);
     Task<ValidateEditApprenticeshipResponse> EditApprenticeship(long providerId, long apprenticeshipId, ValidateEditApprenticeshipRequest request);
     Task<ConfirmEditApprenticeshipResponse> ConfirmEditApprenticeship(long providerId, long apprenticeshipId, ConfirmEditApprenticeshipRequest request);
