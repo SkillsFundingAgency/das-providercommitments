@@ -18,6 +18,7 @@ public class SelectMultipleLearnerRecordsFilterRequestMapper(ICacheStorageServic
             cacheItem.StartMonth = null;
             cacheItem.StartYear = DateTime.UtcNow.Year.ToString();
             cacheItem.CourseCode = null;
+            cacheItem.LearningType = null;
         }
         else
         {
@@ -25,6 +26,7 @@ public class SelectMultipleLearnerRecordsFilterRequestMapper(ICacheStorageServic
             cacheItem.StartMonth = source.StartMonth.ToString();
             cacheItem.StartYear = source.StartYear.ToString();
             cacheItem.CourseCode = source.CourseCode;
+            cacheItem.LearningType = source.LearningType;
         }
 
         await cacheStorage.SaveToCache(cacheItem.Key.ToString(), cacheItem, 1);

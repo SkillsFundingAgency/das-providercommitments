@@ -243,9 +243,11 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
 
     public async Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, SelectLearnersRequest learnerRequest)
     {
-        var request = new GetLearnerDetailsForProviderRequest(providerId, learnerRequest);
+        learnerRequest.PageSize = Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
-        var response = await outerApiClient.Get<GetLearnerDetailsForProviderResponse>(request);
+        var request = new PostGetLearnerDetailsForProviderRequest(providerId, learnerRequest);
+
+        var response = await outerApiClient.Post<GetLearnerDetailsForProviderResponse>(request);
 
         return response;
     }
