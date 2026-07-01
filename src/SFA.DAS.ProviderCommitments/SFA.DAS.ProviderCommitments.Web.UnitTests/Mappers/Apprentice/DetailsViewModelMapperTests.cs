@@ -642,100 +642,6 @@ public class DetailsViewModelMapperTests
     }
 
     [Test]
-    public async Task And_PriceChangeDetailsIsNull_Then_PriceChangeDetailsNotReturned()
-    {
-        _fixture.WithoutPendingPriceChangePopulated();
-
-        await _fixture.Map();
-
-        _fixture.Result.PendingPriceChange.Should().BeNull();
-    }
-
-    [Test]
-    public async Task And_PriceChangeDetailsArePopulated_Then_PriceChangeDetailsReturned()
-    {
-        _fixture.WithPendingPriceChangePopulated();
-
-        await _fixture.Map();
-
-        using (new AssertionScope())
-        {
-            _fixture.Result.PendingPriceChange.Should().NotBeNull();
-            _fixture.ApiResponse.PendingPriceChange.Cost.Should().Be(_fixture.Result.PendingPriceChange.Cost);
-            _fixture.ApiResponse.PendingPriceChange.EndPointAssessmentPrice.Should().Be(_fixture.Result.PendingPriceChange.EndPointAssessmentPrice);
-            _fixture.ApiResponse.PendingPriceChange.TrainingPrice.Should().Be(_fixture.Result.PendingPriceChange.TrainingPrice);
-        }
-    }
-
-    [TestCase(false, true, "Inactive")]
-    [TestCase(true, false, "Withheld")]
-    [TestCase(false, false, "Active")]
-    [TestCase(true, true, "Withheld")]
-    public async Task ThenPaymentStatusIsMappedCorrectly(bool paymentsFrozen, bool waitingToStart, string expectedStatus)
-    {
-        _fixture.WithPaymentsFrozenSetTo(paymentsFrozen);
-        _fixture.WithLearnerStatusDetailsSetTo(waitingToStart ? new LearnerStatusDetails { LearnerStatus = LearnerStatus.WaitingToStart } : new LearnerStatusDetails { LearnerStatus = LearnerStatus.InLearning });
-
-        await _fixture.Map();
-
-        _fixture.Result.PaymentStatus.Status.Should().Be(expectedStatus);
-    }
-
-    [Test]
-    public async Task And_PaymentsAreFrozen_ThenPaymentFrozenOnIsMappedCorrectly()
-    {
-        _fixture.WithPaymentsFrozenSetTo(true);
-
-        await _fixture.Map();
-
-        _fixture.Result.PaymentStatus.FrozenOn.Should().Be(_fixture.ApiResponse.PaymentsStatus.FrozenOn);
-    }
-
-    [Test]
-    public async Task And_PaymentsAreFrozen_ThenPaymentsFrozenIsMappedCorrectly()
-    {
-        _fixture.WithPaymentsFrozenSetTo(true);
-
-        await _fixture.Map();
-
-        _fixture.Result.PaymentStatus.PaymentsFrozen.Should().Be(_fixture.ApiResponse.PaymentsStatus.PaymentsFrozen);
-    }
-
-    [Test]
-    public async Task And_PaymentsAreFrozen_ThenReasonFrozenOnIsMappedCorrectly()
-    {
-        _fixture.WithPaymentsFrozenSetTo(true);
-
-        await _fixture.Map();
-
-        _fixture.Result.PaymentStatus.ReasonFrozen.Should().Be(_fixture.ApiResponse.PaymentsStatus.ReasonFrozen);
-    }
-
-    [Test]
-    public async Task ThenLearnerStatusIsMappedCorrectly()
-    {
-        await _fixture.Map();
-
-        _fixture.Result.LearnerStatus.Should().Be(_fixture.ApiResponse.LearnerStatusDetails.LearnerStatus);
-    }
-
-    [Test]
-    public async Task ThenWithdrawalChangedDateIsMappedCorrectly()
-    {
-        await _fixture.Map();
-
-        _fixture.Result.WithdrawalChangedDate.Should().Be(_fixture.ApiResponse.LearnerStatusDetails.WithdrawalChangedDate);
-    }
-
-    [Test]
-    public async Task ThenLastCensusDateOfLearningIsMappedCorrectly()
-    {
-        await _fixture.Map();
-
-        _fixture.Result.LastCensusDateOfLearning.Should().Be(_fixture.ApiResponse.LearnerStatusDetails.LastCensusDateOfLearning);
-    }
-
-    [Test]
     public async Task ThenEmploymentStatusIsBlank_WhenNoEmployerVerificationStatus()
     {
         _fixture.WithEmployerVerificationStatus(null, null);
@@ -839,8 +745,6 @@ public class DetailsViewModelMapperTests
             Source = Fixture.Create<DetailsRequest>();
             ApiResponse = Fixture.Create<GetManageApprenticeshipDetailsResponse>();
             ApiResponse.Apprenticeship.ProviderId = Source.ProviderId;
-            ApiResponse.PendingPriceChange.Initiator = "Provider";
-            ApiResponse.PendingStartDateChange.Initiator = "Provider";
             CohortReference = Fixture.Create<string>();
             AgreementId = Fixture.Create<string>();
             URL = Fixture.Create<string>();
@@ -1170,37 +1074,6 @@ public class DetailsViewModelMapperTests
         public DetailsViewModelMapperFixture WithEmailShouldBePresentPopulated(bool present)
         {
             ApiResponse.Apprenticeship.EmailShouldBePresent = present;
-            return this;
-        }
-
-        public DetailsViewModelMapperFixture WithoutPendingPriceChangePopulated()
-        {
-            ApiResponse.PendingPriceChange = null;
-            return this;
-        }
-
-        public DetailsViewModelMapperFixture WithPendingPriceChangePopulated()
-        {
-            ApiResponse.PendingPriceChange = new GetManageApprenticeshipDetailsResponse.PendingPriceChangeDetails
-            {
-                Cost = 12324,
-                EndPointAssessmentPrice = 43258,
-                TrainingPrice = 3248,
-                Initiator = "Provider"
-            };
-
-            return this;
-        }
-
-        public DetailsViewModelMapperFixture WithPaymentsFrozenSetTo(bool paymentsFrozen)
-        {
-            ApiResponse.PaymentsStatus.PaymentsFrozen = paymentsFrozen;
-            return this;
-        }
-
-        public DetailsViewModelMapperFixture WithLearnerStatusDetailsSetTo(LearnerStatusDetails learnerStatusDetails)
-        {
-            ApiResponse.LearnerStatusDetails = learnerStatusDetails;
             return this;
         }
 
