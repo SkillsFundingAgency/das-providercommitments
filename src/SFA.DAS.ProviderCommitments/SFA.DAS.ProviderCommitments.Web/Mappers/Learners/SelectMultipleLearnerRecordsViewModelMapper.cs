@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -8,7 +13,7 @@ using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 
-public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client, ICacheStorageService cacheStorage)
+public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client, ICacheStorageService cacheStorage, IValidator<SelectMultipleLearnerRecordsViewModel> validator)
     : IMapper<SelectMultipleLearnerRecordsRequest, SelectMultipleLearnerRecordsViewModel>
 {
     public async Task<SelectMultipleLearnerRecordsViewModel> Map(SelectMultipleLearnerRecordsRequest source)
@@ -21,11 +26,13 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             CohortId = cacheItem.CohortId,
             SearchTerm = cacheItem.SearchTerm,
             SortColumn = cacheItem.SortField,
-            ReverseSort = cacheItem.ReverseSort,
+            SortDescending = cacheItem.SortDescending,
             Page = source.Page,
             StartMonth = int.TryParse(cacheItem.StartMonth, out var m) ? m : null,
             StartYear = int.Parse(cacheItem.StartYear),
-            CourseCode = cacheItem.CourseCode
+            CourseCode = cacheItem.CourseCode,
+            ExcludeUlns = cacheItem.SelectedLearners.Select(x => x.Uln).ToList(),
+            LearningType = cacheItem.LearningType
         };
 
         var response = await client.GetLearnerDetailsForProvider(cacheItem.ProviderId, learnerRequest);
@@ -39,7 +46,7 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             TotalNumberOfLearnersFound = response.Total,
             PageNumber = source.Page,
             SortField = cacheItem.SortField,
-            ReverseSort = cacheItem.ReverseSort,
+            ReverseSort = cacheItem.SortDescending,
             SearchTerm = cacheItem.SearchTerm,
             StartMonth = cacheItem.StartMonth,
             StartYear = cacheItem.StartYear,
@@ -50,7 +57,15 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
                 {
                     Text = m.Name,
                     Value = m.CourseCode
-                })]
+                })],
+            LearningType = cacheItem.LearningType
+        };
+
+        var maxSelectableLearners = cacheItem.LevyStatus switch
+        {
+            ApprenticeshipEmployerType.Levy => 100,
+            ApprenticeshipEmployerType.NonLevy => await GetRemainingReservationsCount(cacheItem.AccountId),
+            _ => 0
         };
 
         var model = new SelectMultipleLearnerRecordsViewModel
@@ -61,11 +76,26 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             CacheKey = source.CacheKey,
             EmployerAccountName = cacheItem.EmployerAccountName,
             Learners = response.Learners.ConvertAll(x => (LearnerSummary)x),
+            SelectedLearners = cacheItem.SelectedLearners,
             LastIlrSubmittedOn = response.LastSubmissionDate,
             FilterModel = filterModel,
-            FutureMonths = response.FutureMonths
+            FutureMonths = response.FutureMonths,
+            LevyStatus = cacheItem.LevyStatus,
+            MaxSelectableLearners = maxSelectableLearners
         };
+
+        ValidationResult validationResult = await validator.ValidateAsync(model);
+        if (!validationResult.IsValid)
+        {
+            model.ValidationErrors = validationResult.Errors;
+        }
+
         model.SortedByHeader();
         return model;
+    }
+    public async Task<int> GetRemainingReservationsCount(long accountId)
+    {
+        var fundingOptions = await client.GetAccountFundingOptions(accountId);
+        return fundingOptions.RemainingReservationsCount;
     }
 }
