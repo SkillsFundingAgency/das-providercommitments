@@ -41,6 +41,17 @@ public class WhenPostingSelectDraftApprenticeshipsEntryMethod
         result.VerifyReturnsRedirectToActionResult()
             .WithActionName(nameof(CohortController.BeforeYouContinue));
     }
+
+    [Test]
+    public void Then_RedirectTo_SelectHowManyLearnersToAdd_When_Selected_Option_Is_HowManyLearners()
+    {
+        var fixture = new WhenPostingSelectDraftApprenticeshipsEntryMethodFixture();
+
+        var result = fixture.HowManyLearners().Act();
+
+        result.VerifyReturnsRedirectToActionResult()
+            .WithActionName(nameof(CohortController.SelectHowManyLearnersToAdd));
+    }
 }
 
 public class WhenPostingSelectDraftApprenticeshipsEntryMethodFixture
@@ -72,6 +83,12 @@ public class WhenPostingSelectDraftApprenticeshipsEntryMethodFixture
     public WhenPostingSelectDraftApprenticeshipsEntryMethodFixture ILR()
     {
         _viewModel.Selection = AddDraftApprenticeshipEntryMethodOptions.ILR;
+        return this;
+    }
+
+    public WhenPostingSelectDraftApprenticeshipsEntryMethodFixture HowManyLearners()
+    {
+        _viewModel.Selection = AddDraftApprenticeshipEntryMethodOptions.HowManyLearners;
         return this;
     }
 
