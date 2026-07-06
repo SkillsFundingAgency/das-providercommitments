@@ -1,6 +1,6 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.BeforeYouContinueViewModel
 @{
-    ViewBag.Title = "Before you continue";
+    ViewBag.Title = "Add learners from ILR";
     ViewBag.ZendeskLabel = "add-apprentice-before-you-continue";
     ViewBag.GaData.Vpv = "/unapproved/add/before-you-continue";
 }
@@ -9,7 +9,9 @@
         <form method="post">
             @Html.AntiForgeryToken()
             <div class="govuk-form-group">
-                <h1 class="govuk-heading-l">Before you continue</h1>
+                <h1 class="govuk-heading-l">Add learners from ILR</h1>
+                <p class="govuk-body">Add learners individually from the ILR, to new and existing cohorts. You can use existing reservations or create new reservations.</p>
+                
                 <h2 class="govuk-heading-m">Check your permissions</h2>
 
                 <p class="govuk-body">You must have the employer’s permission to add learners.</p>
@@ -36,14 +38,11 @@
                 <h2 class="govuk-heading-m">Funding</h2>
                 <h3 class="govuk-heading-s">Reservations</h3>
                 <p class="govuk-body">
-                    If you’re adding one learner, you can choose from existing reservations or reserve new funds.
-                </p>
-                <p class="govuk-body govuk-!-margin-bottom-6">
-                    If you’re adding multiple learners, or no reservations are set up, funds will be reserved automatically when you add them.
+                    You can choose from existing reservations or reserve new funds.
                 </p>
                 <h3 class="govuk-heading-s">Transfers</h3>
                 <p class="govuk-body">
-                    If you are using transfer funding, your employer will need to set up a cohort and send it to you first.
+                    If you’re using transfer funding, your employer will need to send a learner request first.
                 </p>
 
                 <h2 class="govuk-heading-m">Steps to follow</h2>
