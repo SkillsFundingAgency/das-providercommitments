@@ -724,7 +724,6 @@ public class ApprenticeController(
     }
 
     [Route("get-all-change-history")]
-    [Authorize(Policy = nameof(PolicyNames.AccessApprenticeship))]
     [HttpGet]
     public async Task<IActionResult> GetAllChangeHistory(GetAllChangeHistoryRequest request)
     {
