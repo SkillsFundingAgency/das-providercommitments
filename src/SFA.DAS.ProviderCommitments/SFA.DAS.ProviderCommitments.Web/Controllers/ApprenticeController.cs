@@ -69,10 +69,9 @@ public class ApprenticeController(
     }
 
     [Route("{apprenticeshipHashedId}", Name = RouteNames.ApprenticeDetail)]
-    public async Task<IActionResult> Details(DetailsRequest request, ApprenticeDetailsBanners banners = 0)
+    public async Task<IActionResult> Details(DetailsRequest request)
     {
         var viewModel = await modelMapper.Map<DetailsViewModel>(request);
-        viewModel.ShowBannersFlags = banners;
         return View(viewModel);
     }
 
