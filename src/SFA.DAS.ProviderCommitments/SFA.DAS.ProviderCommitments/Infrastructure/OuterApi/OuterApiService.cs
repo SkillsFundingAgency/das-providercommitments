@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
@@ -324,5 +323,13 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         var apiRequest = new PostConfirmEditApprenticeshipRequest(providerId, apprenticeshipId, request);
 
         return await outerApiClient.Post<ConfirmEditApprenticeshipResponse>(apiRequest);
+    }
+    public async Task<GetApprenticeshipsResponse> GetApprenticeships(GetApprenticeshipsRequest request)
+    {        
+        return await outerApiClient.Get<GetApprenticeshipsResponse>(request);
+    }
+    public async Task<GetApprenticeshipsFiltersResponse> GetApprenticeshipsFilters(GetApprenticeshipsFiltersRequest request)
+    {
+        return await outerApiClient.Get<GetApprenticeshipsFiltersResponse>(request);
     }
 }

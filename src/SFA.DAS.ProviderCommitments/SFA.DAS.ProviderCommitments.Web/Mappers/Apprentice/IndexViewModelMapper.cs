@@ -1,47 +1,46 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 
 public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
 {
-    private readonly ICommitmentsApiClient _client;
     private readonly IModelMapper _modelMapper;
+    private readonly IOuterApiService _outerApiService;
 
-    public IndexViewModelMapper(ICommitmentsApiClient client, IModelMapper modelMapper)
+    public IndexViewModelMapper(IModelMapper modelMapper, IOuterApiService outerApiService)
     {
-        _client = client;
         _modelMapper = modelMapper;
+        _outerApiService = outerApiService;
     }
 
     public async Task<IndexViewModel> Map(IndexRequest source)
     {
-        var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest
-        {
-            ProviderId = source.ProviderId,
-            PageNumber = source.PageNumber,
-            PageItemCount = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage,
-            SortField = source.SortField,
-            ReverseSort = source.ReverseSort,
-            SearchTerm = source.SearchTerm,
-            EmployerName = source.SelectedEmployer,
-            CourseName = source.SelectedCourse,
-            Status = source.SelectedStatus,
-            StartDate = source.SelectedStartDate,
-            EndDate = source.SelectedEndDate,
-            Alert = source.SelectedAlert,
-            ApprenticeConfirmationStatus = source.SelectedApprenticeConfirmation,
-            DeliveryModel = source.SelectedDeliveryModel
-        });
+        var response = await _outerApiService.GetApprenticeships(new
+            GetApprenticeshipsRequest(
+            source.ProviderId,
+            source.PageNumber,
+            Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage,
+            source.SortField,
+            source.ReverseSort,
+            source.SearchTerm,
+            source.SelectedEmployer, null,
+            source.SelectedCourse,
+            source.SelectedStatus,
+            source.SelectedStartDate,
+            source.SelectedEndDate, null, null, null,
+            source.SelectedAlert,
+            source.SelectedApprenticeConfirmation,
+            source.SelectedDeliveryModel));
 
         var statusFilters = new[]
         {
-            ApprenticeshipStatus.WaitingToStart, 
+            ApprenticeshipStatus.WaitingToStart,
             ApprenticeshipStatus.Live,
-            ApprenticeshipStatus.Paused, 
+            ApprenticeshipStatus.Paused,
             ApprenticeshipStatus.Stopped,
             ApprenticeshipStatus.Completed
         };
@@ -78,8 +77,8 @@ public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
 
         if (response.TotalApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch)
         {
-            var filters = await _client.GetApprenticeshipsFilterValues(
-                new GetApprenticeshipFiltersRequest{ProviderId = source.ProviderId});
+            var filters = await _outerApiService.GetApprenticeshipsFilters(
+                new GetApprenticeshipsFiltersRequest { ProviderId = source.ProviderId });
 
             filterModel.EmployerFilters = filters.EmployerNames;
             filterModel.CourseFilters = filters.CourseNames;
@@ -88,6 +87,7 @@ public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
         }
 
         var apprenticeships = new List<ApprenticeshipDetailsViewModel>();
+
         foreach (var apprenticeshipDetailsResponse in response.Apprenticeships)
         {
             var apprenticeship = await _modelMapper.Map<ApprenticeshipDetailsViewModel>(apprenticeshipDetailsResponse);
@@ -98,7 +98,8 @@ public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
         {
             ProviderId = source.ProviderId,
             Apprenticeships = apprenticeships,
-            FilterModel = filterModel
+            FilterModel = filterModel,
+            HasChangeHistory = response.HasChangeHistory
         };
     }
 }

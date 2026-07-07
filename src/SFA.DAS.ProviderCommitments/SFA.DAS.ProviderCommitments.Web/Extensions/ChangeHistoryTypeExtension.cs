@@ -1,4 +1,4 @@
-﻿using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+﻿using SFA.DAS.ProviderCommitments.Enums;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions;
 

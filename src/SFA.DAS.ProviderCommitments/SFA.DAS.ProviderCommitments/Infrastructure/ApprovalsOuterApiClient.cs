@@ -55,5 +55,9 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
         {
             return client.Get<GetChangeHistoryResponse>($"change-history/{apprenticeshipId}");
         }
+        public Task<GetAllChangeHistoryResponse> GetAllChangeHistory(long providerId)
+        {
+            return client.Get<GetAllChangeHistoryResponse>($"change-history/{providerId}/get-all-change-history");
+        }
     }
 }
