@@ -19,6 +19,7 @@ public class GetAllChangeHistoryRequestToViewModelMapperTests
     private Mock<IApprovalsOuterApiClient> _mockApprovalsApiClient;
     private Mock<IEncodingService> _encodingService;
     private GetAllChangeHistoryRequestToViewModelMapper _mapper;
+
     [SetUp]
     public void Arrange()
     {
@@ -28,14 +29,12 @@ public class GetAllChangeHistoryRequestToViewModelMapperTests
 
         _getAllChangeHistoryResponse = _fixture.Build<GetAllChangeHistoryResponse>()
             .With(x => x.ChangeHistory)
-            .Create();
-
-        _getAllChangeHistoryResponse = _fixture.Create<GetAllChangeHistoryResponse>();
+            .Create();      
 
         _mockApprovalsApiClient = new Mock<IApprovalsOuterApiClient>();
         _mockApprovalsApiClient
             .Setup(c => c.GetAllChangeHistory(It.IsAny<long>()))
-            .ReturnsAsync(_getAllChangeHistoryResponse);       
+            .ReturnsAsync(_getAllChangeHistoryResponse);
 
         _mapper = new GetAllChangeHistoryRequestToViewModelMapper(_mockApprovalsApiClient.Object);
     }
@@ -61,5 +60,17 @@ public class GetAllChangeHistoryRequestToViewModelMapperTests
             item.EmployerName.Should().Be(_getAllChangeHistoryResponse.ChangeHistory.First(t => t.Id == item.Id).EmployerName);
             item.LearnerName.Should().Be(_getAllChangeHistoryResponse.ChangeHistory.First(t => t.Id == item.Id).LearnerName);
         }
+    }
+
+    [Test]
+    public async Task Handle_When_ChangeHistory_IsEmpty()
+    {
+        _mockApprovalsApiClient
+           .Setup(c => c.GetAllChangeHistory(It.IsAny<long>()))
+           .ReturnsAsync(new GetAllChangeHistoryResponse() );
+
+        var viewModel = await _mapper.Map(_request);
+
+        viewModel.ChangeHistory.Should().BeEmpty();
     }
 }
