@@ -15,9 +15,7 @@ public class GetAllChangeHistoryViewModel
     public DateTime AppliedDate { get; set; }
 
     public string Description { get; set; }
-
     public LearningChangeType ChangeType { get; set; }
-
     public Guid Id { get; set; }
     public string LearnerName { get; set; }
     public string EmployerName { get; set; }

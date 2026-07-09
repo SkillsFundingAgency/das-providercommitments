@@ -77,13 +77,10 @@ public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
 
         if (response.TotalApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch)
         {
-            var filters = await _outerApiService.GetApprenticeshipsFilters(
-                new GetApprenticeshipsFiltersRequest { ProviderId = source.ProviderId });
-
-            filterModel.EmployerFilters = filters.EmployerNames;
-            filterModel.CourseFilters = filters.CourseNames;
-            filterModel.StartDateFilters = filters.StartDates;
-            filterModel.EndDateFilters = filters.EndDates;
+            filterModel.EmployerFilters = response.ApprenticeshipFiltersValue.EmployerNames;
+            filterModel.CourseFilters = response.ApprenticeshipFiltersValue.CourseNames;
+            filterModel.StartDateFilters = response.ApprenticeshipFiltersValue.StartDates;
+            filterModel.EndDateFilters = response.ApprenticeshipFiltersValue.EndDates;
         }
 
         var apprenticeships = new List<ApprenticeshipDetailsViewModel>();

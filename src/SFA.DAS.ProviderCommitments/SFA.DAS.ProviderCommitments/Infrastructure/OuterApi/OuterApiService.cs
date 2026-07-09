@@ -336,9 +336,5 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
     public async Task<GetApprenticeshipsResponse> GetApprenticeships(GetApprenticeshipsRequest request)
     {        
         return await outerApiClient.Get<GetApprenticeshipsResponse>(request);
-    }
-    public async Task<GetApprenticeshipsFiltersResponse> GetApprenticeshipsFilters(GetApprenticeshipsFiltersRequest request)
-    {
-        return await outerApiClient.Get<GetApprenticeshipsFiltersResponse>(request);
-    }
+    }    
 }

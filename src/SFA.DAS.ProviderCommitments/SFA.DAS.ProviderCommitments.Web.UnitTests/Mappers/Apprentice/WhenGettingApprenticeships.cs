@@ -83,10 +83,6 @@ public class WhenGettingApprenticeships
 
 
         await mapper.Map(webRequest);
-
-        mockouterApiService.Verify(client => client.GetApprenticeshipsFilters(
-            It.Is<GetApprenticeshipsFiltersRequest>(
-                r => r.ProviderId.Equals(webRequest.ProviderId))), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -104,17 +100,12 @@ public class WhenGettingApprenticeships
             .ReturnsAsync(clientResponse);
 
         await mapper.Map(webRequest);
-
-        mockouterApiService.Verify(client => client.GetApprenticeshipsFilters(
-                It.IsAny<GetApprenticeshipsFiltersRequest>()),
-            Times.Never);
     }
 
     [Test, MoqAutoData]
     public async Task ShouldMapApiValues(
         IndexRequest request,
         GetApprenticeshipsResponse apprenticeshipsResponse,
-        GetApprenticeshipsFiltersResponse filtersResponse,
         ApprenticeshipDetailsViewModel expectedViewModel,
         [Frozen] Mock<IModelMapper> modelMapper,
         [Frozen] Mock<IOuterApiService> mockouterApiService,
@@ -127,12 +118,7 @@ public class WhenGettingApprenticeships
         mockouterApiService
             .Setup(x => x.GetApprenticeships(
                 It.IsAny<GetApprenticeshipsRequest>()))
-            .ReturnsAsync(apprenticeshipsResponse);
-
-        mockouterApiService
-            .Setup(client => client.GetApprenticeshipsFilters(
-                It.IsAny<GetApprenticeshipsFiltersRequest>()))
-            .ReturnsAsync(filtersResponse);
+            .ReturnsAsync(apprenticeshipsResponse);       
 
         modelMapper
             .Setup(x => x.Map<ApprenticeshipDetailsViewModel>(It.IsAny<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()))
@@ -154,10 +140,10 @@ public class WhenGettingApprenticeships
             viewModel.FilterModel.PageNumber.Should().Be(apprenticeshipsResponse.PageNumber);
             viewModel.FilterModel.ReverseSort.Should().Be(request.ReverseSort);
             viewModel.FilterModel.SortField.Should().Be(request.SortField);
-            viewModel.FilterModel.EmployerFilters.Should().BeEquivalentTo(filtersResponse.EmployerNames);
-            viewModel.FilterModel.CourseFilters.Should().BeEquivalentTo(filtersResponse.CourseNames);
-            viewModel.FilterModel.StartDateFilters.Should().BeEquivalentTo(filtersResponse.StartDates);
-            viewModel.FilterModel.EndDateFilters.Should().BeEquivalentTo(filtersResponse.EndDates);
+            viewModel.FilterModel.EmployerFilters.Should().BeEquivalentTo(apprenticeshipsResponse.ApprenticeshipFiltersValue.EmployerNames);
+            viewModel.FilterModel.CourseFilters.Should().BeEquivalentTo(apprenticeshipsResponse.ApprenticeshipFiltersValue.CourseNames);
+            viewModel.FilterModel.StartDateFilters.Should().BeEquivalentTo(apprenticeshipsResponse.ApprenticeshipFiltersValue.StartDates);
+            viewModel.FilterModel.EndDateFilters.Should().BeEquivalentTo(apprenticeshipsResponse.ApprenticeshipFiltersValue.EndDates);
             viewModel.FilterModel.SearchTerm.Should().Be(request.SearchTerm);
             viewModel.FilterModel.SelectedEmployer.Should().Be(request.SelectedEmployer);
             viewModel.FilterModel.SelectedCourse.Should().Be(request.SelectedCourse);
@@ -188,12 +174,7 @@ public class WhenGettingApprenticeships
             .Setup(x => x.GetApprenticeships(
                 It.IsAny<GetApprenticeshipsRequest>()))
             .ReturnsAsync(apprenticeshipsResponse);
-
-        mockouterApiService
-            .Setup(client => client.GetApprenticeshipsFilters(
-                It.IsAny<GetApprenticeshipsFiltersRequest>()))
-            .ReturnsAsync(filtersResponse);
-
+       
         detailsViewModelMapper
             .Setup(x => x.Map(It.IsAny<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()))
             .ReturnsAsync(expectedViewModel);

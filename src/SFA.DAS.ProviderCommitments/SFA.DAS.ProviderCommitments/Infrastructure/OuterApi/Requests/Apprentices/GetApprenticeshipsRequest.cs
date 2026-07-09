@@ -41,7 +41,7 @@ public class GetApprenticeshipsRequest(long? providerId, int pageNumber, int pag
 
     public ConfirmationStatus? ApprenticeConfirmationStatus { get; set; } = apprenticeConfirmationStatus;
     public DeliveryModel? DeliveryModel { get; set; } = deliveryModel;
-    public string GetUrl => $"/provider/{ProviderId}/apprenticeships?{CreateFilterQuery(this)}";
+    public string GetUrl => $"/provider/{ProviderId}/apprentices?{CreateFilterQuery(this)}";
 
     private static string CreateFilterQuery(GetApprenticeshipsRequest request)
     {
