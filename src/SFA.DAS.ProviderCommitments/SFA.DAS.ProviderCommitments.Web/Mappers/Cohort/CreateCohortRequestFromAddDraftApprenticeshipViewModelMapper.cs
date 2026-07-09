@@ -53,7 +53,8 @@ public class CreateCohortRequestFromAddDraftApprenticeshipViewModelMapper : IMap
             EmploymentEndDate = source.EmploymentEndDate.Date,
             EndDate = source.EndDate.Date,
             OriginatorReference = source.Reference,
-            DeliveryModel = source.DeliveryModel
+            DeliveryModel = source.DeliveryModel,
+            LearnerDataId = source.LearnerDataId
         };
     }
 }
