@@ -50,15 +50,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> OverlapOptionsForChangeEmployer(OverlapOptionsForChangeEmployerRequest request)
         {
             GetApprenticeshipResponse apprenticeshipDetails = new GetApprenticeshipResponse();
-
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(request.CacheKey);
 
             var validateUlnStartDateOverlapResponse = await _outerApiService.ValidateUlnOverlapOnStartDate(request.ProviderId, cacheItem.Uln, DateTimeExtensions.FormatMonthYearDateToDateFormat(cacheItem.StartDate), DateTimeExtensions.FormatMonthYearDateToDateFormat(cacheItem.EndDate));
 
-            if (validateUlnStartDateOverlapResponse.HasOverlapWithIlrWithdrawnApprenticeship)
+            if(validateUlnStartDateOverlapResponse.HasOverlapWithApprenticeshipId.HasValue)
             {
                 apprenticeshipDetails = await _outerApiService.GetApprenticeship(validateUlnStartDateOverlapResponse.HasOverlapWithApprenticeshipId.Value, request.ProviderId);
-            }
+            }            
 
             var viewModel = new OverlapOptionsForChangeEmployerViewModel
             {
@@ -68,7 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 ProviderId = request.ProviderId,
                 CacheKey = request.CacheKey,
                 Status = request.Status,
-                HasWithdrawnStatusCode = validateUlnStartDateOverlapResponse.HasOverlapWithIlrWithdrawnApprenticeship,
+                HasWithdrawnStatusCode = apprenticeshipDetails?.WithdrawnReasonCode.HasValue ?? false,
                 IsSameProvider = apprenticeshipDetails?.ProviderId == request.ProviderId,
                 ProviderName = apprenticeshipDetails?.ProviderName
             };
