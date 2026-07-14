@@ -1,5 +1,4 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.BeforeYouContinueViewModel
-
 @{
     ViewBag.Title = "Before you continue";
     ViewBag.ZendeskLabel = "add-apprentice-before-you-continue";
@@ -74,5 +73,13 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectDraftApprenticeshipsEntryMethod", new { Model.ProviderId })>Back</a>
+    @if (Model.IlrSelectMultipleFeatureEnabled)
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectHowManyLearnersToAdd", new { Model.ProviderId })>Back</a>
+    }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectDraftApprenticeshipsEntryMethod", new { Model.ProviderId })>Back</a>
+    }
+    
 }
