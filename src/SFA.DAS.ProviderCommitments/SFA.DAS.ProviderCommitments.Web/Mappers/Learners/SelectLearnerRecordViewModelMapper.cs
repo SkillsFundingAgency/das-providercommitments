@@ -18,7 +18,7 @@ public class SelectLearnerRecordViewModelMapper(IOuterApiService client, ILogger
             CohortId = source.CohortId,
             SearchTerm = source.SearchTerm,
             SortColumn = source.SortField,
-            ReverseSort = source.ReverseSort,
+            SortDescending = source.ReverseSort,
             Page = source.Page,
             StartMonth = source.StartMonth,
             StartYear = source.StartYear,

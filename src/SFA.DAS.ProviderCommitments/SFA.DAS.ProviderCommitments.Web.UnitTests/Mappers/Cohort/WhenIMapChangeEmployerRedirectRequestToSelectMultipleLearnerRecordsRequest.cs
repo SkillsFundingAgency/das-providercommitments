@@ -1,4 +1,5 @@
 using System;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -44,6 +45,7 @@ public class WhenIMapChangeEmployerRedirectRequestToSelectMultipleLearnerRecords
     private class ChangeEmployerRedirectRequestMapperFixture
     {
         private readonly Mock<ICacheStorageService> _cacheStorageMock;
+        private readonly Mock<IEncodingService> _encodingServiceMock;
         private readonly ChangeEmployerRedirectRequestMapper _sut;
 
         private ChangeEmployerRedirectRequest _source;
@@ -90,7 +92,9 @@ public class WhenIMapChangeEmployerRedirectRequestToSelectMultipleLearnerRecords
                 })
                 .Returns(Task.CompletedTask);
 
-            _sut = new ChangeEmployerRedirectRequestMapper(_cacheStorageMock.Object);
+            _encodingServiceMock = new Mock<IEncodingService>();
+
+            _sut = new ChangeEmployerRedirectRequestMapper(_cacheStorageMock.Object, _encodingServiceMock.Object);
         }
 
         public async Task<SelectMultipleLearnerRecordsRequest> Act() => await _sut.Map(_source);

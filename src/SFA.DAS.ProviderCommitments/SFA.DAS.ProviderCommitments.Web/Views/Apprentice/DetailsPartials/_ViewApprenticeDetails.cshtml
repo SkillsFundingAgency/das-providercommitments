@@ -9,14 +9,6 @@
     ViewData["Title"] = "Apprentice Details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
     ViewBag.GaData.Org = Model.Employer;
-
-    var paymentStatusTagClass = Model.PaymentStatus.Status switch
-    {
-        "Inactive" => "govuk-tag--grey",
-        "Active" => "govuk-tag--blue",
-        "Withheld" => "govuk-tag--red",
-        _ => "govuk-tag--blue" // default
-    };
 }
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
@@ -25,6 +17,15 @@
         <partial name="DetailsPartials/_Banners" />
 
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
+
+        @if(Model.HasChangeHistory)
+        {
+        <p>
+            <a class="govuk-link" asp-controller="Apprentice" asp-action="ChangeHistory" asp-route-providerId="@Model.ProviderId"
+               asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">View change history for this learner.</a>
+        </p>
+        }
+
 
         @if (Model.ShowChangeEmployerLink && Model.Status != ApprenticeshipStatus.Completed)
         {
@@ -289,19 +290,12 @@
                     </tr>
                 }
 
-                @if (!Model.HasPendingStartDateChange)
-                {
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Planned training start date</th>
-                        <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
-                        <td class="govuk-table__cell">
-                        </td>
-                    </tr>
-                }
-                else
-                {
-                    <partial name="DetailsPartials/_PendingChangeOfStartDateDetails" />
-                }
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Planned training start date</th>
+                    <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
+                    <td class="govuk-table__cell">
+                    </td>
+                </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Planned training end date</th>
@@ -326,32 +320,29 @@
                     </tr>
                 }
 
-                @if (!Model.HasPendingPriceChange)
+                @if (Model.TrainingPrice.HasValue)
                 {
-                    @if (Model.TrainingPrice.HasValue)
-                    {
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Training price (TNP1)</th>
-                            <td id="apprentice-price" class="govuk-table__cell">@Model.TrainingPrice.Value.ToGdsCostFormat()</td>
-                            <td class="govuk-table__cell"></td>
-                        </tr>
-                    }
-
-                    @if (Model.EndPointAssessmentPrice.HasValue)
-                    {
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">End-point assessment price (TNP2)</th>
-                            <td id="apprentice-price" class="govuk-table__cell">@Model.EndPointAssessmentPrice.Value.ToGdsCostFormat()</td>
-                            <td class="govuk-table__cell"></td>
-                        </tr>
-                    }
-
                     <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
-                        <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                        <th scope="row" class="govuk-table__header">Training price (TNP1)</th>
+                        <td id="apprentice-price" class="govuk-table__cell">@Model.TrainingPrice.Value.ToGdsCostFormat()</td>
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
+
+                @if (Model.EndPointAssessmentPrice.HasValue)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">End-point assessment price (TNP2)</th>
+                        <td id="apprentice-price" class="govuk-table__cell">@Model.EndPointAssessmentPrice.Value.ToGdsCostFormat()</td>
+                        <td class="govuk-table__cell"></td>
+                    </tr>
+                }
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                    <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                    <td class="govuk-table__cell"></td>
+                </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Your reference</th>
@@ -360,11 +351,6 @@
                 </tr>
             </tbody>
         </table>
-
-        @if (Model.HasPendingPriceChange)
-        {
-            <partial name="DetailsPartials/_PendingChangeOfPriceDetails" />
-        }
 
         @if (Model.RecognisePriorLearning != null)
         {

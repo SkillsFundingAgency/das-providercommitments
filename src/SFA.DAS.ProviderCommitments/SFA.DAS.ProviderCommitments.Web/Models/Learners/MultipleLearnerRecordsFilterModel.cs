@@ -3,6 +3,8 @@ using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using static SFA.DAS.ProviderCommitments.Constants;
 
@@ -15,8 +17,8 @@ public class MultipleLearnerRecordsFilterModel
     public int PageNumber { get; set; } = 1;
     public string SearchTerm { get; set; }
     public int TotalNumberOfLearnersFound { get; set; }
-    public HtmlString TotalNumberOfApprenticeshipsFoundDescription =>
-        new HtmlString($"{TotalNumberOfLearnersFound} apprentice records found " + GetFiltersUsedMessage());
+    public HtmlString TotalNumberOfLearnersFoundDescription =>
+        new HtmlString($"{TotalNumberOfLearnersFound} learner records found " + GetFiltersUsedMessage());
 
     public string SortField { get; set; }
     public bool ReverseSort { get; set; }
@@ -29,6 +31,8 @@ public class MultipleLearnerRecordsFilterModel
     public List<SelectListItem> YearNames { get; set; }
     public string CourseCode { get; set; }
     public List<SelectListItem> Courses { get; set; }
+    public LearningType? LearningType { get; set; }
+    public List<SelectListItem> LearningTypes { get; set; }
 
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
@@ -51,6 +55,16 @@ public class MultipleLearnerRecordsFilterModel
                     Text = m.ToString(),
                     Value = m.ToString()
                 }).ToList();
+        
+        LearningTypes = new List<SelectListItem>
+        {
+            new SelectListItem("All", "")
+        };
+
+        foreach (var value in Enum.GetValues<LearningType>())
+        {
+            LearningTypes.Add(new SelectListItem(value.GetEnumDescription(), ((byte)value).ToString()));
+        }
     }
 
     private Dictionary<string, string> BuildRouteData()

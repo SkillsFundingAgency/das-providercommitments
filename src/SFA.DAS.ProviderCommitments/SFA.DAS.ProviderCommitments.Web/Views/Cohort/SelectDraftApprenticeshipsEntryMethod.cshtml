@@ -3,7 +3,7 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectAddDraftApprenticeshipJourneyViewModel
 
 @{
-    ViewBag.Title = "Add Apprentice";
+    ViewBag.Title = "Add Learner";
     ViewBag.ZendeskLabel = "add-apprentice-entry-method";
     ViewBag.GaData.Vpv = "/unapproved/add/entry-method";
     var ilrFeaturesEnabled = Configuration.GetValue<bool>("ILRFeaturesEnabled");
@@ -15,33 +15,51 @@
         <form method="post">
             @Html.AntiForgeryToken()
             @Html.HiddenFor(x => x.ProviderId)
+            @if (ilrSelectMultipleFeatureEnabled)
+            {
+                <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                    <div class="govuk-notification-banner__header">
+                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                            Important
+                        </h2>
+                    </div>
+                    <div class="govuk-notification-banner__content">
+                        <p class="govuk-notification-banner__heading">
+                            You can now add multiple learners from ILR
+                        </p>
+                        <p class="govuk-body">
+                            Choose 'Add 1 or more learners from ILR' to view your options.
+                        </p>
+                    </div>
+                </div>
+            }
             <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                         <h1 class="govuk-fieldset__heading">
-                            Add apprentice details
+                            How do you want to add learner details?
                         </h1>
                     </legend>
                     @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
                     <div class="govuk-radios">
-                        @if (ilrFeaturesEnabled)
+                        @if (ilrFeaturesEnabled && !ilrSelectMultipleFeatureEnabled)
                         {
                             <div class="govuk-radios__item">
                                 <input asp-for="Selection" value="ILR" type="radio" class="govuk-radios__input" id="confirm-ILR"/>
                                 <label class="govuk-label govuk-radios__label" for="confirm-ILR">
-                                    Select apprentices from ILR
+                                    Choose details from ILR (individual learner record)
                                 </label>
-                                <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">Add new apprentice details imported from the ILR file you have submitted to Submit Learner Data</div>
+                                <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">For apprenticeships or apprenticeship units</div>
                             </div>
                         }
                         @if (ilrSelectMultipleFeatureEnabled)
                         {
                             <div class="govuk-radios__item">
-                                <input asp-for="Selection" value="multiSelectILR" type="radio" class="govuk-radios__input" id="confirm-multiSelectILR" />
-                                <label class="govuk-label govuk-radios__label" for="confirm-multiSelectILR">
-                                    Select multiple learners from ILR
+                                <input asp-for="Selection" value="HowManyLearners" type="radio" class="govuk-radios__input" id="confirm-HowManyLearners" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-HowManyLearners">
+                                    Add 1 or more learners from ILR (individual learner record)
                                 </label>
-                                <div id="multi-select-ILR-hint" class="govuk-hint govuk-radios__hint">Add multiple new learners details imported from the ILR file you have submitted to Submit Learner Data</div>
+                                <div id="how-many-learners-hint" class="govuk-hint govuk-radios__hint">For apprenticeships or apprenticeship units</div>
                             </div>
                         }
                         <div class="govuk-radios__item">
@@ -49,15 +67,19 @@
                             <label class="govuk-label govuk-radios__label" for="confirm-BulkCsv">
                                 Upload a CSV file
                             </label>
-                            <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">You can add new apprentices into existing or new cohorts from a file. The file can contain apprentices for 1 or more employers</div>
+                            <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">
+                                For apprenticeships only
+                            </div>
                         </div>
 
                         <div class="govuk-radios__item">
                             <input asp-for="Selection" value="Manual" type="radio" class="govuk-radios__input" id="confirm-Manual"/>
                             <label class="govuk-label govuk-radios__label" for="confirm-Manual">
-                                Manually
+                                Manually add details
                             </label>
-                            <div id="manual-input-hint" class="govuk-hint govuk-radios__hint">Add new apprentice details to an existing or new cohort</div>
+                            <div id="manual-input-hint" class="govuk-hint govuk-radios__hint">
+                                For apprenticeships only
+                            </div>
                         </div>
                     </div>
                 </fieldset>

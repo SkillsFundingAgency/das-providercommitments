@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 
-public class GetLearnerDetailsForProviderRequest(
+public class PostGetLearnerDetailsForProviderRequest(
     long? providerId,
     SelectLearnersRequest request)
-    : IGetApiRequest
+    : IPostApiRequest
 {
-    public string GetUrl =>
-        $"providers/{providerId}/unapproved/add/learners/select?AccountLegalEntityId={request.AccountLegalEntityId}&cohortId={request.CohortId}&SearchTerm={WebUtility.UrlEncode(request.SearchTerm)}" +
-        $"&SortColumn={WebUtility.UrlEncode(request.SortColumn)}&SortDescending={request.ReverseSort}&Page={request.Page}&pageSize={Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage}" +
-        $"&startMonth={request.StartMonth}&startYear={request.StartYear}&courseCode={request.CourseCode}&learningType={request.LearningType}";
+    public string PostUrl => $"providers/{providerId}/unapproved/add/learners/select";
+
+    public object Data { get; set; } = request;
 }
 
 public class GetLearnerDetailsForProviderResponse

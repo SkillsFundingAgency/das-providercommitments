@@ -31,7 +31,7 @@ public class SelectLearnerRecordViewModelMapperTests
            t.CohortId == _request.CohortId &&
            t.SearchTerm == _request.SearchTerm &&
            t.SortColumn == _request.SortField &&
-           t.ReverseSort == _request.ReverseSort &&
+           t.SortDescending == _request.ReverseSort &&
            t.Page == _request.Page &&
            t.StartMonth == _request.StartMonth &&
            t.StartYear == _request.StartYear &&
