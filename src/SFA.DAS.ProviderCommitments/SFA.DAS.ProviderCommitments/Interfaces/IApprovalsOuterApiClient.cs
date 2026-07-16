@@ -29,4 +29,5 @@ public interface IApprovalsOuterApiClient
 
     Task<GetChangeHistoryResponse> GetChangeHistory(long apprenticeshipId);
     Task<GetAllChangeHistoryResponse> GetAllChangeHistory(long providerId);
+    Task<GetApprenticeshipsResponse> GetApprenticeships(GetApprenticeshipsRequest request);
 }

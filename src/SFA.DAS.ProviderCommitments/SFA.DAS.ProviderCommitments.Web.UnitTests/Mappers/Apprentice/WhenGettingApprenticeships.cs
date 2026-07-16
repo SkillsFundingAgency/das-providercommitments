@@ -14,7 +14,7 @@ public class WhenGettingApprenticeships
 {
     [Test, MoqAutoData]
     public async Task Then_Defaults_To_Page_One(
-        [Frozen] Mock<IOuterApiService> mockouterApiService,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         long providerId,
         IndexViewModelMapper mapper)
     {
@@ -22,7 +22,7 @@ public class WhenGettingApprenticeships
 
         await mapper.Map(request);
 
-        mockouterApiService.Verify(client => client.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(apiRequest =>
+        mockapprovalsOuterApiClient.Verify(client => client.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(apiRequest =>
                     apiRequest.PageNumber == 1 && apiRequest.ProviderId == providerId &&
                     apiRequest.PageItemCount == Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage)),
             Times.Once);
@@ -30,7 +30,7 @@ public class WhenGettingApprenticeships
 
     [Test, MoqAutoData]
     public async Task Then_Defaults_To_Page_One_If_Less_Than_One(
-        [Frozen] Mock<IOuterApiService> mockouterApiService,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         long providerId,
         IndexViewModelMapper mapper)
     {
@@ -38,7 +38,7 @@ public class WhenGettingApprenticeships
 
         await mapper.Map(request);
 
-        mockouterApiService.Verify(client => client.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(apiRequest =>
+        mockapprovalsOuterApiClient.Verify(client => client.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(apiRequest =>
                     apiRequest.PageNumber == 1 && apiRequest.ProviderId == providerId &&
                     apiRequest.PageItemCount == Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage)),
             Times.Once);
@@ -47,12 +47,12 @@ public class WhenGettingApprenticeships
     [Test, MoqAutoData]
     public async Task Should_Pass_Params_To_Api_Call(
         IndexRequest webRequest,
-        [Frozen] Mock<IOuterApiService> mockouterApiService,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         IndexViewModelMapper mapper)
     {
         await mapper.Map(webRequest);
 
-        mockouterApiService.Verify(client => client.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(apiRequest =>
+        mockapprovalsOuterApiClient.Verify(client => client.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(apiRequest =>
                     apiRequest.ProviderId == webRequest.ProviderId &&
                     apiRequest.PageNumber == webRequest.PageNumber &&
                     apiRequest.PageItemCount == Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage &&
@@ -71,16 +71,15 @@ public class WhenGettingApprenticeships
     public async Task Then_Gets_Filter_Values_From_Api(
         IndexRequest webRequest,
         GetApprenticeshipsResponse clientResponse,
-        [Frozen] Mock<IOuterApiService> mockouterApiService,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         IndexViewModelMapper mapper)
     {
         clientResponse.TotalApprenticeships =
             Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch + 1;
-        mockouterApiService
+        mockapprovalsOuterApiClient
             .Setup(client => client.GetApprenticeships(
                 It.IsAny<GetApprenticeshipsRequest>()))
             .ReturnsAsync(clientResponse);
-
 
         await mapper.Map(webRequest);
     }
@@ -89,12 +88,12 @@ public class WhenGettingApprenticeships
     public async Task And_TotalApprentices_Less_Than_NumberOfApprenticesRequiredForSearch_Then_Not_Get_Filter_Values_From_Api(
         IndexRequest webRequest,
         GetApprenticeshipsResponse clientResponse,
-        [Frozen] Mock<IOuterApiService> mockouterApiService,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         IndexViewModelMapper mapper)
     {
         clientResponse.TotalApprenticeships = Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch - 1;
 
-        mockouterApiService
+        mockapprovalsOuterApiClient
             .Setup(client => client.GetApprenticeships(
                 It.IsAny<GetApprenticeshipsRequest>()))
             .ReturnsAsync(clientResponse);
@@ -108,17 +107,17 @@ public class WhenGettingApprenticeships
         GetApprenticeshipsResponse apprenticeshipsResponse,
         ApprenticeshipDetailsViewModel expectedViewModel,
         [Frozen] Mock<IModelMapper> modelMapper,
-        [Frozen] Mock<IOuterApiService> mockouterApiService,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         IndexViewModelMapper mapper)
     {
         //Arrange
         apprenticeshipsResponse.TotalApprenticeships =
             Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch + 1;
 
-        mockouterApiService
+        mockapprovalsOuterApiClient
             .Setup(x => x.GetApprenticeships(
                 It.IsAny<GetApprenticeshipsRequest>()))
-            .ReturnsAsync(apprenticeshipsResponse);       
+            .ReturnsAsync(apprenticeshipsResponse);
 
         modelMapper
             .Setup(x => x.Map<ApprenticeshipDetailsViewModel>(It.IsAny<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()))
@@ -163,18 +162,18 @@ public class WhenGettingApprenticeships
         ApprenticeshipDetailsViewModel expectedViewModel,
         [Frozen] Mock<IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>>
             detailsViewModelMapper,
-        [Frozen] Mock<IOuterApiService> mockouterApiService,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         IndexViewModelMapper mapper)
     {
         //Arrange
         apprenticeshipsResponse.TotalApprenticeships =
             Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch + 1;
 
-        mockouterApiService
+        mockapprovalsOuterApiClient
             .Setup(x => x.GetApprenticeships(
                 It.IsAny<GetApprenticeshipsRequest>()))
             .ReturnsAsync(apprenticeshipsResponse);
-       
+
         detailsViewModelMapper
             .Setup(x => x.Map(It.IsAny<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()))
             .ReturnsAsync(expectedViewModel);
@@ -197,7 +196,7 @@ public class WhenGettingApprenticeships
     public async Task ThenWillSetPageNumberToLastOneIfRequestPageNumberIsTooHigh(
         IndexRequest webRequest,
         GetApprenticeshipsResponse clientResponse,
-        [Frozen] Mock<IOuterApiService> mockouterApiService,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         IndexViewModelMapper mapper)
     {
         clientResponse.PageNumber = (int)Math.Ceiling((double)clientResponse.TotalApprenticeshipsFound / Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage);
@@ -205,7 +204,7 @@ public class WhenGettingApprenticeships
 
         clientResponse.TotalApprenticeships = Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch - 1;
 
-        mockouterApiService
+        mockapprovalsOuterApiClient
             .Setup(client => client.GetApprenticeships(
                 It.IsAny<GetApprenticeshipsRequest>()))
             .ReturnsAsync(clientResponse);

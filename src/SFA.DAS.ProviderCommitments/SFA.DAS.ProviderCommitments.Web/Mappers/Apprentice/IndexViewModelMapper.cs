@@ -9,13 +9,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
 {
     private readonly IModelMapper _modelMapper;
-    private readonly IOuterApiService _outerApiService;
+    private readonly IApprovalsOuterApiClient _approvalsOuterApiClient;
     private readonly ILogger<IndexViewModelMapper> _logger;
 
-    public IndexViewModelMapper(IModelMapper modelMapper, IOuterApiService outerApiService, ILogger<IndexViewModelMapper> logger)
+    public IndexViewModelMapper(IModelMapper modelMapper, IApprovalsOuterApiClient approvalsOuterApiClient, ILogger<IndexViewModelMapper> logger)
     {
         _modelMapper = modelMapper;
-        _outerApiService = outerApiService;
+        _approvalsOuterApiClient = approvalsOuterApiClient;
         _logger = logger;
     }
 
@@ -25,7 +25,7 @@ public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
         {
             _logger.LogInformation("Inside Index view model mapper");
 
-            var response = await _outerApiService.GetApprenticeships(new
+            var response = await _approvalsOuterApiClient.GetApprenticeships(new
                 GetApprenticeshipsRequest(
                 source.ProviderId,
                 source.PageNumber,
@@ -43,6 +43,8 @@ public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
                 source.SelectedDeliveryModel));
 
             _logger.LogInformation("Response is null {a}", response is null);
+
+            response = response ?? new Infrastructure.OuterApi.Responses.Apprentices.GetApprenticeshipsResponse();
 
             var statusFilters = new[]
             {
