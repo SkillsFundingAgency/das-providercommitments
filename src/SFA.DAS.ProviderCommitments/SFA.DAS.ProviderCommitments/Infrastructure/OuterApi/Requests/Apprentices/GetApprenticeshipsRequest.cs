@@ -96,7 +96,7 @@ public class GetApprenticeshipsRequest(long? providerId, int pageNumber, int pag
             if (DeliveryModel.HasValue)
                 queryParameters.Add("deliveryModel", DeliveryModel.Value.ToString());
 
-            return QueryHelpers.AddQueryString($"/provider/{ProviderId}/apprentices", queryParameters);
+            return QueryHelpers.AddQueryString($"provider/{ProviderId}/apprentices", queryParameters);
         }
     }
 }
