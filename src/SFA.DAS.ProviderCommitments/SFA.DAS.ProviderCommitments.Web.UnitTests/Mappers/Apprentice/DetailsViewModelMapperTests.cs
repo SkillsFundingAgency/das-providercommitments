@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions.Execution;
 using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -12,6 +13,7 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using static SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.GetManageApprenticeshipDetailsResponse;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice;
 
@@ -613,6 +615,32 @@ public class DetailsViewModelMapperTests
         _fixture.Result.EmailShouldBePresent.Should().Be(expected);
     }
 
+    [TestCase(true, null)]
+    [TestCase(false, "some pause reason")]
+    public async Task CheckFreezeStatusIsMappedCorrectly(bool freezeStatus, string reason)
+    {
+        _fixture.WithFreezeStatus(new PaymentsStatusResponse
+        {
+            FreezeStatus = freezeStatus,
+            ReasonFrozen = reason
+        });
+
+        var result = await _fixture.Map();
+
+        _fixture.Result.PaymentsPaused.Should().Be(freezeStatus);
+        _fixture.Result.PausedReason.Should().Be(reason);
+    }
+
+    [Test]
+    public async Task CheckFreezeStatusIsMappedCorrectlyWhenNotPresent()
+    {
+        _fixture.WithFreezeStatus(null);
+        var result = await _fixture.Map();
+
+        _fixture.Result.PaymentsPaused.Should().BeFalse();
+        _fixture.Result.PausedReason.Should().BeNull();
+    }
+
     [Test]
     public async Task And_ApprenticeshipIsAFramework_Then_ShowChangeVersionLinkIsFalse()
     {
@@ -1074,6 +1102,13 @@ public class DetailsViewModelMapperTests
         public DetailsViewModelMapperFixture WithEmailShouldBePresentPopulated(bool present)
         {
             ApiResponse.Apprenticeship.EmailShouldBePresent = present;
+            return this;
+        }
+
+        public DetailsViewModelMapperFixture WithFreezeStatus(PaymentsStatusResponse paymentStatus)
+        {
+            ApiResponse.PaymentsStatus = paymentStatus;
+
             return this;
         }
 

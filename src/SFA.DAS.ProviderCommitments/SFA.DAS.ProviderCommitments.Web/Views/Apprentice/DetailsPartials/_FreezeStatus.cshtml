@@ -1,0 +1,20 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+
+<tr>
+    <th scope="row" class="govuk-table__header das-table-cell-width-45">Payments</th>
+    <td class="govuk-table__cell das-table-cell-width-40">
+        <strong class="govuk-tag @(Model.PaymentsPaused ? "govuk-tag--red" : "govuk-tag--green")">
+            @(Model.PaymentsPaused ? "Paused" : "Active")
+        </strong>
+    </td>
+</tr>
+
+@if (!string.IsNullOrEmpty(Model.PausedReason))
+{
+    <tr>
+        <th scope="row" class="govuk-table__header das-table-cell-width-45">Reason for pause</th>
+        <td class="govuk-table__cell das-table-cell-width-40">
+            @Model.PausedReason
+        </td>
+    </tr>
+}
