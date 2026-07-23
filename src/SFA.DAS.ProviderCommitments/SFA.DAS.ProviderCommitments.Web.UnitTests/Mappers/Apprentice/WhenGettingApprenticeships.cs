@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using ApiRequests = SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
+using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice;
 
@@ -14,45 +14,45 @@ public class WhenGettingApprenticeships
 {
     [Test, MoqAutoData]
     public async Task Then_Defaults_To_Page_One(
-        [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
+        long providerId,
         IndexViewModelMapper mapper)
     {
-        var request = new IndexRequest();
+        var request = new IndexRequest { ProviderId = providerId };
 
         await mapper.Map(request);
 
-        mockApiClient.Verify(client => client.GetApprenticeships(It.Is<ApiRequests.GetApprenticeshipsRequest>(apiRequest =>
-                    apiRequest.PageNumber == 1 &&
-                    apiRequest.PageItemCount == Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage),
-                It.IsAny<CancellationToken>()),
+        mockapprovalsOuterApiClient.Verify(client => client.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(apiRequest =>
+                    apiRequest.PageNumber == 1 && apiRequest.ProviderId == providerId &&
+                    apiRequest.PageItemCount == Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage)),
             Times.Once);
     }
 
     [Test, MoqAutoData]
     public async Task Then_Defaults_To_Page_One_If_Less_Than_One(
-        [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
+        long providerId,
         IndexViewModelMapper mapper)
     {
-        var request = new IndexRequest { PageNumber = 0 };
+        var request = new IndexRequest { PageNumber = 0, ProviderId = providerId };
 
         await mapper.Map(request);
 
-        mockApiClient.Verify(client => client.GetApprenticeships(It.Is<ApiRequests.GetApprenticeshipsRequest>(apiRequest =>
-                    apiRequest.PageNumber == 1 &&
-                    apiRequest.PageItemCount == Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage),
-                It.IsAny<CancellationToken>()),
+        mockapprovalsOuterApiClient.Verify(client => client.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(apiRequest =>
+                    apiRequest.PageNumber == 1 && apiRequest.ProviderId == providerId &&
+                    apiRequest.PageItemCount == Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage)),
             Times.Once);
     }
 
     [Test, MoqAutoData]
     public async Task Should_Pass_Params_To_Api_Call(
         IndexRequest webRequest,
-        [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         IndexViewModelMapper mapper)
     {
         await mapper.Map(webRequest);
 
-        mockApiClient.Verify(client => client.GetApprenticeships(It.Is<ApiRequests.GetApprenticeshipsRequest>(apiRequest =>
+        mockapprovalsOuterApiClient.Verify(client => client.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(apiRequest =>
                     apiRequest.ProviderId == webRequest.ProviderId &&
                     apiRequest.PageNumber == webRequest.PageNumber &&
                     apiRequest.PageItemCount == Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage &&
@@ -63,8 +63,7 @@ public class WhenGettingApprenticeships
                     apiRequest.DeliveryModel == webRequest.SelectedDeliveryModel &&
                     apiRequest.Status == webRequest.SelectedStatus &&
                     apiRequest.StartDate == webRequest.SelectedStartDate &&
-                    apiRequest.EndDate == webRequest.SelectedEndDate),
-                It.IsAny<CancellationToken>()),
+                    apiRequest.EndDate == webRequest.SelectedEndDate)),
             Times.Once);
     }
 
@@ -72,73 +71,53 @@ public class WhenGettingApprenticeships
     public async Task Then_Gets_Filter_Values_From_Api(
         IndexRequest webRequest,
         GetApprenticeshipsResponse clientResponse,
-        [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         IndexViewModelMapper mapper)
     {
         clientResponse.TotalApprenticeships =
             Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch + 1;
-        mockApiClient
+        mockapprovalsOuterApiClient
             .Setup(client => client.GetApprenticeships(
-                It.IsAny<ApiRequests.GetApprenticeshipsRequest>(),
-                It.IsAny<CancellationToken>()))
+                It.IsAny<GetApprenticeshipsRequest>()))
             .ReturnsAsync(clientResponse);
 
-
         await mapper.Map(webRequest);
-
-        mockApiClient.Verify(client => client.GetApprenticeshipsFilterValues(
-            It.Is<ApiRequests.GetApprenticeshipFiltersRequest>(
-                r => r.ProviderId.Equals(webRequest.ProviderId)),
-            It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test, MoqAutoData]
     public async Task And_TotalApprentices_Less_Than_NumberOfApprenticesRequiredForSearch_Then_Not_Get_Filter_Values_From_Api(
         IndexRequest webRequest,
         GetApprenticeshipsResponse clientResponse,
-        [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         IndexViewModelMapper mapper)
     {
         clientResponse.TotalApprenticeships = Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch - 1;
 
-        mockApiClient
+        mockapprovalsOuterApiClient
             .Setup(client => client.GetApprenticeships(
-                It.IsAny<ApiRequests.GetApprenticeshipsRequest>(),
-                It.IsAny<CancellationToken>()))
+                It.IsAny<GetApprenticeshipsRequest>()))
             .ReturnsAsync(clientResponse);
 
         await mapper.Map(webRequest);
-
-        mockApiClient.Verify(client => client.GetApprenticeshipsFilterValues(
-                It.IsAny<ApiRequests.GetApprenticeshipFiltersRequest>(),
-                It.IsAny<CancellationToken>()),
-            Times.Never);
     }
 
     [Test, MoqAutoData]
     public async Task ShouldMapApiValues(
         IndexRequest request,
         GetApprenticeshipsResponse apprenticeshipsResponse,
-        GetApprenticeshipsFilterValuesResponse filtersResponse,
         ApprenticeshipDetailsViewModel expectedViewModel,
         [Frozen] Mock<IModelMapper> modelMapper,
-        [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         IndexViewModelMapper mapper)
     {
         //Arrange
         apprenticeshipsResponse.TotalApprenticeships =
             Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch + 1;
 
-        mockApiClient
+        mockapprovalsOuterApiClient
             .Setup(x => x.GetApprenticeships(
-                It.IsAny<ApiRequests.GetApprenticeshipsRequest>(), It.IsAny<CancellationToken>()))
+                It.IsAny<GetApprenticeshipsRequest>()))
             .ReturnsAsync(apprenticeshipsResponse);
-
-        mockApiClient
-            .Setup(client => client.GetApprenticeshipsFilterValues(
-                It.IsAny<ApiRequests.GetApprenticeshipFiltersRequest>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(filtersResponse);
 
         modelMapper
             .Setup(x => x.Map<ApprenticeshipDetailsViewModel>(It.IsAny<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()))
@@ -160,10 +139,10 @@ public class WhenGettingApprenticeships
             viewModel.FilterModel.PageNumber.Should().Be(apprenticeshipsResponse.PageNumber);
             viewModel.FilterModel.ReverseSort.Should().Be(request.ReverseSort);
             viewModel.FilterModel.SortField.Should().Be(request.SortField);
-            viewModel.FilterModel.EmployerFilters.Should().BeEquivalentTo(filtersResponse.EmployerNames);
-            viewModel.FilterModel.CourseFilters.Should().BeEquivalentTo(filtersResponse.CourseNames);
-            viewModel.FilterModel.StartDateFilters.Should().BeEquivalentTo(filtersResponse.StartDates);
-            viewModel.FilterModel.EndDateFilters.Should().BeEquivalentTo(filtersResponse.EndDates);
+            viewModel.FilterModel.EmployerFilters.Should().BeEquivalentTo(apprenticeshipsResponse.ApprenticeshipFiltersValue.EmployerNames);
+            viewModel.FilterModel.CourseFilters.Should().BeEquivalentTo(apprenticeshipsResponse.ApprenticeshipFiltersValue.CourseNames);
+            viewModel.FilterModel.StartDateFilters.Should().BeEquivalentTo(apprenticeshipsResponse.ApprenticeshipFiltersValue.StartDates);
+            viewModel.FilterModel.EndDateFilters.Should().BeEquivalentTo(apprenticeshipsResponse.ApprenticeshipFiltersValue.EndDates);
             viewModel.FilterModel.SearchTerm.Should().Be(request.SearchTerm);
             viewModel.FilterModel.SelectedEmployer.Should().Be(request.SelectedEmployer);
             viewModel.FilterModel.SelectedCourse.Should().Be(request.SelectedCourse);
@@ -179,27 +158,21 @@ public class WhenGettingApprenticeships
     public async Task ShouldMapStatusValues(
         IndexRequest request,
         GetApprenticeshipsResponse apprenticeshipsResponse,
-        GetApprenticeshipsFilterValuesResponse filtersResponse,
+        GetApprenticeshipsFiltersResponse filtersResponse,
         ApprenticeshipDetailsViewModel expectedViewModel,
         [Frozen] Mock<IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>>
             detailsViewModelMapper,
-        [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         IndexViewModelMapper mapper)
     {
         //Arrange
         apprenticeshipsResponse.TotalApprenticeships =
             Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch + 1;
 
-        mockApiClient
+        mockapprovalsOuterApiClient
             .Setup(x => x.GetApprenticeships(
-                It.IsAny<ApiRequests.GetApprenticeshipsRequest>(), It.IsAny<CancellationToken>()))
+                It.IsAny<GetApprenticeshipsRequest>()))
             .ReturnsAsync(apprenticeshipsResponse);
-
-        mockApiClient
-            .Setup(client => client.GetApprenticeshipsFilterValues(
-                It.IsAny<ApiRequests.GetApprenticeshipFiltersRequest>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(filtersResponse);
 
         detailsViewModelMapper
             .Setup(x => x.Map(It.IsAny<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()))
@@ -223,7 +196,7 @@ public class WhenGettingApprenticeships
     public async Task ThenWillSetPageNumberToLastOneIfRequestPageNumberIsTooHigh(
         IndexRequest webRequest,
         GetApprenticeshipsResponse clientResponse,
-        [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
         IndexViewModelMapper mapper)
     {
         clientResponse.PageNumber = (int)Math.Ceiling((double)clientResponse.TotalApprenticeshipsFound / Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage);
@@ -231,10 +204,9 @@ public class WhenGettingApprenticeships
 
         clientResponse.TotalApprenticeships = Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch - 1;
 
-        mockApiClient
+        mockapprovalsOuterApiClient
             .Setup(client => client.GetApprenticeships(
-                It.IsAny<ApiRequests.GetApprenticeshipsRequest>(),
-                It.IsAny<CancellationToken>()))
+                It.IsAny<GetApprenticeshipsRequest>()))
             .ReturnsAsync(clientResponse);
 
         var result = await mapper.Map(webRequest);

@@ -723,6 +723,14 @@ public class ApprenticeController(
         return View(viewModel);
     }
 
+    [Route("change-history")]
+    [HttpGet]
+    public async Task<IActionResult> GetAllChangeHistory(GetAllChangeHistoryRequest request)
+    {
+        var viewModel = await modelMapper.Map<GetAllChangeHistoryListViewModel>(request);
+        return View(viewModel);
+    }
+
     private async Task ValidateChangeOfEmployerOverlap(TrainingDatesViewModel model)
     {
         var apimRequest = await modelMapper.Map<ValidateChangeOfEmployerOverlapApimRequest>(model);

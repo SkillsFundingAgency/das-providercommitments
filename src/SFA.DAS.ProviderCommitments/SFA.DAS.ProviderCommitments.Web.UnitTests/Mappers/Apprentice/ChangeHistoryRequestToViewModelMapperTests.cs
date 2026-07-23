@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Enums;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
