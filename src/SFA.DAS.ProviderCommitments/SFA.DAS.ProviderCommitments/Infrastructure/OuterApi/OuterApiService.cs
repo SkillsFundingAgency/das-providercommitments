@@ -334,4 +334,10 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
 
         return await outerApiClient.Post<ConfirmEditApprenticeshipResponse>(apiRequest);
     }
+
+    public async Task<GetApprenticeshipResponse> GetApprenticeship(long apprenticeshipId, long providerId)
+    {
+        var request = new GetApprenticeshipRequest(apprenticeshipId, providerId);
+        return await outerApiClient.Get<GetApprenticeshipResponse>(request);
+    }
 }

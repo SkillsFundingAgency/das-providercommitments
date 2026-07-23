@@ -21,5 +21,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
         public string EmploymentEndDate { get; set; }
         public int? Price { get; set; }
         public int? EmploymentPrice { get; set; }
+        public string Uln { get; set; }
     }
 }
