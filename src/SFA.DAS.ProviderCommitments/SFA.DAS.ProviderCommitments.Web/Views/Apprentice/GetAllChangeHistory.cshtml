@@ -1,0 +1,69 @@
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.GetAllChangeHistoryListViewModel
+
+@{
+    ViewBag.GaData.Vpv = "/apprentices";
+}
+
+<h1 class="govuk-heading-xl">Learner change history</h1>
+
+<p>Change history is available from @Model.AvailableFrom.ToGdsFormat()</p>
+
+<table class="govuk-table das-table--condensed das-table--responsive das-table--double-arrows">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">
+                Date of change
+            </th>
+            <th scope="col" class="govuk-table__header">
+                Name
+            </th>
+            <th scope="col" class="govuk-table__header">
+                Employer
+            </th>
+            <th scope="col" class="govuk-table__header">
+                Change made
+            </th>
+            <th scope="col" class="govuk-table__header">
+                Decision
+            </th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        @foreach (var changeHistory in Model.ChangeHistory)
+        {
+            <tr class="govuk-table__row">
+            
+                <td class="govuk-table__cell" data-label="Date of changes">
+                    @changeHistory.AppliedDate.ToGdsFormat()
+
+                </td>
+                <td class="govuk-table__cell" data-label="Change made ">
+                    @changeHistory.LearnerName
+                </td>
+                <td class="govuk-table__cell" data-label="Change made ">
+                    @changeHistory.EmployerName
+                </td>
+                <td class="govuk-table__cell" data-label="Change made ">
+                    @changeHistory.Description
+                </td>
+                <td class="govuk-table__cell " data-label="Decision">
+                   
+                    <strong class="govuk-tag @changeHistory.ChangeType.GetDisplayClass()">@changeHistory.ChangeType.GetEnumDescription()</strong>
+                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section breadcrumb {
+
+    <a class="govuk-back-link" asp-route="@RouteNames.ApprenticesIndex" asp-route-providerId="@Model.ProviderId">
+        Back
+    </a>
+}
