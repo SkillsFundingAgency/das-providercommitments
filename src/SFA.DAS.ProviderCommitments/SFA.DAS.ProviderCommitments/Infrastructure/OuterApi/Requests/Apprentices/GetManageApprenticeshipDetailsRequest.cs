@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 
@@ -31,6 +30,14 @@ public class GetManageApprenticeshipDetailsResponse
     public IEnumerable<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequest { get; set; }
     public bool HasMultipleDeliveryModelOptions { get; set; }
     public bool? CanActualStartDateBeChanged { get; set; }
+    public PaymentsStatusResponse PaymentsStatus { get; set; }
+
+    public class PaymentsStatusResponse
+    {
+        public bool FreezeStatus { get; set; }
+        public string ReasonFrozen { get; set; }
+        public DateTime? PaymentFreezeDate { get; set; }
+    }
 
     public class ApprenticeshipDetails
     {
