@@ -12,5 +12,5 @@ public enum AddDraftApprenticeshipEntryMethodOptions
     Manual,
     BulkCsv,
     ILR,
-    MultiSelectILR
+    HowManyLearners
 }

@@ -3,4 +3,5 @@
 public class BeforeYouContinueViewModel
 {
     public long ProviderId { get; set; }
+    public bool IlrSelectMultipleFeatureEnabled { get; set; } = false;
 }

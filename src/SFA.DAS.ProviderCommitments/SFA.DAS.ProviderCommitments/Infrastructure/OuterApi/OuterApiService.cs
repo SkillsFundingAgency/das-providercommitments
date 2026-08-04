@@ -260,6 +260,7 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
 
         return response;
     }
+
     public async Task<GetAccountFundingOptionsQueryResult> GetAccountFundingOptions(long accountId)
     {
         var request = new GetAccountFundingOptionsRequest(accountId);
