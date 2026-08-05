@@ -4,20 +4,19 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
-{
-    public class FileUploadValidateDataRequestToApiRequest : FileUploadMapperBase, IMapper<FileUploadValidateDataRequest, BulkUploadValidateApimRequest>
-    {
-        public FileUploadValidateDataRequestToApiRequest(IEncodingService encodingService, IOuterApiService outerApiService) 
-            :base(encodingService, outerApiService)
-        { }
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 
-        public Task<BulkUploadValidateApimRequest> Map(FileUploadValidateDataRequest source)
-        {
-            var apiRequest = new BulkUploadValidateApimRequest();
-            apiRequest.ProviderId = source.ProviderId;
-            apiRequest.CsvRecords = ConvertToBulkUploadApiRequest(source.CsvRecords, source.ProviderId);
-            return Task.FromResult(apiRequest);
-        }
+public class FileUploadValidateDataRequestToApiRequest : FileUploadMapperBase, IMapper<FileUploadValidateDataRequest, BulkUploadValidateApimRequest>
+{
+    public FileUploadValidateDataRequestToApiRequest(IEncodingService encodingService, IOuterApiService outerApiService) 
+        :base(encodingService, outerApiService)
+    { }
+
+    public Task<BulkUploadValidateApimRequest> Map(FileUploadValidateDataRequest source)
+    {
+        var apiRequest = new BulkUploadValidateApimRequest();
+        apiRequest.ProviderId = source.ProviderId;
+        apiRequest.CsvRecords = ConvertToBulkUploadApiRequest(source.CsvRecords, source.ProviderId);
+        return Task.FromResult(apiRequest);
     }
 }

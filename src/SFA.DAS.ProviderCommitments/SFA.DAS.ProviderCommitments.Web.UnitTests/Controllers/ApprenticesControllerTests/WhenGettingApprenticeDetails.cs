@@ -30,13 +30,4 @@ public class WhenGettingApprenticeDetails
 
         _fixture.VerifyDetailViewReturned();
     }
-
-    [TestCase(ApprenticeDetailsBanners.ChangeOfPriceApproved)]
-    [TestCase(ApprenticeDetailsBanners.ChangeOfPriceApproved | ApprenticeDetailsBanners.ChangeOfStartDateSent)]
-    public async Task ThenBannerFlagsAreMapped(ApprenticeDetailsBanners banners)
-    {
-        await _fixture.GetDetails(banners);
-
-        _fixture.VerifyBannerFlagsAreMapped(banners);
-    }
 }

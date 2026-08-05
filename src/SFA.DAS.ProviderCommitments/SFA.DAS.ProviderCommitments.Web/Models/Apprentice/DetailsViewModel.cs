@@ -1,9 +1,8 @@
-﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Enums;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
-using SFA.DAS.Apprenticeships.Types;
+using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -81,21 +80,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string DurationReducedByHoursDisplay => $"{DurationReducedByHours} hours";
         public int? PriceReducedBy { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
-        public PaymentsStatus PaymentStatus { get; set; }
-        public PendingPriceChange PendingPriceChange { get; set; }
-        public PendingStartDateChange PendingStartDateChange { get; set; }
-        public bool HasPendingPriceChange => PendingPriceChange != null;
-        public bool HasPendingStartDateChange => PendingStartDateChange != null;
-        public string ChangeOfPriceRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}";
-        public string PendingPriceChangeRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}/pending";
-        public string ChangeOfStartDateRoute => $"provider/{ProviderId}/ChangeOfStartDate/{ApprenticeshipHashedId}";
-        public string PendingStartDateChangeRoute => $"provider/{ProviderId}/ChangeOfStartDate/{ApprenticeshipHashedId}/pending";
-        public bool? CanActualStartDateBeChanged { get; set; }
-        public ApprenticeDetailsBanners ShowBannersFlags { get; set; } = 0;
-        public LearnerStatus LearnerStatus { get; set; }
-        public DateTime? WithdrawalChangedDate { get; set; }
-        public DateTime? LastCensusDateOfLearning { get; set; }
-        public DateTime? LastDayOfLearning { get; set; }
+        public string EmploymentStatus { get; set; }
+        public Common.Domain.Types.LearningType? LearningType { get; set; }
 
         public enum DataLockSummaryStatus
         {
@@ -110,6 +96,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             Update,
             Both
         }
+
+        public bool HasChangeHistory { get; set; }
+        public bool PaymentsPaused { get; set; }
+        public string PausedReason { get; set; }
     }
 
     public class EmployerHistory
@@ -119,28 +109,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime ToDate { get; set; }
         public string HashedApprenticeshipId { get; set; }
         public bool ShowLink { get; set; }
-    }
-
-    public class PendingPriceChange
-    {
-        public decimal Cost { get; set; }
-        public decimal? TrainingPrice { get; set; }
-        public decimal? EndPointAssessmentPrice { get; set; }
-        public ChangeInitiatedBy PriceChangeInitiator { get; set; }
-    }
-
-    public class PendingStartDateChange
-    {
-        public DateTime PendingStartDate { get; set; }
-        public DateTime PendingEndDate { get; set; }
-        public ChangeInitiatedBy ChangeInitiatedBy { get; set; }
-    }
-
-    public class PaymentsStatus
-    {
-        public string Status { get; set; }
-        public bool PaymentsFrozen { get; set; }
-        public string ReasonFrozen { get; set; }
-        public DateTime? FrozenOn { get; set; }
     }
 }

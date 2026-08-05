@@ -1,4 +1,8 @@
-﻿namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using SFA.DAS.Common.Domain.Types;
+
+namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices
 {
     public class GetEditApprenticeshipRequest : IGetApiRequest
     {
@@ -19,6 +23,7 @@
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool IsFundedByTransfer { get; set; }
         public string CourseName { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public LearningType? LearningType { get; set; }
     }
-
 }

@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
@@ -191,6 +191,8 @@ public class WhenIMapSelectEmployerRequestToViewModel
     {
         private readonly SelectEmployerViewModelMapper _sut;
         private readonly Mock<IApprovalsOuterApiClient> _approvalsOuterApiClientMock;
+        private Mock<IConfiguration> _configurationMock;
+        private Mock<IConfigurationSection> _configurationSectionMock;
         private SelectEmployerRequest _request;
         private GetSelectEmployerResponse _apiResponse;
 
@@ -224,7 +226,13 @@ public class WhenIMapSelectEmployerRequestToViewModel
                 .Setup(x => x.GetSelectEmployer(It.IsAny<GetSelectEmployerRequest>()))
                 .ReturnsAsync(_apiResponse);
 
-            _sut = new SelectEmployerViewModelMapper(_approvalsOuterApiClientMock.Object);
+            _configurationSectionMock = new Mock<IConfigurationSection>();
+            _configurationSectionMock.Setup(s => s.Value).Returns("false");
+
+            _configurationMock = new Mock<IConfiguration>();
+            _configurationMock.Setup(c => c.GetSection("ILRSelectMultipleFeatureEnabled")).Returns(_configurationSectionMock.Object);
+
+            _sut = new SelectEmployerViewModelMapper(_approvalsOuterApiClientMock.Object, _configurationMock.Object);
         }
 
         public SelectEmployerViewModelMapperFixture WithRequest(SelectEmployerRequest selectEmployerRequest)

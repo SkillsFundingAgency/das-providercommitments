@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
@@ -11,6 +10,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.FundingOptions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
@@ -123,12 +123,12 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
 
     public Task DraftApprenticeshipAddEmail(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeAddEmailApimRequest request)
     {
-       return outerApiClient.Put<object>(new DraftApprenticeAddEmailRequest(providerId, cohortId, apprenticeshipId) { Data = request });
+        return outerApiClient.Put<object>(new DraftApprenticeAddEmailRequest(providerId, cohortId, apprenticeshipId) { Data = request });
     }
 
-    public Task DraftApprenticeshipSetReference(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeshipSetReferenceApimRequest request )
+    public Task DraftApprenticeshipSetReference(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeshipSetReferenceApimRequest request)
     {
-       return outerApiClient.Put<object>(new PostDraftApprenticeshipSetReferenceRequest(providerId, cohortId, apprenticeshipId) { Data = request });
+        return outerApiClient.Put<object>(new PostDraftApprenticeshipSetReferenceRequest(providerId, cohortId, apprenticeshipId) { Data = request });
     }
 
     public async Task<AddDraftApprenticeshipResponse> AddDraftApprenticeship(long cohortId, AddDraftApprenticeshipApimRequest request)
@@ -243,9 +243,11 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
 
     public async Task<GetLearnerDetailsForProviderResponse> GetLearnerDetailsForProvider(long providerId, SelectLearnersRequest learnerRequest)
     {
-        var request = new GetLearnerDetailsForProviderRequest(providerId, learnerRequest);
+        learnerRequest.PageSize = Constants.LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
-        var response = await outerApiClient.Get<GetLearnerDetailsForProviderResponse>(request);
+        var request = new PostGetLearnerDetailsForProviderRequest(providerId, learnerRequest);
+
+        var response = await outerApiClient.Post<GetLearnerDetailsForProviderResponse>(request);
 
         return response;
     }
@@ -256,6 +258,13 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
 
         var response = await outerApiClient.Get<GetLearnerSelectedResponse>(request);
 
+        return response;
+    }
+
+    public async Task<GetAccountFundingOptionsQueryResult> GetAccountFundingOptions(long accountId)
+    {
+        var request = new GetAccountFundingOptionsRequest(accountId);
+        var response = await outerApiClient.Get<GetAccountFundingOptionsQueryResult>(request);
         return response;
     }
 

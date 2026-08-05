@@ -11,5 +11,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool ReverseSort { get; set; }
         public string SearchTerm { get; set; }
         public Guid CacheKey { get; set; }
+        public int PageNumber { get; set; } = 1;
     }
 }

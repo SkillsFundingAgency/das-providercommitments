@@ -7,7 +7,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public class ViewSelectOptionsViewModelToUpdateRequestMapper(IOuterApiClient outerApiClient) : IMapper<ViewSelectOptionsViewModel, UpdateDraftApprenticeshipApimRequest>
-    {       
+    {
         public async Task<UpdateDraftApprenticeshipApimRequest> Map(ViewSelectOptionsViewModel source)
         {
             var apiRequest = new GetEditDraftApprenticeshipRequest(source.ProviderId, (long)source.CohortId, (long)source.DraftApprenticeshipId, null);
@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 DeliveryModel = apiResponse.DeliveryModel,
                 EmploymentEndDate = apiResponse.EmploymentEndDate,
                 EmploymentPrice = apiResponse.EmploymentPrice,
-                LearnerDataId = apiResponse.LearnerDataId,               
+                LearnerDataId = apiResponse.LearnerDataId,
             };
         }
     }

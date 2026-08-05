@@ -4,27 +4,26 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+
+public class SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper : IMapper<EditApprenticeshipRequestViewModel, EditApprenticeshipDeliveryModelViewModel>
 {
-    public class SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper : IMapper<EditApprenticeshipRequestViewModel, EditApprenticeshipDeliveryModelViewModel>
+    private readonly IOuterApiClient _apiClient;
+
+    public SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper(IOuterApiClient apiClient)
     {
-        private readonly IOuterApiClient _apiClient;
+        _apiClient = apiClient;
+    }
 
-        public SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper(IOuterApiClient apiClient)
+    public async Task<EditApprenticeshipDeliveryModelViewModel> Map(EditApprenticeshipRequestViewModel source)
+    {
+        var apiRequest = new GetEditApprenticeshipDeliveryModelRequest(source.ProviderId, source.ApprenticeshipId);
+        var apiResponse = await _apiClient.Get<GetEditApprenticeshipDeliveryModelResponse>(apiRequest);
+
+        return new EditApprenticeshipDeliveryModelViewModel
         {
-            _apiClient = apiClient;
-        }
-
-        public async Task<EditApprenticeshipDeliveryModelViewModel> Map(EditApprenticeshipRequestViewModel source)
-        {
-            var apiRequest = new GetEditApprenticeshipDeliveryModelRequest(source.ProviderId, source.ApprenticeshipId);
-            var apiResponse = await _apiClient.Get<GetEditApprenticeshipDeliveryModelResponse>(apiRequest);
-
-            return new EditApprenticeshipDeliveryModelViewModel
-            {
-                DeliveryModel = (DeliveryModel)source.DeliveryModel,
-                DeliveryModels = apiResponse.DeliveryModels
-            };
-        }
+            DeliveryModel = (DeliveryModel)source.DeliveryModel,
+            DeliveryModels = apiResponse.DeliveryModels
+        };
     }
 }

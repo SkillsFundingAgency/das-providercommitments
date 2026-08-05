@@ -7,6 +7,6 @@ public class SelectHowToAddFirstApprenticeshipJourneyViewModelValidator : Abstra
 {
     public SelectHowToAddFirstApprenticeshipJourneyViewModelValidator()
     {
-        RuleFor(x => x.Selection).NotNull().WithMessage("You need to select how you want to add apprentice details");
+        RuleFor(x => x.Selection).NotNull().WithMessage("You need to select how you want to add learner details");
     }
 }

@@ -1,5 +1,8 @@
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Account;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
@@ -41,6 +44,26 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
         public Task<GetSelectEmployerResponse> GetSelectEmployer(GetSelectEmployerRequest request)
         {
             return client.Get<GetSelectEmployerResponse>(request.GetUrl);
+        }
+
+        public Task<GetSelectEmployerResponse> GetSelectNewEmployer(GetSelectNewEmployerRequest request)
+        {
+            return client.Get<GetSelectEmployerResponse>(request.GetUrl);
+        }
+
+        public Task<GetChangeHistoryResponse> GetChangeHistory(long apprenticeshipId)
+        {
+            return client.Get<GetChangeHistoryResponse>($"change-history/{apprenticeshipId}");
+        }
+
+        public Task<GetAllChangeHistoryResponse> GetAllChangeHistory(long providerId)
+        {
+            return client.Get<GetAllChangeHistoryResponse>($"provider/{providerId}/apprentices/change-history");
+        }
+
+        public Task<GetApprenticeshipsResponse> GetApprenticeships(GetApprenticeshipsRequest request)
+        {
+            return client.Get<GetApprenticeshipsResponse>(request.GetUrl);
         }
     }
 }

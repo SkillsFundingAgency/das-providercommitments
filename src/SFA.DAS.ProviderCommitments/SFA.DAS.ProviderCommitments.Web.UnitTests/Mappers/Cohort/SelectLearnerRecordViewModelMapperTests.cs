@@ -19,6 +19,9 @@ public class SelectLearnerRecordViewModelMapperTests
     {
         var fixture = new Fixture();
 
+        fixture.Customize<GetLearnerSummary>(c =>
+            c.With(x => x.LearningType, "Apprenticeship"));
+
         _request = fixture.Create<SelectLearnerRecordRequest>();
         _apiResponse = fixture.Create<GetLearnerDetailsForProviderResponse>();
         _outerApiService = new Mock<IOuterApiService>();
@@ -28,7 +31,7 @@ public class SelectLearnerRecordViewModelMapperTests
            t.CohortId == _request.CohortId &&
            t.SearchTerm == _request.SearchTerm &&
            t.SortColumn == _request.SortField &&
-           t.ReverseSort == _request.ReverseSort &&
+           t.SortDescending == _request.ReverseSort &&
            t.Page == _request.Page &&
            t.StartMonth == _request.StartMonth &&
            t.StartYear == _request.StartYear &&

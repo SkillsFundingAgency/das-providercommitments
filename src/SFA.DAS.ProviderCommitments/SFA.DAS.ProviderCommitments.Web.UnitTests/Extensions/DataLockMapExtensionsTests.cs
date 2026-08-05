@@ -4,7 +4,6 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentAssertions.Execution;
 using static SFA.DAS.CommitmentsV2.Api.Types.Responses.GetPriceEpisodesResponse;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions;

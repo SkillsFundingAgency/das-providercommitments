@@ -58,9 +58,9 @@ public class ApprenticeControllerTestFixtureBase
         Controller.TempData = MockTempData.Object;
     }
 
-    public async Task<ApprenticeControllerTestFixtureBase> GetDetails(ApprenticeDetailsBanners banners = 0)
+    public async Task<ApprenticeControllerTestFixtureBase> GetDetails()
     {
-        _actionResult = await Controller.Details(_detailsRequest, banners);
+        _actionResult = await Controller.Details(_detailsRequest);
         return this;
     }
 
@@ -76,17 +76,6 @@ public class ApprenticeControllerTestFixtureBase
         viewResult.Should().NotBeNull();
         var model = viewResult.Model as DetailsViewModel;
         model.Should().NotBeNull();
-        return this;
-    }
-
-    public ApprenticeControllerTestFixtureBase VerifyBannerFlagsAreMapped(ApprenticeDetailsBanners expectedBanners)
-    {
-        var viewResult = _actionResult as ViewResult;
-        viewResult.Should().NotBeNull();
-        viewResult.Should().NotBeNull();
-        var model = viewResult.Model as DetailsViewModel;
-        model.Should().NotBeNull();
-        model.ShowBannersFlags.Should().Be(expectedBanners);
         return this;
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -52,8 +54,8 @@ public class SelectLearnerRecordViewModelTests
         _viewModel.LastIlrSubmittedOnDesc.Should().Be("List updated: 1:00AM on 10 Apr 2025");
     }
 
-    [TestCase(1, "1 apprentice records")]
-    [TestCase(100, "100 apprentice records")]
+    [TestCase(1, "1 record")]
+    [TestCase(100, "100 records")]
     public void TotalNumberOfApprenticesDescription_IsCorrect(int count, string expected)
     {
         _viewModel.FilterModel.TotalNumberOfLearnersFound = count;
@@ -105,8 +107,8 @@ public class SelectLearnerRecordViewModelTests
         sort["ReverseSort"].Should().Be((!reverse).ToString());
     }
 
-    [TestCase("", 7)]
-    [TestCase(null, 7)]
+    [TestCase("", 8)]
+    [TestCase(null, 8)]
     public void BuildRouteData_IsCorrect(string searchTerm, int expectedCount)
     {
         _viewModel.FilterModel.SearchTerm = searchTerm;
@@ -122,6 +124,7 @@ public class SelectLearnerRecordViewModelTests
         routeData["CohortReference"].Should().Be(_viewModel.FilterModel.CohortReference);
         routeData["StartMonth"].Should().Be(_viewModel.FilterModel.StartMonth);
         routeData["StartYear"].Should().Be(_viewModel.FilterModel.StartYear);
+        routeData["LearningType"].Should().Be(_viewModel.FilterModel.LearningType.ToString());
     }
 
     [Test]
@@ -132,13 +135,16 @@ public class SelectLearnerRecordViewModelTests
         var routeData = _viewModel.FilterModel.RouteData;
 
         routeData.Should().NotBeNull();
-        routeData.Count.Should().Be(8);
+        routeData.Count.Should().Be(9);
         routeData["SearchTerm"].Should().Be(_viewModel.FilterModel.SearchTerm);
     }
 
     [Test]
     public void MapsIlrLearnerSummary_ToIlrApprenticeshipSummary()
     {
+        _fixture.Customize<GetLearnerSummary>(c =>
+            c.With(x => x.LearningType, "Apprenticeship"));
+
         var ilrLearner = _fixture.Create<GetLearnerSummary>();
         var apprenticeship = (LearnerSummary)ilrLearner;
 
@@ -148,6 +154,7 @@ public class SelectLearnerRecordViewModelTests
         apprenticeship.LastName.Should().Be(ilrLearner.LastName);
         apprenticeship.Uln.Should().Be(ilrLearner.Uln);
         apprenticeship.CourseName.Should().Be(ilrLearner.Course);
+        apprenticeship.LearningType.Should().Be(ilrLearner.LearningType.ToEnum<LearningType>());
     }
 
     [TestCase(0, false)]

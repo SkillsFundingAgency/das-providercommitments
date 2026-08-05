@@ -2,26 +2,25 @@
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
-{  
-    public class BulkUploadAddAndApproveDraftApprenticeshipsViewModelMapper : IMapper<BulkUploadAddAndApproveDraftApprenticeshipsResponse, BulkUploadAddAndApproveDraftApprenticeshipsViewModel>
-    {
-        public Task<BulkUploadAddAndApproveDraftApprenticeshipsViewModel> Map(BulkUploadAddAndApproveDraftApprenticeshipsResponse source)
-        {          
-            var viewModel = new BulkUploadAddAndApproveDraftApprenticeshipsViewModel
-            {
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+
+public class BulkUploadAddAndApproveDraftApprenticeshipsViewModelMapper : IMapper<BulkUploadAddAndApproveDraftApprenticeshipsResponse, BulkUploadAddAndApproveDraftApprenticeshipsViewModel>
+{
+    public Task<BulkUploadAddAndApproveDraftApprenticeshipsViewModel> Map(BulkUploadAddAndApproveDraftApprenticeshipsResponse source)
+    {          
+        var viewModel = new BulkUploadAddAndApproveDraftApprenticeshipsViewModel
+        {
                
-                BulkUploadDraftApprenticeshipsViewModel = source.BulkUploadAddAndApproveDraftApprenticeshipResponse
-                                                        .Select(r => new BulkUploadDraftApprenticeshipViewModel
-                                                        {                                                                        
-                                                            CohortReference = r.CohortReference,
-                                                            NumberOfApprenticeships = r.NumberOfApprenticeships,
-                                                            EmployerName = r.EmployerName
-                                                        }).ToList()
+            BulkUploadDraftApprenticeshipsViewModel = source.BulkUploadAddAndApproveDraftApprenticeshipResponse
+                .Select(r => new BulkUploadDraftApprenticeshipViewModel
+                {                                                                        
+                    CohortReference = r.CohortReference,
+                    NumberOfApprenticeships = r.NumberOfApprenticeships,
+                    EmployerName = r.EmployerName
+                }).ToList()
 
-            };
+        };
 
-            return Task.FromResult(viewModel);
-        }
+        return Task.FromResult(viewModel);
     }
 }

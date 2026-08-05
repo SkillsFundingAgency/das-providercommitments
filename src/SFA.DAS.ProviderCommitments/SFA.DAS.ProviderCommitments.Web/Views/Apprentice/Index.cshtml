@@ -7,11 +7,18 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.IndexViewModel
 
 @{
-    ViewData["Title"] = "Manage Your Apprentices";
+    ViewData["Title"] = "Manage your learners";
     ViewBag.GaData.Vpv = "/apprentices/apprentice";
 }
 
-<h1 class="govuk-heading-xl">Manage your apprentices</h1>
+<h1 class="govuk-heading-xl">Manage your learners</h1>
+
+@if (Model.HasChangeHistory)
+{
+    <p>
+        <a class="govuk-link" asp-controller="Apprentice" asp-action="GetAllChangeHistory" asp-route-providerId="@Model.ProviderId">Change history for all learners</a>
+    </p>
+}
 
 @if (Model.FilterModel.TotalNumberOfApprenticeships == 0)
 {
@@ -27,7 +34,7 @@ else
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds">
                     <div class="govuk-form-group">
-                        <label for="searchTerm" class="govuk-label">Search apprentice name or unique learner number (ULN)</label>
+                        <label for="searchTerm" class="govuk-label">Search by learner name or unique learner number (ULN)</label>
                         <div class="das-search-form__group">
                             <input class="govuk-input das-search-form__input" id="searchTerm" name="searchTerm" type="text" value="@Model.FilterModel.SearchTerm">
                             <div class="das-search-form__button-wrap">
@@ -62,7 +69,7 @@ else
                             </div>
                             <div class="govuk-grid-column-one-third">
                                 <div class="govuk-form-group">
-                                    <label class="govuk-label" for="selectedCourse">Apprenticeship training course</label>
+                                    <label class="govuk-label" for="selectedCourse">Training course</label>
                                     <select class="govuk-select govuk-!-width-full" id="selectedCourse" name="selectedCourse">
                                         <option label="All" aria-label="All courses" value="">All</option>
                                         @foreach (var course in Model.FilterModel.CourseFilters)
@@ -163,36 +170,40 @@ else
                         <div class="govuk-grid-row">
                             <div class="govuk-grid-column-one-third">
                                 <div class="govuk-form-group">
-                                    <label class="govuk-label" for="selectedStatus">Apprentice confirmation</label>
+                                    <label class="govuk-label" for="selectedStatus">Learner confirmation</label>
                                     <select class="govuk-select govuk-!-width-full" id="selectedApprenticeConfirmation" name="selectedApprenticeConfirmation">
                                         <option label="All" aria-label="All confirmations" value="">All</option>
                                         @foreach (var confirmation in Model.FilterModel.ApprenticeConfirmationFilters)
                                         {
                                             if (confirmation == Model.FilterModel.SelectedApprenticeConfirmation)
                                             {
-                                                <option label="@confirmation.GetDescription()" value="@confirmation" selected="selected">@confirmation.GetDescription()</option> }
+                                                <option label="@confirmation.GetDescription()" value="@confirmation" selected="selected">@confirmation.GetDescription()</option>
+                                            }
                                             else
                                             {
-                                                <option label="@confirmation.GetDescription()" value="@confirmation">@confirmation.GetDescription()</option>}
+                                                <option label="@confirmation.GetDescription()" value="@confirmation">@confirmation.GetDescription()</option>
                                             }
+                                        }
                                     </select>
                                 </div>
                             </div>
 
                             <div class="govuk-grid-column-one-third">
                                 <div class="govuk-form-group">
-                                    <label class="govuk-label" for="selectedDeliveryModel">Apprenticeship delivery model</label>
+                                    <label class="govuk-label" for="selectedDeliveryModel">Training delivery model</label>
                                     <select class="govuk-select govuk-!-width-full" id="selectedDeliveryModel" name="selectedDeliveryModel">
                                         <option label="All" aria-label="All delivery models" value="">All</option>
                                         @foreach (var deliveryModel in Model.FilterModel.DeliveryModelFilters)
                                         {
                                             if (deliveryModel == Model.FilterModel.SelectedDeliveryModel)
                                             {
-                                                <option label="@deliveryModel.ToDescription()" value="@deliveryModel" selected="selected">@deliveryModel.ToDescription()</option> }
+                                                <option label="@deliveryModel.ToDescription()" value="@deliveryModel" selected="selected">@deliveryModel.ToDescription()</option>
+                                            }
                                             else
                                             {
-                                                <option label="@deliveryModel.ToDescription()" value="@deliveryModel">@deliveryModel.ToDescription()</option>}
+                                                <option label="@deliveryModel.ToDescription()" value="@deliveryModel">@deliveryModel.ToDescription()</option>
                                             }
+                                        }
                                     </select>
                                 </div>
                             </div>
@@ -264,59 +275,62 @@ else
                 <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header">
                         <a class="@(Model.FilterModel.SortField == "FirstName" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                           asp-route="@RouteNames.ApprenticesIndex"
-                           asp-all-route-data="@Model.FilterModel.BuildSortRouteData("FirstName")"
-                           title="Sort the table by name">
-                            Apprentice name
+                               asp-route="@RouteNames.ApprenticesIndex"
+                               asp-all-route-data="@Model.FilterModel.BuildSortRouteData("FirstName")"
+                               title="Sort the table by name">
+                            Name
                         </a>
                     </th>
                     <th scope="col" class="govuk-table__header">
                         <a class="@(Model.FilterModel.SortField == "Uln" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                           asp-route="@RouteNames.ApprenticesIndex"
-                           asp-all-route-data="@Model.FilterModel.BuildSortRouteData("Uln")"
-                           title="Sort the table by name">
+                               asp-route="@RouteNames.ApprenticesIndex"
+                               asp-all-route-data="@Model.FilterModel.BuildSortRouteData("Uln")"
+                               title="Sort the table by name">
                             ULN
                         </a>
                     </th>
                     <th scope="col" class="govuk-table__header">
                         <a class="@(Model.FilterModel.SortField == "Name" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                           asp-route="@RouteNames.ApprenticesIndex"
-                           asp-all-route-data="@Model.FilterModel.BuildSortRouteData("Name")"
-                           title="Sort the table by name">
+                               asp-route="@RouteNames.ApprenticesIndex"
+                               asp-all-route-data="@Model.FilterModel.BuildSortRouteData("Name")"
+                               title="Sort the table by name">
                             Employer
                         </a>
                     </th>
                     <th scope="col" class="govuk-table__header">
                         <a class="@(Model.FilterModel.SortField == "CourseName" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                           asp-route="@RouteNames.ApprenticesIndex"
-                           asp-all-route-data="@Model.FilterModel.BuildSortRouteData("CourseName")"
-                           title="Sort the table by name">
-                            Apprenticeship training course
+                               asp-route="@RouteNames.ApprenticesIndex"
+                               asp-all-route-data="@Model.FilterModel.BuildSortRouteData("CourseName")"
+                               title="Sort the table by name">
+                            Training course
                         </a>
                     </th>
                     <th scope="col" class="govuk-table__header">
                         <a class="@(Model.FilterModel.SortField == "StartDate" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                           asp-route="@RouteNames.ApprenticesIndex"
-                           asp-all-route-data="@Model.FilterModel.BuildSortRouteData("StartDate")"
-                           title="Sort the table by name">
+                               asp-route="@RouteNames.ApprenticesIndex"
+                               asp-all-route-data="@Model.FilterModel.BuildSortRouteData("StartDate")"
+                               title="Sort the table by name">
                             Planned start date
                         </a>
                     </th>
                     <th scope="col" class="govuk-table__header">
                         <a class="@(Model.FilterModel.SortField == "EndDate" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                           asp-route="@RouteNames.ApprenticesIndex"
-                           asp-all-route-data="@Model.FilterModel.BuildSortRouteData("EndDate")"
-                           title="Sort the table by name">
+                               asp-route="@RouteNames.ApprenticesIndex"
+                               asp-all-route-data="@Model.FilterModel.BuildSortRouteData("EndDate")"
+                               title="Sort the table by name">
                             Planned end date
                         </a>
                     </th>
                     <th scope="col" class="govuk-table__header">
                         <a class="@(Model.FilterModel.SortField == "ConfirmationStatus" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
-                           asp-route="@RouteNames.ApprenticesIndex"
-                           asp-all-route-data="@Model.FilterModel.BuildSortRouteData("ConfirmationStatus")"
-                           title="Sort the table by status">
-                            Apprentice confirmation
+                               asp-route="@RouteNames.ApprenticesIndex"
+                               asp-all-route-data="@Model.FilterModel.BuildSortRouteData("ConfirmationStatus")"
+                               title="Sort the table by status">
+                            Learner confirmation
                         </a>
+                    </th>
+                    <th scope="col" class="govuk-table__header">
+                        Employment status
                     </th>
                     <th scope="col" class="govuk-table__header">
                         Status
@@ -329,48 +343,51 @@ else
             <tbody class="govuk-table__body">
                 @foreach (var apprenticeship in Model.Apprenticeships)
                 {
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell" data-label="Apprentice name">
-                        <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
-                            @apprenticeship.ApprenticeName
-                        </a>
-                    </td>
-                    <td class="govuk-table__cell" data-label="ULN">
-                        @apprenticeship.Uln
-                    </td>
-                    <td class="govuk-table__cell" data-label="Employer">
-                        @apprenticeship.EmployerName
-                    </td>
-                    <td class="govuk-table__cell" data-label="Apprenticeship training course">
-                        @apprenticeship.CourseName
-                    </td>
-                    <td class="govuk-table__cell" data-label="Planned start date">
-                        @apprenticeship.PlannedStartDate.ToGdsFormatWithoutDay()
-                    </td>
-                    <td class="govuk-table__cell" data-label="Planned end date">
-                        @apprenticeship.PlannedEndDate.ToGdsFormatWithoutDay()
-                    </td>
-                    <td class="govuk-table__cell" data-label="Apprentice confirmation">
-                        @apprenticeship.ConfirmationStatus.ToDisplayString()
-                    </td>
-                    <td class="govuk-table__cell" data-label="Status">
-                        <strong class="govuk-tag @apprenticeship.Status.GetDisplayClass()">
-                            @apprenticeship.Status.GetDescription().ToUpper()
-                        </strong>
-                    </td>
-                    <td class="govuk-table__cell" data-label="Alerts">
-                        @for (var index = 0; index < apprenticeship.Alerts.Count(); index++)
-                        {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell" data-label="Apprentice name">
                             <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
-                                @apprenticeship.Alerts.ElementAt(index)
+                                @apprenticeship.ApprenticeName
                             </a>
-                            @if (index < apprenticeship.Alerts.Count() - 1)
+                        </td>
+                        <td class="govuk-table__cell" data-label="ULN">
+                            @apprenticeship.Uln
+                        </td>
+                        <td class="govuk-table__cell" data-label="Employer">
+                            @apprenticeship.EmployerName
+                        </td>
+                        <td class="govuk-table__cell" data-label="Training course">
+                            @apprenticeship.CourseName
+                        </td>
+                        <td class="govuk-table__cell" data-label="Planned start date">
+                            @apprenticeship.PlannedStartDate.ToGdsFormatWithoutDay()
+                        </td>
+                        <td class="govuk-table__cell" data-label="Planned end date">
+                            @apprenticeship.PlannedEndDate.ToGdsFormatWithoutDay()
+                        </td>
+                        <td class="govuk-table__cell" data-label="Learner confirmation">
+                            @apprenticeship.ConfirmationStatus.ToDisplayString()
+                        </td>
+                        <td class="govuk-table__cell" data-label="Employment status">
+                            @apprenticeship.EmploymentStatus
+                        </td>
+                        <td class="govuk-table__cell" data-label="Status">
+                            <strong class="govuk-tag @apprenticeship.Status.GetDisplayClass()">
+                                @apprenticeship.Status.GetDescription().ToUpper()
+                            </strong>
+                        </td>
+                        <td class="govuk-table__cell" data-label="Alerts">
+                            @for (var index = 0; index < apprenticeship.Alerts.Count(); index++)
                             {
-                                <br />
+                                <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
+                                    @apprenticeship.Alerts.ElementAt(index)
+                                </a>
+                                @if (index < apprenticeship.Alerts.Count() - 1)
+                                {
+                                    <br />
+                                }
                             }
-                        }
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>

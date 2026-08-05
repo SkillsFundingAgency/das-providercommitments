@@ -10,6 +10,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using static SFA.DAS.CommitmentsV2.Api.Types.Responses.GetPriceEpisodesResponse;
+using LearningType = SFA.DAS.Common.Domain.Types.LearningType;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice;
 
@@ -290,6 +291,24 @@ public class EditApprenticeshipRequestToViewModelMapperTests
         viewModel.IsLockedForUpdate.Should().Be(expectedIsLockedForUpdated);
     }
 
+    [TestCase(LearningType.Apprenticeship, false)]
+    [TestCase(LearningType.FoundationApprenticeship, false)]
+    [TestCase(LearningType.ApprenticeshipUnit, true)]
+    public async Task IsLockedForUpdate_DependingOnLearningType_And_WaitingToStart(LearningType learningType, bool expectedIsLockedForUpdated)
+    {
+        _fixture.NotTransferSender()
+            .IsWaitingToStartAndIsNotWithInFundingPeriod()
+            .SetLearningType(learningType)
+            .SetDataLockSuccess(true);
+
+        //Act
+        var viewModel = await _fixture.Map();
+
+        //Assert
+        viewModel.IsLockedForUpdate.Should().Be(expectedIsLockedForUpdated);
+    }
+
+
     [TestCase(ApprenticeshipStatus.WaitingToStart, true, true)]
     [TestCase(ApprenticeshipStatus.WaitingToStart, false, false)]
     public async Task IsLockedForUpdate_Is_Mapped_With_ApprenticeshipStatus_And_IsFundedByTransfer_And_HasDataLockSuccess_Condition(ApprenticeshipStatus status, bool hasHadDataLockSuccess, bool expectedIsLockedForUpdated)
@@ -339,6 +358,27 @@ public class EditApprenticeshipRequestToViewModelMapperTests
         //Assert
         viewModel.IsEndDateLockedForUpdate.Should().Be(expectedIsEndDateLockedForUpdate);
     }
+
+    [TestCase(LearningType.Apprenticeship, true)]
+    [TestCase(LearningType.FoundationApprenticeship, true)]
+    [TestCase(LearningType.ApprenticeshipUnit, true)]
+    public async Task IsEndDateLockedForUpdateWhenWaitingToStart_Is_Mapped(LearningType learningType, bool expectedIsEndDateLockedForUpdate)
+    {
+        var status = ApprenticeshipStatus.WaitingToStart;
+
+        _fixture
+            .NotTransferSender()
+            .SetApprenticeshipStatus(status)
+            .SetLearningType(learningType)
+            .SetDataLockSuccess(true);
+
+        //Act
+        var viewModel = await _fixture.Map();
+
+        //Assert
+        viewModel.IsEndDateLockedForUpdate.Should().Be(expectedIsEndDateLockedForUpdate);
+    }
+
 
     [Test]
     public async Task AccountLegalEntity_IsMapped()
@@ -409,13 +449,13 @@ public class EditApprenticeshipRequestToViewModelMapperTestsFixture
 
     internal EditApprenticeshipRequestToViewModelMapperTestsFixture SetUpLevyAccount()
     {
-        _accountResponse.LevyStatus = ApprenticeshipEmployerType.Levy;
+        _accountResponse.LevyStatus = CommitmentsV2.Types.ApprenticeshipEmployerType.Levy;
         return this;
     }
 
     internal EditApprenticeshipRequestToViewModelMapperTestsFixture SetUpNonLevyAccount()
     {
-        _accountResponse.LevyStatus = ApprenticeshipEmployerType.NonLevy;
+        _accountResponse.LevyStatus = CommitmentsV2.Types.ApprenticeshipEmployerType.NonLevy;
         return this;
     }
 
@@ -566,6 +606,12 @@ public class EditApprenticeshipRequestToViewModelMapperTestsFixture
     internal EditApprenticeshipRequestToViewModelMapperTestsFixture SetApprenticeshipStatus(ApprenticeshipStatus status)
     {
         ApprenticeshipResponse.Status = status;
+        return this;
+    }
+
+    internal EditApprenticeshipRequestToViewModelMapperTestsFixture SetLearningType(LearningType learningType)
+    {
+        _editApprenticeshipResponse.LearningType = learningType;
         return this;
     }
 

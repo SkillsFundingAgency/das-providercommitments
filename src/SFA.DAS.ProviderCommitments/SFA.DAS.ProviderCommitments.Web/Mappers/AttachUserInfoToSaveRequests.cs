@@ -3,45 +3,44 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers
+namespace SFA.DAS.ProviderCommitments.Web.Mappers;
+
+public class AttachUserInfoToSaveRequests<TFrom, TTo> : IMapper<TFrom, TTo> 
+    where TFrom : class
+    where TTo : class
 {
-    public class AttachUserInfoToSaveRequests<TFrom, TTo> : IMapper<TFrom, TTo> 
-        where TFrom : class
-        where TTo : class
+    private readonly IMapper<TFrom, TTo> _innerMapper;
+    private readonly IAuthenticationService _authenticationService;
+
+    public AttachUserInfoToSaveRequests(IMapper<TFrom, TTo> innerMapper, IAuthenticationService authenticationService)
     {
-        private readonly IMapper<TFrom, TTo> _innerMapper;
-        private readonly IAuthenticationService _authenticationService;
+        _innerMapper = innerMapper;
+        _authenticationService = authenticationService;
+    }
 
-        public AttachUserInfoToSaveRequests(IMapper<TFrom, TTo> innerMapper, IAuthenticationService authenticationService)
+    public async Task<TTo> Map(TFrom source)
+    {
+        var to = await _innerMapper.Map(source);
+
+        if (to is SaveDataRequest saveDataRequest)
         {
-            _innerMapper = innerMapper;
-            _authenticationService = authenticationService;
+            saveDataRequest.UserInfo = GetUserInfo();
         }
+        return to;
+    }
 
-        public async Task<TTo> Map(TFrom source)
+    protected UserInfo GetUserInfo()
+    {
+        if (_authenticationService.IsUserAuthenticated())
         {
-            var to = await _innerMapper.Map(source);
-
-            if (to is SaveDataRequest saveDataRequest)
+            return new UserInfo
             {
-                saveDataRequest.UserInfo = GetUserInfo();
-            }
-            return to;
+                UserId = _authenticationService.UserId,
+                UserDisplayName = _authenticationService.UserName,
+                UserEmail = _authenticationService.UserEmail
+            };
         }
 
-        protected UserInfo GetUserInfo()
-        {
-            if (_authenticationService.IsUserAuthenticated())
-            {
-                return new UserInfo
-                {
-                    UserId = _authenticationService.UserId,
-                    UserDisplayName = _authenticationService.UserName,
-                    UserEmail = _authenticationService.UserEmail
-                };
-            }
-
-            return null;
-        }
+        return null;
     }
 }

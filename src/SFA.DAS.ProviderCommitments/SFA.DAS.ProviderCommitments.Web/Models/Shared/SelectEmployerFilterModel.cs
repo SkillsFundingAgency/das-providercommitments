@@ -4,6 +4,7 @@ public class SelectEmployerFilterModel
 {
     public const string EmployerAccountLegalEntityNameConst = "EmployerAccountLegalEntityName";
     public const string EmployerAccountNameConst = "EmployerAccountName";
+    public const string AgreementId = "AgreementId";
 
     private static readonly int PageSize = Constants.SelectEmployer.NumberOfEmployersPerPage;
 
@@ -25,6 +26,8 @@ public class SelectEmployerFilterModel
     }
 
     public bool ShowPageLinks => TotalEmployersFound > PageSize;
+    public bool IsMultiSelectJourney { get; set; }
+    public Guid? CacheKey { get; set; }
 
     public Dictionary<string, string> BuildSortRouteData(string sortByThisField)
     {
@@ -39,6 +42,8 @@ public class SelectEmployerFilterModel
         routeData.Add("SortField", sortByThisField);
         routeData.Add(nameof(SearchTerm), SearchTerm ?? string.Empty);
         routeData.Add(nameof(PageNumber), "1");
+        routeData.Add(nameof(IsMultiSelectJourney), IsMultiSelectJourney.ToString());
+        routeData.Add(nameof(CacheKey), CacheKey?.ToString() ?? string.Empty);
 
         return routeData;
     }
@@ -52,7 +57,9 @@ public class SelectEmployerFilterModel
             { nameof(ReverseSort), ReverseSort.ToString() },
             { "SortField", CurrentlySortedByField ?? string.Empty },
             { nameof(SearchTerm), SearchTerm ?? string.Empty },
-            { nameof(PageNumber), pageNumber.ToString() }
+            { nameof(PageNumber), pageNumber.ToString() },
+            { nameof(IsMultiSelectJourney), IsMultiSelectJourney.ToString() },
+            { nameof(CacheKey), CacheKey?.ToString() ?? string.Empty }
         };
         return routeData;
     }
@@ -66,7 +73,9 @@ public class SelectEmployerFilterModel
             { nameof(ReverseSort), false.ToString() },
             { "SortField", string.Empty },
             { nameof(SearchTerm), string.Empty },
-            { nameof(PageNumber), "1" }
+            { nameof(PageNumber), "1" },
+            { nameof(IsMultiSelectJourney), IsMultiSelectJourney.ToString() },
+            { nameof(CacheKey), CacheKey?.ToString() ?? string.Empty }
         };
     }
 

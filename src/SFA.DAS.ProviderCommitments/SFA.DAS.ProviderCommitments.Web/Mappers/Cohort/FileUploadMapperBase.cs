@@ -7,7 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 
 public class FileUploadMapperBase(IEncodingService encodingService, IOuterApiService outerApiService)
 {
-    private readonly Dictionary<long, long?> _transferSenderIds = new ();
+    private readonly Dictionary<long, long?> _transferSenderIds = new();
 
     public List<BulkUploadAddDraftApprenticeshipRequest> ConvertToBulkUploadApiRequest(List<CsvRecord> csvRecords, long providerId)
     {
@@ -34,62 +34,10 @@ public class FileUploadMapperBase(IEncodingService encodingService, IOuterApiSer
             RecognisePriorLearningAsString = csvRecord.RecognisePriorLearning,
             TrainingTotalHoursAsString = csvRecord.TrainingTotalHours,
             TrainingHoursReductionAsString = csvRecord.TrainingHoursReduction,
-            IsDurationReducedByRPLAsString = DefaultIsDurationReducedByRplToAppropriateValueIfNotSetBasedOnDurationReducedByValue(csvRecord),
-            DurationReducedByAsString = BlankDurationReducedByIfItsSetToZeroAndIsDurationReducedByRplIsNotSet(csvRecord),
+            IsDurationReducedByRPLAsString = null,
+            DurationReducedByAsString = null,
             PriceReducedByAsString = csvRecord.PriceReducedBy,
         }).ToList();
-    }
-
-    private static string DefaultIsDurationReducedByRplToAppropriateValueIfNotSetBasedOnDurationReducedByValue(CsvRecord csvRecord)
-    {
-        if (!string.IsNullOrWhiteSpace(csvRecord.IsDurationReducedByRPL))
-        {
-            return csvRecord.IsDurationReducedByRPL;
-        }
-
-        if (string.IsNullOrWhiteSpace(csvRecord.RecognisePriorLearning))
-        {
-            return null;
-        }
-
-        var isRplTrue = string.Equals(csvRecord.RecognisePriorLearning, "true", StringComparison.OrdinalIgnoreCase);
-            
-        if (!isRplTrue)
-        {
-            return null;
-        }
-
-        var durationReducedBy = DurationReducedByValue(csvRecord.DurationReducedBy);
-        if (durationReducedBy > 0)
-        {
-            return "TRUE";
-        }
-
-        return null;
-    }
-
-    private static string BlankDurationReducedByIfItsSetToZeroAndIsDurationReducedByRplIsNotSet(CsvRecord csvRecord)
-    {
-        if (!string.IsNullOrWhiteSpace(csvRecord.IsDurationReducedByRPL))
-        {
-            return csvRecord.DurationReducedBy;
-        }
-
-        if (csvRecord.DurationReducedBy == "0")
-        {
-            return null;
-        }
-            
-        return csvRecord.DurationReducedBy;
-    }
-
-    private static long? DurationReducedByValue(string durationReducedBy)
-    {
-        if (long.TryParse(durationReducedBy, out var reducedBy))
-        {
-            return reducedBy;
-        }
-        return null;
     }
 
     private async Task<long?> GetTransferSenderId(string cohortRef)

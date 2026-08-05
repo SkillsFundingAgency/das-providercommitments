@@ -1,4 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
+﻿using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Learners;
 

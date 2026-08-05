@@ -14,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
 
             When(x => x.DeliveryModel != DeliveryModel.PortableFlexiJob, () =>
             {
-                RuleFor(x => x.Price).GreaterThanOrEqualTo(1).WithMessage("Enter the new agreed apprenticeship price");
+                RuleFor(x => x.Price).GreaterThanOrEqualTo(1).WithMessage("Enter the new agreed training price");
                 RuleFor(x => x.Price)
                     .LessThanOrEqualTo(100000)
                     .WithMessage("The new agreed apprenticeship price must be £100,000 or less")

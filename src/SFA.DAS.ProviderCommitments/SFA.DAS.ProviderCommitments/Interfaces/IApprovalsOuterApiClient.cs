@@ -1,5 +1,8 @@
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Account;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
 
 namespace SFA.DAS.ProviderCommitments.Interfaces;
@@ -17,6 +20,14 @@ public interface IApprovalsOuterApiClient
     Task<GetProviderAccountLegalEntitiesResponse> GetProviderAccountLegalEntities(int ukprn);
 
     Task<GetHasRelationshipWithPermissionResponse> GetHasRelationshipWithPermission(long ukprn);
+
     Task<GetAccountResponse> GetAccount(string hashedAccountId);
+
     Task<GetSelectEmployerResponse> GetSelectEmployer(GetSelectEmployerRequest request);
+
+    Task<GetSelectEmployerResponse> GetSelectNewEmployer(GetSelectNewEmployerRequest request);
+
+    Task<GetChangeHistoryResponse> GetChangeHistory(long apprenticeshipId);
+    Task<GetAllChangeHistoryResponse> GetAllChangeHistory(long providerId);
+    Task<GetApprenticeshipsResponse> GetApprenticeships(GetApprenticeshipsRequest request);
 }

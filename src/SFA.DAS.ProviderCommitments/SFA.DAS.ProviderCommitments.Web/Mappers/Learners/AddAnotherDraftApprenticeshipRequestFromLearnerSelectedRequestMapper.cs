@@ -31,6 +31,7 @@ public class AddAnotherDraftApprenticeshipRequestFromLearnerSelectedRequestMappe
         cacheItem.CourseCode = learner.TrainingCode;
         cacheItem.Cost = learner.TrainingPrice + cacheItem.EndPointAssessmentPrice;
         cacheItem.LearnerDataId = source.LearnerDataId;
+        cacheItem.LearningType = learner.LearningType;
         await cacheStorage.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
 
         return new ReservationsAddDraftApprenticeshipRequest

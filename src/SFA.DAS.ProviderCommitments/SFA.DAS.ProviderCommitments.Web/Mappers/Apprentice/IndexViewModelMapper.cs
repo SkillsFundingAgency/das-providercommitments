@@ -1,58 +1,67 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+
+public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
 {
-    public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
+    private readonly IModelMapper _modelMapper;
+    private readonly IApprovalsOuterApiClient _approvalsOuterApiClient;
+    private readonly ILogger<IndexViewModelMapper> _logger;
+
+    public IndexViewModelMapper(IModelMapper modelMapper, IApprovalsOuterApiClient approvalsOuterApiClient, ILogger<IndexViewModelMapper> logger)
     {
-        private readonly ICommitmentsApiClient _client;
-        private readonly IModelMapper _modelMapper;
+        _modelMapper = modelMapper;
+        _approvalsOuterApiClient = approvalsOuterApiClient;
+        _logger = logger;
+    }
 
-        public IndexViewModelMapper(ICommitmentsApiClient client, IModelMapper modelMapper)
+    public async Task<IndexViewModel> Map(IndexRequest source)
+    {
+        try
         {
-            _client = client;
-            _modelMapper = modelMapper;
-        }
+            _logger.LogInformation("Inside Index view model mapper");
 
-        public async Task<IndexViewModel> Map(IndexRequest source)
-        {
-            var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest
-            {
-                ProviderId = source.ProviderId,
-                PageNumber = source.PageNumber,
-                PageItemCount = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage,
-                SortField = source.SortField,
-                ReverseSort = source.ReverseSort,
-                SearchTerm = source.SearchTerm,
-                EmployerName = source.SelectedEmployer,
-                CourseName = source.SelectedCourse,
-                Status = source.SelectedStatus,
-                StartDate = source.SelectedStartDate,
-                EndDate = source.SelectedEndDate,
-                Alert = source.SelectedAlert,
-                ApprenticeConfirmationStatus = source.SelectedApprenticeConfirmation,
-                DeliveryModel = source.SelectedDeliveryModel
-            });
+            var response = await _approvalsOuterApiClient.GetApprenticeships(new
+                GetApprenticeshipsRequest(
+                source.ProviderId,
+                source.PageNumber,
+                Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage,
+                source.SortField,
+                source.ReverseSort,
+                source.SearchTerm,
+                source.SelectedEmployer, null,
+                source.SelectedCourse,
+                source.SelectedStatus,
+                source.SelectedStartDate,
+                source.SelectedEndDate, null, null, null,
+                source.SelectedAlert,
+                source.SelectedApprenticeConfirmation,
+                source.SelectedDeliveryModel));
+
+            _logger.LogInformation("Response is null {a}", response is null);
+
+            response = response ?? new Infrastructure.OuterApi.Responses.Apprentices.GetApprenticeshipsResponse();
 
             var statusFilters = new[]
             {
-                ApprenticeshipStatus.WaitingToStart, 
-                ApprenticeshipStatus.Live,
-                ApprenticeshipStatus.Paused, 
-                ApprenticeshipStatus.Stopped,
-                ApprenticeshipStatus.Completed
-            };
+            ApprenticeshipStatus.WaitingToStart,
+            ApprenticeshipStatus.Live,
+            ApprenticeshipStatus.Paused,
+            ApprenticeshipStatus.Stopped,
+            ApprenticeshipStatus.Completed
+        };
 
             var alertFilters = new[]
             {
-                Alerts.ChangesForReview ,
-                Alerts.ChangesPending,
-                Alerts.ChangesRequested,
-                Alerts.IlrDataMismatch,
-            };
+            Alerts.ChangesForReview ,
+            Alerts.ChangesPending,
+            Alerts.ChangesRequested,
+            Alerts.IlrDataMismatch,
+        };
 
             var filterModel = new ApprenticesFilterModel
             {
@@ -78,28 +87,35 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             if (response.TotalApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch)
             {
-                var filters = await _client.GetApprenticeshipsFilterValues(
-                    new GetApprenticeshipFiltersRequest{ProviderId = source.ProviderId});
-
-                filterModel.EmployerFilters = filters.EmployerNames;
-                filterModel.CourseFilters = filters.CourseNames;
-                filterModel.StartDateFilters = filters.StartDates;
-                filterModel.EndDateFilters = filters.EndDates;
+                filterModel.EmployerFilters = response.ApprenticeshipFiltersValue.EmployerNames;
+                filterModel.CourseFilters = response.ApprenticeshipFiltersValue.CourseNames;
+                filterModel.StartDateFilters = response.ApprenticeshipFiltersValue.StartDates;
+                filterModel.EndDateFilters = response.ApprenticeshipFiltersValue.EndDates;
             }
 
             var apprenticeships = new List<ApprenticeshipDetailsViewModel>();
+
             foreach (var apprenticeshipDetailsResponse in response.Apprenticeships)
             {
                 var apprenticeship = await _modelMapper.Map<ApprenticeshipDetailsViewModel>(apprenticeshipDetailsResponse);
                 apprenticeships.Add(apprenticeship);
             }
 
+            _logger.LogInformation("Processed successfully");
+
             return new IndexViewModel
             {
                 ProviderId = source.ProviderId,
                 Apprenticeships = apprenticeships,
-                FilterModel = filterModel
+                FilterModel = filterModel,
+                HasChangeHistory = response.HasChangeHistory
             };
         }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+        }
+
+        return new IndexViewModel();
     }
 }

@@ -14,7 +14,7 @@
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                         <h1 class="govuk-fieldset__heading">
-                            Add apprentice details
+                            How do you want to add learner details?
                         </h1>
                     </legend>
                     @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
@@ -22,16 +22,16 @@
                         <div class="govuk-radios__item">
                             <input asp-for="Selection" value="ILR" type="radio" class="govuk-radios__input" id="confirm-ILR"/>
                             <label class="govuk-label govuk-radios__label" for="confirm-ILR">
-                                Select apprentices from ILR
+                               Choose details from ILR (individual learner record)
                             </label>
-                            <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">Add new apprentice details imported from the ILR file you have submitted to Submit Learner Data</div>
+                            <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">For apprenticeships or apprenticeship units</div>
                         </div>
                         <div class="govuk-radios__item">
                             <input asp-for="Selection" value="Manual" type="radio" class="govuk-radios__input" id="confirm-Manual"/>
                             <label class="govuk-label govuk-radios__label" for="confirm-Manual">
-                                Manually
+                                 Manually add details
                             </label>
-                            <div id="manual-input-hint" class="govuk-hint govuk-radios__hint">Add new apprentice details to new cohort</div>
+                            <div id="manual-input-hint" class="govuk-hint govuk-radios__hint">For apprenticeships only</div>
                         </div>
                     </div>
                 </fieldset>
@@ -45,6 +45,6 @@
 
 @section breadcrumb
 {
-    @*     <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", "Cohort", new { Model.CohortReference, Model.ProviderId })">Back</a>
- *@
+    <a id="back-link" class="govuk-back-link" asp-external-subdomain="securefunding" asp-external-controller="reservations"
+        asp-external-action="manage"       asp-external-id="@Model.ProviderId">Back</a>
 }

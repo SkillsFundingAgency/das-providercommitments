@@ -30,6 +30,7 @@ public class CreateCohortWithDraftApprenticeshipRequestFromLearnerSelectedReques
         cacheItem.CourseCode = learner.TrainingCode;
         cacheItem.Cost = learner.TrainingPrice + learner.EpaoPrice;
         cacheItem.LearnerDataId = source.LearnerDataId;
+        cacheItem.LearningType = learner.LearningType;
         await cacheStorage.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
 
         return new CreateCohortWithDraftApprenticeshipRequest

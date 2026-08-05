@@ -1,3 +1,4 @@
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
@@ -7,41 +8,31 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.Apprenticeships.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 
-public class DetailsViewModelMapper : IMapper<DetailsRequest, DetailsViewModel>
+public class DetailsViewModelMapper(
+    ICommitmentsApiClient commitmentApiClient,
+    IEncodingService encodingService,
+    IOuterApiClient apiClient,
+    ILogger<DetailsViewModelMapper> logger)
+    : IMapper<DetailsRequest, DetailsViewModel>
 {
-    private readonly ICommitmentsApiClient _commitmentApiClient;
-    private readonly IEncodingService _encodingService;
-    private readonly IOuterApiClient _apiClient;
-    private readonly ILogger<DetailsViewModelMapper> _logger;
-
-    public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService, IOuterApiClient apiClient,
-        ILogger<DetailsViewModelMapper> logger)
-    {
-        _commitmentApiClient = commitmentApiClient;
-        _encodingService = encodingService;
-        _apiClient = apiClient;
-        _logger = logger;            
-    }
-
     public async Task<DetailsViewModel> Map(DetailsRequest source)
     {
         try
-        {                
+        {
             var data = await GetApprenticeshipData(source.ApprenticeshipId, source.ProviderId);
             var hasProviderUpdates = data.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Provider);
             var hasEmployerUpdates = data.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Employer);
 
             var dataLockSummaryStatus = data.DataLocks.GetDataLockSummaryStatus();
 
-            var allowEditApprentice = 
+            var allowEditApprentice =
                 (data.Apprenticeship.Status == ApprenticeshipStatus.Live ||
                  data.Apprenticeship.Status == ApprenticeshipStatus.WaitingToStart ||
                  data.Apprenticeship.Status == ApprenticeshipStatus.Paused) &&
-                !hasProviderUpdates && 
+                !hasProviderUpdates &&
                 !hasEmployerUpdates &&
                 dataLockSummaryStatus == DetailsViewModel.DataLockSummaryStatus.None;
 
@@ -65,11 +56,11 @@ public class DetailsViewModelMapper : IMapper<DetailsRequest, DetailsViewModel>
                 ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
                 Email = data.Apprenticeship.Email,
                 Employer = data.Apprenticeship.EmployerName,
-                Reference = _encodingService.Encode(data.Apprenticeship.CohortId, EncodingType.CohortReference),
+                Reference = encodingService.Encode(data.Apprenticeship.CohortId, EncodingType.CohortReference),
                 Status = data.Apprenticeship.Status,
                 ConfirmationStatus = data.Apprenticeship.ConfirmationStatus,
                 StopDate = data.Apprenticeship.StopDate,
-                AgreementId = _encodingService.Encode(data.Apprenticeship.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
+                AgreementId = encodingService.Encode(data.Apprenticeship.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                 DateOfBirth = data.Apprenticeship.DateOfBirth,
                 Uln = data.Apprenticeship.Uln,
                 CourseName = data.Apprenticeship.CourseName,
@@ -102,7 +93,7 @@ public class DetailsViewModelMapper : IMapper<DetailsRequest, DetailsViewModel>
                         EmployerName = coe.EmployerName,
                         FromDate = coe.StartDate.Value,
                         ToDate = coe.StopDate.HasValue ? coe.StopDate.Value : coe.EndDate.Value,
-                        HashedApprenticeshipId = _encodingService.Encode(coe.ApprenticeshipId, EncodingType.ApprenticeshipId),
+                        HashedApprenticeshipId = encodingService.Encode(coe.ApprenticeshipId, EncodingType.ApprenticeshipId),
                         ShowLink = source.ApprenticeshipId != coe.ApprenticeshipId
                     }).ToList(),
                 EmailShouldBePresent = data.Apprenticeship.EmailShouldBePresent,
@@ -116,65 +107,18 @@ public class DetailsViewModelMapper : IMapper<DetailsRequest, DetailsViewModel>
                 DurationReducedBy = data.Apprenticeship.DurationReducedBy,
                 PriceReducedBy = data.Apprenticeship.PriceReducedBy,
                 HasMultipleDeliveryModelOptions = data.HasMultipleDeliveryModelOptions,
-                PendingPriceChange = Map(data.PendingPriceChange),
-                PendingStartDateChange = MapPendingStartDateChange(data.PendingStartDateChange),
-                CanActualStartDateBeChanged = data.CanActualStartDateBeChanged,
-                PaymentStatus = Map(data),
-                LearnerStatus = data.LearnerStatusDetails.LearnerStatus,
-                WithdrawalChangedDate = data.LearnerStatusDetails.WithdrawalChangedDate,
-                LastCensusDateOfLearning = data.LearnerStatusDetails.LastCensusDateOfLearning,
-                LastDayOfLearning = data.LearnerStatusDetails.LastDayOfLearning
+                EmploymentStatus = MapEmploymentStatus(data.Apprenticeship.EmployerVerificationStatus, data.Apprenticeship.EmployerVerificationNotes),
+                LearningType = data.Apprenticeship.LearningType,
+                HasChangeHistory = data.Apprenticeship.HasChangeHistory,
+                PaymentsPaused = data.PaymentsStatus?.FreezeStatus ?? false,
+                PausedReason = data.PaymentsStatus?.ReasonFrozen,
             };
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Error mapping apprenticeship {source.ApprenticeshipId} to DetailsViewModel");
+            logger.LogError(e, $"Error mapping apprenticeship {source.ApprenticeshipId} to DetailsViewModel");
             throw;
         }
-    }
-
-    private static PendingPriceChange Map(GetManageApprenticeshipDetailsResponse.PendingPriceChangeDetails priceChangeDetails)
-    {
-        if (priceChangeDetails == null)
-        {
-            return null;
-        }
-
-        return new PendingPriceChange
-        {
-            Cost = priceChangeDetails.Cost,
-            EndPointAssessmentPrice = priceChangeDetails.EndPointAssessmentPrice,
-            TrainingPrice = priceChangeDetails.TrainingPrice,
-            PriceChangeInitiator = Enum.Parse<ChangeInitiatedBy>(priceChangeDetails.Initiator)
-        };
-    }
-
-    private static PendingStartDateChange MapPendingStartDateChange(GetManageApprenticeshipDetailsResponse.PendingStartDateChangeDetails startDateChangeDetails)
-    {
-        if (startDateChangeDetails == null)
-        {
-            return null;
-        }
-
-        return new PendingStartDateChange
-        {
-            PendingStartDate = startDateChangeDetails.PendingActualStartDate,
-            PendingEndDate = startDateChangeDetails.PendingPlannedEndDate,
-            ChangeInitiatedBy = Enum.Parse<ChangeInitiatedBy>(startDateChangeDetails.Initiator)
-        };
-    }
-
-    private static PaymentsStatus Map(GetManageApprenticeshipDetailsResponse source)
-    {
-        var paymentsStatusData = source.PaymentsStatus;
-        var paymentStatus = new PaymentsStatus
-        {
-            Status = source.PaymentsStatus.PaymentsFrozen ? "Withheld" : source.LearnerStatusDetails.LearnerStatus == LearnerStatus.WaitingToStart ? "Inactive" : "Active",
-            PaymentsFrozen = paymentsStatusData.PaymentsFrozen,
-            ReasonFrozen = paymentsStatusData.ReasonFrozen,
-            FrozenOn = paymentsStatusData.FrozenOn
-        };
-        return paymentStatus;
     }
 
     private static DetailsViewModel.TriageOption CalcTriageStatus(bool hasHadDataLockSuccess, IEnumerable<GetManageApprenticeshipDetailsResponse.DataLock> dataLocks)
@@ -187,7 +131,7 @@ public class DetailsViewModelMapper : IMapper<DetailsRequest, DetailsViewModel>
         var dataLockErrors = dataLocks.Where(x => x.IsUnresolvedError()).ToList();
 
         if (dataLockErrors.All(x => x.IsPrice()))
-            return  DetailsViewModel.TriageOption.Update;
+            return DetailsViewModel.TriageOption.Update;
 
         if (dataLockErrors.Any(x => x.IsCourseAndPrice()))
             return DetailsViewModel.TriageOption.Restart;
@@ -204,7 +148,7 @@ public class DetailsViewModelMapper : IMapper<DetailsRequest, DetailsViewModel>
     private async Task<GetManageApprenticeshipDetailsResponse> GetApprenticeshipData(long apprenticeshipId, long providerId)
     {
         var apiRequest = new GetManageApprenticeshipDetailsRequest(providerId, apprenticeshipId);
-        var apprenticeshipDetails = await _apiClient.Get<GetManageApprenticeshipDetailsResponse>(apiRequest);
+        var apprenticeshipDetails = await apiClient.Get<GetManageApprenticeshipDetailsResponse>(apiRequest);
 
         return apprenticeshipDetails;
     }
@@ -215,8 +159,8 @@ public class DetailsViewModelMapper : IMapper<DetailsRequest, DetailsViewModel>
         {
             return false;
         }
-            
-        var newerVersions = await _commitmentApiClient.GetNewerTrainingProgrammeVersions(apprenticeship.StandardUId);
+
+        var newerVersions = await commitmentApiClient.GetNewerTrainingProgrammeVersions(apprenticeship.StandardUId);
 
         return newerVersions?.NewerVersions != null && newerVersions.NewerVersions.Any();
     }
@@ -227,11 +171,43 @@ public class DetailsViewModelMapper : IMapper<DetailsRequest, DetailsViewModel>
         {
             return (false, false);
         }
-            
-        var trainingProgrammeVersionResponse = await _commitmentApiClient.GetTrainingProgrammeVersionByStandardUId(standardUId);
+
+        var trainingProgrammeVersionResponse = await commitmentApiClient.GetTrainingProgrammeVersionByStandardUId(standardUId);
 
         var optionsCount = trainingProgrammeVersionResponse?.TrainingProgramme?.Options.Count;
         return (optionsCount == 1, optionsCount > 0);
+    }
 
+    private static string MapEmploymentStatus(int? status, string notes)
+    {
+        if (status == null)
+        {
+            return string.Empty;
+        }
+
+        if (status == 2)
+        {
+            return "Employed";
+        }
+
+        if (status == 0)
+        {
+            return string.Empty;
+        }
+
+        if (status == 3)
+        {
+            return "Not employed";
+        }
+
+        return notes switch
+        {
+            "NinoAndPAYENotFound" => "Not verified - missing PAYE scheme and invalid NINO",
+            "NinoFailure" => "Not Verified - missing or invalid NINO",
+            "NinoInvalid" => "Not Verified - missing or invalid NINO",
+            "NinoNotFound" => "Not Verified - invalid NINO",
+            "PAYENotFound" => "Not verified - missing PAYE scheme",
+            _ => "Not Verified"
+        };
     }
 }

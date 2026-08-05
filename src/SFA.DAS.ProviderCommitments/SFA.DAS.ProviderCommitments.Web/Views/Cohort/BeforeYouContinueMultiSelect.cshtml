@@ -1,0 +1,96 @@
+﻿@inject ILinkGenerator LinkGenerator
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.BeforeYouContinueMultiSelectViewModel
+
+@{
+    ViewBag.Title = "Add learners from ILR";
+    ViewBag.ZendeskLabel = "add-apprentice-before-you-continue-multi-select";
+    ViewBag.GaData.Vpv = "/unapproved/add/before-you-continue-multi-select";
+}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @if (!Model.HasCreateCohortPermission)
+        {
+            <h1 class="govuk-heading-xl">You cannot add learners</h1>
+            <p class="govuk-body">
+                You will need to ask the employer to create a cohort or give you permission to do this on their behalf.
+            </p>
+            <p class="gov-body govuk-!-margin-bottom-8">
+                <a href="@LinkGenerator.ProviderApprenticeshipServiceLink("account")" class="govuk-link">Go to homepage</a>
+            </p>
+        }
+        else
+        {
+            <form method="post">
+                @Html.AntiForgeryToken()
+                <div class="govuk-form-group">
+                    <h1 class="govuk-heading-l">Add learners from ILR</h1>
+                    <p class="govuk-body">
+                        Add multiple learners from the ILR for new cohorts, creating reservations automatically.
+                    </p>
+                    <h2 class="govuk-heading-m">Check your permissions</h2>
+
+                    <p class="govuk-body">You must have the employer’s permission to add apprentices.</p>
+                    <p class="govuk-body">Check or update permissions in <a asp-external-subdomain="relationships" asp-external-id="@Model.ProviderId" asp-external-controller="employers" target="_blank" class="govuk-link">View and manage employer permissions (opens in new tab)</a>.</p>
+                    <p class="govuk-body">
+                        If you do not have permission, ask the employer to create a cohort for you.
+                    </p>
+
+                    <h2 class="govuk-heading-m">Check your ILR file</h2>
+                    <p class="govuk-body">
+                        Make sure the ILR file includes:
+                    </p>
+
+
+                    <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-4">
+                        <li>
+                            the employer agreement ID - you’ll find this in <a asp-external-subdomain="relationships" asp-external-id="@Model.ProviderId" asp-external-controller="employers" target="_blank" class="govuk-link">
+                                View employers and manage permissions (opens in new tab)
+                            </a>
+                        </li>
+                        <li>a unique email address for each learner</li>
+                    </ul>
+
+                    <h2 class="govuk-heading-m">Funding</h2>
+                    <h3 class="govuk-heading-s">Reservations</h3>
+                    <p class="govuk-body">
+                        Funds will automatically be reserved for you when you add multiple learners.
+                    </p>
+                    <h3 class="govuk-heading-s">Transfers</h3>
+                    <p class="govuk-body">
+                        If you’re using transfer funding, you can only
+                        <a href="@Url.Action("SelectHowManyLearnersToAdd", new { Model.ProviderId })" class="govuk-link">add 1 learner at a time</a>
+                    </p>
+                    <p class="govuk-body">
+                        Your employer will need to send a learner request first.
+                    </p>
+
+                    <h2 class="govuk-heading-m">Steps to follow</h2>
+                    <p class="govuk-body">
+                        After submitting your ILR file, allow 15 minutes for records to update in this service. Then follow these steps:
+                    </p>
+
+                    <ol class="govuk-list govuk-list--number">
+                        <li>Choose whether to create a new cohort or add to an existing one.</li>
+                        <li>Choose the employer.</li>
+                        <li>Select the learners.</li>
+                        <li>Add recognition of prior learning (RPL) and standard options, if relevant.</li>
+                    </ol>
+
+                    <p class="govuk-body">
+                        The <a href="https://help.apprenticeships.education.gov.uk/hc/en-gb/articles/360009492540-Add-an-apprentice-or-change-their-status" target="_blank" class="govuk-link">Add a learner or change their status help page (opens in new tab)</a> has more information.
+                    </p>
+                    <br>
+
+                </div>
+                <button class="govuk-button" type="submit" data-module="govuk-button">
+                    Continue
+                </button>
+            </form>
+        }
+    </div>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectHowManyLearnersToAdd", new { Model.ProviderId })>Back</a>
+}

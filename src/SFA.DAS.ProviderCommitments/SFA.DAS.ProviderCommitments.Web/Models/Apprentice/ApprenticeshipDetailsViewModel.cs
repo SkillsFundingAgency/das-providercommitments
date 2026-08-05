@@ -1,4 +1,4 @@
-﻿using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -15,5 +15,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public ApprenticeshipStatus Status { get; set; }
         public IEnumerable<string> Alerts { get; set; }
         public DateTime? ActualStartDate { get; set; }
+        public string EmploymentStatus { get; set; }
     }
 }
