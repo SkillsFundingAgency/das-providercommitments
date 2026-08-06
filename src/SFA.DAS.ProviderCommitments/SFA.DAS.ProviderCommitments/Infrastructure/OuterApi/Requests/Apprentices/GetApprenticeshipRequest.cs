@@ -11,5 +11,5 @@ public class GetApprenticeshipRequest : IGetApiRequest
         _providerId = providerId;
     }
 
-    public string GetUrl => $"/provider/{_providerId}/apprentices/{_apprenticeshipId}";
+    public string GetUrl => $"provider/{_providerId}/apprentices/{_apprenticeshipId}";
 }
