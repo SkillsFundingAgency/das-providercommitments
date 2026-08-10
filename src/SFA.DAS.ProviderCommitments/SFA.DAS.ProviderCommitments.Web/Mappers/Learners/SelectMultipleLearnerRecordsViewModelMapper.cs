@@ -55,8 +55,8 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             .. response.TrainingCourses
                 .Select(m => new SelectListItem
                 {
-                    Text = m.Name,
-                    Value = m.CourseCode
+                    Text = m.TrainingName,
+                    Value = m.TrainingCode
                 })],
             LearningType = cacheItem.LearningType
         };
