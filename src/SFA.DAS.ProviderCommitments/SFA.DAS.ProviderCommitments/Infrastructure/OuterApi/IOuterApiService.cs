@@ -26,6 +26,7 @@ public interface IOuterApiService
     Task<GetStandardResponse> GetStandardDetails(string courseCode);
 
     Task ValidateBulkUploadRequest(BulkUploadValidateApimRequest data);
+    Task ValidateSelectMultipleLearnerRecordsRequest(ValidateSelectMultipleLearnerRecordsApimRequest data);
 
     Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> BulkUploadAddAndApproveDraftApprenticeships(BulkUploadAddAndApproveDraftApprenticeshipsRequest request);
 

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Services;
+using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Learners;
@@ -37,6 +40,25 @@ public class LearnerController(IModelMapper modelMapper) : Controller
 
         return View(model);
     }
+
+    [HttpPost]
+    [Route("add/learners/select-multiple")]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    //[ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
+    public async Task<IActionResult> SelectMultipleLearnerRecords(SelectMultipleLearnerRecordsPostRequest request)
+    {
+        //var fileUploadLogId = await ValidateSelectMultipleLearnerRecords(Request.ProviderId, request.Attachment);
+        //viewModel.FileUploadLogId = fileUploadLogId;
+        var validationRequest = await modelMapper.Map<ValidateSelectMultipleLearnerRecordsRequest>(request);
+        //return RedirectToAction(nameof(FileUploadReview), request);
+    }
+
+    //private async Task<long> ValidateSelectMultipleLearnerRecords(long providerId, IFormFile attachment)
+    //{
+    //    var bulkValidate = new ValidateSelectMultipleLearnerRecordsRequest { Attachment = attachment, ProviderId = providerId };
+    //    var response = await _mediator.Send(bulkValidate);
+    //    return response.LogId;
+    //}
 
     [HttpGet]
     [Route("add/learners/select-multiple-filter", Name = RouteNames.SelectMultipleLearnerRecordsFilter)]
