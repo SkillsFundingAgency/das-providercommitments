@@ -1,4 +1,4 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
@@ -139,7 +139,16 @@ public class EditDraftApprenticeshipViewModelMapper(
         editModel.Cost = updatedDraftApprenticeship.Cost;
         editModel.HasLearnerDataChanges = false;
         editModel.LastLearnerDataSync = DateTime.UtcNow;
-            
+        editModel.DeliveryModel = (DeliveryModel?)updatedDraftApprenticeship.DeliveryModel;
+
+        if (!string.IsNullOrEmpty(updatedDraftApprenticeship.CourseCode))
+        {
+            editModel.CourseCode = updatedDraftApprenticeship.CourseCode;
+            editModel.CourseName = updatedDraftApprenticeship.TrainingCourseName;
+            editModel.TrainingCourseOption = updatedDraftApprenticeship.TrainingCourseOption == string.Empty ? "-1" : updatedDraftApprenticeship.TrainingCourseOption;
+            editModel.TrainingCourseVersion = updatedDraftApprenticeship.TrainingCourseVersion;
+        }
+
         await cacheStorageService.DeleteFromCache(learnerDataSyncKey);
     }
 }

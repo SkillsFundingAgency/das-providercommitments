@@ -61,7 +61,7 @@ public class SelectLearnerRecordViewModelMapperTests
 
         foreach (var course in _apiResponse.TrainingCourses)
         {
-            result.FilterModel.Courses.First(t => t.Value == course.CourseCode).Text.Should().Be(course.Name);
+            result.FilterModel.Courses.First(t => t.Value == course.TrainingCode).Text.Should().Be(course.TrainingName);
         }
     }
 

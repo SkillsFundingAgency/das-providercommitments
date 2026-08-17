@@ -72,7 +72,7 @@ public class SelectLearnerRecordViewModelMapperTests
         result.LastIlrSubmittedOn.Should().Be(_apiResponse.LastSubmissionDate);
         result.FutureMonths.Should().Be(_apiResponse.FutureMonths);
         result.FilterModel.Courses.Where(c => c.Text != "All").Select(x => x.Text).
-            Should().BeEquivalentTo(_apiResponse.TrainingCourses.Select(y => y.Name));
+            Should().BeEquivalentTo(_apiResponse.TrainingCourses.Select(y => y.TrainingName));
     }
 
     [Test]
