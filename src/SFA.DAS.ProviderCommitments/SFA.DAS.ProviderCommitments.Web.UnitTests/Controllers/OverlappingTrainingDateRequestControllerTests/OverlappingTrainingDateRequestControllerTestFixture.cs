@@ -187,6 +187,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             viewResult.Should().NotBeNull();
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionViewModel;
             model.DraftApprenticeshipHashedId.Should().Be(_draftApprenticeshipOverlapOptionRequest.DraftApprenticeshipHashedId);
+            model.IsSameProvider.Should().Be(_getApprenticeshipResponse.ProviderId == _draftApprenticeshipOverlapOptionRequest.ProviderId);
+            return this;
+        }
+
+        public OverlappingTrainingDateRequestControllerTestFixture VerifyWhenGettingOverlappingTrainingDate_WithWithdrawnReasonCode_ModelIsMapped()
+        {
+            var viewResult = _actionResult as ViewResult;
+            viewResult.Should().NotBeNull();
+            var model = viewResult.Model as DraftApprenticeshipOverlapOptionViewModel;
+            model.DraftApprenticeshipHashedId.Should().Be(_draftApprenticeshipOverlapOptionRequest.DraftApprenticeshipHashedId);
+            model.ProviderName.Should().Be(_getApprenticeshipResponse.ProviderName);
+            model.ProviderId.Should().Be(_draftApprenticeshipOverlapOptionRequest.ProviderId);
+            model.CohortReference.Should().Be(_draftApprenticeshipOverlapOptionRequest.CohortReference);
+            model.DraftApprenticeshipId.Should().Be(_draftApprenticeshipOverlapOptionRequest.DraftApprenticeshipId);
+            model.IsSameProvider.Should().Be(_getApprenticeshipResponse.ProviderId == _draftApprenticeshipOverlapOptionRequest.ProviderId);
+            model.HasWithdrawnStatusCode.Should().BeTrue();
             return this;
         }
 

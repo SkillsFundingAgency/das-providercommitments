@@ -22,7 +22,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IMediator _mediator;
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IAuthenticationService _authenticationService;
         private readonly IOuterApiService _outerApiService;
         private readonly ICacheStorageService _cacheStorage;
@@ -39,7 +38,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _mediator = mediator;
             _modelMapper = modelMapper;
             _urlHelper = urlHelper;
-            _commitmentsApiClient = commitmentsApiClient;
             _authenticationService = authenticationService;
             _outerApiService = outerApiService;
             _cacheStorage = cacheStorage;
@@ -135,7 +133,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     EnableStopRequestEmail = false,
                     HasWithdrawnStatusCode = true,
                     IsSameProvider = apprenticeshipDetails.ProviderId == request.ProviderId,
-                    ProviderName = apprenticeshipDetails.ProviderName
+                    ProviderName = apprenticeshipDetails.ProviderName,
+                    CohortReference = request.CohortReference,
+                    ProviderId = request.ProviderId,
+                    DraftApprenticeshipId = request.DraftApprenticeshipId
                 };
             }
             else
@@ -167,7 +168,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 {
                     DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
                     Status = (ApprenticeshipStatus)apprenticeshipDetails.Status,
-                    EnableStopRequestEmail = enableStopRequestEmail
+                    EnableStopRequestEmail = enableStopRequestEmail,
+                    CohortReference = request.CohortReference,
+                    ProviderId = request.ProviderId,
+                    DraftApprenticeshipId = request.DraftApprenticeshipId
                 };
             }
 
