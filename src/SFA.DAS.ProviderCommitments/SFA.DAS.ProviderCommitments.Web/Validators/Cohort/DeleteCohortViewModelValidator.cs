@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Cohort
         {
             RuleFor(x => x.ProviderId).GreaterThan(0);
             RuleFor(x => x.CohortReference).NotNull();
-            RuleFor(x => x.Confirm).NotNull().WithMessage("Confirm if you would like to delete this cohort");
+            RuleFor(x => x.Confirm).NotNull().WithMessage("Confirm if you would like to remove this cohort");
         }
     }
 }

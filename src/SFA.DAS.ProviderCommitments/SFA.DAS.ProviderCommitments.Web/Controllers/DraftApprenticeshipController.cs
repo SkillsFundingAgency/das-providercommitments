@@ -51,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private const string LearnerDataSyncErrorMessage = "Failed to sync learner data.";
         private const string LearnerDataSyncExceptionMessage = "An error occurred while syncing learner data.";
 
-        public const string DraftApprenticeDeleted = "Apprentice record deleted";
+        public const string DraftApprenticeDeleted = "Learner record removed";
         public const string UpdatedBanner = "Banner";
 
         [HttpGet]
