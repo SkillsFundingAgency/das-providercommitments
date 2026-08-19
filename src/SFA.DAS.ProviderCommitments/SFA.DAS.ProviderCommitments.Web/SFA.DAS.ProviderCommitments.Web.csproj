@@ -14,7 +14,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
         <PackageReference Include="Scrutor" Version="7.0.0" />
         <PackageReference Include="SFA.DAS.Common.Domain" Version="1.4.308" />
-        <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.58" />
+        <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.59" />
         <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="10.0.9" />
