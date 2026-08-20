@@ -1,4 +1,7 @@
-﻿namespace SFA.DAS.ProviderCommitments.Web.Extensions
+﻿using System.Globalization;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
+
+namespace SFA.DAS.ProviderCommitments.Web.Extensions
 {
     public static class DateTimeExtensions
     {
@@ -8,6 +11,7 @@
 
             return new DateTime(dateValue.Value.Year, dateValue.Value.Month, 1).Date;
         }
+
         public static string ToGdsHumanisedDate(this DateTime date)
         {
             string ordinal;
@@ -19,14 +23,17 @@
                 case 31:
                     ordinal = "st";
                     break;
+
                 case 2:
                 case 22:
                     ordinal = "nd";
                     break;
+
                 case 3:
                 case 23:
                     ordinal = "rd";
                     break;
+
                 default:
                     ordinal = "th";
                     break;
@@ -34,6 +41,12 @@
 
             // Eg 12th January 2024
             return string.Format("{0}{1} {2:MMMM yyyy}", date.Day, ordinal, date);
+        }
+
+        public static string FormatMonthYearDateToDateFormat(string date)
+        {
+            var formatDate = DateTime.ParseExact(date, "MMyyyy", CultureInfo.InvariantCulture);
+            return formatDate.ToString("dd-MM-yyyy");
         }
     }
 }

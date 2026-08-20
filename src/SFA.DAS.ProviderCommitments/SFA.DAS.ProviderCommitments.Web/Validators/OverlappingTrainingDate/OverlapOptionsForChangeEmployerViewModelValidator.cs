@@ -7,10 +7,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.OverlappingTrainingDate
     {
         public OverlapOptionsForChangeEmployerViewModelValidator()
         {
-            RuleFor(x => x.ProviderId).GreaterThan(0);
-            RuleFor(x => x.CacheKey).NotNull();
-            RuleFor(x => x.ApprenticeshipId).GreaterThan(0);
-            RuleFor(x => x.OverlapOptions).NotNull().WithMessage("You need to select what you would like to do");
+            RuleFor(x => x.ProviderId).GreaterThan(0).Unless(x => x.HasWithdrawnStatusCode);
+            RuleFor(x => x.CacheKey).NotNull().Unless(x => x.HasWithdrawnStatusCode);
+            RuleFor(x => x.ApprenticeshipId).GreaterThan(0).Unless(x => x.HasWithdrawnStatusCode);
+            RuleFor(x => x.OverlapOptions).NotNull().Unless(x => x.HasWithdrawnStatusCode).WithMessage("You need to select what you would like to do");
         }
     }
 }

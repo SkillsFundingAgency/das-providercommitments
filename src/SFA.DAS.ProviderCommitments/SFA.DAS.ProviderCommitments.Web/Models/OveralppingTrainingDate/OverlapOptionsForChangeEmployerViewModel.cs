@@ -5,5 +5,10 @@
         public Guid CacheKey { get; set; }
         public string ApprenticeshipHashedId { get; set; }
         public long? ApprenticeshipId { get; set; }
+
+        public string GetTargetPartialViewName()
+        {
+            return HasWithdrawnStatusCode ? "_ChangeEmployerOverlapIlrWithdrawnPartial" : "_OverlapOptionsForChangeEmployerPartial";
+        }
     }
 }
