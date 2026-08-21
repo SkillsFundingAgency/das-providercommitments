@@ -1,7 +1,7 @@
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers;
@@ -22,7 +22,7 @@ public class ApprenticeshipDetailsToViewModelMapper(IEncodingService encodingSer
             PlannedEndDate = source.EndDate,
             ConfirmationStatus = source.ConfirmationStatus,
             Status = source.ApprenticeshipStatus,
-            Alerts = source.Alerts.Select(x => x.GetDescription()),
+            Alerts = source.Alerts.Select(x => x.ToAlertDisplayText()),
             ActualStartDate = source.ActualStartDate,
             EmploymentStatus = MapEmploymentStatus(source.EmployerVerificationStatus, source.EmployerVerificationNotes)
         };

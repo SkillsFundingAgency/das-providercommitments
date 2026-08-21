@@ -1,0 +1,23 @@
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+
+@if (Model.HasUnacknowledgedInvalidIlrChanges)
+{
+    <div class="govuk-notification-banner" role="region" aria-labelledby="invalid-ilr-changes-banner-title"
+         data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="invalid-ilr-changes-banner-title">
+                Important
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">
+                <a class="govuk-notification-banner__link" asp-route="@RouteNames.InvalidIlrChanges"
+                   asp-route-providerId="@Model.ProviderId"
+                   asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">
+                    View invalid changes
+                </a>
+            </p>
+        </div>
+    </div>
+}

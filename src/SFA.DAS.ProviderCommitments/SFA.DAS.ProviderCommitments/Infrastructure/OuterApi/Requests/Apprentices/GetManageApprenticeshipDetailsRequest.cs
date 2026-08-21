@@ -96,6 +96,7 @@ public class GetManageApprenticeshipDetailsResponse
         public string EmployerVerificationNotes { get; set; }
         public Common.Domain.Types.LearningType? LearningType { get; set; }
         public bool HasChangeHistory { get; set; }
+        public bool HasUnacknowledgedInvalidIlrChanges { get; set; }
     }
 
     public class PriceEpisode
