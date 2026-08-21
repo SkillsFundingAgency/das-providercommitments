@@ -14,6 +14,8 @@
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-two-thirds">
 
+        <partial name="DetailsPartials/_InvalidIlrChangesBanner" />
+
         <h1 class="govuk-heading-l">View details for @Model.ApprenticeName</h1>
 
         @if (Model.HasChangeHistory)

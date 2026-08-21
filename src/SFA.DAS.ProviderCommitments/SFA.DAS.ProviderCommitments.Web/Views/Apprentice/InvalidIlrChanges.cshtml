@@ -1,0 +1,156 @@
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.InvalidIlrChangesViewModel
+
+@{
+    ViewData["Title"] = $"Invalid ILR changes for {Model.LearnerName}";
+    ViewBag.GaData.Vpv = "/apprentices/apprentice/invalid-ilr-changes";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="govuk-error-summary" data-module="govuk-error-summary">
+                <div role="alert">
+                    <h2 class="govuk-error-summary__title">
+                        There is a problem
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <ul class="govuk-list govuk-error-summary__list">
+                            @foreach (var item in ViewData.ModelState)
+                            {
+                                foreach (var error in item.Value.Errors)
+                                {
+                                    var radioId = item.Key.Replace("[", "_").Replace("].", "__").Replace("]", "") + "-no";
+                                    <li>
+                                        <a href="#@radioId">@error.ErrorMessage</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <h1 class="govuk-heading-xl">Invalid ILR changes for @Model.LearnerName</h1>
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="ProviderId" />
+            <input type="hidden" asp-for="ApprenticeshipHashedId" />
+            <input type="hidden" asp-for="ApprenticeshipId" />
+
+            @for (var i = 0; i < Model.RequestSets.Count; i++)
+            {
+                var set = Model.RequestSets[i];
+                var deleteAlertField = $"RequestSets[{i}].DeleteAlert";
+                var errorId = $"error-message-RequestSets_{i}__DeleteAlert";
+                var keepRadioId = $"RequestSets_{i}__DeleteAlert-no";
+                var deleteRadioId = $"RequestSets_{i}__DeleteAlert";
+                var hasDeleteAlertError = ViewData.ModelState[deleteAlertField]?.Errors.Count > 0;
+                var tableCaption = Model.RequestSets.Count == 1
+                    ? "Invalid ILR changes"
+                    : $"Invalid ILR change {i + 1} of {Model.RequestSets.Count}";
+
+                <input type="hidden" name="RequestSets[@i].ApprovalRequestId" value="@set.ApprovalRequestId" />
+
+                <div class="govuk-!-margin-bottom-8">
+                    <table class="govuk-table">
+                        <caption class="govuk-table__caption govuk-table__caption--m">
+                            @tableCaption
+                        </caption>
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Change</th>
+                                <th scope="col" class="govuk-table__header">From</th>
+                                <th scope="col" class="govuk-table__header">To</th>
+                                <th scope="col" class="govuk-table__header">Effective from</th>
+                                <th scope="col" class="govuk-table__header">Reason</th>
+                                <th scope="col" class="govuk-table__header">Decision</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var field in set.Fields)
+                            {
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell">@field.FieldDisplayName</td>
+                                    <td class="govuk-table__cell">@field.Old</td>
+                                    <td class="govuk-table__cell">@field.New</td>
+                                    <td class="govuk-table__cell">@(field.EffectiveFrom?.ToGdsFormat())</td>
+                                    <td class="govuk-table__cell">@field.Reason</td>
+                                    <td class="govuk-table__cell">
+                                        <strong class="govuk-tag govuk-tag--red">@set.Decision</strong>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="govuk-form-group @(hasDeleteAlertError ? "govuk-form-group--error" : null)">
+                        <fieldset class="govuk-fieldset" aria-describedby="@(hasDeleteAlertError ? errorId : null)">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                Would you like to delete this notification and alert?
+                                @if (Model.RequestSets.Count > 1)
+                                {
+                                    <span class="govuk-visually-hidden">Change @(i + 1) of @Model.RequestSets.Count</span>
+                                }
+                            </legend>
+                            @if (hasDeleteAlertError)
+                            {
+                                <p class="govuk-error-message" id="@errorId">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @InvalidIlrChangesViewModelValidator.SelectDeleteMessage
+                                </p>
+                            }
+                            <div class="govuk-radios" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="@keepRadioId"
+                                           name="@deleteAlertField"
+                                           type="radio"
+                                           value="false"
+                                           @(set.DeleteAlert == false ? "checked" : null) />
+                                    <label class="govuk-label govuk-radios__label" for="@keepRadioId">
+                                        No, keep the alert
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="@deleteRadioId"
+                                           name="@deleteAlertField"
+                                           type="radio"
+                                           value="true"
+                                           @(set.DeleteAlert == true ? "checked" : null) />
+                                    <label class="govuk-label govuk-radios__label" for="@deleteRadioId">
+                                        Yes, delete alert
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            }
+
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button" type="submit" id="continue-button">
+                    Continue
+                </button>
+                <a class="govuk-link govuk-link--no-visited-state"
+                   asp-route="@RouteNames.ApprenticeDetail"
+                   asp-route-providerId="@Model.ProviderId"
+                   asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId"
+                   id="cancel-button">Cancel and return</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section breadcrumb {
+    <a id="back-link" class="govuk-back-link"
+       asp-route="@RouteNames.ApprenticeDetail"
+       asp-route-providerId="@Model.ProviderId"
+       asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">Back</a>
+}

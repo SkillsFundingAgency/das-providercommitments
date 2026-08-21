@@ -1,7 +1,9 @@
+using System;
 using System.Linq;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetailsToViewModelMapperTests;
@@ -136,6 +138,18 @@ public class WhenCallingMap
 
         // Assert
         result.Alerts.Should().BeEquivalentTo(alertStrings);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Maps_IlrChangeInvalid_Alert(
+        GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+        ApprenticeshipDetailsToViewModelMapper mapper)
+    {
+        source.Alerts = [AlertDisplayExtensions.IlrChangeInvalid];
+
+        var result = await mapper.Map(source);
+
+        result.Alerts.Should().BeEquivalentTo(["ILR change invalid"]);
     }
 
     [Test, MoqAutoData]

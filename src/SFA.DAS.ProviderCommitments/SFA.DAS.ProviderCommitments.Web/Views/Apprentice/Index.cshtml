@@ -155,11 +155,11 @@ else
                                         {
                                             if (alert == Model.FilterModel.SelectedAlert)
                                             {
-                                                <option label="@alert.GetDescription()" value="@alert" selected="selected">@alert.GetDescription()</option>
+                                                <option label="@alert.ToAlertDisplayText()" value="@alert" selected="selected">@alert.ToAlertDisplayText()</option>
                                             }
                                             else
                                             {
-                                                <option label="@alert.GetDescription()" value="@alert">@alert.GetDescription()</option>
+                                                <option label="@alert.ToAlertDisplayText()" value="@alert">@alert.ToAlertDisplayText()</option>
                                             }
                                         }
                                     </select>
@@ -376,15 +376,19 @@ else
                             </strong>
                         </td>
                         <td class="govuk-table__cell" data-label="Alerts">
-                            @for (var index = 0; index < apprenticeship.Alerts.Count(); index++)
+                            @if (apprenticeship.Alerts.Any())
                             {
-                                <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
-                                    @apprenticeship.Alerts.ElementAt(index)
-                                </a>
-                                @if (index < apprenticeship.Alerts.Count() - 1)
-                                {
-                                    <br />
-                                }
+                                <ul class="govuk-list govuk-!-margin-bottom-0">
+                                    @foreach (var alert in apprenticeship.Alerts)
+                                    {
+                                        var alertRoute = alert.IsIlrChangeInvalid() ? RouteNames.InvalidIlrChanges : RouteNames.ApprenticeDetail;
+                                        <li>
+                                            <a class="govuk-link" asp-route="@alertRoute" asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
+                                                @alert
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
                             }
                         </td>
                     </tr>

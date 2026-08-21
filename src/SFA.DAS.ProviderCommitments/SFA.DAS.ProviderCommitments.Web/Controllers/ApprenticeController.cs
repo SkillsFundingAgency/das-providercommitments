@@ -714,6 +714,42 @@ public class ApprenticeController(
         });
     }
 
+    [HttpGet]
+    [Route("{apprenticeshipHashedId}/invalid-ilr-changes", Name = RouteNames.InvalidIlrChanges)]
+    [Authorize(Policy = nameof(PolicyNames.AccessApprenticeship))]
+    public async Task<IActionResult> InvalidIlrChanges(InvalidIlrChangesRequest request)
+    {
+        var viewModel = await modelMapper.Map<InvalidIlrChangesViewModel>(request);
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [Route("{apprenticeshipHashedId}/invalid-ilr-changes")]
+    [Authorize(Policy = nameof(PolicyNames.AccessApprenticeship))]
+    public async Task<IActionResult> InvalidIlrChanges(InvalidIlrChangesViewModel viewModel)
+    {
+        if (!ModelState.IsValid)
+        {
+            var refreshed = await modelMapper.Map<InvalidIlrChangesViewModel>(new InvalidIlrChangesRequest
+            {
+                ProviderId = viewModel.ProviderId,
+                ApprenticeshipHashedId = viewModel.ApprenticeshipHashedId,
+                ApprenticeshipId = viewModel.ApprenticeshipId
+            });
+
+            OverlayDeleteAlertChoices(viewModel, refreshed);
+            return View(refreshed);
+        }
+
+        await modelMapper.Map<InvalidIlrChangesAcknowledgementResult>(viewModel);
+
+        return RedirectToRoute(RouteNames.ApprenticeDetail, new
+        {
+            viewModel.ProviderId,
+            viewModel.ApprenticeshipHashedId
+        });
+    }
+
     [Route("{apprenticeshipHashedId}/change-history")]
     [Authorize(Policy = nameof(PolicyNames.AccessApprenticeship))]
     [HttpGet]
@@ -744,5 +780,15 @@ public class ApprenticeController(
         var startDate = new MonthYearModel(cacheItem.StartDate).Date.Value;
 
         return startDate >= apprenticeship.StopDate.Value;
+    }
+
+    private static void OverlayDeleteAlertChoices(InvalidIlrChangesViewModel posted, InvalidIlrChangesViewModel refreshed)
+    {
+        posted.RequestSets ??= [];
+
+        for (var i = 0; i < refreshed.RequestSets.Count && i < posted.RequestSets.Count; i++)
+        {
+            refreshed.RequestSets[i].DeleteAlert = posted.RequestSets[i].DeleteAlert;
+        }
     }
 }
