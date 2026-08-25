@@ -785,6 +785,7 @@ public class ApprenticeController(
     private static void OverlayDeleteAlertChoices(InvalidIlrChangesViewModel posted, InvalidIlrChangesViewModel refreshed)
     {
         posted.RequestSets ??= [];
+        refreshed.RequestSets ??= [];
 
         for (var i = 0; i < refreshed.RequestSets.Count && i < posted.RequestSets.Count; i++)
         {

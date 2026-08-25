@@ -131,7 +131,7 @@ public class WhenCallingMap
         ApprenticeshipDetailsToViewModelMapper mapper)
     {
         // Arrange
-        var alertStrings = source.Alerts.Select(x => x.GetDescription());
+        var alertStrings = source.Alerts.Select(x => x.ToAlertDisplayText());
 
         // Act
         var result = await mapper.Map(source);
