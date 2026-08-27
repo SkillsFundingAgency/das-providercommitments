@@ -19,7 +19,20 @@ public class InvalidIlrChangesViewModel : IAuthorizationContextModel
     public string ApprenticeshipHashedId { get; set; }
     public long ApprenticeshipId { get; set; }
     public string LearnerName { get; set; }
+    public string Heading { get; set; }
+    public string Intro { get; set; }
+    public string NextSteps { get; set; }
+    public string FieldColumnHeader { get; set; }
+    public string NewValueColumnHeader { get; set; }
+    public string LegendHint { get; set; }
+    public string ChangeSetCaption { get; set; }
+    public string ChangeSetCaptionPrefix { get; set; }
+    public string GaVpv { get; set; }
     public List<InvalidIlrChangeSetViewModel> RequestSets { get; set; } = [];
+}
+
+public class DeclinedChangesViewModel : InvalidIlrChangesViewModel
+{
 }
 
 public class InvalidIlrChangeSetViewModel
@@ -41,5 +54,9 @@ public class InvalidIlrChangeFieldViewModel
 }
 
 public class InvalidIlrChangesAcknowledgementResult
+{
+}
+
+public class DeclinedChangesAcknowledgementResult
 {
 }

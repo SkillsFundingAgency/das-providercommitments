@@ -40,4 +40,21 @@ public class InvalidIlrChangesViewModelValidatorTests
             .WithErrorMessage(InvalidIlrChangesViewModelValidator.SelectDeleteMessage);
         result.ShouldNotHaveValidationErrorFor("RequestSets[1].DeleteAlert");
     }
+
+    [Test]
+    public void Validate_ThenDeclinedChangesUsesTheSameRequiredRadioRule()
+    {
+        var viewModel = new DeclinedChangesViewModel
+        {
+            RequestSets =
+            [
+                new InvalidIlrChangeSetViewModel { DeleteAlert = null }
+            ]
+        };
+
+        var result = new DeclinedChangesViewModelValidator().TestValidate(viewModel);
+
+        result.ShouldHaveValidationErrorFor("RequestSets[0].DeleteAlert")
+            .WithErrorMessage(InvalidIlrChangesViewModelValidator.SelectDeleteMessage);
+    }
 }

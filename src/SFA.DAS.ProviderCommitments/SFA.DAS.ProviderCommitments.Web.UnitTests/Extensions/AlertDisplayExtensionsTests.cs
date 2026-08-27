@@ -18,4 +18,18 @@ public class AlertDisplayExtensionsTests
         "ILR change invalid".IsIlrChangeInvalid().Should().BeTrue();
         "Changes pending".IsIlrChangeInvalid().Should().BeFalse();
     }
+
+    [Test]
+    public void ToAlertDisplayText_ThenUsesChangesDeclinedCopy()
+    {
+        AlertDisplayExtensions.ChangesDeclined.ToAlertDisplayText().Should().Be("Changes declined");
+        ((Alerts)6).ToAlertDisplayText().Should().Be("Changes declined");
+    }
+
+    [Test]
+    public void IsChangesDeclined_ThenMatchesTheDisplayText()
+    {
+        "Changes declined".IsChangesDeclined().Should().BeTrue();
+        "ILR change invalid".IsChangesDeclined().Should().BeFalse();
+    }
 }

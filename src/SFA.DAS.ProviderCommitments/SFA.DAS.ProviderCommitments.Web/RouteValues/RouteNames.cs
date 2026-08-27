@@ -6,6 +6,7 @@ public static class RouteNames
     public const string DownloadApprentices = "apprentices-download";
     public const string ApprenticeDetail = "apprentice-details";
     public const string InvalidIlrChanges = "invalid-ilr-changes";
+    public const string DeclinedChanges = "declined-changes";
     public const string ApprenticeReviewApprenticeshipUpdates = "apprentice-review-apprentice-updates";
     public const string ApprenticeViewApprenticeshipUpdates = "apprentice-view-apprentice-updates";
     public const string CancelInProgressChangeOfCircumstance = "cancel-in-progress-change-of-circumstance";

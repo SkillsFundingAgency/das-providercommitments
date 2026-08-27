@@ -230,6 +230,19 @@ public class ApprenticeshipDetailsCsvModelTests
         result.Alerts.Should().Be("ILR change invalid");
     }
 
+    [Test, MoqAutoData]
+    public void Then_Maps_ChangesDeclined_Alert(
+        PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
+        [Frozen] Mock<IEncodingService> encodingService,
+        ApprenticeshipDetailsCsvModel model)
+    {
+        source.Alerts = [AlertDisplayExtensions.ChangesDeclined];
+
+        var result = model.Map(source, encodingService.Object);
+
+        result.Alerts.Should().Be("Changes declined");
+    }
+
     [TestCase(DeliveryModel.FlexiJobAgency, "Flexi-job agency")]
     [TestCase(DeliveryModel.PortableFlexiJob, "Portable flexi-job")]
     [TestCase(DeliveryModel.Regular, "Regular")]

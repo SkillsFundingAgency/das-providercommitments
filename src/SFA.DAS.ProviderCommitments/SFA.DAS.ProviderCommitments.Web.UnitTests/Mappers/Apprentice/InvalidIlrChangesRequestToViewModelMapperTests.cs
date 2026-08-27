@@ -61,6 +61,9 @@ public class InvalidIlrChangesRequestToViewModelMapperTests
         result.RequestSets[0].Fields[0].FieldDisplayName.Should().Be("Total price");
         result.RequestSets[0].Fields[0].Old.Should().Be("£1,500");
         result.RequestSets[0].Fields[0].New.Should().Be("£600");
+        result.Heading.Should().Be("Invalid ILR changes for Jane Doe");
+        result.NewValueColumnHeader.Should().Be("Rejected");
+        result.LegendHint.Should().BeNull();
     }
 
     [Test, MoqAutoData]
