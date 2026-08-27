@@ -1,13 +1,17 @@
+using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using System.Globalization;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 
 public class InvalidIlrChangesRequestToViewModelMapper(IOuterApiClient outerApiClient)
     : IMapper<InvalidIlrChangesRequest, InvalidIlrChangesViewModel>
 {
+    private static readonly string[] PriceFields = ["TNP1", "TNP2"];
+
     public async Task<InvalidIlrChangesViewModel> Map(InvalidIlrChangesRequest source)
     {
         var response = await outerApiClient.Get<GetInvalidIlrChangesResponse>(
@@ -26,25 +30,73 @@ public class InvalidIlrChangesRequestToViewModelMapper(IOuterApiClient outerApiC
             {
                 ApprovalRequestId = set.ApprovalRequestId,
                 Decision = set.Decision,
-                Fields = (set.Fields ?? []).ConvertAll(field => new InvalidIlrChangeFieldViewModel
-                {
-                    Field = field.Field,
-                    FieldDisplayName = ToFieldDisplayName(field.Field),
-                    Old = field.Old,
-                    New = field.New,
-                    EffectiveFrom = field.EffectiveFrom,
-                    Reason = field.Reason
-                })
+                Fields = ToDisplayFields(set.Fields)
             })
         };
+    }
+
+    private static List<InvalidIlrChangeFieldViewModel> ToDisplayFields(List<InvalidIlrChangeField> fields)
+    {
+        fields ??= [];
+
+        var displayFields = new List<InvalidIlrChangeFieldViewModel>();
+        var priceFields = fields.Where(field => PriceFields.Contains(field.Field, StringComparer.OrdinalIgnoreCase)).ToList();
+        var otherFields = fields.Where(field => !PriceFields.Contains(field.Field, StringComparer.OrdinalIgnoreCase));
+
+        if (priceFields.Count > 0)
+        {
+            displayFields.Add(new InvalidIlrChangeFieldViewModel
+            {
+                Field = "TotalPrice",
+                FieldDisplayName = "Total price",
+                Old = SumAmounts(priceFields, field => field.Old).ToGdsCostFormat(),
+                New = SumAmounts(priceFields, field => field.New).ToGdsCostFormat()
+            });
+        }
+
+        displayFields.AddRange(otherFields.Select(field => new InvalidIlrChangeFieldViewModel
+        {
+            Field = field.Field,
+            FieldDisplayName = ToFieldDisplayName(field.Field),
+            Old = FormatValue(field.Old),
+            New = FormatValue(field.New)
+        }));
+
+        return displayFields;
+    }
+
+    private static decimal SumAmounts(IEnumerable<InvalidIlrChangeField> fields, Func<InvalidIlrChangeField, string> selector)
+    {
+        return fields.Sum(field => ParseAmount(selector(field)));
+    }
+
+    private static decimal ParseAmount(string value)
+    {
+        return decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var amount)
+            ? amount
+            : 0;
+    }
+
+    private static string FormatValue(string value)
+    {
+        if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+        {
+            return date.ToGdsFormat();
+        }
+
+        if (decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var amount))
+        {
+            return amount.ToGdsCostFormat();
+        }
+
+        return value;
     }
 
     private static string ToFieldDisplayName(string field)
     {
         return field switch
         {
-            "TNP1" => "Training price",
-            "TNP2" => "End-point assessment price",
+            "DateOfBirth" => "Date of birth",
             _ => field
         };
     }

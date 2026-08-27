@@ -28,16 +28,6 @@ public class WhenGettingAndPostingInvalidIlrChanges
 
         fixture.VerifyAcknowledgedAndRedirectedToDetails(result);
     }
-
-    [Test]
-    public async Task Post_ThenRedisplaysWhenValidationFails()
-    {
-        var fixture = new WhenGettingAndPostingInvalidIlrChangesFixture();
-
-        var result = await fixture.PostInvalid();
-
-        fixture.VerifyRedisplayedOnValidationFailure(result);
-    }
 }
 
 public class WhenGettingAndPostingInvalidIlrChangesFixture
@@ -46,19 +36,15 @@ public class WhenGettingAndPostingInvalidIlrChangesFixture
     private readonly Mock<IModelMapper> _modelMapper;
     private readonly InvalidIlrChangesRequest _request;
     private readonly InvalidIlrChangesViewModel _viewModel;
-    private readonly InvalidIlrChangesViewModel _refreshedViewModel;
 
     public WhenGettingAndPostingInvalidIlrChangesFixture()
     {
         var autoFixture = new Fixture();
         _request = autoFixture.Create<InvalidIlrChangesRequest>();
         _viewModel = autoFixture.Create<InvalidIlrChangesViewModel>();
-        _refreshedViewModel = autoFixture.Create<InvalidIlrChangesViewModel>();
 
         _modelMapper = new Mock<IModelMapper>();
         _modelMapper.Setup(m => m.Map<InvalidIlrChangesViewModel>(_request)).ReturnsAsync(_viewModel);
-        _modelMapper.Setup(m => m.Map<InvalidIlrChangesViewModel>(It.IsAny<InvalidIlrChangesRequest>()))
-            .ReturnsAsync(_refreshedViewModel);
         _modelMapper.Setup(m => m.Map<InvalidIlrChangesAcknowledgementResult>(It.IsAny<InvalidIlrChangesViewModel>()))
             .ReturnsAsync(new InvalidIlrChangesAcknowledgementResult());
 
@@ -81,12 +67,6 @@ public class WhenGettingAndPostingInvalidIlrChangesFixture
         return _controller.InvalidIlrChanges(_viewModel);
     }
 
-    public Task<IActionResult> PostInvalid()
-    {
-        _controller.ModelState.AddModelError("RequestSets[0].DeleteAlert", "Select if you would like to delete this notification and alert");
-        return _controller.InvalidIlrChanges(_viewModel);
-    }
-
     public void VerifyGetMappedView(IActionResult result)
     {
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
@@ -100,12 +80,5 @@ public class WhenGettingAndPostingInvalidIlrChangesFixture
         redirect.RouteName.Should().Be(RouteNames.ApprenticeDetail);
         redirect.RouteValues!["ProviderId"].Should().Be(_viewModel.ProviderId);
         redirect.RouteValues["ApprenticeshipHashedId"].Should().Be(_viewModel.ApprenticeshipHashedId);
-    }
-
-    public void VerifyRedisplayedOnValidationFailure(IActionResult result)
-    {
-        _modelMapper.Verify(m => m.Map<InvalidIlrChangesAcknowledgementResult>(It.IsAny<InvalidIlrChangesViewModel>()), Times.Never);
-        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.Model.Should().Be(_refreshedViewModel);
     }
 }

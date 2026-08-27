@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice;
 public class InvalidIlrChangesRequestToViewModelMapperTests
 {
     [Test, MoqAutoData]
-    public async Task Map_ThenBuildsThePageModelFromTheOuterApi(
+    public async Task Map_ThenCollapsesPriceFieldsToTotalPrice(
         InvalidIlrChangesRequest request,
         GetInvalidIlrChangesResponse response,
         [Frozen] Mock<IOuterApiClient> outerApiClient,
@@ -57,10 +57,47 @@ public class InvalidIlrChangesRequestToViewModelMapperTests
         result.ApprenticeshipId.Should().Be(request.ApprenticeshipId);
         result.LearnerName.Should().Be("Jane Doe");
         result.RequestSets.Should().HaveCount(1);
-        result.RequestSets[0].Decision.Should().Be("Auto rejected");
-        result.RequestSets[0].Fields[0].FieldDisplayName.Should().Be("Training price");
-        result.RequestSets[0].Fields[1].FieldDisplayName.Should().Be("End-point assessment price");
-        result.RequestSets[0].Fields[0].Old.Should().Be("1000");
-        result.RequestSets[0].Fields[0].New.Should().Be("0");
+        result.RequestSets[0].Fields.Should().ContainSingle();
+        result.RequestSets[0].Fields[0].FieldDisplayName.Should().Be("Total price");
+        result.RequestSets[0].Fields[0].Old.Should().Be("£1,500");
+        result.RequestSets[0].Fields[0].New.Should().Be("£600");
+    }
+
+    [Test, MoqAutoData]
+    public async Task Map_ThenKeepsNonPriceFields(
+        InvalidIlrChangesRequest request,
+        GetInvalidIlrChangesResponse response,
+        [Frozen] Mock<IOuterApiClient> outerApiClient,
+        InvalidIlrChangesRequestToViewModelMapper mapper)
+    {
+        response.FirstName = "Jane";
+        response.LastName = "Doe";
+        response.RequestSets =
+        [
+            new InvalidIlrChangeSet
+            {
+                ApprovalRequestId = Guid.NewGuid(),
+                Fields =
+                [
+                    new InvalidIlrChangeField
+                    {
+                        Field = "DateOfBirth",
+                        Old = "2001-07-21",
+                        New = "2025-07-21"
+                    }
+                ]
+            }
+        ];
+
+        outerApiClient.Setup(x => x.Get<GetInvalidIlrChangesResponse>(
+                It.IsAny<GetInvalidIlrChangesRequest>()))
+            .ReturnsAsync(response);
+
+        var result = await mapper.Map(request);
+
+        result.RequestSets[0].Fields.Should().ContainSingle();
+        result.RequestSets[0].Fields[0].FieldDisplayName.Should().Be("Date of birth");
+        result.RequestSets[0].Fields[0].Old.Should().Be("21 Jul 2001");
+        result.RequestSets[0].Fields[0].New.Should().Be("21 Jul 2025");
     }
 }

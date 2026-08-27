@@ -7,11 +7,17 @@
          data-module="govuk-notification-banner">
         <div class="govuk-notification-banner__header">
             <h2 class="govuk-notification-banner__title" id="invalid-ilr-changes-banner-title">
-                Important
+                Action needed
             </h2>
         </div>
         <div class="govuk-notification-banner__content">
-            <p class="govuk-notification-banner__heading">
+            <h3 class="govuk-notification-banner__heading">
+                Invalid changes made in ILR
+            </h3>
+            <p class="govuk-body">
+                Some changes you have made have been automatically rejected. This is because one or more fields in the ILR file were invalid.
+            </p>
+            <p class="govuk-body">
                 <a class="govuk-notification-banner__link" asp-route="@RouteNames.InvalidIlrChanges"
                    asp-route-providerId="@Model.ProviderId"
                    asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">
