@@ -1,4 +1,5 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using OpenTelemetry.Resources;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
@@ -38,6 +39,9 @@ public class
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
 
             var data = await GetApprenticeshipData(source.ProviderId, source.ApprenticeshipId, cacheItem.AccountLegalEntityId);
+            
+            cacheItem.Uln = data.Apprenticeship.Uln;
+            await _cacheStorage.SaveToCache<ChangeEmployerCacheItem>(source.CacheKey.ToString(), cacheItem, TimeSpan.FromHours(1));
 
             var newStartDate = new MonthYearModel(cacheItem.StartDate);
             var newEndDate = new MonthYearModel(cacheItem.EndDate);

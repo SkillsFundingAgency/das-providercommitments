@@ -4,6 +4,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
@@ -122,5 +123,27 @@ public class OuterApiServiceTest
         actual.Should().Be(apiResponse);
         actual.Success.Should().Be(apiResponse.Success);
         actual.Message.Should().Be(apiResponse.Message);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Request_Is_Made_And_GetApprenticeshipResponse_Returned(
+       long apprenticeshipId,
+       long provideId,
+       GetApprenticeshipResponse apiResponse,
+       [Frozen] Mock<IOuterApiClient> apiClient,
+       OuterApiService service)
+    {
+        //Arrange
+        var request = new GetApprenticeshipRequest(apprenticeshipId,provideId);
+        apiClient.Setup(x =>
+                x.Get<GetApprenticeshipResponse>(
+                    It.Is<GetApprenticeshipRequest>(c => c.GetUrl.Equals(request.GetUrl))))
+            .ReturnsAsync(apiResponse);
+
+        //Act
+        var actual = await service.GetApprenticeship(apprenticeshipId,provideId);
+
+        //Assert
+        actual.Should().Be(apiResponse);
     }
 }
