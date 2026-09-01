@@ -18,12 +18,12 @@
 
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
-        @if(Model.HasChangeHistory)
+        @if (Model.HasChangeHistory)
         {
-        <p>
-            <a class="govuk-link" asp-controller="Apprentice" asp-action="ChangeHistory" asp-route-providerId="@Model.ProviderId"
-               asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">View change history for this learner.</a>
-        </p>
+            <p>
+                <a class="govuk-link" asp-controller="Apprentice" asp-action="ChangeHistory" asp-route-providerId="@Model.ProviderId"
+                   asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">View change history for this learner.</a>
+            </p>
         }
 
 
@@ -68,7 +68,10 @@
             <tbody class="govuk-table__body">
 
                 <partial name="DetailsPartials/_ApprenticeshipStatus" />
-                <partial name="DetailsPartials/_FreezeStatus" />
+                @if (Model.Status == ApprenticeshipStatus.Live)
+                {
+                    <partial name="DetailsPartials/_FreezeStatus" />
+                }
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice confirmation</th>
@@ -280,9 +283,9 @@
                         <td id="apprentice-course" class="govuk-table__cell">
                             @(!string.IsNullOrEmpty(Model.Option) ?
                                                     Model.Option : "To be confirmed")
-                    </td>
-                    <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
-                        @if (Model.AllowEditApprentice && Model.HasOptions && !Model.SingleOption)
+                        </td>
+                        <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
+                            @if (Model.AllowEditApprentice && Model.HasOptions && !Model.SingleOption)
                             {
                                 <a id="change-version-link" class="govuk-link" asp-route="@RouteNames.ChangeOption"
                                    asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">Change</a>
