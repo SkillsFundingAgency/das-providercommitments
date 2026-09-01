@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using SFA.DAS.CommitmentsV2.Types;
+using Alerts = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.Alerts;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {

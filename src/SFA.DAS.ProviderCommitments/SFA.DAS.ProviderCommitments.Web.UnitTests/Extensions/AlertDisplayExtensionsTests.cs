@@ -1,4 +1,4 @@
-using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions;
@@ -8,8 +8,7 @@ public class AlertDisplayExtensionsTests
     [Test]
     public void ToAlertDisplayText_ThenUsesIlrChangeInvalidCopy()
     {
-        AlertDisplayExtensions.IlrChangeInvalid.ToAlertDisplayText().Should().Be("ILR change invalid");
-        ((Alerts)5).ToAlertDisplayText().Should().Be("ILR change invalid");
+        Alerts.IlrChangeInvalid.ToAlertDisplayText().Should().Be("ILR change invalid");
     }
 
     [Test]
@@ -22,8 +21,7 @@ public class AlertDisplayExtensionsTests
     [Test]
     public void ToAlertDisplayText_ThenUsesChangesDeclinedCopy()
     {
-        AlertDisplayExtensions.ChangesDeclined.ToAlertDisplayText().Should().Be("Changes declined");
-        ((Alerts)6).ToAlertDisplayText().Should().Be("Changes declined");
+        Alerts.ChangesDeclined.ToAlertDisplayText().Should().Be("Changes declined");
     }
 
     [Test]

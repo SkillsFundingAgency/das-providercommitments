@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using Alerts = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.Alerts;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModelTests;
 
