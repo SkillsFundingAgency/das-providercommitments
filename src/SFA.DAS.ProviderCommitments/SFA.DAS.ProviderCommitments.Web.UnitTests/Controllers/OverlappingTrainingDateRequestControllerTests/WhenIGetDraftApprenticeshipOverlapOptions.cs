@@ -22,11 +22,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         }
 
         [Test]
+        public async Task AndWhenIGetDraftApprenticeshipOverlapOptions_NotWithdrawnFromIlrPreviousApprenticeship_CorrectViewModelIsReturned()
+        {
+            await _fixture.SetupWithdrawnStatusCode(null).GetDraftApprenticeshipOverlapOptions();
+            _fixture.VerifyDraftApprenticeshipOverlapOptionsViewReturned();
+        }
+
+        [Test]
         public async Task AndWhenIGetDraftApprenticeshipOverlapOptions_ModelIsMapped()
         {
             await _fixture
                 .GetDraftApprenticeshipOverlapOptions();
 
+            _fixture.VerifyWhenGettingOverlappingTrainingDate_ModelIsMapped();
+        }
+
+        [Test]
+        public async Task AndWhenIGetDraftApprenticeshipOverlapOptions_NotWithdrawnFromIlrPreviousApprenticeship_ModelIsMapped()
+        {
+            await _fixture.SetupWithdrawnStatusCode(null)
+                .GetDraftApprenticeshipOverlapOptions();
             _fixture.VerifyWhenGettingOverlappingTrainingDate_ModelIsMapped();
         }
 
@@ -63,6 +78,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         {
             await _fixture
            .SetApprenticeshipStatus(apprenticeshipStatus)
+           .SetupWithdrawnStatusCode(null)
            .GetDraftApprenticeshipOverlapOptions();
 
             _fixture.VerifyEnableEmployerRequestEmail(sendEmail);

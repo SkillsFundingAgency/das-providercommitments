@@ -94,4 +94,6 @@ public interface IOuterApiService
     Task DraftApprenticeshipSetReference(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeshipSetReferenceApimRequest request);
 
     Task DraftApprenticeshipAddEmail(long providerId, long cohortId, long apprenticeshipId, DraftApprenticeAddEmailApimRequest request);
+
+    Task<GetApprenticeshipResponse> GetApprenticeship(long apprenticeshipId, long providerId);
 }
