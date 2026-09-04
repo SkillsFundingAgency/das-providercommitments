@@ -1,11 +1,9 @@
-using System;
 using System.ComponentModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
-[Flags]
 [JsonConverter(typeof(StringEnumConverter))]
 public enum Alerts
 {
