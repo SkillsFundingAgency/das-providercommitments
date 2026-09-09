@@ -5,6 +5,7 @@ using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using Alerts = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.Alerts;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModelTests;
 
@@ -173,7 +174,7 @@ public class WhenGettingFiltersUsedMessage
     {
         var filterModel = new ApprenticesFilterModel
         {
-            SelectedAlert = AlertDisplayExtensions.IlrChangeInvalid
+            SelectedAlert = Alerts.IlrChangeInvalid
         };
 
         filterModel.FiltersUsedMessage.Value.Should().Be("matching <strong>ILR change invalid</strong>");

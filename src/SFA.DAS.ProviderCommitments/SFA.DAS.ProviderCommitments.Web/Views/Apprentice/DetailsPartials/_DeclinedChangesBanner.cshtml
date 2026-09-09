@@ -1,0 +1,29 @@
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+
+@if (Model.HasUnacknowledgedDeclinedChanges)
+{
+    <div class="govuk-notification-banner" role="region" aria-labelledby="declined-changes-banner-title"
+         data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="declined-changes-banner-title">
+                Action needed
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <h3 class="govuk-notification-banner__heading">
+                Changes declined.
+            </h3>
+            <p class="govuk-body">
+                An employer has declined changes you made to a learner record.
+            </p>
+            <p class="govuk-body">
+                <a class="govuk-notification-banner__link" asp-route="@RouteNames.DeclinedChanges"
+                   asp-route-providerId="@Model.ProviderId"
+                   asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">
+                    View declined changes
+                </a>
+            </p>
+        </div>
+    </div>
+}

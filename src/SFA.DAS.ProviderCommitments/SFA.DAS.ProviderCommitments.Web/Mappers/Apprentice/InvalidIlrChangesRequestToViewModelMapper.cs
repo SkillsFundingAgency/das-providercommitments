@@ -1,103 +1,71 @@
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System.Globalization;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 
 public class InvalidIlrChangesRequestToViewModelMapper(IOuterApiClient outerApiClient)
     : IMapper<InvalidIlrChangesRequest, InvalidIlrChangesViewModel>
 {
-    private static readonly string[] PriceFields = ["TNP1", "TNP2"];
-
     public async Task<InvalidIlrChangesViewModel> Map(InvalidIlrChangesRequest source)
     {
         var response = await outerApiClient.Get<GetInvalidIlrChangesResponse>(
             new GetInvalidIlrChangesRequest(source.ProviderId, source.ApprenticeshipId));
 
+        return MapResponse(source, response, new InvalidIlrChangesViewModel(), ApplyInvalidIlrCopy);
+    }
+
+    public static TViewModel MapResponse<TViewModel>(
+        InvalidIlrChangesRequest source,
+        GetInvalidIlrChangesResponse response,
+        TViewModel viewModel,
+        Action<TViewModel, string> applyCopy)
+        where TViewModel : InvalidIlrChangesViewModel
+    {
         response ??= new GetInvalidIlrChangesResponse();
         response.RequestSets ??= [];
 
-        return new InvalidIlrChangesViewModel
+        var learnerName = $"{response.FirstName} {response.LastName}".Trim();
+
+        viewModel.ProviderId = source.ProviderId;
+        viewModel.ApprenticeshipHashedId = source.ApprenticeshipHashedId;
+        viewModel.ApprenticeshipId = source.ApprenticeshipId;
+        viewModel.LearnerName = learnerName;
+        viewModel.RequestSets = response.RequestSets.ConvertAll(set => new InvalidIlrChangeSetViewModel
         {
-            ProviderId = source.ProviderId,
-            ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-            ApprenticeshipId = source.ApprenticeshipId,
-            LearnerName = $"{response.FirstName} {response.LastName}".Trim(),
-            RequestSets = response.RequestSets.ConvertAll(set => new InvalidIlrChangeSetViewModel
-            {
-                ApprovalRequestId = set.ApprovalRequestId,
-                Decision = set.Decision,
-                Fields = ToDisplayFields(set.Fields)
-            })
-        };
+            ApprovalRequestId = set.ApprovalRequestId,
+            Decision = set.Decision,
+            Fields = ApprovalChangeFieldFormatter.ToDisplayFields(set.Fields)
+        });
+
+        applyCopy(viewModel, learnerName);
+        return viewModel;
     }
 
-    private static List<InvalidIlrChangeFieldViewModel> ToDisplayFields(List<InvalidIlrChangeField> fields)
+    public static void ApplyInvalidIlrCopy(InvalidIlrChangesViewModel viewModel, string learnerName)
     {
-        fields ??= [];
-
-        var displayFields = new List<InvalidIlrChangeFieldViewModel>();
-        var priceFields = fields.Where(field => PriceFields.Contains(field.Field, StringComparer.OrdinalIgnoreCase)).ToList();
-        var otherFields = fields.Where(field => !PriceFields.Contains(field.Field, StringComparer.OrdinalIgnoreCase));
-
-        if (priceFields.Count > 0)
-        {
-            displayFields.Add(new InvalidIlrChangeFieldViewModel
-            {
-                Field = "TotalPrice",
-                FieldDisplayName = "Total price",
-                Old = SumAmounts(priceFields, field => field.Old).ToGdsCostFormat(),
-                New = SumAmounts(priceFields, field => field.New).ToGdsCostFormat()
-            });
-        }
-
-        displayFields.AddRange(otherFields.Select(field => new InvalidIlrChangeFieldViewModel
-        {
-            Field = field.Field,
-            FieldDisplayName = ToFieldDisplayName(field.Field),
-            Old = FormatValue(field.Old),
-            New = FormatValue(field.New)
-        }));
-
-        return displayFields;
+        viewModel.Heading = $"Invalid ILR changes for {learnerName}";
+        viewModel.Intro = "These changes were automatically rejected. This is because one or more fields in the ILR file were invalid.";
+        viewModel.NextSteps = "Correct any invalid fields and resubmit the ILR file.";
+        viewModel.FieldColumnHeader = "Field";
+        viewModel.NewValueColumnHeader = "Rejected";
+        viewModel.LegendHint = null;
+        viewModel.ChangeSetCaption = "Invalid ILR changes";
+        viewModel.ChangeSetCaptionPrefix = "Invalid ILR change";
+        viewModel.GaVpv = "/apprentices/apprentice/invalid-ilr-changes";
     }
 
-    private static decimal SumAmounts(IEnumerable<InvalidIlrChangeField> fields, Func<InvalidIlrChangeField, string> selector)
+    public static void ApplyDeclinedCopy(InvalidIlrChangesViewModel viewModel, string learnerName)
     {
-        return fields.Sum(field => ParseAmount(selector(field)));
-    }
-
-    private static decimal ParseAmount(string value)
-    {
-        return decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var amount)
-            ? amount
-            : 0;
-    }
-
-    private static string FormatValue(string value)
-    {
-        if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
-        {
-            return date.ToGdsFormat();
-        }
-
-        if (decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var amount))
-        {
-            return amount.ToGdsCostFormat();
-        }
-
-        return value;
-    }
-
-    private static string ToFieldDisplayName(string field)
-    {
-        return field switch
-        {
-            "DateOfBirth" => "Date of birth",
-            _ => field
-        };
+        viewModel.Heading = $"Changes declined for {learnerName}";
+        viewModel.Intro = "These changes were declined by your employer.";
+        viewModel.NextSteps = "Contact your employer to check the details you've entered are correct, then resubmit the changes to your employer.";
+        viewModel.FieldColumnHeader = string.Empty;
+        viewModel.NewValueColumnHeader = "Declined";
+        viewModel.LegendHint = "You will still see the changes in your change history but the alert will disappear.";
+        viewModel.ChangeSetCaption = "Declined changes";
+        viewModel.ChangeSetCaptionPrefix = "Declined change";
+        viewModel.GaVpv = "/apprentices/apprentice/declined-changes";
     }
 }

@@ -2,8 +2,8 @@
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using Alerts = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.Alerts;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 
@@ -62,7 +62,8 @@ public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
             Alerts.ChangesPending,
             Alerts.ChangesRequested,
             Alerts.IlrDataMismatch,
-            AlertDisplayExtensions.IlrChangeInvalid,
+            Alerts.IlrChangeInvalid,
+            Alerts.ChangesDeclined,
         };
 
             var filterModel = new ApprenticesFilterModel

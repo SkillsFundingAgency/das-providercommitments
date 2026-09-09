@@ -381,7 +381,11 @@ else
                                 <ul class="govuk-list govuk-!-margin-bottom-0">
                                     @foreach (var alert in apprenticeship.Alerts)
                                     {
-                                        var alertRoute = alert.IsIlrChangeInvalid() ? RouteNames.InvalidIlrChanges : RouteNames.ApprenticeDetail;
+                                        var alertRoute = alert.IsIlrChangeInvalid()
+                                            ? RouteNames.InvalidIlrChanges
+                                            : alert.IsChangesDeclined()
+                                                ? RouteNames.DeclinedChanges
+                                                : RouteNames.ApprenticeDetail;
                                         <li>
                                             <a class="govuk-link" asp-route="@alertRoute" asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
                                                 @alert

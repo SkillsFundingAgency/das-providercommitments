@@ -1,0 +1,76 @@
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.InvalidIlrChangesViewModel
+
+@{
+    ViewData["Title"] = Model.Heading;
+    ViewBag.GaData.Vpv = Model.GaVpv;
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="govuk-error-summary" data-module="govuk-error-summary">
+                <div role="alert">
+                    <h2 class="govuk-error-summary__title">
+                        There is a problem
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <ul class="govuk-list govuk-error-summary__list">
+                            @foreach (var item in ViewData.ModelState)
+                            {
+                                foreach (var error in item.Value.Errors)
+                                {
+                                    var radioId = item.Key.Replace("[", "_").Replace("].", "__").Replace("]", "");
+                                    <li>
+                                        <a href="#@radioId">@error.ErrorMessage</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <h1 class="govuk-heading-xl">@Model.Heading</h1>
+
+        <p class="govuk-body">
+            @Model.Intro
+        </p>
+        <h2 class="govuk-heading-m">What you can do next</h2>
+        <p class="govuk-body">
+            @Model.NextSteps
+        </p>
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="ProviderId" />
+            <input type="hidden" asp-for="ApprenticeshipHashedId" />
+            <input type="hidden" asp-for="ApprenticeshipId" />
+
+            <partial name="_UnacknowledgedApprovalChangeSets" />
+
+            <button class="govuk-button" data-module="govuk-button" type="submit" id="continue-button">
+                Continue
+            </button>
+            <p class="govuk-body">
+                <a class="govuk-link"
+                   asp-controller="Apprentice"
+                   asp-action="ChangeHistory"
+                   asp-route-providerId="@Model.ProviderId"
+                   asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">
+                    View change history for this learner
+                </a>
+            </p>
+        </form>
+    </div>
+</div>
+
+@section breadcrumb {
+    <a id="back-link" class="govuk-back-link"
+       asp-route="@RouteNames.ApprenticeDetail"
+       asp-route-providerId="@Model.ProviderId"
+       asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">Back</a>
+}

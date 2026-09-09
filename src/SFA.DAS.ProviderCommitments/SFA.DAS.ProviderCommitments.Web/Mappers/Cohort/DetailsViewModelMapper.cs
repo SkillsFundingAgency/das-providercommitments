@@ -67,7 +67,7 @@ public class DetailsViewModelMapper(
             EncodedPledgeApplicationId = cohortDetails.PledgeApplicationId == null ? null : encodingService.Encode(cohortDetails.PledgeApplicationId.Value, EncodingType.PledgeApplicationId),
             Message = cohortDetails.LatestMessageCreatedByEmployer,
             Courses = courses,
-            PageTitle = $"{viewOrApprove} apprentice details",
+            PageTitle = $"{viewOrApprove} learner details",
             IsApprovedByEmployer = cohortDetails.IsApprovedByEmployer,
             IsAgreementSigned = isAgreementSigned,
             IsCompleteForProvider = cohortDetails.IsCompleteForProvider,
