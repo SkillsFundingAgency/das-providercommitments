@@ -32,7 +32,7 @@
                 </div>
                 <div class="govuk-notification-banner__content">
                     <p class="govuk-notification-banner__heading">
-                        You can't approve this apprentice request until:
+                        You can't approve this learner request until:
                     </p>
                     <ul>
                         @if (!Model.IsAgreementSigned)
@@ -41,15 +41,15 @@
                         }
                         @if (Model.HasOverlappingUln)
                         {
-                            <li>there are no overlapping training dates for your apprentices</li>
+                            <li>there are no overlapping training dates for your learner</li>
                         }
                         @if (Model.HasEmailOverlaps)
                         {
-                            <li>each apprentice has a unique email address</li>
+                            <li>each learner has a unique email address</li>
                         }
                         @if (!Model.IsCompleteForProvider && !Model.IsReadOnly)
                         {
-                            <li>all apprentice records are complete</li>
+                            <li>all learner records are complete</li>
                         }
                     </ul>
                 </div>
@@ -165,7 +165,7 @@
         <details class="govuk-details govuk-!-margin-top-2" data-module="govuk-details">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
-                    I need to change some apprentice details
+                    I need to change some details
                 </span>
             </summary>
             <div class="govuk-details__text">
@@ -230,7 +230,7 @@
             <div class="govuk-inset-text das-inset-text--highlight">
                 <h3 class="govuk-heading-s">@course.EmailOverlaps.DisplayEmailOverlapsMessage</h3>
                 <p>
-                    You must enter a unique email address for each apprentice.
+                    You must enter a unique email address for each learner.
                 </p>
             </div>
             course.ErrorEmailOverlapsDisplayed = true;
@@ -239,9 +239,9 @@
         if (!draftApprenticeship.IsComplete && !course.ErrorIsCompletedDisplayed)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
-                <h3 class="govuk-heading-s">Apprentice record incomplete</h3>
+                <h3 class="govuk-heading-s">Learner record incomplete</h3>
                 <p>
-                    You must complete the apprentice record to be able to approve
+                    You must complete the learner record to be able to approve
                 </p>
             </div>
             course.ErrorIsCompletedDisplayed = true;
@@ -391,7 +391,7 @@
         }
         else
         {
-            <th class="govuk-table__header das-table-cell-width-80" scope="row">Total apprenticeship training price <br>(excluding VAT)</th>
+            <th class="govuk-table__header das-table-cell-width-80" scope="row">Total training price <br>(excluding VAT)</th>
             <td class="govuk-table__cell govuk-table__header--numeric das-table-cell-width-20">
                 <strong>@Model.DisplayTotalCost</strong>
             </td>
@@ -406,11 +406,11 @@
         @if (Model.ShowAddAnotherApprenticeOption)
         {
             <a class="govuk-link add-apprentice" href="@Url.Action("AddAnotherSelectMethod", "DraftApprenticeship", new { Model.CohortReference, Model.ProviderId, Model.AccountLegalEntityHashedId, Model.EncodedPledgeApplicationId, Model.TransferSenderHashedId, UseLearnerData = Model.UseLearnerData })">
-                Add another apprentice
+                Add another learner
             </a>
         }
         <a class="govuk-link das-float-right delete-cohort" id="delete-cohort" href="@Url.Action("Delete", new { Model.CohortReference, Model.ProviderId })">
-            Delete this cohort
+            Remove this cohort
         </a>
     </p>
 
@@ -493,7 +493,7 @@
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="radio-home" name="selection" type="radio" value="@CohortDetailsOptions.ApprenticeRequest">
                                     <label class="govuk-label govuk-radios__label" for="radio-home">
-                                        No, save as a draft and return to apprentice requests
+                                        No, save as a draft and return to requests
                                     </label>
                                 </div>
                             }
