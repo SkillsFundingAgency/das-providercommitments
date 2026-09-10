@@ -43,22 +43,17 @@ public class LearnerController(IModelMapper modelMapper) : Controller
 
     [HttpPost]
     [Route("add/learners/select-multiple")]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    //[ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]    
     public async Task<IActionResult> SelectMultipleLearnerRecords(SelectMultipleLearnerRecordsPostRequest request)
-    {
-        //var fileUploadLogId = await ValidateSelectMultipleLearnerRecords(Request.ProviderId, request.Attachment);
-        //viewModel.FileUploadLogId = fileUploadLogId;
-        var validationRequest = await modelMapper.Map<ValidateSelectMultipleLearnerRecordsRequest>(request);
-        //return RedirectToAction(nameof(FileUploadReview), request);
-    }
+    {        
+        var validationResult = await modelMapper.Map<ValidateSelectMultipleLearnerRecordsRequest>(request);
 
-    //private async Task<long> ValidateSelectMultipleLearnerRecords(long providerId, IFormFile attachment)
-    //{
-    //    var bulkValidate = new ValidateSelectMultipleLearnerRecordsRequest { Attachment = attachment, ProviderId = providerId };
-    //    var response = await _mediator.Send(bulkValidate);
-    //    return response.LogId;
-    //}
+        //if error display review page 
+        //return RedirectToAction(nameof(FileUploadReview), request);
+        //else continue to create cohort and reservations 
+
+        return RedirectToAction("test", validationResult);
+    }    
 
     [HttpGet]
     [Route("add/learners/select-multiple-filter", Name = RouteNames.SelectMultipleLearnerRecordsFilter)]

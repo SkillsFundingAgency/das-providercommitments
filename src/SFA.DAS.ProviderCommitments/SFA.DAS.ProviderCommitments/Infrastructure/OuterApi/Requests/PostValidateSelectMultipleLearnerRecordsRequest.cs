@@ -2,7 +2,7 @@
 {
     public class PostValidateSelectMultipleLearnerRecordsRequest : IPostApiRequest
     {
-        public string PostUrl => "BulkUpload/Validate";
+        public string PostUrl => "SelectMultiple/Validate";
 
         public object Data { get; set; }
 

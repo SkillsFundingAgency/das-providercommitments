@@ -24,28 +24,28 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
 
         public async Task<ValidateSelectMultipleLearnerRecordsResponse> Handle(ValidateSelectMultipleLearnerRecordsRequest request, CancellationToken cancellationToken)
         {
-            request.CsvRecords = _bulkUploadFileParser.GetCsvRecords(request.ProviderId, request.Attachment);
+            //request.CsvRecords = _bulkUploadFileParser.GetCsvRecords(request.ProviderId, request.Attachment);
            
-            var apiRequest = await _modelMapper.Map<ValidateSelectMultipleLearnerRecordsApimRequest>(request);
-            apiRequest.FileUploadLogId = await _client.CreateFileUploadLog(request.ProviderId, request.Attachment, request.CsvRecords);
-            try
-            {
-                await _client.ValidateSelectMultipleLearnerRecordsRequest(apiRequest);
-                return new ValidateSelectMultipleLearnerRecordsResponse
-                {
-                    LogId = apiRequest.FileUploadLogId
-                };
-            }
-            catch (CommitmentsApiBulkUploadModelException ex)
-            {
-                await _client.AddValidationMessagesToFileUploadLog(request.ProviderId, apiRequest.FileUploadLogId, ex.Errors);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                await _client.AddUnhandledExceptionToFileUploadLog(request.ProviderId, apiRequest.FileUploadLogId, ex.Message);
-                throw;
-            }
+            //var apiRequest = await _modelMapper.Map<ValidateSelectMultipleLearnerRecordsApimRequest>(request);
+            //apiRequest.FileUploadLogId = await _client.CreateFileUploadLog(request.ProviderId, request.Attachment, request.CsvRecords);
+            //try
+            //{
+                //await _client.ValidateSelectMultipleLearnerRecordsRequest(apiRequest);
+                //return new ValidateSelectMultipleLearnerRecordsResponse
+                //{
+                //    LogId = apiRequest.FileUploadLogId
+                //};
+            //}
+            //catch (CommitmentsApiBulkUploadModelException ex)
+            //{
+            //    await _client.AddValidationMessagesToFileUploadLog(request.ProviderId, apiRequest.FileUploadLogId, ex.Errors);
+            //    throw;
+            //}
+            //catch (Exception ex)
+            //{
+            //    await _client.AddUnhandledExceptionToFileUploadLog(request.ProviderId, apiRequest.FileUploadLogId, ex.Message);
+            //    throw;
+            //}
         }
     }
 }
