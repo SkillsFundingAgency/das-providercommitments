@@ -1,9 +1,6 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
-@using SFA.DAS.ProviderCommitments.Web.Extensions
-@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
-@using SFA.DAS.ProviderCommitments.Web.RouteValues
 
 @{
     ViewData["Title"] = "Apprentice Details";
@@ -51,8 +48,7 @@
                 </ul>
                 <p>Once you've agreed these details, you can change the employer.</p>
                 <p>
-                    Non-levy employers will not need apprenticeship funding reserved when taking on a learner from another
-                    employer.
+                    Non-levy employers will not need to reserve funding when taking on a learner from another employer.
                 </p>
             </div>
         </details>
@@ -135,7 +131,7 @@
                 {
                     <a id="edit-apprentice-link"
                        href="@Url.Action("EditApprenticeship", new { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })"
-                       class="govuk-link govuk-body">Edit learner</a>
+                       class="govuk-link govuk-body">Edit</a>
                 }
             </div>
         </div>
