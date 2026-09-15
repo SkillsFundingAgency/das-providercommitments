@@ -697,6 +697,14 @@ public class DetailsViewModelMapperTests
     }
 
     [Test]
+    public async Task ThenHasUnacknowledgedInvalidIlrChangesIsMappedCorrectly()
+    {
+        _fixture.ApiResponse.Apprenticeship.HasUnacknowledgedInvalidIlrChanges = true;
+        await _fixture.Map();
+        _fixture.Result.HasUnacknowledgedInvalidIlrChanges.Should().BeTrue();
+    }
+
+    [Test]
     public async Task ThenEmploymentStatusIsNotEmployed_WhenStatusFailed()
     {
         _fixture.WithEmployerVerificationStatus(3, null); // Failed
