@@ -5,6 +5,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using Alerts = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.Alerts;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models;
 
@@ -223,7 +224,7 @@ public class ApprenticeshipDetailsCsvModelTests
         [Frozen] Mock<IEncodingService> encodingService,
         ApprenticeshipDetailsCsvModel model)
     {
-        source.Alerts = [AlertDisplayExtensions.IlrChangeInvalid];
+        source.Alerts = [Alerts.IlrChangeInvalid];
 
         var result = model.Map(source, encodingService.Object);
 

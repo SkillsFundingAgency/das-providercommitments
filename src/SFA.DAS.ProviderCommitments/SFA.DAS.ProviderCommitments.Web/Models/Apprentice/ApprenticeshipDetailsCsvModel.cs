@@ -4,6 +4,7 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using Alerts = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.Alerts;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -75,7 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         {
             var alertString = string.Empty;
 
-            foreach (var alert in alerts)
+            foreach (var alert in alerts ?? [])
             {
                 if (!string.IsNullOrWhiteSpace(alertString))
                 {

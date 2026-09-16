@@ -1,5 +1,6 @@
 ﻿using System;
 using SFA.DAS.CommitmentsV2.Types;
+using Alerts = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.Alerts;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
 {

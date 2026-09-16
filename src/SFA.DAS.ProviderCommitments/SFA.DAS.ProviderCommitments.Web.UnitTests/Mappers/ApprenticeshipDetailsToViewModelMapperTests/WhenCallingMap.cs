@@ -3,6 +3,7 @@ using System.Linq;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 
@@ -145,11 +146,23 @@ public class WhenCallingMap
         GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
         ApprenticeshipDetailsToViewModelMapper mapper)
     {
-        source.Alerts = [AlertDisplayExtensions.IlrChangeInvalid];
+        source.Alerts = [Alerts.IlrChangeInvalid];
 
         var result = await mapper.Map(source);
 
         result.Alerts.Should().BeEquivalentTo(["ILR change invalid"]);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Maps_Null_Alerts(
+        GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+        ApprenticeshipDetailsToViewModelMapper mapper)
+    {
+        source.Alerts = null;
+
+        var result = await mapper.Map(source);
+
+        result.Alerts.Should().BeEmpty();
     }
 
     [Test, MoqAutoData]

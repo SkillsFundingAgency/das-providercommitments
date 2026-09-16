@@ -1,9 +1,10 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using Alerts = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.Alerts;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 
@@ -45,7 +46,7 @@ public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
 
             _logger.LogInformation("Response is null {a}", response is null);
 
-            response = response ?? new Infrastructure.OuterApi.Responses.Apprentices.GetApprenticeshipsResponse();
+            response ??= new GetApprenticeshipsResponse();
 
             var statusFilters = new[]
             {
@@ -58,11 +59,11 @@ public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
 
             var alertFilters = new[]
             {
-            Alerts.ChangesForReview ,
+            Alerts.ChangesForReview,
             Alerts.ChangesPending,
             Alerts.ChangesRequested,
             Alerts.IlrDataMismatch,
-            AlertDisplayExtensions.IlrChangeInvalid,
+            Alerts.IlrChangeInvalid,
         };
 
             var filterModel = new ApprenticesFilterModel
@@ -87,7 +88,8 @@ public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
                 AlertFilters = alertFilters
             };
 
-            if (response.TotalApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch)
+            if (response.TotalApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch
+                && response.ApprenticeshipFiltersValue != null)
             {
                 filterModel.EmployerFilters = response.ApprenticeshipFiltersValue.EmployerNames;
                 filterModel.CourseFilters = response.ApprenticeshipFiltersValue.CourseNames;
@@ -97,7 +99,7 @@ public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
 
             var apprenticeships = new List<ApprenticeshipDetailsViewModel>();
 
-            foreach (var apprenticeshipDetailsResponse in response.Apprenticeships)
+            foreach (var apprenticeshipDetailsResponse in response.Apprenticeships ?? [])
             {
                 var apprenticeship = await _modelMapper.Map<ApprenticeshipDetailsViewModel>(apprenticeshipDetailsResponse);
                 apprenticeships.Add(apprenticeship);
@@ -115,9 +117,8 @@ public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
         }
         catch (Exception e)
         {
-            _logger.LogError(e.Message);
+            _logger.LogError(e, "Failed to map IndexViewModel for provider {ProviderId}", source.ProviderId);
+            throw;
         }
-
-        return new IndexViewModel();
     }
 }
