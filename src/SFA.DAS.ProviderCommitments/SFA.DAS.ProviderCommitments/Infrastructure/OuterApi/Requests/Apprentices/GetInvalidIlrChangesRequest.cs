@@ -7,12 +7,12 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
 
 public class GetInvalidIlrChangesRequest(long providerId, long apprenticeshipId) : IGetApiRequest
 {
-    public string GetUrl => $"{providerId}/apprentices/{apprenticeshipId}/invalid-ilr-changes";
+    public string GetUrl => $"provider/{providerId}/apprentices/{apprenticeshipId}/invalid-ilr-changes";
 }
 
 public class PostInvalidIlrChangesRequest(long providerId, long apprenticeshipId, PostInvalidIlrChangesRequestData data) : IPostApiRequest
 {
-    public string PostUrl => $"{providerId}/apprentices/{apprenticeshipId}/invalid-ilr-changes";
+    public string PostUrl => $"provider/{providerId}/apprentices/{apprenticeshipId}/invalid-ilr-changes";
     public object Data { get; set; } = data;
 }
 
