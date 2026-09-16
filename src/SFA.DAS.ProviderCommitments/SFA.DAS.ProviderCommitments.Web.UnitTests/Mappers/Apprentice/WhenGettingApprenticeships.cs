@@ -7,6 +7,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
 using SFA.DAS.CommitmentsV2.Types;
+using Alerts = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.Alerts;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice;
 
@@ -189,7 +190,26 @@ public class WhenGettingApprenticeships
             viewModel.FilterModel.StatusFilters.Should().Contain(ApprenticeshipStatus.WaitingToStart);
             viewModel.FilterModel.StatusFilters.Should().Contain(ApprenticeshipStatus.Completed);
             viewModel.FilterModel.StatusFilters.Should().NotContain(ApprenticeshipStatus.Unknown);
+            viewModel.FilterModel.AlertFilters.Should().Contain(Alerts.IlrChangeInvalid);
+            viewModel.FilterModel.AlertFilters.Should().Contain(Alerts.ChangesDeclined);
+            viewModel.FilterModel.AlertFilters.Should().Contain(Alerts.ChangesPending);
         }
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Rethrows_When_Api_Fails(
+        IndexRequest request,
+        [Frozen] Mock<IApprovalsOuterApiClient> mockapprovalsOuterApiClient,
+        IndexViewModelMapper mapper)
+    {
+        mockapprovalsOuterApiClient
+            .Setup(client => client.GetApprenticeships(It.IsAny<GetApprenticeshipsRequest>()))
+            .ThrowsAsync(new InvalidOperationException("Requested value 'IlrChangeInvalid' was not found."));
+
+        var act = () => mapper.Map(request);
+
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("*IlrChangeInvalid*");
     }
 
     [Test, MoqAutoData]

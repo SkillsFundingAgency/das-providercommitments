@@ -22,7 +22,7 @@ public class ApprenticeshipDetailsToViewModelMapper(IEncodingService encodingSer
             PlannedEndDate = source.EndDate,
             ConfirmationStatus = source.ConfirmationStatus,
             Status = source.ApprenticeshipStatus,
-            Alerts = source.Alerts.Select(x => x.ToAlertDisplayText()),
+            Alerts = (source.Alerts ?? []).Select(x => x.ToAlertDisplayText()),
             ActualStartDate = source.ActualStartDate,
             EmploymentStatus = MapEmploymentStatus(source.EmployerVerificationStatus, source.EmployerVerificationNotes)
         };

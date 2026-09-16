@@ -76,7 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         {
             var alertString = string.Empty;
 
-            foreach (var alert in alerts)
+            foreach (var alert in alerts ?? [])
             {
                 if (!string.IsNullOrWhiteSpace(alertString))
                 {

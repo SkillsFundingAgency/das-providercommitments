@@ -10,6 +10,11 @@
 
         public void SortedByHeader()
         {
+            if (FilterModel == null)
+            {
+                return;
+            }
+
             SortedByHeaderClassName += HeaderClassName;
             if (FilterModel.ReverseSort)
             {
@@ -22,7 +27,7 @@
         }
 
         public ApprenticesFilterModel FilterModel { get; set; }
-        public bool ShowPageLinks => FilterModel.TotalNumberOfApprenticeshipsFound > Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage;
+        public bool ShowPageLinks => FilterModel != null && FilterModel.TotalNumberOfApprenticeshipsFound > Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage;
 
         public bool HasChangeHistory { get; set; }
     }

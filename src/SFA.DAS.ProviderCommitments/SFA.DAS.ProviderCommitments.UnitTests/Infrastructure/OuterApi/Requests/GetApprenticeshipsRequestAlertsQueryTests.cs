@@ -33,5 +33,7 @@ public class GetApprenticeshipsRequestAlertsQueryTests
 
         request.GetUrl.Should().Contain($"alert={alert}");
         request.GetUrl.Should().NotContain(",");
+        request.GetUrl.Should().NotContain("ChangesPending");
+        request.GetUrl.Should().NotContain("ConfirmDates");
     }
 }

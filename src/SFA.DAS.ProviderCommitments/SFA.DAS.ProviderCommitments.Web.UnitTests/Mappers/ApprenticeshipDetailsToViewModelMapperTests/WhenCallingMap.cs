@@ -154,6 +154,18 @@ public class WhenCallingMap
     }
 
     [Test, MoqAutoData]
+    public async Task Then_Maps_Null_Alerts(
+        GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+        ApprenticeshipDetailsToViewModelMapper mapper)
+    {
+        source.Alerts = null;
+
+        var result = await mapper.Map(source);
+
+        result.Alerts.Should().BeEmpty();
+    }
+
+    [Test, MoqAutoData]
     public async Task Then_Maps_ActualStartDate(
         GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
         ApprenticeshipDetailsToViewModelMapper mapper)
