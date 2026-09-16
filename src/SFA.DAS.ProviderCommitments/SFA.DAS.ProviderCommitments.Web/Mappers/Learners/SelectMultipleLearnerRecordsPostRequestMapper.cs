@@ -8,16 +8,14 @@ using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 
 public class SelectMultipleLearnerRecordsPostRequestMapper(IOuterApiService client, ICacheStorageService cacheStorage)
-    : IMapper<SelectMultipleLearnerRecordsPostRequest, ValidateSelectMultipleLearnerRecordsRequest>
+    : IMapper<SelectMultipleLearnerRecordsPostRequest, SelectMultipleLearnerRecordsViewModel>
 {
-    public async Task<ValidateSelectMultipleLearnerRecordsRequest> Map(SelectMultipleLearnerRecordsPostRequest source)
+    public async Task<SelectMultipleLearnerRecordsViewModel> Map(SelectMultipleLearnerRecordsPostRequest source)
     {
         var cacheItem = await cacheStorage.RetrieveFromCache<SelectMultipleLearnerRecordsCacheItem>(source.CacheKey.Value);
 
-        var validationRequest = new ValidateSelectMultipleLearnerRecordsRequest()
-        {
-            //AccountLegalEntityId = cacheItem.AccountLegalEntityId,                                
-            //ExcludeUlns = cacheItem.SelectedLearners.Select(x => x.Uln).ToList(),
+        var validationRequest = new SelectMultipleLearnerRecordsViewModel()
+        {            
         };
 
         var apiRequest = new ValidateSelectMultipleLearnerRecordsApimRequest();

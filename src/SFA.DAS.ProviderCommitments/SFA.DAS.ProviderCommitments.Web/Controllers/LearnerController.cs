@@ -46,7 +46,7 @@ public class LearnerController(IModelMapper modelMapper) : Controller
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]    
     public async Task<IActionResult> SelectMultipleLearnerRecords(SelectMultipleLearnerRecordsPostRequest request)
     {        
-        var validationResult = await modelMapper.Map<ValidateSelectMultipleLearnerRecordsRequest>(request);
+        var validationResult = await modelMapper.Map<SelectMultipleLearnerRecordsViewModel>(request);
 
         //if error display review page 
         //return RedirectToAction(nameof(FileUploadReview), request);
