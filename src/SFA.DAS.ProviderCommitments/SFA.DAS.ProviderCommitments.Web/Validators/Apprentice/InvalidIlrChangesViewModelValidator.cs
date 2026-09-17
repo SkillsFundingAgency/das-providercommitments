@@ -24,25 +24,19 @@ public class InvalidIlrChangesViewModelValidator : AbstractValidator<InvalidIlrC
                     continue;
                 }
 
-                context.AddFailure(
-                    $"RequestSets[{index}].DeleteAlert",
-                    SelectDeleteMessageFor(requestSet));
+                context.AddFailure($"RequestSets[{index}].DeleteAlert", SelectDeleteMessage);
             }
         });
     }
 
-    public static string SelectDeleteMessageFor(InvalidIlrChangeSetViewModel requestSet)
-    {
-        return $"{SelectDeleteMessage} for {GetAlertCaption(requestSet)}";
-    }
-
     public static string GetAlertCaption(InvalidIlrChangeSetViewModel requestSet)
     {
-        if (requestSet?.Fields?.Count == 1)
+        if (requestSet?.Fields?.Count == 1
+            && !string.IsNullOrWhiteSpace(requestSet.Fields[0].FieldDisplayName))
         {
             return requestSet.Fields[0].FieldDisplayName;
         }
 
-        return "Invalid ILR changes";
+        return null;
     }
 }

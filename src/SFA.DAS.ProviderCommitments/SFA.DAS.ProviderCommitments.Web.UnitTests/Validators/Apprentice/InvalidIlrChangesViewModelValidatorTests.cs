@@ -45,12 +45,12 @@ public class InvalidIlrChangesViewModelValidatorTests
         var result = new InvalidIlrChangesViewModelValidator().TestValidate(viewModel);
 
         result.ShouldHaveValidationErrorFor("RequestSets[0].DeleteAlert")
-            .WithErrorMessage("Select if you would like to delete this alert for Total price");
+            .WithErrorMessage(InvalidIlrChangesViewModelValidator.SelectDeleteMessage);
         result.ShouldNotHaveValidationErrorFor("RequestSets[1].DeleteAlert");
     }
 
     [Test]
-    public void Validate_ThenUsesDistinctMessagesForEachMissingAnswer()
+    public void Validate_ThenAddsOneErrorPerMissingAnswer()
     {
         var viewModel = new InvalidIlrChangesViewModel
         {
@@ -72,13 +72,14 @@ public class InvalidIlrChangesViewModelValidatorTests
         var result = new InvalidIlrChangesViewModelValidator().TestValidate(viewModel);
 
         result.ShouldHaveValidationErrorFor("RequestSets[0].DeleteAlert")
-            .WithErrorMessage("Select if you would like to delete this alert for Total price");
+            .WithErrorMessage(InvalidIlrChangesViewModelValidator.SelectDeleteMessage);
         result.ShouldHaveValidationErrorFor("RequestSets[1].DeleteAlert")
-            .WithErrorMessage("Select if you would like to delete this alert for Date of birth");
+            .WithErrorMessage(InvalidIlrChangesViewModelValidator.SelectDeleteMessage);
+        result.Errors.Should().HaveCount(2);
     }
 
     [Test]
-    public void GetAlertCaption_ThenUsesFieldName()
+    public void GetAlertCaption_ThenUsesFieldNameWhenPresent()
     {
         var requestSet = new InvalidIlrChangeSetViewModel
         {
@@ -90,14 +91,9 @@ public class InvalidIlrChangesViewModelValidatorTests
     }
 
     [Test]
-    public void SelectDeleteMessageFor_ThenUsesFieldName()
+    public void GetAlertCaption_ThenReturnsNullWhenFieldNameIsMissing()
     {
-        var requestSet = new InvalidIlrChangeSetViewModel
-        {
-            Fields = [new InvalidIlrChangeFieldViewModel { FieldDisplayName = "Total price" }]
-        };
-
-        InvalidIlrChangesViewModelValidator.SelectDeleteMessageFor(requestSet)
-            .Should().Be("Select if you would like to delete this alert for Total price");
+        InvalidIlrChangesViewModelValidator.GetAlertCaption(new InvalidIlrChangeSetViewModel())
+            .Should().BeNull();
     }
 }
