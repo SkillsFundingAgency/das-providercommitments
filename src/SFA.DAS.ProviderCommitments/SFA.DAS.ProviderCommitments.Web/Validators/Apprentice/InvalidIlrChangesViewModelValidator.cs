@@ -9,11 +9,40 @@ public class InvalidIlrChangesViewModelValidator : AbstractValidator<InvalidIlrC
 
     public InvalidIlrChangesViewModelValidator()
     {
-        RuleForEach(x => x.RequestSets).ChildRules(set =>
+        RuleFor(x => x.RequestSets).Custom((requestSets, context) =>
         {
-            set.RuleFor(x => x.DeleteAlert)
-                .NotNull()
-                .WithMessage(SelectDeleteMessage);
+            if (requestSets == null)
+            {
+                return;
+            }
+
+            for (var index = 0; index < requestSets.Count; index++)
+            {
+                var requestSet = requestSets[index];
+                if (requestSet.DeleteAlert != null)
+                {
+                    continue;
+                }
+
+                context.AddFailure(
+                    $"RequestSets[{index}].DeleteAlert",
+                    SelectDeleteMessageFor(requestSet));
+            }
         });
+    }
+
+    public static string SelectDeleteMessageFor(InvalidIlrChangeSetViewModel requestSet)
+    {
+        return $"{SelectDeleteMessage} for {GetAlertCaption(requestSet)}";
+    }
+
+    public static string GetAlertCaption(InvalidIlrChangeSetViewModel requestSet)
+    {
+        if (requestSet?.Fields?.Count == 1)
+        {
+            return requestSet.Fields[0].FieldDisplayName;
+        }
+
+        return "Invalid ILR changes";
     }
 }

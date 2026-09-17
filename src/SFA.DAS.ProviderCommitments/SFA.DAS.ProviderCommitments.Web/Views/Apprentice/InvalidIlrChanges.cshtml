@@ -22,9 +22,12 @@
                             {
                                 foreach (var error in item.Value.Errors)
                                 {
-                                    var radioId = item.Key.Replace("[", "_").Replace("].", "__").Replace("]", "");
+                                    var errorElementId = "error-message-" + item.Key
+                                        .Replace("[", "_")
+                                        .Replace("].", "__")
+                                        .Replace("]", "");
                                     <li>
-                                        <a href="#@radioId">@error.ErrorMessage</a>
+                                        <a href="#@errorElementId">@error.ErrorMessage</a>
                                     </li>
                                 }
                             }
@@ -58,38 +61,36 @@
                 var deleteRadioId = $"RequestSets_{i}__DeleteAlert";
                 var keepRadioId = $"RequestSets_{i}__DeleteAlert-no";
                 var deleteHintId = $"{deleteRadioId}-hint";
-                var hasDeleteAlertError = ViewData.ModelState[deleteAlertField]?.Errors.Count > 0;
-                var tableCaption = set.Fields.Count == 1
-                    ? set.Fields[0].FieldDisplayName
-                    : Model.RequestSets.Count == 1
-                        ? "Invalid ILR changes"
-                        : $"Invalid ILR change {i + 1} of {Model.RequestSets.Count}";
+                var fieldErrors = ViewData.ModelState[deleteAlertField]?.Errors;
+                var hasDeleteAlertError = fieldErrors?.Count > 0;
+                var tableCaption = InvalidIlrChangesViewModelValidator.GetAlertCaption(set);
+                var inlineErrorMessage = hasDeleteAlertError
+                    ? fieldErrors[0].ErrorMessage
+                    : null;
 
                 <input type="hidden" name="RequestSets[@i].ApprovalRequestId" value="@set.ApprovalRequestId" />
 
                 <div class="govuk-!-margin-bottom-8">
-                    <table class="govuk-table">
-                        <caption class="govuk-table__caption govuk-table__caption--m">
-                            <span class="govuk-visually-hidden">@tableCaption</span>
-                        </caption>
-                        <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header">Field</th>
-                                <th scope="col" class="govuk-table__header">Current</th>
-                                <th scope="col" class="govuk-table__header">Rejected</th>
-                            </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
-                            @foreach (var field in set.Fields)
-                            {
+                    @foreach (var field in set.Fields)
+                    {
+                        <table class="govuk-table">
+                            <caption class="govuk-table__caption govuk-table__caption--m">
+                                @field.FieldDisplayName
+                            </caption>
+                            <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
-                                    <td class="govuk-table__cell">@field.FieldDisplayName</td>
+                                    <th scope="col" class="govuk-table__header">Current</th>
+                                    <th scope="col" class="govuk-table__header">Rejected</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                <tr class="govuk-table__row">
                                     <td class="govuk-table__cell">@field.Old</td>
                                     <td class="govuk-table__cell">@field.New</td>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    }
 
                     <div class="govuk-form-group @(hasDeleteAlertError ? "govuk-form-group--error" : null)">
                         <fieldset class="govuk-fieldset" aria-describedby="@(hasDeleteAlertError ? errorId : null)">
@@ -104,7 +105,7 @@
                             {
                                 <p class="govuk-error-message" id="@errorId">
                                     <span class="govuk-visually-hidden">Error:</span>
-                                    @InvalidIlrChangesViewModelValidator.SelectDeleteMessage
+                                    @inlineErrorMessage
                                 </p>
                             }
                             <div class="govuk-radios" data-module="govuk-radios">
