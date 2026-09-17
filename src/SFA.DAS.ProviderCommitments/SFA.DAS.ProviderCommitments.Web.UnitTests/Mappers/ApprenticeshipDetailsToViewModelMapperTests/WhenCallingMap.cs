@@ -150,7 +150,7 @@ public class WhenCallingMap
 
         var result = await mapper.Map(source);
 
-        result.Alerts.Should().BeEquivalentTo(["ILR change invalid"]);
+        result.Alerts.Should().BeEquivalentTo(["ILR changes invalid"]);
     }
 
     [Test, MoqAutoData]

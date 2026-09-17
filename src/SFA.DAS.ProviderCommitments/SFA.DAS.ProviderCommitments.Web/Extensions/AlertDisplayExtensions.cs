@@ -5,7 +5,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions;
 
 public static class AlertDisplayExtensions
 {
-    public const string IlrChangeInvalidText = "ILR change invalid";
+    public const string IlrChangeInvalidText = "ILR changes invalid";
 
     public static string ToAlertDisplayText(this Alerts alert)
     {

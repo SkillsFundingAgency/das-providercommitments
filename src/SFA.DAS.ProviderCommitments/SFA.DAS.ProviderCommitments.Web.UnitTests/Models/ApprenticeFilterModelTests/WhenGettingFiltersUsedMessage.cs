@@ -177,7 +177,7 @@ public class WhenGettingFiltersUsedMessage
             SelectedAlert = Alerts.IlrChangeInvalid
         };
 
-        filterModel.FiltersUsedMessage.Value.Should().Be("matching <strong>ILR change invalid</strong>");
+        filterModel.FiltersUsedMessage.Value.Should().Be("matching <strong>ILR changes invalid</strong>");
     }
 
 }
