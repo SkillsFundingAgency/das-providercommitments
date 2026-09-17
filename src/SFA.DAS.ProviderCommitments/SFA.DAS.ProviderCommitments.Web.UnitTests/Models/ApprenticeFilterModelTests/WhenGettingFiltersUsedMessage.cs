@@ -3,7 +3,9 @@ using System.Net;
 using Microsoft.AspNetCore.Html;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using Alerts = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.Alerts;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModelTests;
 
@@ -164,7 +166,18 @@ public class WhenGettingFiltersUsedMessage
             SelectedAlert = selectedAlert
         };
 
-        filterModel.FiltersUsedMessage.Value.Should().Be($"matching <strong>{selectedAlert.GetDescription()}</strong>");
+        filterModel.FiltersUsedMessage.Value.Should().Be($"matching <strong>{selectedAlert.ToAlertDisplayText()}</strong>");
+    }
+
+    [Test]
+    public void And_No_Search_And_IlrChangeInvalid_Then_UsesDisplayText()
+    {
+        var filterModel = new ApprenticesFilterModel
+        {
+            SelectedAlert = Alerts.IlrChangeInvalid
+        };
+
+        filterModel.FiltersUsedMessage.Value.Should().Be("matching <strong>ILR changes invalid</strong>");
     }
 
 }
