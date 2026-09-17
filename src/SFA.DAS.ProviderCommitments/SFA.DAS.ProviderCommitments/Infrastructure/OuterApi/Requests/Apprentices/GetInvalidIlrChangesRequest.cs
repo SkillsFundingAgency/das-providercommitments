@@ -5,14 +5,17 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 
-public class GetInvalidIlrChangesRequest(long providerId, long apprenticeshipId) : IGetApiRequest
+public class GetInvalidIlrChangesRequest(long providerId, long apprenticeshipId, string path = "invalid-ilr-changes") : IGetApiRequest
 {
-    public string GetUrl => $"provider/{providerId}/apprentices/{apprenticeshipId}/invalid-ilr-changes";
+    public const string InvalidIlrChangesPath = "invalid-ilr-changes";
+    public const string DeclinedChangesPath = "declined-changes";
+
+    public string GetUrl => $"provider/{providerId}/apprentices/{apprenticeshipId}/{path}";
 }
 
-public class PostInvalidIlrChangesRequest(long providerId, long apprenticeshipId, PostInvalidIlrChangesRequestData data) : IPostApiRequest
+public class PostInvalidIlrChangesRequest(long providerId, long apprenticeshipId, PostInvalidIlrChangesRequestData data, string path = "invalid-ilr-changes") : IPostApiRequest
 {
-    public string PostUrl => $"provider/{providerId}/apprentices/{apprenticeshipId}/invalid-ilr-changes";
+    public string PostUrl => $"provider/{providerId}/apprentices/{apprenticeshipId}/{path}";
     public object Data { get; set; } = data;
 }
 

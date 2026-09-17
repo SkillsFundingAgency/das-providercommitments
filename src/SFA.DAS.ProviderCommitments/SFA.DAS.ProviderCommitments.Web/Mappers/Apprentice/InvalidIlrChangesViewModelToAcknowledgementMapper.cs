@@ -14,23 +14,60 @@ public class InvalidIlrChangesViewModelToAcknowledgementMapper(
 {
     public async Task<InvalidIlrChangesAcknowledgementResult> Map(InvalidIlrChangesViewModel source)
     {
-        var request = new PostInvalidIlrChangesRequest(source.ProviderId, source.ApprenticeshipId, new PostInvalidIlrChangesRequestData
-        {
-            UserInfo = new ApimUserInfo
-            {
-                UserId = authenticationService.UserId,
-                UserDisplayName = authenticationService.UserName,
-                UserEmail = authenticationService.UserEmail
-            },
-            Acknowledgements = source.RequestSets.ConvertAll(set => new InvalidIlrChangeAcknowledgement
-            {
-                ApprovalRequestId = set.ApprovalRequestId,
-                DeleteAlert = set.DeleteAlert
-            })
-        });
-
-        await outerApiClient.Post<object>(request);
+        await AcknowledgeUnacknowledgedApprovalChanges.Post(
+            outerApiClient,
+            authenticationService,
+            source,
+            GetInvalidIlrChangesRequest.InvalidIlrChangesPath);
 
         return new InvalidIlrChangesAcknowledgementResult();
+    }
+}
+
+public class DeclinedChangesViewModelToAcknowledgementMapper(
+    IOuterApiClient outerApiClient,
+    IAuthenticationService authenticationService)
+    : IMapper<DeclinedChangesViewModel, DeclinedChangesAcknowledgementResult>
+{
+    public async Task<DeclinedChangesAcknowledgementResult> Map(DeclinedChangesViewModel source)
+    {
+        await AcknowledgeUnacknowledgedApprovalChanges.Post(
+            outerApiClient,
+            authenticationService,
+            source,
+            GetInvalidIlrChangesRequest.DeclinedChangesPath);
+
+        return new DeclinedChangesAcknowledgementResult();
+    }
+}
+
+public static class AcknowledgeUnacknowledgedApprovalChanges
+{
+    public static Task Post(
+        IOuterApiClient outerApiClient,
+        IAuthenticationService authenticationService,
+        InvalidIlrChangesViewModel source,
+        string path)
+    {
+        var request = new PostInvalidIlrChangesRequest(
+            source.ProviderId,
+            source.ApprenticeshipId,
+            new PostInvalidIlrChangesRequestData
+            {
+                UserInfo = new ApimUserInfo
+                {
+                    UserId = authenticationService.UserId,
+                    UserDisplayName = authenticationService.UserName,
+                    UserEmail = authenticationService.UserEmail
+                },
+                Acknowledgements = source.RequestSets.ConvertAll(set => new InvalidIlrChangeAcknowledgement
+                {
+                    ApprovalRequestId = set.ApprovalRequestId,
+                    DeleteAlert = set.DeleteAlert
+                })
+            },
+            path);
+
+        return outerApiClient.Post<object>(request);
     }
 }

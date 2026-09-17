@@ -64,6 +64,7 @@ public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
             Alerts.ChangesRequested,
             Alerts.IlrDataMismatch,
             Alerts.IlrChangeInvalid,
+            Alerts.ChangesDeclined,
         };
 
             var filterModel = new ApprenticesFilterModel

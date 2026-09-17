@@ -111,6 +111,7 @@ public class DetailsViewModelMapper(
                 LearningType = data.Apprenticeship.LearningType,
                 HasChangeHistory = data.Apprenticeship.HasChangeHistory,
                 HasUnacknowledgedInvalidIlrChanges = data.Apprenticeship.HasUnacknowledgedInvalidIlrChanges,
+                HasUnacknowledgedDeclinedChanges = data.Apprenticeship.HasUnacknowledgedDeclinedChanges,
                 PaymentsPaused = data.PaymentsStatus?.FreezeStatus ?? false,
                 PausedReason = data.PaymentsStatus?.ReasonFrozen,
             };

@@ -191,6 +191,7 @@ public class WhenGettingApprenticeships
             viewModel.FilterModel.StatusFilters.Should().Contain(ApprenticeshipStatus.Completed);
             viewModel.FilterModel.StatusFilters.Should().NotContain(ApprenticeshipStatus.Unknown);
             viewModel.FilterModel.AlertFilters.Should().Contain(Alerts.IlrChangeInvalid);
+            viewModel.FilterModel.AlertFilters.Should().Contain(Alerts.ChangesDeclined);
             viewModel.FilterModel.AlertFilters.Should().Contain(Alerts.ChangesPending);
         }
     }
