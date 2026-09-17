@@ -42,6 +42,27 @@ public class InvalidIlrChangesViewModelValidatorTests
     }
 
     [Test]
+    public void Validate_ThenAddsOneErrorPerMissingAnswer()
+    {
+        var viewModel = new InvalidIlrChangesViewModel
+        {
+            RequestSets =
+            [
+                new InvalidIlrChangeSetViewModel { DeleteAlert = null },
+                new InvalidIlrChangeSetViewModel { DeleteAlert = null }
+            ]
+        };
+
+        var result = new InvalidIlrChangesViewModelValidator().TestValidate(viewModel);
+
+        result.ShouldHaveValidationErrorFor("RequestSets[0].DeleteAlert")
+            .WithErrorMessage(InvalidIlrChangesViewModelValidator.SelectDeleteMessage);
+        result.ShouldHaveValidationErrorFor("RequestSets[1].DeleteAlert")
+            .WithErrorMessage(InvalidIlrChangesViewModelValidator.SelectDeleteMessage);
+        result.Errors.Should().HaveCount(2);
+    }
+
+    [Test]
     public void Validate_ThenDeclinedChangesUsesTheSameRequiredRadioRule()
     {
         var viewModel = new DeclinedChangesViewModel

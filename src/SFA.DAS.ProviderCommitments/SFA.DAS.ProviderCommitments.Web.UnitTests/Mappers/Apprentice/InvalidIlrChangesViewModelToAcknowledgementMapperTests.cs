@@ -41,7 +41,7 @@ public class InvalidIlrChangesViewModelToAcknowledgementMapperTests
 
         outerApiClient.Verify(x => x.Post<object>(
             It.Is<PostInvalidIlrChangesRequest>(request =>
-                request.PostUrl == $"{viewModel.ProviderId}/apprentices/{viewModel.ApprenticeshipId}/invalid-ilr-changes" &&
+                request.PostUrl == $"provider/{viewModel.ProviderId}/apprentices/{viewModel.ApprenticeshipId}/invalid-ilr-changes" &&
                 ((PostInvalidIlrChangesRequestData)request.Data).UserInfo.UserId == "user-1" &&
                 ((PostInvalidIlrChangesRequestData)request.Data).Acknowledgements.Count == 2 &&
                 ((PostInvalidIlrChangesRequestData)request.Data).Acknowledgements[0].DeleteAlert == true &&
@@ -79,7 +79,7 @@ public class DeclinedChangesViewModelToAcknowledgementMapperTests
 
         outerApiClient.Verify(x => x.Post<object>(
             It.Is<PostInvalidIlrChangesRequest>(request =>
-                request.PostUrl == $"{viewModel.ProviderId}/apprentices/{viewModel.ApprenticeshipId}/declined-changes" &&
+                request.PostUrl == $"provider/{viewModel.ProviderId}/apprentices/{viewModel.ApprenticeshipId}/declined-changes" &&
                 ((PostInvalidIlrChangesRequestData)request.Data).Acknowledgements[0].DeleteAlert == true)),
             Times.Once);
     }

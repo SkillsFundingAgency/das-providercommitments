@@ -33,7 +33,7 @@ public class DeclinedChangesRequestToViewModelMapperTests
 
         outerApiClient.Setup(x => x.Get<GetInvalidIlrChangesResponse>(
                 It.Is<GetInvalidIlrChangesRequest>(apiRequest =>
-                    apiRequest.GetUrl == $"{request.ProviderId}/apprentices/{request.ApprenticeshipId}/declined-changes")))
+                    apiRequest.GetUrl == $"provider/{request.ProviderId}/apprentices/{request.ApprenticeshipId}/declined-changes")))
             .ReturnsAsync(response);
 
         var result = await mapper.Map(request);
