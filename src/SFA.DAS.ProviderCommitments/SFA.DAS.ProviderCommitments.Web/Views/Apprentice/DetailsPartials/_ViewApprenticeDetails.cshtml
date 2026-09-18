@@ -6,7 +6,7 @@
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 
 @{
-    ViewData["Title"] = "Apprentice Details";
+    ViewData["Title"] = "Learner Details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
     ViewBag.GaData.Org = Model.Employer;
 }
@@ -16,7 +16,7 @@
 
         <partial name="DetailsPartials/_Banners" />
 
-        <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
+        <h1 class="govuk-heading-xl">View details for @Model.ApprenticeName</h1>
 
         @if (Model.HasChangeHistory)
         {
@@ -37,23 +37,23 @@
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
-                        Help with your apprentice’s overdue confirmation
+                        Help with your learner’s overdue confirmation
                     </span>
                 </summary>
                 <div class="govuk-details__text">
                     <p class="govuk-body">
-                        If your apprentice has not confirmed their apprenticeship details within the 14 day deadline, you
+                        If your learner has not confirmed their learning details within the 14 day deadline, you
                         should:
 
                         <ul class="govuk-list govuk-list--bullet">
                             <li>
-                                contact the apprentice to complete their apprenticeship confirmation
+                                contact the learner to complete their learning confirmation
                             </li>
                             <div>
                                 Or
                             </div>
                             <li>
-                                contact the apprentice’s employer to ask the apprentice to complete their apprenticeship
+                                contact the learner’s employer to ask the learner to complete their learning
                                 confirmation
                             </li>
                         </ul>
@@ -62,7 +62,7 @@
             </details>
         }
 
-        <h2 class="govuk-heading-m">Apprentice status</h2>
+        <h2 class="govuk-heading-m">Learner status</h2>
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
@@ -74,7 +74,7 @@
                 }
 
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice confirmation</th>
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Learner confirmation</th>
                     <td id="apprenticeship-confirmation" class="govuk-table__cell das-table-cell-width-55">
                         @Model.ConfirmationStatus.ToDisplayString()
                     </td>
@@ -191,14 +191,14 @@
 
         <div class="govuk-grid-row govuk-!-margin-bottom-2">
             <div class="govuk-grid-column-two-thirds">
-                <h2 class="govuk-heading-m">Apprentice</h2>
+                <h2 class="govuk-heading-m">Learner details</h2>
             </div>
             <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
                 @if (Model.AllowEditApprentice)
                 {
                     <a id="edit-apprentice-link"
                        href="@Url.Action("EditApprenticeship", new { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })"
-                       class="govuk-link govuk-body">Edit apprentice</a>
+                       class="govuk-link govuk-body">Edit</a>
                 }
             </div>
         </div>
@@ -248,14 +248,14 @@
                     <td class="govuk-table__cell"></td>
                 </tr>
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
+                    <th scope="row" class="govuk-table__header">Training course</th>
                     <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
                 @if (!Model.DeliveryModel.Equals(DeliveryModel.Regular) || Model.HasMultipleDeliveryModelOptions)
                 {
                     <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Apprenticeship delivery model</th>
+                        <th scope="row" class="govuk-table__header">Delivery model</th>
                         <td id="apprentice-deliverymodel" class="govuk-table__cell">
                             @Model.DeliveryModel.ToDescription()
                         </td>
@@ -343,19 +343,18 @@
                 }
 
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                    <th scope="row" class="govuk-table__header">Total agreed training price</th>
                     <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
 
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Your reference</th>
+                    <th scope="row" class="govuk-table__header">Reference</th>
                     <td id="apprentice-reference" class="govuk-table__cell">@Model.ProviderRef</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
             </tbody>
-        </table>
-
+        </table>  
         @if (Model.RecognisePriorLearning != null)
         {
             <div class="govuk-grid-row govuk-!-margin-bottom-2">
@@ -372,7 +371,7 @@
                         @if (Model.TrainingTotalHours != null)
                         {
                             <tr class="govuk-table__row">
-                                <th scope="row" class="govuk-table__header">Total off-the-job training time for this apprenticeship standard</th>
+                                <th scope="row" class="govuk-table__header">Total off-the-job training time for this training standard</th>
                                 <td id="apprenticeship-rpl-training-time-reduction" class="govuk-table__cell">
                                     @Model.TrainingTotalHoursDisplay
                                 </td>
@@ -418,7 +417,7 @@
             }
             else
             {
-                <p class="govuk-body">This apprentice has no recognised prior learning.</p>
+                <p class="govuk-body">This learner has no recognised prior learning.</p>
             }
         }
 
