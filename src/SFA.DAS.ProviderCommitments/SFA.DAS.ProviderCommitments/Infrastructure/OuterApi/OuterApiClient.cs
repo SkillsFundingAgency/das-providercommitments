@@ -98,8 +98,6 @@ public class OuterApiClient : IOuterApiClient
 
         var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-        var responseBody = (TResponse)default;
-
         if (IsNot200RangeResponseCode(response.StatusCode))
         {
             //Plug this in when moving another Post endpoint which throws domain errors
@@ -118,9 +116,12 @@ public class OuterApiClient : IOuterApiClient
             throw new RestHttpClientException(response, json);
         }
 
-        responseBody = JsonConvert.DeserializeObject<TResponse>(json);
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return default;
+        }
 
-        return responseBody;
+        return JsonConvert.DeserializeObject<TResponse>(json);
     }
 
     private static bool IsNot200RangeResponseCode(HttpStatusCode statusCode)
