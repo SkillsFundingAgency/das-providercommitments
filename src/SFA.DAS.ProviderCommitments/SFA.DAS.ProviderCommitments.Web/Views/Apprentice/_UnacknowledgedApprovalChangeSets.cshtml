@@ -42,7 +42,7 @@
                 @foreach (var field in set.Fields)
                 {
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@field.FieldDisplayName</td>
+                        <th scope="row" class="govuk-table__header">@field.FieldDisplayName</th>
                         <td class="govuk-table__cell">@field.Old</td>
                         <td class="govuk-table__cell">@field.New</td>
                     </tr>
