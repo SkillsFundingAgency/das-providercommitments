@@ -22,7 +22,7 @@ public enum Alerts
     [Description("Confirm dates")]
     ConfirmDates = 4,
 
-    [Description("ILR change invalid")]
+    [Description("ILR changes invalid")]
     IlrChangeInvalid = 5,
 
     [Description("Changes declined")]

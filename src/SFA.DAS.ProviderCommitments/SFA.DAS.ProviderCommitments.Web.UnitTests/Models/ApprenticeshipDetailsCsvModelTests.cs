@@ -228,7 +228,7 @@ public class ApprenticeshipDetailsCsvModelTests
 
         var result = model.Map(source, encodingService.Object);
 
-        result.Alerts.Should().Be("ILR change invalid");
+        result.Alerts.Should().Be("ILR changes invalid");
     }
 
     [Test, MoqAutoData]
