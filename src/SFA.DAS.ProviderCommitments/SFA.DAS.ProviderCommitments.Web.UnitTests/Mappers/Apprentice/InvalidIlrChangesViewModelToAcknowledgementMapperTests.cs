@@ -49,3 +49,38 @@ public class InvalidIlrChangesViewModelToAcknowledgementMapperTests
             Times.Once);
     }
 }
+
+public class DeclinedChangesViewModelToAcknowledgementMapperTests
+{
+    [Test, MoqAutoData]
+    public async Task Map_ThenPostsToDeclinedChangesPath(
+        DeclinedChangesViewModel viewModel,
+        [Frozen] Mock<IOuterApiClient> outerApiClient,
+        [Frozen] Mock<IAuthenticationService> authenticationService,
+        DeclinedChangesViewModelToAcknowledgementMapper mapper)
+    {
+        authenticationService.Setup(x => x.UserId).Returns("user-1");
+        authenticationService.Setup(x => x.UserName).Returns("Jane Doe");
+        authenticationService.Setup(x => x.UserEmail).Returns("jane@example.com");
+
+        viewModel.RequestSets =
+        [
+            new InvalidIlrChangeSetViewModel
+            {
+                ApprovalRequestId = Guid.NewGuid(),
+                DeleteAlert = true
+            }
+        ];
+
+        outerApiClient.Setup(x => x.Post<object>(It.IsAny<PostInvalidIlrChangesRequest>()))
+            .ReturnsAsync((object)null);
+
+        await mapper.Map(viewModel);
+
+        outerApiClient.Verify(x => x.Post<object>(
+            It.Is<PostInvalidIlrChangesRequest>(request =>
+                request.PostUrl == $"provider/{viewModel.ProviderId}/apprentices/{viewModel.ApprenticeshipId}/declined-changes" &&
+                ((PostInvalidIlrChangesRequestData)request.Data).Acknowledgements[0].DeleteAlert == true)),
+            Times.Once);
+    }
+}

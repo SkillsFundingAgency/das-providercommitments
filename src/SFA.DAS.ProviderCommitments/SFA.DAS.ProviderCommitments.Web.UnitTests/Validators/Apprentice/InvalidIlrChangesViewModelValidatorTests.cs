@@ -29,16 +29,8 @@ public class InvalidIlrChangesViewModelValidatorTests
         {
             RequestSets =
             [
-                new InvalidIlrChangeSetViewModel
-                {
-                    DeleteAlert = null,
-                    Fields = [new InvalidIlrChangeFieldViewModel { FieldDisplayName = "Total price" }]
-                },
-                new InvalidIlrChangeSetViewModel
-                {
-                    DeleteAlert = true,
-                    Fields = [new InvalidIlrChangeFieldViewModel { FieldDisplayName = "Date of birth" }]
-                }
+                new InvalidIlrChangeSetViewModel { DeleteAlert = null },
+                new InvalidIlrChangeSetViewModel { DeleteAlert = true }
             ]
         };
 
@@ -56,16 +48,8 @@ public class InvalidIlrChangesViewModelValidatorTests
         {
             RequestSets =
             [
-                new InvalidIlrChangeSetViewModel
-                {
-                    DeleteAlert = null,
-                    Fields = [new InvalidIlrChangeFieldViewModel { FieldDisplayName = "Total price" }]
-                },
-                new InvalidIlrChangeSetViewModel
-                {
-                    DeleteAlert = null,
-                    Fields = [new InvalidIlrChangeFieldViewModel { FieldDisplayName = "Date of birth" }]
-                }
+                new InvalidIlrChangeSetViewModel { DeleteAlert = null },
+                new InvalidIlrChangeSetViewModel { DeleteAlert = null }
             ]
         };
 
@@ -79,21 +63,19 @@ public class InvalidIlrChangesViewModelValidatorTests
     }
 
     [Test]
-    public void GetAlertCaption_ThenUsesFieldNameWhenPresent()
+    public void Validate_ThenDeclinedChangesUsesTheSameRequiredRadioRule()
     {
-        var requestSet = new InvalidIlrChangeSetViewModel
+        var viewModel = new DeclinedChangesViewModel
         {
-            Fields = [new InvalidIlrChangeFieldViewModel { FieldDisplayName = "Total price" }]
+            RequestSets =
+            [
+                new InvalidIlrChangeSetViewModel { DeleteAlert = null }
+            ]
         };
 
-        InvalidIlrChangesViewModelValidator.GetAlertCaption(requestSet)
-            .Should().Be("Total price");
-    }
+        var result = new DeclinedChangesViewModelValidator().TestValidate(viewModel);
 
-    [Test]
-    public void GetAlertCaption_ThenReturnsNullWhenFieldNameIsMissing()
-    {
-        InvalidIlrChangesViewModelValidator.GetAlertCaption(new InvalidIlrChangeSetViewModel())
-            .Should().BeNull();
+        result.ShouldHaveValidationErrorFor("RequestSets[0].DeleteAlert")
+            .WithErrorMessage(InvalidIlrChangesViewModelValidator.SelectDeleteMessage);
     }
 }

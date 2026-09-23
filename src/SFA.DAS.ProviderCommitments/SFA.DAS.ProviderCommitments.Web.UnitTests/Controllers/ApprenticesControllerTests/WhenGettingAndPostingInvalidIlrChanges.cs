@@ -71,11 +71,88 @@ public class WhenGettingAndPostingInvalidIlrChangesFixture
     {
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.Model.Should().Be(_viewModel);
+        viewResult.ViewName.Should().Be("UnacknowledgedApprovalChanges");
     }
 
     public void VerifyAcknowledgedAndRedirectedToDetails(IActionResult result)
     {
         _modelMapper.Verify(m => m.Map<InvalidIlrChangesAcknowledgementResult>(_viewModel), Times.Once);
+        var redirect = result.Should().BeOfType<RedirectToRouteResult>().Subject;
+        redirect.RouteName.Should().Be(RouteNames.ApprenticeDetail);
+        redirect.RouteValues!["ProviderId"].Should().Be(_viewModel.ProviderId);
+        redirect.RouteValues["ApprenticeshipHashedId"].Should().Be(_viewModel.ApprenticeshipHashedId);
+    }
+}
+
+public class WhenGettingAndPostingDeclinedChanges
+{
+    [Test]
+    public async Task Get_ThenReturnsTheMappedView()
+    {
+        var fixture = new WhenGettingAndPostingDeclinedChangesFixture();
+
+        var result = await fixture.Get();
+
+        fixture.VerifyGetMappedView(result);
+    }
+
+    [Test]
+    public async Task Post_ThenAcknowledgesAndRedirectsToDetails()
+    {
+        var fixture = new WhenGettingAndPostingDeclinedChangesFixture();
+
+        var result = await fixture.PostValid();
+
+        fixture.VerifyAcknowledgedAndRedirectedToDetails(result);
+    }
+}
+
+public class WhenGettingAndPostingDeclinedChangesFixture
+{
+    private readonly ApprenticeController _controller;
+    private readonly Mock<IModelMapper> _modelMapper;
+    private readonly InvalidIlrChangesRequest _request;
+    private readonly DeclinedChangesViewModel _viewModel;
+
+    public WhenGettingAndPostingDeclinedChangesFixture()
+    {
+        var autoFixture = new Fixture();
+        _request = autoFixture.Create<InvalidIlrChangesRequest>();
+        _viewModel = autoFixture.Create<DeclinedChangesViewModel>();
+
+        _modelMapper = new Mock<IModelMapper>();
+        _modelMapper.Setup(m => m.Map<DeclinedChangesViewModel>(_request)).ReturnsAsync(_viewModel);
+        _modelMapper.Setup(m => m.Map<DeclinedChangesAcknowledgementResult>(It.IsAny<DeclinedChangesViewModel>()))
+            .ReturnsAsync(new DeclinedChangesAcknowledgementResult());
+
+        _controller = new ApprenticeController(
+            _modelMapper.Object,
+            Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
+            Mock.Of<ICommitmentsApiClient>(),
+            Mock.Of<IOuterApiService>(),
+            Mock.Of<ICacheStorageService>());
+    }
+
+    public Task<IActionResult> Get()
+    {
+        return _controller.DeclinedChanges(_request);
+    }
+
+    public Task<IActionResult> PostValid()
+    {
+        return _controller.DeclinedChanges(_viewModel);
+    }
+
+    public void VerifyGetMappedView(IActionResult result)
+    {
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        viewResult.Model.Should().Be(_viewModel);
+        viewResult.ViewName.Should().Be("UnacknowledgedApprovalChanges");
+    }
+
+    public void VerifyAcknowledgedAndRedirectedToDetails(IActionResult result)
+    {
+        _modelMapper.Verify(m => m.Map<DeclinedChangesAcknowledgementResult>(_viewModel), Times.Once);
         var redirect = result.Should().BeOfType<RedirectToRouteResult>().Subject;
         redirect.RouteName.Should().Be(RouteNames.ApprenticeDetail);
         redirect.RouteValues!["ProviderId"].Should().Be(_viewModel.ProviderId);

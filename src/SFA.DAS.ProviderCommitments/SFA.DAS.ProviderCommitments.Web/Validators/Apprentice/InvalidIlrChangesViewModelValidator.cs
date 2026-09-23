@@ -3,40 +3,30 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice;
 
-public class InvalidIlrChangesViewModelValidator : AbstractValidator<InvalidIlrChangesViewModel>
+public static class UnacknowledgedApprovalChangesValidation
 {
     public const string SelectDeleteMessage = "Select if you would like to delete this alert";
+}
 
-    public InvalidIlrChangesViewModelValidator()
+public abstract class UnacknowledgedApprovalChangesViewModelValidator<T> : AbstractValidator<T>
+    where T : InvalidIlrChangesViewModel
+{
+    protected UnacknowledgedApprovalChangesViewModelValidator()
     {
-        RuleFor(x => x.RequestSets).Custom((requestSets, context) =>
+        RuleForEach(x => x.RequestSets).ChildRules(set =>
         {
-            if (requestSets == null)
-            {
-                return;
-            }
-
-            for (var index = 0; index < requestSets.Count; index++)
-            {
-                var requestSet = requestSets[index];
-                if (requestSet.DeleteAlert != null)
-                {
-                    continue;
-                }
-
-                context.AddFailure($"RequestSets[{index}].DeleteAlert", SelectDeleteMessage);
-            }
+            set.RuleFor(x => x.DeleteAlert)
+                .NotNull()
+                .WithMessage(UnacknowledgedApprovalChangesValidation.SelectDeleteMessage);
         });
     }
+}
 
-    public static string GetAlertCaption(InvalidIlrChangeSetViewModel requestSet)
-    {
-        if (requestSet?.Fields?.Count == 1
-            && !string.IsNullOrWhiteSpace(requestSet.Fields[0].FieldDisplayName))
-        {
-            return requestSet.Fields[0].FieldDisplayName;
-        }
+public class InvalidIlrChangesViewModelValidator : UnacknowledgedApprovalChangesViewModelValidator<InvalidIlrChangesViewModel>
+{
+    public const string SelectDeleteMessage = UnacknowledgedApprovalChangesValidation.SelectDeleteMessage;
+}
 
-        return null;
-    }
+public class DeclinedChangesViewModelValidator : UnacknowledgedApprovalChangesViewModelValidator<DeclinedChangesViewModel>
+{
 }

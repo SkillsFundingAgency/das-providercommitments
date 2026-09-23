@@ -7,11 +7,12 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi.Requests
 
 public class GetApprenticeshipsRequestAlertsQueryTests
 {
-    [Test]
-    public void GetUrl_ThenSendsIlrChangeInvalidByName()
+    [TestCase(Alerts.IlrChangeInvalid)]
+    [TestCase(Alerts.ChangesDeclined)]
+    public void GetUrl_ThenAlertQueryValueIsTheEnumName(Alerts alert)
     {
         var request = new GetApprenticeshipsRequest(
-            100,
+            10001234,
             1,
             25,
             null,
@@ -26,11 +27,12 @@ public class GetApprenticeshipsRequestAlertsQueryTests
             null,
             null,
             null,
-            Alerts.IlrChangeInvalid,
+            alert,
             null,
             null);
 
-        request.GetUrl.Should().Contain("alert=IlrChangeInvalid");
+        request.GetUrl.Should().Contain($"alert={alert}");
+        request.GetUrl.Should().NotContain(",");
         request.GetUrl.Should().NotContain("ChangesPending");
         request.GetUrl.Should().NotContain("ConfirmDates");
     }
