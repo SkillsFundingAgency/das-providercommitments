@@ -98,6 +98,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         }
 
         public bool HasChangeHistory { get; set; }
+        public bool HasUnacknowledgedInvalidIlrChanges { get; set; }
+        public bool HasUnacknowledgedDeclinedChanges { get; set; }
         public bool PaymentsPaused { get; set; }
         public string PausedReason { get; set; }
     }

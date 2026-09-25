@@ -714,6 +714,52 @@ public class ApprenticeController(
         });
     }
 
+    [HttpGet]
+    [Route("{apprenticeshipHashedId}/invalid-ilr-changes", Name = RouteNames.InvalidIlrChanges)]
+    [Authorize(Policy = nameof(PolicyNames.AccessApprenticeship))]
+    public async Task<IActionResult> InvalidIlrChanges(InvalidIlrChangesRequest request)
+    {
+        var viewModel = await modelMapper.Map<InvalidIlrChangesViewModel>(request);
+        return View("UnacknowledgedApprovalChanges", viewModel);
+    }
+
+    [HttpPost]
+    [Route("{apprenticeshipHashedId}/invalid-ilr-changes")]
+    [Authorize(Policy = nameof(PolicyNames.AccessApprenticeship))]
+    public async Task<IActionResult> InvalidIlrChanges(InvalidIlrChangesViewModel viewModel)
+    {
+        await modelMapper.Map<InvalidIlrChangesAcknowledgementResult>(viewModel);
+
+        return RedirectToRoute(RouteNames.ApprenticeDetail, new
+        {
+            viewModel.ProviderId,
+            viewModel.ApprenticeshipHashedId
+        });
+    }
+
+    [HttpGet]
+    [Route("{apprenticeshipHashedId}/declined-changes", Name = RouteNames.DeclinedChanges)]
+    [Authorize(Policy = nameof(PolicyNames.AccessApprenticeship))]
+    public async Task<IActionResult> DeclinedChanges(InvalidIlrChangesRequest request)
+    {
+        var viewModel = await modelMapper.Map<DeclinedChangesViewModel>(request);
+        return View("UnacknowledgedApprovalChanges", viewModel);
+    }
+
+    [HttpPost]
+    [Route("{apprenticeshipHashedId}/declined-changes")]
+    [Authorize(Policy = nameof(PolicyNames.AccessApprenticeship))]
+    public async Task<IActionResult> DeclinedChanges(DeclinedChangesViewModel viewModel)
+    {
+        await modelMapper.Map<DeclinedChangesAcknowledgementResult>(viewModel);
+
+        return RedirectToRoute(RouteNames.ApprenticeDetail, new
+        {
+            viewModel.ProviderId,
+            viewModel.ApprenticeshipHashedId
+        });
+    }
+
     [Route("{apprenticeshipHashedId}/change-history")]
     [Authorize(Policy = nameof(PolicyNames.AccessApprenticeship))]
     [HttpGet]

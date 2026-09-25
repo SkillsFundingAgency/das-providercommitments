@@ -23,4 +23,19 @@ public class ApprenticeIndexViewModelTests
         //Assert
         model.SortedByHeaderClassName.Should().Be(expected);
     }
+
+    [Test]
+    public void SortedByHeader_ThenDoesNotThrowWhenFilterModelIsNull()
+    {
+        var model = new IndexViewModel
+        {
+            FilterModel = null,
+            SortedByHeaderClassName = ""
+        };
+
+        var act = () => model.SortedByHeader();
+
+        act.Should().NotThrow();
+        model.ShowPageLinks.Should().BeFalse();
+    }
 }

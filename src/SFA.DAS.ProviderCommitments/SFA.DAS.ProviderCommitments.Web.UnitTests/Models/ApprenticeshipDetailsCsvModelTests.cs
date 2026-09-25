@@ -3,7 +3,9 @@ using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using Alerts = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.Alerts;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models;
 
@@ -207,13 +209,39 @@ public class ApprenticeshipDetailsCsvModelTests
 
         foreach (var alert in source.Alerts)
         {
-            expectedAlertString += alert.GetDescription() + "|";
+            expectedAlertString += alert.ToAlertDisplayText() + "|";
         }
         expectedAlertString = expectedAlertString.TrimEnd('|');
 
         var result = model.Map(source, encodingService.Object);
 
         result.Alerts.Should().Be(expectedAlertString);
+    }
+
+    [Test, MoqAutoData]
+    public void Then_Maps_IlrChangeInvalid_Alert(
+        PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
+        [Frozen] Mock<IEncodingService> encodingService,
+        ApprenticeshipDetailsCsvModel model)
+    {
+        source.Alerts = [Alerts.IlrChangeInvalid];
+
+        var result = model.Map(source, encodingService.Object);
+
+        result.Alerts.Should().Be("ILR changes invalid");
+    }
+
+    [Test, MoqAutoData]
+    public void Then_Maps_ChangesDeclined_Alert(
+        PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
+        [Frozen] Mock<IEncodingService> encodingService,
+        ApprenticeshipDetailsCsvModel model)
+    {
+        source.Alerts = [Alerts.ChangesDeclined];
+
+        var result = model.Map(source, encodingService.Object);
+
+        result.Alerts.Should().Be("Changes declined");
     }
 
     [TestCase(DeliveryModel.FlexiJobAgency, "Flexi-job agency")]
