@@ -56,6 +56,7 @@ public static class RouteNames
     public const string ProviderAccountIndex = "provider-account-index";
     public const string SelectLearnerRecord = "select-ilr";
     public const string SelectMultipleLearnerRecords = "select-multiple-ilr";
+    public const string SelectMultipleLearnerRecordsValidationErrors = "select-multiple-ilr-validation-errors";
     public const string SelectMultipleLearnerRecordsFilter = "select-multiple-ilr-filter";
     public const string SelectMultipleLearnerRecordsSort = "select-multiple-ilr-sort";
     public const string SelectMultipleLearnerRecordsAdd = "select-multiple-ilr-add";

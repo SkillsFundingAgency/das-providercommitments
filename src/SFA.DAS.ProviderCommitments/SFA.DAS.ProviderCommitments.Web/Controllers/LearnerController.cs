@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Services;
+using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Learners;
@@ -34,6 +37,38 @@ public class LearnerController(IModelMapper modelMapper) : Controller
                 ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             }
         }
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [Route("add/learners/select-multiple")]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]    
+    public async Task<IActionResult> SelectMultipleLearnerRecords(SelectMultipleLearnerRecordsPostRequest request)
+    {        
+        var validationResult = await modelMapper.Map<SelectMultipleLearnerRecordsViewModel>(request);
+
+        //if error display review page 
+        //return RedirectToAction(nameof(FileUploadReview), request);
+        //else continue to create cohort and reservations 
+
+        return RedirectToAction("test", validationResult);
+    }
+
+    [HttpGet]
+    [Route("add/learners/select-multiple-validation-errors", Name = RouteNames.SelectMultipleLearnerRecordsValidationErrors)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> SelectMultipleLearnerRecordsValidationErrors(SelectMultipleLearnerRecordsValidationErrorsRequest request)
+    {
+        var model = await modelMapper.Map<SelectMultipleLearnerRecordsViewModel>(request);
+
+        //if (model.ValidationErrors != null && model.ValidationErrors.Count > 0)
+        //{
+        //    foreach (var error in model.ValidationErrors)
+        //    {
+        //        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+        //    }
+        //}
 
         return View(model);
     }
