@@ -53,7 +53,25 @@ public class LearnerController(IModelMapper modelMapper) : Controller
         //else continue to create cohort and reservations 
 
         return RedirectToAction("test", validationResult);
-    }    
+    }
+
+    [HttpGet]
+    [Route("add/learners/select-multiple-validation-errors", Name = RouteNames.SelectMultipleLearnerRecordsValidationErrors)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> SelectMultipleLearnerRecordsValidationErrors(SelectMultipleLearnerRecordsValidationErrorsRequest request)
+    {
+        var model = await modelMapper.Map<SelectMultipleLearnerRecordsViewModel>(request);
+
+        //if (model.ValidationErrors != null && model.ValidationErrors.Count > 0)
+        //{
+        //    foreach (var error in model.ValidationErrors)
+        //    {
+        //        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+        //    }
+        //}
+
+        return View(model);
+    }
 
     [HttpGet]
     [Route("add/learners/select-multiple-filter", Name = RouteNames.SelectMultipleLearnerRecordsFilter)]
