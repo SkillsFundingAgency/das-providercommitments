@@ -1,12 +1,9 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
-@using SFA.DAS.ProviderCommitments.Web.Extensions
-@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
-@using SFA.DAS.ProviderCommitments.Web.RouteValues
 
 @{
-    ViewData["Title"] = "Apprentice Details";
+    ViewData["Title"] = "Learner Details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
     ViewBag.GaData.Org = Model.Employer;
 }
@@ -54,8 +51,7 @@
                 </ul>
                 <p>Once you've agreed these details, you can change the employer.</p>
                 <p>
-                    Non-levy employers will not need apprenticeship funding reserved when taking on a learner from another
-                    employer.
+                    Non-levy employers will not need to reserve funding when taking on a learner from another employer.
                 </p>
             </div>
         </details>
@@ -138,7 +134,7 @@
                 {
                     <a id="edit-apprentice-link"
                        href="@Url.Action("EditApprenticeship", new { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })"
-                       class="govuk-link govuk-body">Edit learner</a>
+                       class="govuk-link govuk-body">Edit</a>
                 }
             </div>
         </div>
@@ -177,14 +173,14 @@
                 </tr>
 
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Planned training start date</th>
+                    <th scope="row" class="govuk-table__header">Training start date</th>
                     <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
                     <td class="govuk-table__cell">
                     </td>
                 </tr>
 
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Planned training end date</th>
+                    <th scope="row" class="govuk-table__header">Training end date</th>
                     <td id="apprentice-end-date" class="govuk-table__cell">@Model.EndDate.ToGdsFormatWithoutDay()</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
@@ -214,7 +210,7 @@
                 </tr>
 
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Your reference</th>
+                    <th scope="row" class="govuk-table__header">Reference</th>
                     <td id="apprentice-end-date" class="govuk-table__cell">@Model.ProviderRef</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
