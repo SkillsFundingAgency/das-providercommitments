@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Shared.Services;
-using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Learners;
@@ -30,9 +28,9 @@ public class LearnerController(IModelMapper modelMapper) : Controller
     {
         var model = await modelMapper.Map<SelectMultipleLearnerRecordsViewModel>(request);
 
-        if (model.ValidationErrors != null && model.ValidationErrors.Count > 0)
+        if (model.ModelValidationErrors != null && model.ModelValidationErrors.Count > 0)
         {
-            foreach (var error in model.ValidationErrors)
+            foreach (var error in model.ModelValidationErrors)
             {
                 ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             }
@@ -43,13 +41,20 @@ public class LearnerController(IModelMapper modelMapper) : Controller
 
     [HttpPost]
     [Route("add/learners/select-multiple")]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]    
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> SelectMultipleLearnerRecords(SelectMultipleLearnerRecordsPostRequest request)
-    {        
-        var validationResult = await modelMapper.Map<SelectMultipleLearnerRecordsViewModel>(request);
+    {
+        var validationResult = await modelMapper.Map<ValidateSelectMultipleLearnerRecordsResult>(request);
 
-        //if error display review page 
-        //return RedirectToAction(nameof(FileUploadReview), request);
+        if (validationResult.ValidationErrors?.Any() == true)
+        {
+            var model = new SelectMultipleLearnerRecordsValidationErrorsRequest
+            {
+                ProviderId = request.ProviderId,
+                CacheKey = request.CacheKey
+            };
+            return RedirectToAction("SelectMultipleLearnerRecordsValidationErrors", model);
+        }
         //else continue to create cohort and reservations 
 
         return RedirectToAction("test", validationResult);
@@ -60,16 +65,7 @@ public class LearnerController(IModelMapper modelMapper) : Controller
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> SelectMultipleLearnerRecordsValidationErrors(SelectMultipleLearnerRecordsValidationErrorsRequest request)
     {
-        var model = await modelMapper.Map<SelectMultipleLearnerRecordsViewModel>(request);
-
-        //if (model.ValidationErrors != null && model.ValidationErrors.Count > 0)
-        //{
-        //    foreach (var error in model.ValidationErrors)
-        //    {
-        //        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-        //    }
-        //}
-
+        var model = await modelMapper.Map<SelectMultipleLearnerRecordsValidationErrorsViewModel>(request);
         return View(model);
     }
 
@@ -108,7 +104,7 @@ public class LearnerController(IModelMapper modelMapper) : Controller
         var redirectRequest = await modelMapper.Map<SelectMultipleLearnerRecordsRequest>(request);
         return RedirectToAction("SelectMultipleLearnerRecords", redirectRequest);
     }
-    
+
     [HttpGet]
     [Route("add/learners/select/{learnerDataId}")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]

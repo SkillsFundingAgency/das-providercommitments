@@ -1,8 +1,11 @@
 ﻿using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using ApprenticeshipEmployerType = SFA.DAS.Common.Domain.Types.ApprenticeshipEmployerType;
 
 namespace SFA.DAS.ProviderCommitments.Web.Services.Cache;
+
 public class SelectMultipleLearnerRecordsCacheItem : ICacheModel
 {
     public Guid Key { get; }
@@ -30,4 +33,5 @@ public class SelectMultipleLearnerRecordsCacheItem : ICacheModel
     public ApprenticeshipEmployerType LevyStatus { get; set; }
     public LearningType? LearningType { get; set; }
     public long AccountId { get; set; }
+    public IEnumerable<LearnerDataValidationError> ValidationErrors { get; set; }
 }

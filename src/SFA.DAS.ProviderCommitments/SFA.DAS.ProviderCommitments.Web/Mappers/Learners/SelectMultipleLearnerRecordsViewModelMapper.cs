@@ -87,7 +87,7 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
         ValidationResult validationResult = await validator.ValidateAsync(model);
         if (!validationResult.IsValid)
         {
-            model.ValidationErrors = validationResult.Errors;
+            model.ModelValidationErrors = validationResult.Errors;
         }
 
         model.SortedByHeader();
