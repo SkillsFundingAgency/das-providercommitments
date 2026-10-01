@@ -93,6 +93,7 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
 
     public async Task<ValidateSelectMultipleLearnerRecordsResult> ValidateSelectMultipleLearnerRecordsRequest(ValidateSelectMultipleLearnerRecordsApimRequest data)
     {
+        data.UserInfo = GetUserInfo();
         return await outerApiClient.Post<ValidateSelectMultipleLearnerRecordsResult>(new PostValidateSelectMultipleLearnerRecordsRequest(data));
     }
 

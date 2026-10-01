@@ -1,4 +1,4 @@
-﻿@inject ILinkGenerator LinkGenerator;
+@inject ILinkGenerator LinkGenerator;
 @model SFA.DAS.ProviderCommitments.Web.Models.Learners.SelectMultipleLearnerRecordsValidationErrorsViewModel;
 
 @{
@@ -16,7 +16,7 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     <li>
-                        <a href="#file-error-error" data-focuses="#file-error-error">You need to correct the errors ....?</a>
+                        <a href="#file-error-error" data-focuses="#file-error-error">You need to correct the errors in the selected learner records</a>
                     </li>
                 </ul>
             </div>
@@ -28,7 +28,7 @@
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
                 <span class="govuk-visually-hidden govuk-warning-text__assistive">Warning</span>
-                You will need to correct the errors in ....?
+                You will need to correct the errors in the learner records before you can continue
             </strong>
         </div>
         <div class="govuk-form-group govuk-form-group--error">
@@ -36,7 +36,7 @@
             <table class="govuk-table">
                 <caption class="govuk-table__caption govuk-table__caption--s govuk-!-margin-bottom-4 govuk-error-message">
                     <span id="file-error-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span>You need to correct the errors and ...?
+                        <span class="govuk-visually-hidden">Error:</span>You need to correct the errors and try again
                     </span>
                 </caption>
 

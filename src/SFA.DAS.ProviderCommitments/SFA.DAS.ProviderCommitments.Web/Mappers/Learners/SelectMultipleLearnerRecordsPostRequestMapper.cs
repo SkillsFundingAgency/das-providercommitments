@@ -1,4 +1,4 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -12,11 +12,17 @@ public class SelectMultipleLearnerRecordsPostRequestMapper(IOuterApiService clie
 {
     public async Task<ValidateSelectMultipleLearnerRecordsResult> Map(SelectMultipleLearnerRecordsPostRequest source)
     {
+        if (source.CacheKey == null)
+        {
+            throw new ArgumentException("CacheKey is required", nameof(source));
+        }
+
         var cacheItem = await cacheStorage.RetrieveFromCache<SelectMultipleLearnerRecordsCacheItem>(source.CacheKey.Value);
 
         var apiRequest = new ValidateSelectMultipleLearnerRecordsApimRequest();
         apiRequest.ProviderId = cacheItem.ProviderId;
         apiRequest.AccountLegalEntityId = cacheItem.AccountLegalEntityId;
+        apiRequest.AgreementId = cacheItem.EmployerAccountLegalEntityPublicHashedId;
         apiRequest.LearnerIds = cacheItem.SelectedLearners.Select(x => x.Id).ToList();
 
         var result = await client.ValidateSelectMultipleLearnerRecordsRequest(apiRequest);
