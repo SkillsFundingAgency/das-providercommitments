@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
@@ -40,6 +41,12 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
             {
                 await _client.AddValidationMessagesToFileUploadLog(request.ProviderId, apiRequest.FileUploadLogId, ex.Errors);
                 throw;
+            }
+            catch (CommitmentsApiModelException ex)
+            {
+                var mapped = BulkUploadDomainExceptionMapper.ToBulkUploadValidationErrors(ex);
+                await _client.AddValidationMessagesToFileUploadLog(request.ProviderId, apiRequest.FileUploadLogId, mapped);
+                throw new CommitmentsApiBulkUploadModelException(mapped);
             }
             catch (Exception ex)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
@@ -37,6 +38,13 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
                 await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
             throw;
         }
+        catch (CommitmentsApiModelException ex)
+        {
+            var mapped = BulkUploadDomainExceptionMapper.ToBulkUploadValidationErrors(ex);
+            if (data.FileUploadLogId != null)
+                await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, mapped);
+            throw new CommitmentsApiBulkUploadModelException(mapped);
+        }
         catch (Exception ex)
         {
             if (data.FileUploadLogId != null)
@@ -57,6 +65,13 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
             if (data.FileUploadLogId != null)
                 await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
             throw;
+        }
+        catch (CommitmentsApiModelException ex)
+        {
+            var mapped = BulkUploadDomainExceptionMapper.ToBulkUploadValidationErrors(ex);
+            if (data.FileUploadLogId != null)
+                await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, mapped);
+            throw new CommitmentsApiBulkUploadModelException(mapped);
         }
         catch (Exception ex)
         {
