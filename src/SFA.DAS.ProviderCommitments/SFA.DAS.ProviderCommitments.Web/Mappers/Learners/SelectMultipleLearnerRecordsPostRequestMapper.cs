@@ -18,6 +18,15 @@ public class SelectMultipleLearnerRecordsPostRequestMapper(IOuterApiService clie
         }
 
         var cacheItem = await cacheStorage.RetrieveFromCache<SelectMultipleLearnerRecordsCacheItem>(source.CacheKey.Value);
+        if (cacheItem == null)
+        {
+            throw new ArgumentException("Select-multiple cache entry was not found or has expired.", nameof(source));
+        }
+
+        if (cacheItem.SelectedLearners == null || !cacheItem.SelectedLearners.Any())
+        {
+            throw new ArgumentException("At least one selected learner is required for validate.", nameof(source));
+        }
 
         var apiRequest = new ValidateSelectMultipleLearnerRecordsApimRequest();
         apiRequest.ProviderId = cacheItem.ProviderId;

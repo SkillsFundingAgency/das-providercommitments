@@ -57,7 +57,7 @@
                             <td class="govuk-table__cell">@error.ApprenticeName</td>
                             <td class="govuk-table__cell">
                                 <ul class="govuk-list">
-                                    @foreach (var pError in error.Errors)
+                                    @foreach (var pError in error.Errors ?? Enumerable.Empty<SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Error>())
                                     {
                                         <li>@Html.Raw(System.Net.WebUtility.HtmlDecode(pError.ErrorText))</li>
                                     }

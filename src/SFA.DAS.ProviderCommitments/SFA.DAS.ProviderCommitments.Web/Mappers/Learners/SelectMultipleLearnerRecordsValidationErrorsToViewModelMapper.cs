@@ -18,6 +18,10 @@ public class SelectMultipleLearnerRecordsValidationErrorsToViewModelMapper(ICach
         }
 
         var cacheItem = await cacheStorage.RetrieveFromCache<SelectMultipleLearnerRecordsCacheItem>(source.CacheKey.Value);
+        if (cacheItem == null)
+        {
+            throw new ArgumentException("Select-multiple cache entry was not found or has expired.", nameof(source));
+        }
 
         return new SelectMultipleLearnerRecordsValidationErrorsViewModel
         {
