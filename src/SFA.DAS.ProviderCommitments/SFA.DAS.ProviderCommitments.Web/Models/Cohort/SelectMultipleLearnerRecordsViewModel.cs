@@ -63,6 +63,6 @@ public class SelectMultipleLearnerRecordsViewModel : IAuthorizationContextModel
     public MultipleLearnerRecordsFilterModel FilterModel { get; set; }
     public int FutureMonths { get; set; }
     public ApprenticeshipEmployerType LevyStatus { get; set; }
-    public List<ValidationFailure> ValidationErrors { get; set; } = new List<ValidationFailure>();
+    public List<ValidationFailure> ModelValidationErrors { get; set; } = new List<ValidationFailure>();
     public int MaxSelectableLearners { get; set; }
 }
