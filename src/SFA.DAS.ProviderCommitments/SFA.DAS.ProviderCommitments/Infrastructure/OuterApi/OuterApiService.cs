@@ -97,6 +97,12 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
         return await outerApiClient.Post<ValidateSelectMultipleLearnerRecordsResult>(new PostValidateSelectMultipleLearnerRecordsRequest(data));
     }
 
+    public async Task SelectMultipleAddDraftApprenticeshipsRequest(SelectMultipleAddDraftApprenticeshipsApimRequest data)
+    {
+        data.UserInfo = GetUserInfo();
+        await outerApiClient.Post<object>(new PostSelectMultipleAddDraftApprenticeshipsRequest(data));
+    }
+
     public async Task CreateOverlappingTrainingDateRequest(CreateOverlappingTrainingDateApimRequest data)
     {
         await outerApiClient.Post<CreateOverlappingTrainingDateResponse>(new PostCreateOveralappingTrainingDateRequest(data));
