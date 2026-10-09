@@ -7,10 +7,10 @@ using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 
-public class SelectMultipleLearnerRecordsPostRequestSaveDraftMapper(IOuterApiService client, ICacheStorageService cacheStorage)
-    : IMapper<SelectMultipleLearnerRecordsPostRequest, ValidateSelectMultipleLearnerRecordsResult>
+public class SelectMultipleLearnerRecordsPostRequestAddDraftMapper(IOuterApiService client, ICacheStorageService cacheStorage)
+    : IMapper<SelectMultipleLearnerRecordsPostRequest, SelectMultipleAddDraftApprenticeshipsResult>
 {
-    public async Task Map(SelectMultipleLearnerRecordsPostRequest source)
+    public async Task<SelectMultipleAddDraftApprenticeshipsResult> Map(SelectMultipleLearnerRecordsPostRequest source)
     {
         if (source.CacheKey == null)
         {
@@ -35,6 +35,6 @@ public class SelectMultipleLearnerRecordsPostRequestSaveDraftMapper(IOuterApiSer
         apiRequest.LearnerIds = cacheItem.SelectedLearners.Select(x => x.Id).ToList();
         apiRequest.AccountId = cacheItem.AccountId;
 
-        await client.SelectMultipleAddDraftApprenticeshipsRequest(apiRequest);
+        return await client.SelectMultipleAddDraftApprenticeshipsRequest(apiRequest);
     }
 }
