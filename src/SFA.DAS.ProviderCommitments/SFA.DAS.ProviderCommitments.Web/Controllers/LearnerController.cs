@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -55,9 +56,10 @@ public class LearnerController(IModelMapper modelMapper) : Controller
             };
             return RedirectToAction("SelectMultipleLearnerRecordsValidationErrors", model);
         }
-        //else continue to create cohort and reservations 
 
-        return RedirectToAction("test", validationResult);
+        var result = await modelMapper.Map<SelectMultipleAddDraftApprenticeshipsResult>(request);
+
+        return RedirectToAction("Details", "Cohort", new { request.ProviderId, result.CohortReference });
     }
 
     [HttpGet]
