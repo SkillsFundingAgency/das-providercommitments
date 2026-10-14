@@ -7,6 +7,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
@@ -67,6 +68,23 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
             await fixture.Handle();
 
             fixture.VerifyFileUploadUpdatedWithUnhandledExceptionDetails();
+        }
+
+        [Test]
+        public async Task HandleCommitmentsApiModelException()
+        {
+            var fixture = new BulkUploadValidateDataHandlerTestsFixture();
+            fixture.ThrowsCommitmentsApiModelException();
+            await fixture.Handle();
+
+            fixture.VerifyFileUploadUpdatedWithErrorContent();
+            fixture.ThrownException.Should().BeOfType<CommitmentsApiBulkUploadModelException>();
+            var mapped = (CommitmentsApiBulkUploadModelException)fixture.ThrownException;
+            mapped.Errors.Should().HaveCount(1);
+            mapped.Errors[0].RowNumber.Should().Be(0);
+            mapped.Errors[0].Errors.Should().ContainSingle(e =>
+                e.Property == "TrainingTotalHours" &&
+                e.ErrorText == "You must enter the total off-the-job training time");
         }
     
         public class BulkUploadValidateDataHandlerTestsFixture
@@ -131,6 +149,16 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
             {
                 _outerApiService.Setup(x => x.ValidateBulkUploadRequest(It.IsAny<BulkUploadValidateApimRequest>())).Throws(new CommitmentsApiBulkUploadModelException(new List<BulkUploadValidationError>()));
             }
+
+            internal void ThrowsCommitmentsApiModelException()
+            {
+                _outerApiService.Setup(x => x.ValidateBulkUploadRequest(It.IsAny<BulkUploadValidateApimRequest>()))
+                    .Throws(new CommitmentsApiModelException(
+                    [
+                        new ErrorDetail("TrainingTotalHours", "You must enter the total off-the-job training time")
+                    ]));
+            }
+
             internal void ThrowsApplicationException()
             {
                 _outerApiService.Setup(x => x.ValidateBulkUploadRequest(It.IsAny<BulkUploadValidateApimRequest>())).Throws(new ApplicationException("Bang"));
