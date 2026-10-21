@@ -72,6 +72,13 @@
             </p>
         }
 
+        @if (Model.SelectedLearners.Count > 0)
+        {
+            <a href="@Url.Action("SelectMultipleLearnerRecordsRemoveAll", new { @Model.ProviderId, @Model.CacheKey })" class="govuk-link">
+                Remove all learners
+            </a>
+        }
+
         <table class="govuk-table das-table--responsive das-table--double-arrows das-table--condensed">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
