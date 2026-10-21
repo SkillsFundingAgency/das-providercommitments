@@ -108,6 +108,15 @@ public class LearnerController(IModelMapper modelMapper) : Controller
     }
 
     [HttpGet]
+    [Route("add/learners/select-multiple-remove-all", Name = RouteNames.SelectMultipleLearnerRecordsRemoveAll)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+    public async Task<IActionResult> SelectMultipleLearnerRecordsRemoveAll(SelectMultipleLearnerRecordsRemoveAllRequest request)
+    {
+        var redirectRequest = await modelMapper.Map<SelectMultipleLearnerRecordsRequest>(request);
+        return RedirectToAction("SelectMultipleLearnerRecords", redirectRequest);
+    }
+
+    [HttpGet]
     [Route("add/learners/select/{learnerDataId}")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> LearnerSelectedForNewCohort(LearnerSelectedRequest request)
