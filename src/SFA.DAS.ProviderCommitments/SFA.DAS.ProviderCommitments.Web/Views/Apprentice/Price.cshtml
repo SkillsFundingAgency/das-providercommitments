@@ -31,7 +31,7 @@
             </div>
 
             <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.Price, "govuk-form-group--error ")">
-                <p asp-show="@isRegular">This is the price agreed between you and the new employer to complete the remainder of the apprenticeship training and assessment</p>
+                <p asp-show="@isRegular">This is the price agreed between you and the new employer to complete the remainder of the training and assessment</p>
                 <p asp-show="!isRegular">Total agreed apprenticeship price (excluding VAT)</p>
                 <label asp-show="@isRegular" class="govuk-label" for="price">Enter the price in whole pounds</label>
                 <span asp-show="@isRegular" class="govuk-hint">For example, for &pound;1,500 enter 1500</span>
