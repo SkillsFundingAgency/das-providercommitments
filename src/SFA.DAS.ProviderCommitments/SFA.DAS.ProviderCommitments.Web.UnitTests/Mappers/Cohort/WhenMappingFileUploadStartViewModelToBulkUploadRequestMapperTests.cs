@@ -215,7 +215,7 @@ public class WhenMappingFileUploadStartViewModelToBulkUploadRequestMapperTests
         foreach (var record in _csvRecords)
         {
             var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-            result.DurationReducedByAsString.Should().BeNull();
+            result.DurationReducedByAsString.Should().Be(record.DurationReducedBy);
         }
     }
 
@@ -255,7 +255,7 @@ public class WhenMappingFileUploadStartViewModelToBulkUploadRequestMapperTests
         foreach (var record in _csvRecords)
         {
             var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-            result.IsDurationReducedByRPLAsString.Should().BeNull();
+            result.IsDurationReducedByRPLAsString.Should().Be(record.IsDurationReducedByRPL);
         }
     }
 
