@@ -56,10 +56,12 @@ public static class RouteNames
     public const string ProviderAccountIndex = "provider-account-index";
     public const string SelectLearnerRecord = "select-ilr";
     public const string SelectMultipleLearnerRecords = "select-multiple-ilr";
+    public const string SelectMultipleLearnerRecordsValidationErrors = "select-multiple-ilr-validation-errors";
     public const string SelectMultipleLearnerRecordsFilter = "select-multiple-ilr-filter";
     public const string SelectMultipleLearnerRecordsSort = "select-multiple-ilr-sort";
     public const string SelectMultipleLearnerRecordsAdd = "select-multiple-ilr-add";
     public const string SelectMultipleLearnerRecordsRemove = "select-multiple-ilr-remove";
+    public const string SelectMultipleLearnerRecordsRemoveAll = "select-multiple-ilr-remove-all";
     public const string SelectMultipleChangeEmployer = "change-employer";
     public const string SelectMultipleChangeEmployerRedirect = "change-employer-redirect";
     public const string CreateCohortAndAddFirstApprenticeship = "create-cohort-add-apprenticeship";

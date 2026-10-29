@@ -72,6 +72,13 @@
             </p>
         }
 
+        @if (Model.SelectedLearners.Count > 0)
+        {
+            <a href="@Url.Action("SelectMultipleLearnerRecordsRemoveAll", new { @Model.ProviderId, @Model.CacheKey })" class="govuk-link">
+                Remove all learners
+            </a>
+        }
+
         <table class="govuk-table das-table--responsive das-table--double-arrows das-table--condensed">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
@@ -119,10 +126,16 @@
         }
         else
         {
-            <div>
-                <button class="govuk-button govuk-!-margin-0"> Save and continue</button>
-            </div>
-            <br />
+            <form method="post"
+                  asp-controller="Learner"
+                  asp-action="SelectMultipleLearnerRecords"
+                  asp-route-providerId="@Model.ProviderId">
+                <input type="hidden" value="@Model.CacheKey" name="CacheKey" />
+                <div>
+                    <button class="govuk-button govuk-!-margin-0"> Save and continue</button>
+                </div>
+                <br />
+            </form>
         }
         <hr class="govuk-section-break govuk-section-break--visible">
         <br />
