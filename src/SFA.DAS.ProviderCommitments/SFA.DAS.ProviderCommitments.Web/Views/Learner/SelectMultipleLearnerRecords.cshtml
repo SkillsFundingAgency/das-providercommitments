@@ -119,10 +119,16 @@
         }
         else
         {
-            <div>
-                <button class="govuk-button govuk-!-margin-0"> Save and continue</button>
-            </div>
-            <br />
+            <form method="post"
+                  asp-controller="Learner"
+                  asp-action="SelectMultipleLearnerRecords"
+                  asp-route-providerId="@Model.ProviderId">
+                <input type="hidden" value="@Model.CacheKey" name="CacheKey" />
+                <div>
+                    <button class="govuk-button govuk-!-margin-0"> Save and continue</button>
+                </div>
+                <br />
+            </form>
         }
         <hr class="govuk-section-break govuk-section-break--visible">
         <br />
