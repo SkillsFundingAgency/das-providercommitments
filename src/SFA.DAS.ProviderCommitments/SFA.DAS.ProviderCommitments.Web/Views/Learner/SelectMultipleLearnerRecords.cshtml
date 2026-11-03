@@ -205,6 +205,20 @@
                     </div>
                 </div>
                 <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-two-thirds">
+                        <label class="govuk-label" for="linkedEmployer">Only show learners linked to</label>
+                        <div id="linkedEmployer" >
+                            <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="LinkedEmployerFilter" name="OnlyShowLearnersLinkedToEmployer" type="checkbox"
+                                           onchange="this.form.requestSubmit()" value="true" @(Model.FilterModel.OnlyShowLearnersLinkedToEmployer ? "checked" : "")>
+                                    <label class="govuk-label govuk-checkboxes__label" for="LinkedEmployerFilter">@Model.EmployerAccountName</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="govuk-grid-row">
                     <div class="govuk-grid-column-one-third" style="justify-content: flex-end;">
                         <label class="govuk-label">&nbsp;</label>
                         <div class="govuk-form-group">
@@ -213,6 +227,7 @@
                     </div>
                 </div>
             </div>
+
             @if (!string.IsNullOrWhiteSpace(Model.FilterModel.SearchTerm) || !string.IsNullOrWhiteSpace(Model.FilterModel.StartMonth)
                         || Model.FilterModel.StartYear != DateTime.Now.Year.ToString() || !string.IsNullOrWhiteSpace(Model.FilterModel.CourseCode)
                         || Model.FilterModel.LearningType.HasValue)
