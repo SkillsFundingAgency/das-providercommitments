@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Helpers;
 
@@ -13,5 +14,10 @@ public static class RecognisePriorLearningHelper
     {
         var startDate = actualStartDate ?? plannedStartDate;
         return startDate?.Date >= new DateTime(2022, 08, 01);
+    }
+
+    public static bool DoesRplConfirmationShouldDisplay(IEnumerable<ApprenticeshipType> apprenticeshipTypes)
+    {
+        return apprenticeshipTypes.Any(at => at != ApprenticeshipType.ApprenticeshipUnit);
     }
 }
