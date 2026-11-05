@@ -8,6 +8,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using LearningType = SFA.DAS.Common.Domain.Types.LearningType;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 
@@ -40,7 +41,7 @@ public class DetailsViewModelMapper(
             // even if the version has options
             var apprenticeshipStopped = data.Apprenticeship.Status == ApprenticeshipStatus.Completed || data.Apprenticeship.Status == ApprenticeshipStatus.Stopped;
             var preDateStandardVersioning = apprenticeshipStopped && data.Apprenticeship.Option == null;
-            var isApprenticeshipUnit = data.Apprenticeship.LearningType == SFA.DAS.Common.Domain.Types.LearningType.ApprenticeshipUnit;
+            var isApprenticeshipUnit = data.Apprenticeship.LearningType == LearningType.ApprenticeshipUnit;
             var (singleOption, hasOptions) = isApprenticeshipUnit ? (false, false) : await HasOptions(data.Apprenticeship.StandardUId);
             var showOptions = hasOptions && !preDateStandardVersioning;
 
