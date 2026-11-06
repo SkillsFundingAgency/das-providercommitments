@@ -179,17 +179,17 @@ public class FileUploadMapperBaseTests
         foreach (var record in CsvRecords)
         {
             var result = Result.First(x => x.Uln == record.ULN);
-            result.DurationReducedByAsString.Should().BeNull();
+            result.DurationReducedByAsString.Should().Be(record.DurationReducedBy);
         }
     }
 
-    [TestCase(null, null, null)]
-    [TestCase(null, "200", null)]
-    [TestCase(null, "0", null)]
-    [TestCase("TRUE", "200", null)]
-    [TestCase("TRUE", "0", null)]
-    [TestCase("FALSE", "0", null)]
-    public void VerifyDurationReducedByIsMappedCorrectlyWhenExtendedRplIsOn(string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
+    [TestCase(null, null)]
+    [TestCase(null, "200")]
+    [TestCase(null, "0")]
+    [TestCase("TRUE", "200")]
+    [TestCase("TRUE", "0")]
+    [TestCase("FALSE", "0")]
+    public void VerifyDurationReducedByIsMappedCorrectlyWhenExtendedRplIsOn(string isDurationReducedByRpl, string durationReducedBy)
     {
         CsvRecords = Fixture.Build<CsvRecord>()
             .With(x => x.DateOfBirth, "2000-02-02")
@@ -205,7 +205,7 @@ public class FileUploadMapperBaseTests
         foreach (var record in CsvRecords)
         {
             var result = Result.First(x => x.Uln == record.ULN);
-            expectedValue.Should().Be(result.DurationReducedByAsString);
+            result.DurationReducedByAsString.Should().Be(durationReducedBy);
         }
     }
 
@@ -252,27 +252,51 @@ public class FileUploadMapperBaseTests
     }
 
     [Test]
+    public void VerifyNullGivenNamesDoesNotThrow()
+    {
+        var source = CsvRecords.First();
+        source.GivenNames = null;
+
+        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1);
+
+        var result = Result.First(x => x.Uln == source.ULN);
+        result.FirstName.Should().Be(string.Empty);
+    }
+
+    [Test]
+    public void VerifyNullFamilyNameDoesNotThrow()
+    {
+        var source = CsvRecords.First();
+        source.FamilyName = null;
+
+        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1);
+
+        var result = Result.First(x => x.Uln == source.ULN);
+        result.LastName.Should().Be(string.Empty);
+    }
+
+    [Test]
     public void VerifyIsDurationReducedByRplIsMapped()
     {
         foreach (var record in CsvRecords)
         {
             var result = Result.First(x => x.Uln == record.ULN);
-            result.IsDurationReducedByRPLAsString.Should().BeNull();
+            result.IsDurationReducedByRPLAsString.Should().Be(record.IsDurationReducedByRPL);
         }
     }
 
-    [TestCase(null, null, null, null)]
-    [TestCase(null, null, "200", null)]
-    [TestCase("false", null, null, null)]
-    [TestCase("false", null, "200", null)]
-    [TestCase("true", null, "200", null)]
-    [TestCase("true", null, null, null)]
-    [TestCase("true", null, "0", null)]
-    [TestCase(null, "TRUE", "200", null)]
-    [TestCase(null, "FALSE", "200", null)]
-    [TestCase("true", "TRUE", "200", null)]
-    [TestCase("true", "FALSE", "200", null)]
-    public void VerifyIsDurationReducedByRplIsDefaultedCorrectlyWhenExtendedRplIsOn(string recognisePriorLearning, string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
+    [TestCase(null, null, null)]
+    [TestCase(null, null, "200")]
+    [TestCase("false", null, null)]
+    [TestCase("false", null, "200")]
+    [TestCase("true", null, "200")]
+    [TestCase("true", null, null)]
+    [TestCase("true", null, "0")]
+    [TestCase(null, "TRUE", "200")]
+    [TestCase(null, "FALSE", "200")]
+    [TestCase("true", "TRUE", "200")]
+    [TestCase("true", "FALSE", "200")]
+    public void VerifyIsDurationReducedByRplIsDefaultedCorrectlyWhenExtendedRplIsOn(string recognisePriorLearning, string isDurationReducedByRpl, string durationReducedBy)
     {
         CsvRecords = Fixture.Build<CsvRecord>()
             .With(x => x.DateOfBirth, "2000-02-02")
@@ -289,7 +313,7 @@ public class FileUploadMapperBaseTests
         foreach (var record in CsvRecords)
         {
             var result = Result.First(x => x.Uln == record.ULN);
-            expectedValue.Should().Be(result.IsDurationReducedByRPLAsString);
+            result.IsDurationReducedByRPLAsString.Should().Be(isDurationReducedByRpl);
         }
     }
 
