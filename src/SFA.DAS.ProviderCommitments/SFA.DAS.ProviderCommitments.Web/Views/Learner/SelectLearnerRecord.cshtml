@@ -106,6 +106,20 @@
                         </div>
                     </div>
                 </div>
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-two-thirds">
+                        <label class="govuk-label" for="linkedEmployer">Only show learners linked to</label>
+                        <div id="linkedEmployer">
+                            <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="LinkedEmployerFilter" name="OnlyShowLearnersLinkedToEmployer" type="checkbox"
+                                           onchange="this.form.requestSubmit()" value="true" @(Model.FilterModel.OnlyShowLearnersLinkedToEmployer ? "checked" : "")>
+                                    <label class="govuk-label govuk-checkboxes__label" for="LinkedEmployerFilter">@Model.EmployerAccountName</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="govuk-!-margin-bottom-7">
                     <label class="govuk-label">&nbsp;</label>

@@ -27,6 +27,7 @@ public class SelectMultipleLearnerRecordsFilterRequestMapper(ICacheStorageServic
             cacheItem.StartYear = source.StartYear.ToString();
             cacheItem.CourseCode = source.CourseCode;
             cacheItem.LearningType = source.LearningType;
+            cacheItem.OnlyShowLearnersLinkedToEmployer = source.OnlyShowLearnersLinkedToEmployer;
         }
 
         await cacheStorage.SaveToCache(cacheItem.Key.ToString(), cacheItem, 1);
