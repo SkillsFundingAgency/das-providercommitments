@@ -27,7 +27,7 @@ public class DeleteCohortRequestViewModelMapper : IMapper<DeleteCohortRequest, D
 
         var programmeSummary = draftApprenticeships
             .GroupBy(m => m.CourseName)
-            .Select(m => $"{m.Count()} {TextOrDefault(m.Key)}")
+            .Select(m => $"{m.Count()} x {TextOrDefault(m.Key)}")
             .ToList();
 
         return new DeleteCohortViewModel
