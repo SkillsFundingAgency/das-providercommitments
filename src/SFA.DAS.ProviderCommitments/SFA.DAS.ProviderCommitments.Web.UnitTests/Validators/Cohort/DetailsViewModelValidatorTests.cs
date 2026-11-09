@@ -40,7 +40,86 @@ public class DetailsViewModelValidatorTests
     [TestCase(false, CohortDetailsOptions.ApprenticeRequest, true)]
     public void Validate_RplVerified_ShouldBeValidated(bool rplVerified, CohortDetailsOptions? selection, bool expectedValid)
     {
-        var model = new DetailsViewModel { RplVerified = rplVerified, Selection = selection };
+        var model = new DetailsViewModel
+        {
+            RplVerified = rplVerified,
+            Selection = selection,
+            ShowRplConfirmation = true
+        };
+
         AssertValidationResult(request => request.RplVerified, model, expectedValid);
+    }
+
+    [TestCase(false, CohortDetailsOptions.Send)]
+    [TestCase(false, CohortDetailsOptions.Approve)]
+    public void Validate_RplVerified_ShouldNotHaveValidationError_WhenShowRplConfirmationIsFalse(
+    bool rplVerified,
+    CohortDetailsOptions? selection)
+    {
+        var model = new DetailsViewModel
+        {
+            RplVerified = rplVerified,
+            Selection = selection,
+            ShowRplConfirmation = false
+        };
+
+        AssertValidationResult(request => request.RplVerified, model, true);
+    }
+
+    [Test]
+    public void ThenDoesNotRequireRplConfirmationWhenCohortContainsOnlyApprenticeshipUnits()
+    {
+        var fixture = new WhenValidatingRplConfirmationFixture()
+            .WithShowRplConfirmation(false);
+
+        var result = fixture.Act();
+
+        result.ShouldNotHaveValidationErrorFor(x => x.RplVerified);
+    }
+
+    [Test]
+    public void ThenRequiresRplConfirmationWhenCohortContainsMixedApprenticeshipsAndApprenticeshipUnits()
+    {
+        var fixture = new WhenValidatingRplConfirmationFixture()
+            .WithShowRplConfirmation(true);
+
+        var result = fixture.Act();
+
+        result.ShouldHaveValidationErrorFor(x => x.RplVerified)
+            .WithErrorMessage("Check the box to confirm you have checked RPL for each learner");
+    }
+}
+
+public class WhenValidatingRplConfirmationFixture
+{
+    private readonly DetailsViewModelValidator _validator;
+    private readonly DetailsViewModel _viewModel;
+
+    public WhenValidatingRplConfirmationFixture()
+    {
+        _validator = new DetailsViewModelValidator();
+
+        _viewModel = new DetailsViewModel
+        {
+            Selection = CohortDetailsOptions.Send,
+            RplVerified = false
+        };
+    }
+
+    public WhenValidatingRplConfirmationFixture WithShowRplConfirmation(bool show)
+    {
+        _viewModel.ShowRplConfirmation = show;
+        return this;
+    }
+
+    public WhenValidatingRplConfirmationFixture WithRplVerified(bool verified)
+    {
+        _viewModel.RplVerified = verified;
+        return this;
+    }
+
+    public TestValidationResult<DetailsViewModel> Act()
+    {
+        return _validator.TestValidate(_viewModel);
     }
 }
