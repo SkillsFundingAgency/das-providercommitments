@@ -4,7 +4,6 @@
 @using SFA.DAS.ProviderCommitments.Web.TagHelpers
 @using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel
 @using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
-@using SFA.DAS.ProviderCommitments.Web.Helpers
 @inject ILinkGenerator LinkGenerator;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.DetailsViewModel
 
@@ -437,10 +436,7 @@
             <form id="submitCohort" novalidate method="post" asp-route-providerId="@Model.ProviderId">
                 <input type="hidden" asp-for="ProviderId"/>
 
-                @if (RecognisePriorLearningHelper.DoesRplConfirmationShouldDisplay(
-                     Model.Courses
-                        .SelectMany(course => course.DraftApprenticeships)
-                        .Select(x => x.ApprenticeshipType)))
+                @if (Model.ShowRplConfirmation)
                 {
                     <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.RplVerified, "govuk-form-group--error")">
                         <div class="govuk-checkboxes">

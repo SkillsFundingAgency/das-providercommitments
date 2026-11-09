@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Helpers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Validators.Cohort;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -112,13 +113,39 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
     }
 
+    [TestFixture]
+    public class WhenValidatingRplConfirmation
+    {
+        [Test]
+        public void ThenDoesNotRequireRplConfirmationWhenCohortContainsOnlyApprenticeshipUnits()
+        {
+            var fixture = new WhenValidatingRplConfirmationFixture()
+                .WithShowRplConfirmation(false);
+
+            var result = fixture.Act();
+
+            result.ShouldNotHaveValidationErrorFor(x => x.RplVerified);
+        }
+
+        [Test]
+        public void ThenRequiresRplConfirmationWhenCohortContainsMixedApprenticeshipsAndApprenticeshipUnits()
+        {
+            var fixture = new WhenValidatingRplConfirmationFixture()
+                .WithShowRplConfirmation(true);
+
+            var result = fixture.Act();
+
+            result.ShouldHaveValidationErrorFor(x => x.RplVerified)
+                .WithErrorMessage("Check the box to confirm you have checked RPL for each learner");
+        }
+    }
+
     public class WhenGettingRPLCheckboxVisibilityFixture
     {
         private IEnumerable<ApprenticeshipType> _apprenticeshipTypes =
             Enumerable.Empty<ApprenticeshipType>();
 
-        public WhenGettingRPLCheckboxVisibilityFixture WithApprenticeshipTypes(
-            params ApprenticeshipType[] apprenticeshipTypes)
+        public WhenGettingRPLCheckboxVisibilityFixture WithApprenticeshipTypes(params ApprenticeshipType[] apprenticeshipTypes)
         {
             _apprenticeshipTypes = apprenticeshipTypes;
 
@@ -127,8 +154,41 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public bool Act()
         {
-            return RecognisePriorLearningHelper.DoesRplConfirmationShouldDisplay(
-                _apprenticeshipTypes);
+            return _apprenticeshipTypes.Any(at => at != ApprenticeshipType.ApprenticeshipUnit);
+        }
+    }
+
+    public class WhenValidatingRplConfirmationFixture
+    {
+        private readonly DetailsViewModelValidator _validator;
+        private readonly DetailsViewModel _viewModel;
+
+        public WhenValidatingRplConfirmationFixture()
+        {
+            _validator = new DetailsViewModelValidator();
+
+            _viewModel = new DetailsViewModel
+            {
+                Selection = CohortDetailsOptions.Send,
+                RplVerified = false
+            };
+        }
+
+        public WhenValidatingRplConfirmationFixture WithShowRplConfirmation(bool show)
+        {
+            _viewModel.ShowRplConfirmation = show;
+            return this;
+        }
+
+        public WhenValidatingRplConfirmationFixture WithRplVerified(bool verified)
+        {
+            _viewModel.RplVerified = verified;
+            return this;
+        }
+
+        public TestValidationResult<DetailsViewModel> Act()
+        {
+            return _validator.TestValidate(_viewModel);
         }
     }
 }
