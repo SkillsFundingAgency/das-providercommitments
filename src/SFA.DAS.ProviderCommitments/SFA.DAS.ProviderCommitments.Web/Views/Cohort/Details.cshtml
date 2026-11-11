@@ -438,16 +438,20 @@
         <div class="govuk-grid-column-two-thirds">
             <form id="submitCohort" novalidate method="post" asp-route-providerId="@Model.ProviderId">
                 <input type="hidden" asp-for="ProviderId"/>
+                <input type="hidden" asp-for="ShowRplConfirmation" />
 
-                <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.RplVerified, "govuk-form-group--error")">
-                    <div class="govuk-checkboxes">
-                        @Html.ValidationMessageFor(m => m.RplVerified, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.RplVerified) })
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="rplVerified" name="RplVerified" type="checkbox" value="true">
-                            <label class="govuk-label govuk-checkboxes__label" for="rplVerified">I confirm I’ve checked RPL for each apprentice and added details where needed </label>
+                @if (Model.ShowRplConfirmation)
+                {
+                    <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.RplVerified, "govuk-form-group--error")">
+                        <div class="govuk-checkboxes">
+                            @Html.ValidationMessageFor(m => m.RplVerified, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.RplVerified) })
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="rplVerified" name="RplVerified" type="checkbox" value="true">
+                                <label class="govuk-label govuk-checkboxes__label" for="rplVerified">I confirm I’ve checked RPL for each apprentice and added details where needed </label>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
 
                 <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.Selection, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
