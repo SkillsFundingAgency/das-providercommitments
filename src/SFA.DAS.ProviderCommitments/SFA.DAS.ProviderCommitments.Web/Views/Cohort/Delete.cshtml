@@ -34,14 +34,13 @@
                             </div>
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key"> Training courses </dt>
-                                @if (!Model.ApprenticeshipTrainingProgrammes.Any())
-                                {
-                                    <dd class="govuk-summary-list__value">0</dd>
-                                }
-                                else
-                                {
-                                    <dd class="govuk-summary-list__value">@Model.ApprenticeshipTrainingProgrammes.First()</dd>
-                                }
+                                <dd class="govuk-summary-list__value">
+                                    @foreach (var course in Model.ApprenticeshipTrainingProgrammes)
+                                    {
+                                        <text>@course</text>
+                                        <br />
+                                    }
+                                </dd>
                             </div>
                         </dl>
                     </div>
@@ -64,7 +63,6 @@
                                         <label class="govuk-label govuk-radios__label" for="confirm-true">
                                             Yes, remove cohort
                                         </label>
-
                                     </div>
 
                                     <div class="govuk-radios__item">
