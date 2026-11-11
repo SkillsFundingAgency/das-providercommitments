@@ -29,6 +29,20 @@ public class DetailsViewModelMapperTests
     }
 
     [Test]
+    public async Task ApprenticeshipUnitVersionIsDisplayedWithoutStandardVersionOptions()
+    {
+        _fixture.ApiResponse.Apprenticeship.LearningType = SFA.DAS.Common.Domain.Types.LearningType.ApprenticeshipUnit;
+        _fixture.ApiResponse.Apprenticeship.StandardUId = "AU0001_1.0";
+        _fixture.ApiResponse.Apprenticeship.Version = "1.0";
+
+        await _fixture.Map();
+
+        _fixture.Result.Version.Should().Be("1.0");
+        _fixture.Result.HasOptions.Should().BeFalse();
+        _fixture.Result.ShowChangeVersionLink.Should().BeFalse();
+    }
+
+    [Test]
     public async Task ThenApprenticeshipHashedIdIsMappedCorrectly()
     {
         await _fixture.Map();
