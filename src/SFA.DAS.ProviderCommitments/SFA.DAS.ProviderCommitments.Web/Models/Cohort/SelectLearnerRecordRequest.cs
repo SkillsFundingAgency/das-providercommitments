@@ -20,4 +20,5 @@ public class SelectLearnerRecordRequest : IAuthorizationContextModel
     public int StartYear { get; set; } = DateTime.UtcNow.Year;
     public string CourseCode { get; set; }
     public LearningType? LearningType { get; set; }
+    public bool OnlyShowLearnersLinkedToEmployer { get; set; }
 }

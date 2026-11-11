@@ -40,7 +40,8 @@ public class WhenGettingPageLinksForSelectLearnerRecord
                 { nameof(filterModel.ReverseSort), filterModel.ReverseSort.ToString() },
                 { nameof(filterModel.EmployerAccountLegalEntityPublicHashedId), filterModel.EmployerAccountLegalEntityPublicHashedId },
                 { nameof(filterModel.CohortReference), filterModel.CohortReference },
-{ nameof(filterModel.LearningType), filterModel.LearningType.ToString() },
+                { nameof(filterModel.LearningType), filterModel.LearningType.ToString() },
+                { nameof(filterModel.OnlyShowLearnersLinkedToEmployer), filterModel.OnlyShowLearnersLinkedToEmployer.ToString() },
                 { "page", (index + 1).ToString() }
             });
         }
