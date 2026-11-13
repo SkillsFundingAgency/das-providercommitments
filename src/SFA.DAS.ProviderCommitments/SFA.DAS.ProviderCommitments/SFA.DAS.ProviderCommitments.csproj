@@ -21,7 +21,6 @@
     <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="100.0.177-prerelease-15" />
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.76" />
     <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />
-    <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="17267.0.559" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.19.1" />

@@ -11,8 +11,6 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.Http;
-using SFA.DAS.PAS.Account.Api.ClientV2;
-using SFA.DAS.PAS.Account.Api.Types;
 using SFA.DAS.ProviderCommitments.Enums;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
@@ -868,7 +866,7 @@ bool isApprovedByEmployer, bool expectedShowApprovalOptionMessage)
 
         var result = await fixture.Map();
 
-        foreach(var a in result.Courses?.SelectMany(c => c.DraftApprenticeships))
+        foreach (var a in result.Courses?.SelectMany(c => c.DraftApprenticeships))
         {
             a.ShowRplAddLink.Should().BeFalse();
         }
@@ -913,10 +911,8 @@ bool isApprovedByEmployer, bool expectedShowApprovalOptionMessage)
 
 public class DetailsViewModelMapperTestsFixture
 {
-    private readonly Mock<IPasAccountApiClient> _pasAccountApiClient;
     private readonly DetailsViewModelMapper _mapper;
     private readonly Mock<IEncodingService> _encodingService;
-    public ProviderAgreement ProviderAgreement;
     private readonly Fixture _autoFixture;
     private readonly List<TrainingProgrammeFundingPeriod> _fundingPeriods;
     private readonly DateTime _startFundingPeriod = new(2019, 10, 1);
@@ -937,7 +933,6 @@ public class DetailsViewModelMapperTestsFixture
         _autoFixture.Register(() => draftApprenticeships);
 
         var accountLegalEntityResponse = _autoFixture.Create<AccountLegalEntityResponse>();
-        ProviderAgreement = new ProviderAgreement { Status = ProviderAgreementStatus.Agreed };
         CohortDetails = _autoFixture.Build<GetCohortDetailsResponse>()
             .Without(x => x.TransferSenderId)
             .With(x => x.IsCompleteForProvider, true)
@@ -952,9 +947,6 @@ public class DetailsViewModelMapperTestsFixture
         CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
         CommitmentsApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(accountLegalEntityResponse);
-
-        _pasAccountApiClient = new Mock<IPasAccountApiClient>();
-        _pasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), CancellationToken.None)).ReturnsAsync(ProviderAgreement);
 
         _outerApiClient = new Mock<IOuterApiClient>();
         _outerApiClient.Setup(x => x.Get<GetCohortDetailsResponse>(It.IsAny<GetCohortDetailsRequest>()))
@@ -1160,7 +1152,7 @@ public class DetailsViewModelMapperTestsFixture
 
         for (var i = 0; i < actual.Count; i++)
         {
-            evaluator(expected[i], actual[i]).Should().BeTrue( "Actual sequence are not in same order as expected");
+            evaluator(expected[i], actual[i]).Should().BeTrue("Actual sequence are not in same order as expected");
         }
     }
 
@@ -1280,7 +1272,7 @@ public class DetailsViewModelMapperTestsFixture
             .Setup(x => x.Get<GetProviderDetailsResponse>(It.IsAny<GetProviderDetailsRequest>()))
             .ReturnsAsync(new GetProviderDetailsResponse((int)providerStatus));
         return this;
-    }   
+    }
 
     internal DetailsViewModelMapperTestsFixture SetUlnOverlap(bool hasOverlap)
     {

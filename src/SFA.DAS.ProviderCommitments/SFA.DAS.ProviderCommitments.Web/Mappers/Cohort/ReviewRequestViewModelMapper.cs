@@ -3,7 +3,6 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
-using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.ProviderCommitments.Enums;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
@@ -18,7 +17,6 @@ public class ReviewRequestViewModelMapper : IMapper<CohortsByProviderRequest, Re
     private readonly ICommitmentsApiClient _commitmentsApiClient;
     private readonly IApprovalsOuterApiClient _approvalsOuterApiClient;
     private readonly IUrlHelper _urlHelper;
-    private readonly IPasAccountApiClient _pasAccountApiClient;
     private readonly IEncodingService _encodingService;
     private readonly IOuterApiClient _outerApiClient;
 
@@ -26,14 +24,12 @@ public class ReviewRequestViewModelMapper : IMapper<CohortsByProviderRequest, Re
         ICommitmentsApiClient commitmentApiClient,
         IApprovalsOuterApiClient approvalsOuterApiClient,
         IUrlHelper urlHelper,
-        IPasAccountApiClient pasAccountApiClient,
         IEncodingService encodingSummary,
         IOuterApiClient outerApiClient)
     {
         _commitmentsApiClient = commitmentApiClient;
         _approvalsOuterApiClient = approvalsOuterApiClient;
         _urlHelper = urlHelper;
-        _pasAccountApiClient = pasAccountApiClient;
         _encodingService = encodingSummary;
         _outerApiClient = outerApiClient;
     }
@@ -47,7 +43,7 @@ public class ReviewRequestViewModelMapper : IMapper<CohortsByProviderRequest, Re
             var providerStatusTask = _outerApiClient.Get<GetProviderDetailsResponse>(new GetProviderDetailsRequest(source.ProviderId));
 
             await Task.WhenAll(getCohortsTask, hasRelationshipTask, providerStatusTask);
-            return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result.HasPermission,(ProviderStatusType) providerStatusTask.Result.ProviderStatusTypeId);
+            return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result.HasPermission, (ProviderStatusType)providerStatusTask.Result.ProviderStatusTypeId);
         }
 
         var (cohorts, hasRelationship, providerAgreementStatus) = await GetData();
@@ -90,39 +86,39 @@ internal static class ReviewRequestViewModelMapperExtension
         switch (sortField)
         {
             case "Employer":
-            {
-                if (reverse)
+                {
+                    if (reverse)
+                        return cohorts
+                            .OrderByDescending(c => c.EmployerName)
+                            .ThenBy(c => c.DateReceived.Date)
+                            .ThenBy(c => c.CohortReference);
+
                     return cohorts
-                        .OrderByDescending(c => c.EmployerName)
+                        .OrderBy(c => c.EmployerName)
                         .ThenBy(c => c.DateReceived.Date)
                         .ThenBy(c => c.CohortReference);
-
-                return cohorts
-                    .OrderBy(c => c.EmployerName)
-                    .ThenBy(c => c.DateReceived.Date)
-                    .ThenBy(c => c.CohortReference);
-            }
+                }
 
             case "CohortReference":
-            {
-                return reverse
-                    ? cohorts.OrderByDescending(c => c.CohortReference)
-                    : cohorts.OrderBy(c => c.CohortReference);
-            }
+                {
+                    return reverse
+                        ? cohorts.OrderByDescending(c => c.CohortReference)
+                        : cohorts.OrderBy(c => c.CohortReference);
+                }
 
             case "DateReceived":
-            {
-                if (reverse)
+                {
+                    if (reverse)
+                        return cohorts
+                            .OrderByDescending(c => c.DateReceived.Date)
+                            .ThenBy(c => c.EmployerName)
+                            .ThenBy(c => c.CohortReference);
+
                     return cohorts
-                        .OrderByDescending(c => c.DateReceived.Date)
+                        .OrderBy(c => c.DateReceived.Date)
                         .ThenBy(c => c.EmployerName)
                         .ThenBy(c => c.CohortReference);
-
-                return cohorts
-                    .OrderBy(c => c.DateReceived.Date)
-                    .ThenBy(c => c.EmployerName)
-                    .ThenBy(c => c.CohortReference);
-            }
+                }
         }
 
         return cohorts
