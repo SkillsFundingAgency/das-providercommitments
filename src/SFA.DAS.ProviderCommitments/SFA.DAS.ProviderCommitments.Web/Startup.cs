@@ -75,8 +75,7 @@ public class Startup
 
         services
             .AddCommitmentsApiClient(_configuration)
-            .AddApprovalsOuterApiClient()
-            .AddProviderApprenticeshipsApiClient(_configuration);
+            .AddApprovalsOuterApiClient();
 
         services.AddTransient<IValidator<CreateCohortRequest>, CreateCohortValidator>();
         services.AddTransient<IAuthenticationServiceForApim, AuthenticationService>();
@@ -84,7 +83,7 @@ public class Startup
         services.AddCommitmentPermissionsAuthorization(_configuration.UseLocalRegistry());
 
         services.AddEncodingServices(_configuration);
-        services.AddApplicationServices();        
+        services.AddApplicationServices();
         services.Configure<CookieTempDataProviderOptions>(options =>
         {
             options.Cookie.HttpOnly = true;
