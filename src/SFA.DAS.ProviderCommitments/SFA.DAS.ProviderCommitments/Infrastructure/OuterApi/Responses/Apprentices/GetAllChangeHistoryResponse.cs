@@ -5,4 +5,5 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprenti
 public class GetAllChangeHistoryResponse
 {
     public List<GetChangeHistoryItem> ChangeHistory { get; set; } = new List<GetChangeHistoryItem>();
+    public int TotalCount { get; set; }
 }

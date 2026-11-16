@@ -769,7 +769,7 @@ public class ApprenticeController(
         return View(viewModel);
     }
 
-    [Route("change-history")]
+    [Route("change-history", Name = RouteNames.ApprenticesChangeHistory)]
     [HttpGet]
     public async Task<IActionResult> GetAllChangeHistory(GetAllChangeHistoryRequest request)
     {

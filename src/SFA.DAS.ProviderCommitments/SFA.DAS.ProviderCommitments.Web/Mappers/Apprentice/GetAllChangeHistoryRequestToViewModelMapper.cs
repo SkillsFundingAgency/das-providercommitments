@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Enums;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
@@ -9,11 +10,14 @@ public class GetAllChangeHistoryRequestToViewModelMapper(IApprovalsOuterApiClien
 {
     public async Task<GetAllChangeHistoryListViewModel> Map(GetAllChangeHistoryRequest source)
     {
-        var changeHistory = await approvalsApiClient.GetAllChangeHistory(source.ProviderId);
+        var apiRequest = new GetAllChangeHistoryApiRequest(source.ProviderId, source.PageNumber);
+        var changeHistory = await approvalsApiClient.GetAllChangeHistory(apiRequest);
 
         return new GetAllChangeHistoryListViewModel
         {
             ProviderId = source.ProviderId,
+            PageNumber = source.PageNumber,
+            TotalCount = changeHistory.TotalCount,
             ChangeHistory = changeHistory.ChangeHistory.ConvertAll(x => new GetAllChangeHistoryViewModel
             {
                 Description = x.Description,

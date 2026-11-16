@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Enums;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
@@ -33,7 +34,7 @@ public class GetAllChangeHistoryRequestToViewModelMapperTests
 
         _mockApprovalsApiClient = new Mock<IApprovalsOuterApiClient>();
         _mockApprovalsApiClient
-            .Setup(c => c.GetAllChangeHistory(It.IsAny<long>()))
+            .Setup(c => c.GetAllChangeHistory(It.IsAny<GetAllChangeHistoryApiRequest>()))
             .ReturnsAsync(_getAllChangeHistoryResponse);
 
         _mapper = new GetAllChangeHistoryRequestToViewModelMapper(_mockApprovalsApiClient.Object);
@@ -66,7 +67,7 @@ public class GetAllChangeHistoryRequestToViewModelMapperTests
     public async Task Handle_When_ChangeHistory_IsEmpty()
     {
         _mockApprovalsApiClient
-           .Setup(c => c.GetAllChangeHistory(It.IsAny<long>()))
+           .Setup(c => c.GetAllChangeHistory(It.IsAny<GetAllChangeHistoryApiRequest>()))
            .ReturnsAsync(new GetAllChangeHistoryResponse() );
 
         var viewModel = await _mapper.Map(_request);
