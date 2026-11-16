@@ -6,7 +6,7 @@
 
 @{
     var isRegular = @Model.DeliveryModel != DeliveryModel.PortableFlexiJob;
-    ViewBag.Title = isRegular ? "New agreed training price" : "Agreed training prices for the employment and the apprenticeship";
+    ViewBag.Title = isRegular ? "New agreed training price" : "Agreed training prices for the employment and training";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/price";
     ViewBag.GaData.Org = Model.LegalEntityName;
 }
@@ -31,8 +31,8 @@
             </div>
 
             <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.Price, "govuk-form-group--error ")">
-                <p asp-show="@isRegular">This is the price agreed between you and the new employer to complete the remainder of the apprenticeship training and assessment</p>
-                <p asp-show="!isRegular">Total agreed apprenticeship price (excluding VAT)</p>
+                <p asp-show="@isRegular">This is the price agreed between you and the new employer to complete the remainder of the training and assessment</p>
+                <p asp-show="!isRegular">Total agreed training price (excluding VAT)</p>
                 <label asp-show="@isRegular" class="govuk-label" for="price">Enter the price in whole pounds</label>
                 <span asp-show="@isRegular" class="govuk-hint">For example, for &pound;1,500 enter 1500</span>
                 <span asp-show="!isRegular" class="govuk-hint">Enter the price in whole pounds. For example, for &pound;1,500 enter 1500</span>
