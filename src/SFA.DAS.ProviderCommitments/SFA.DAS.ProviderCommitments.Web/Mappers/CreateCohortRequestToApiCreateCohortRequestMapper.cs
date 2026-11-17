@@ -31,7 +31,8 @@ public class CreateCohortRequestToApiCreateCohortRequestMapper : IMapper<CreateC
             OriginatorReference = source.OriginatorReference,
             ReservationId = source.ReservationId,
             IgnoreStartDateOverlap = source.IgnoreStartDateOverlap,
-            LearnerDataId = source.LearnerDataId
+            LearnerDataId = source.LearnerDataId,
+            OnServicePayments = source.OnServicePayments
         });
     }
 }
