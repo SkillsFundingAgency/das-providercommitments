@@ -1,10 +1,8 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Common.Domain.Types;
-using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -31,7 +29,7 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             StartMonth = int.TryParse(cacheItem.StartMonth, out var m) ? m : null,
             StartYear = int.Parse(cacheItem.StartYear),
             CourseCode = cacheItem.CourseCode,
-            ExcludeUlns = cacheItem.SelectedLearners.Select(x => x.Uln).ToList(),
+            ExcludeUlns = cacheItem.UlnsInCohort.Concat(cacheItem.SelectedLearners.Select(x => x.Uln)).ToList(),
             LearningType = cacheItem.LearningType
         };
 

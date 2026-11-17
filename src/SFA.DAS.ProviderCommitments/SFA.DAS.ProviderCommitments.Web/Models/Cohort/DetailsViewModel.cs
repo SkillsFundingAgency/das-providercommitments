@@ -1,5 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
+﻿using SFA.DAS.CommitmentsV2.Shared.Extensions;
+using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -79,6 +79,7 @@ public class DetailsViewModel : IAuthorizationContextModel
     public List<long> RplErrorDraftApprenticeshipIds { get; set; }
     public int NumberOfRplErrors => RplErrorDraftApprenticeshipIds?.Count ?? 0;
     public bool UseLearnerData { get; set; }
+    public bool IlrSelectMultipleFeatureEnabled { get; set; }
     public bool HasAgeRestrictedApprenticeships { get; set; }
 }
 

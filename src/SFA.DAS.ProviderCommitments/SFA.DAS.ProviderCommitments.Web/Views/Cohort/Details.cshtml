@@ -1,9 +1,8 @@
-﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+﻿@using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@using SFA.DAS.ProviderCommitments.Web.TagHelpers
-@using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel
-@using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
 @inject ILinkGenerator LinkGenerator;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.DetailsViewModel
 
@@ -408,9 +407,19 @@
     <p>
         @if (Model.ShowAddAnotherApprenticeOption)
         {
-            <a class="govuk-link add-apprentice" href="@Url.Action("AddAnotherSelectMethod", "DraftApprenticeship", new { Model.CohortReference, Model.ProviderId, Model.AccountLegalEntityHashedId, Model.EncodedPledgeApplicationId, Model.TransferSenderHashedId, UseLearnerData = Model.UseLearnerData })">
-                Add another learner
-            </a>
+            @if (Model.UseLearnerData && Model.IlrSelectMultipleFeatureEnabled)
+            {
+                <a class="govuk-link add-apprentice" href="@Url.Action("SelectMultipleLearnerRecordsAddToExistingCohort", "Learner", new { Model.CohortReference, Model.ProviderId, Model.AccountLegalEntityHashedId, Model.EncodedPledgeApplicationId, Model.TransferSenderHashedId, UseLearnerData = Model.UseLearnerData })">
+                    Add another learner
+                </a>
+            }
+            else
+            {
+                <a class="govuk-link add-apprentice" href="@Url.Action("AddAnotherSelectMethod", "DraftApprenticeship", new { Model.CohortReference, Model.ProviderId, Model.AccountLegalEntityHashedId, Model.EncodedPledgeApplicationId, Model.TransferSenderHashedId, UseLearnerData = Model.UseLearnerData })">
+                    Add another learner
+                </a>
+            }
+            
         }
         <a class="govuk-link das-float-right delete-cohort" id="delete-cohort" href="@Url.Action("Delete", new { Model.CohortReference, Model.ProviderId })">
             Remove this cohort

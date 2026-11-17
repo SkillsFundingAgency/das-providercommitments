@@ -82,6 +82,7 @@ public class DetailsViewModelMapper(
             InvalidProviderCourseCodes = cohortDetails.InvalidProviderCourseCodes.ToList(),
             RplErrorDraftApprenticeshipIds = cohortDetails.RplErrorDraftApprenticeshipIds.ToList(),
             UseLearnerData = configuration.GetValue<bool>("ILRFeaturesEnabled"),
+            IlrSelectMultipleFeatureEnabled = configuration.GetValue<bool>("ILRSelectMultipleFeatureEnabled"),
             HasAgeRestrictedApprenticeships = cohortDetails.HasAgeRestrictedApprenticeships
         };
 
