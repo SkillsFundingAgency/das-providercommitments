@@ -10,9 +10,10 @@
             <span class="govuk-caption-xl">Add learners from ILR</span>
             <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
             <partial name="_ValidationSummary" />
-            <div class="govuk-form-group">
+            <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-visually-hidden">@ViewData["Title"]</legend>
+                    @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="all-new" name="Selection" type="radio" value="AllNew" checked>

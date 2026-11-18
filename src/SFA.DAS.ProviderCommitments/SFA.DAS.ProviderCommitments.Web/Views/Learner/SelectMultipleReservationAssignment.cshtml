@@ -1,3 +1,4 @@
+@using System.Linq
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectMultipleReservationAssignmentViewModel
 
 @{
@@ -9,18 +10,67 @@
         <form method="post">
             <span class="govuk-caption-xl">Add learners from ILR</span>
             <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
-            <partial name="_ValidationSummary" />
-            <p class="govuk-body">Choose how to fund each learner. A reservation must cover the learner’s training start date.</p>
+            @{
+                var summaryErrors = ViewData.ModelState
+                    .Where(entry => entry.Value.Errors.Count > 0 && (entry.Key == "Assignments" || entry.Key.StartsWith("Assignments[")))
+                    .SelectMany(entry => entry.Value.Errors.Select(error => new { entry.Key, error.ErrorMessage }))
+                    .ToList();
+            }
+            @if (summaryErrors.Count > 0)
+            {
+                <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                    <h2 class="govuk-error-summary__title" id="error-summary-title">
+                        There is a problem
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <ul class="govuk-list govuk-error-summary__list">
+                            @foreach (var error in summaryErrors)
+                            {
+                                var anchor = error.Key == "Assignments"
+                                    ? "error-message-Assignments"
+                                    : "error-message-" + error.Key.Replace("[", "-").Replace("]", "").Replace(".", "-");
+                                <li>
+                                    <a href="#@anchor" data-focuses="@anchor">@error.ErrorMessage</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+            <p class="govuk-body">Choose how to fund each learner. A reservation must cover the learner's training start date.</p>
+            @if (ViewData.ModelState["Assignments"]?.Errors.Count > 0)
+            {
+                <div class="govuk-form-group govuk-form-group--error">
+                    <p id="error-message-Assignments" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        @ViewData.ModelState["Assignments"].Errors[0].ErrorMessage
+                    </p>
+                </div>
+            }
 
             @for (var index = 0; index < Model.Assignments.Count; index++)
             {
                 var assignment = Model.Assignments[index];
-                <div class="govuk-form-group">
+                var fieldKey = $"Assignments[{index}].ReservationId";
+                var rowErrors = ViewData.ModelState[fieldKey]?.Errors;
+                var hasRowError = rowErrors != null && rowErrors.Count > 0;
+                var rowAnchor = "error-message-" + fieldKey.Replace("[", "-").Replace("]", "").Replace(".", "-");
+                <div class="govuk-form-group @(hasRowError ? "govuk-form-group--error" : "")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                             @assignment.LearnerName
                             <span class="govuk-hint">Training starts @assignment.StartDate.ToString("MMMM yyyy")</span>
                         </legend>
+                        @if (hasRowError)
+                        {
+                            for (var errorIndex = 0; errorIndex < rowErrors.Count; errorIndex++)
+                            {
+                                <p id="@(errorIndex == 0 ? rowAnchor : null)" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @rowErrors[errorIndex].ErrorMessage
+                                </p>
+                            }
+                        }
                         <div class="govuk-radios">
                             @foreach (var option in assignment.Options)
                             {
