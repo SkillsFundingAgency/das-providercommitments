@@ -61,10 +61,14 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             LearningType = cacheItem.LearningType
         };
 
+        var availableReservations = cacheItem.LevyStatus == ApprenticeshipEmployerType.NonLevy
+            ? await client.GetSelectMultipleAvailableReservations(cacheItem.AccountId, cacheItem.AccountLegalEntityId.Value) ?? []
+            : [];
+
         var maxSelectableLearners = cacheItem.LevyStatus switch
         {
             ApprenticeshipEmployerType.Levy => 100,
-            ApprenticeshipEmployerType.NonLevy => await GetRemainingReservationsCount(cacheItem.AccountId),
+            ApprenticeshipEmployerType.NonLevy => await GetRemainingReservationsCount(cacheItem.AccountId) + availableReservations.Count,
             _ => 0
         };
 
@@ -81,7 +85,8 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             FilterModel = filterModel,
             FutureMonths = response.FutureMonths,
             LevyStatus = cacheItem.LevyStatus,
-            MaxSelectableLearners = maxSelectableLearners
+            MaxSelectableLearners = maxSelectableLearners,
+            AvailableReservations = availableReservations
         };
 
         ValidationResult validationResult = await validator.ValidateAsync(model);

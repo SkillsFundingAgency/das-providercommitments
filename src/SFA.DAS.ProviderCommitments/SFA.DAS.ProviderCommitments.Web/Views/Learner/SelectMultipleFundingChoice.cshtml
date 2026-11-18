@@ -1,0 +1,37 @@
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectMultipleFundingChoiceViewModel
+
+@{
+    ViewData["Title"] = "How do you want to reserve funds?";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            <span class="govuk-caption-xl">Add learners from ILR</span>
+            <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+            <partial name="_ValidationSummary" />
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-visually-hidden">@ViewData["Title"]</legend>
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="all-new" name="Selection" type="radio" value="AllNew" checked>
+                            <label class="govuk-label govuk-radios__label" for="all-new">
+                                Assign new reservation funding for all
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="existing" name="Selection" type="radio" value="Existing">
+                            <label class="govuk-label govuk-radios__label" for="existing">
+                                Assign existing reservations to learners
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <input type="hidden" name="ProviderId" value="@Model.ProviderId">
+            <input type="hidden" name="CacheKey" value="@Model.CacheKey">
+            <button class="govuk-button" type="submit">Continue</button>
+        </form>
+    </div>
+</div>

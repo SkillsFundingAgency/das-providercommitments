@@ -15,6 +15,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderRelationships;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.SelectMultiple;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -101,6 +102,12 @@ public class OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServ
     {
         data.UserInfo = GetUserInfo();
         return await outerApiClient.Post<SelectMultipleAddDraftApprenticeshipsResult>(new PostSelectMultipleAddDraftApprenticeshipsRequest(data));
+    }
+
+    public async Task<List<SelectMultipleAvailableReservation>> GetSelectMultipleAvailableReservations(long accountId, long accountLegalEntityId)
+    {
+        return await outerApiClient.Get<List<SelectMultipleAvailableReservation>>(
+            new GetSelectMultipleAvailableReservationsRequest(accountId, accountLegalEntityId));
     }
 
     public async Task CreateOverlappingTrainingDateRequest(CreateOverlappingTrainingDateApimRequest data)

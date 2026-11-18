@@ -4,6 +4,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
+using ApiReservationAssignment = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.SelectMultipleReservationAssignment;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Learners;
 
@@ -32,7 +33,17 @@ public class SelectMultipleLearnerRecordsPostRequestMapper(IOuterApiService clie
         apiRequest.ProviderId = cacheItem.ProviderId;
         apiRequest.AccountLegalEntityId = cacheItem.AccountLegalEntityId;
         apiRequest.AgreementId = cacheItem.EmployerAccountLegalEntityPublicHashedId;
+        apiRequest.AccountId = cacheItem.AccountId;
+        apiRequest.IsLevyEmployer = cacheItem.LevyStatus == SFA.DAS.Common.Domain.Types.ApprenticeshipEmployerType.Levy;
         apiRequest.LearnerIds = cacheItem.SelectedLearners.Select(x => x.Id).ToList();
+        apiRequest.ReservationAssignments = cacheItem.ReservationAssignments
+            .Select(x => new ApiReservationAssignment
+            {
+                LearnerId = x.LearnerId,
+                ReservationId = x.ReservationId,
+                UseNewReservation = x.UseNewReservation
+            })
+            .ToList();
 
         var result = await client.ValidateSelectMultipleLearnerRecordsRequest(apiRequest);
 

@@ -7,6 +7,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenti
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Ilr;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.SelectMultiple;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -28,6 +29,7 @@ public interface IOuterApiService
     Task ValidateBulkUploadRequest(BulkUploadValidateApimRequest data);
     Task<ValidateSelectMultipleLearnerRecordsResult> ValidateSelectMultipleLearnerRecordsRequest(ValidateSelectMultipleLearnerRecordsApimRequest data);
     Task<SelectMultipleAddDraftApprenticeshipsResult> SelectMultipleAddDraftApprenticeshipsRequest(SelectMultipleAddDraftApprenticeshipsApimRequest data);
+    Task<List<SelectMultipleAvailableReservation>> GetSelectMultipleAvailableReservations(long accountId, long accountLegalEntityId);
     Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> BulkUploadAddAndApproveDraftApprenticeships(BulkUploadAddAndApproveDraftApprenticeshipsRequest request);
 
     Task<GetBulkUploadAddDraftApprenticeshipsResult> BulkUploadDraftApprenticeships(BulkUploadAddDraftApprenticeshipsRequest request);

@@ -9,4 +9,5 @@ public class SelectMultipleAddDraftApprenticeshipsApimRequest : ApimSaveDataRequ
     public long? AccountLegalEntityId { get; set; }
     public string AgreementId { get; set; }
     public long AccountId { get; set; }
+    public IEnumerable<SelectMultipleReservationAssignment> ReservationAssignments { get; set; }
 }

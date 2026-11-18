@@ -30,6 +30,7 @@ public class SelectMultipleLearnerRecordsCacheItem : ICacheModel
     public string StartYear { get; set; } = DateTime.UtcNow.Year.ToString();
     public string CourseCode { get; set; }
     public List<LearnerSummary> SelectedLearners { get; set; } = new();
+    public List<SelectMultipleReservationAssignment> ReservationAssignments { get; set; } = new();
     public ApprenticeshipEmployerType LevyStatus { get; set; }
     public LearningType? LearningType { get; set; }
     public long AccountId { get; set; }

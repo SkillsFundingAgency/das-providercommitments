@@ -1,0 +1,73 @@
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectMultipleReservationAssignmentViewModel
+
+@{
+    ViewData["Title"] = "Assign existing reservations";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <form method="post">
+            <span class="govuk-caption-xl">Add learners from ILR</span>
+            <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+            <partial name="_ValidationSummary" />
+            <p class="govuk-body">Choose how to fund each learner. A reservation must cover the learner’s training start date.</p>
+
+            @for (var index = 0; index < Model.Assignments.Count; index++)
+            {
+                var assignment = Model.Assignments[index];
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            @assignment.LearnerName
+                            <span class="govuk-hint">Training starts @assignment.StartDate.ToString("MMMM yyyy")</span>
+                        </legend>
+                        <div class="govuk-radios">
+                            @foreach (var option in assignment.Options)
+                            {
+                                var optionId = $"assignment-{index}-{option.ReservationId?.ToString() ?? "new"}";
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="@optionId"
+                                           name="Assignments[@index].ReservationId"
+                                           type="radio"
+                                           value="@(option.ReservationId?.ToString() ?? string.Empty)"
+                                           data-new="@option.IsNew.ToString().ToLowerInvariant()"
+                                           checked="@(assignment.ReservationId == option.ReservationId ? "checked" : null)">
+                                    <label class="govuk-label govuk-radios__label" for="@optionId">@option.Text</label>
+                                </div>
+                            }
+                        </div>
+                    </fieldset>
+                    <input type="hidden" name="Assignments[@index].LearnerId" value="@assignment.LearnerId">
+                </div>
+            }
+
+            <input type="hidden" name="ProviderId" value="@Model.ProviderId">
+            <input type="hidden" name="CacheKey" value="@Model.CacheKey">
+            <button class="govuk-button" type="submit">Save and continue</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const remainingNewReservations = @Model.RemainingNewReservations;
+    const assignmentInputs = document.querySelectorAll('input[name$=".ReservationId"]');
+
+    function updateReservationOptions() {
+        const selected = new Set(Array.from(assignmentInputs)
+            .filter(input => input.checked && input.value)
+            .map(input => input.value));
+        const newCount = Array.from(assignmentInputs)
+            .filter(input => input.checked && input.dataset.new === "true")
+            .length;
+
+        assignmentInputs.forEach(input => {
+            const selectedInAnotherRow = selected.has(input.value) && !input.checked;
+            const newLimitReached = input.dataset.new === "true" && !input.checked && newCount >= remainingNewReservations;
+            input.closest(".govuk-radios__item").hidden = selectedInAnotherRow || newLimitReached;
+        });
+    }
+
+    assignmentInputs.forEach(input => input.addEventListener("change", updateReservationOptions));
+    updateReservationOptions();
+</script>
