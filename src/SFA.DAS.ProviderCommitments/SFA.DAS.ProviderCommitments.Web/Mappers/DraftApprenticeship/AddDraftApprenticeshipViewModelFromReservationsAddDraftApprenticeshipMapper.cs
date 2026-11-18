@@ -89,6 +89,7 @@ public class AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticesh
                 : CommitmentsV2.Types.DeliveryModel.Regular;
 
             model.LearnerDataId = cacheItem.LearnerDataId;
+            model.OnServicePayments = cacheItem.OnServicePayments;
         }
         return model;
     }

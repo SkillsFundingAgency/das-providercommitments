@@ -26,6 +26,8 @@ public class WhenIMapDraftApprenticeshipRequest
         var endDate = fixture.Create<DateTime?>();
         var deliveryModel = fixture.Create<DeliveryModel?>();
         var employmentPrice = fixture.Create<int?>();
+        var learnerDataId = fixture.Create<long?>();
+        var onServicePayments = fixture.Create<bool?>();
         _cohortId = fixture.Create<long>();
 
         _mapper = new AddDraftApprenticeshipRequestMapper();
@@ -46,6 +48,8 @@ public class WhenIMapDraftApprenticeshipRequest
             .With(x => x.ActualStartYear, actualStartDate?.Year)
             .With(x => x.DeliveryModel, deliveryModel)
             .With(x => x.EmploymentPrice, employmentPrice)
+            .With(x => x.LearnerDataId, learnerDataId)
+            .With(x => x.OnServicePayments, onServicePayments)
             .Without(x => x.StartDate)
             .Without(x => x.Courses)
             .Create();
@@ -170,5 +174,19 @@ public class WhenIMapDraftApprenticeshipRequest
     {
         var result = await _act();
         result.EmploymentPrice.Should().Be(_source.EmploymentPrice);
+    }
+
+    [Test]
+    public async Task ThenLearnerDataIdIsMappedCorrectly()
+    {
+        var result = await _act();
+        result.LearnerDataId.Should().Be(_source.LearnerDataId);
+    }
+
+    [Test]
+    public async Task ThenOnServicePaymentsIsMappedCorrectly()
+    {
+        var result = await _act();
+        result.OnServicePayments.Should().Be(_source.OnServicePayments  );
     }
 }

@@ -33,7 +33,8 @@ public class AddDraftApprenticeshipRequestMapper : IMapper<AddDraftApprenticeshi
             EndDate = source.EndDate.Date,
             OriginatorReference = source.Reference,
             DeliveryModel = source.DeliveryModel,
-            LearnerDataId = source.LearnerDataId
+            LearnerDataId = source.LearnerDataId,
+            OnServicePayments = source.OnServicePayments
         });
     }
 }

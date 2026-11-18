@@ -214,6 +214,13 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
     }
 
     [Test]
+    public async Task AndHasCacheKeyThenOnServicePaymentsIsMappedFromCache()
+    {
+        var result = await _mapper.Map(_source);
+        result.OnServicePayments.Should().Be(_cacheResponse.OnServicePayments);
+    }
+
+    [Test]
     public async Task AndHasCacheKeyThenLearningTypeIsMappedFromCache()
     {
         var result = await _mapper.Map(_source);
