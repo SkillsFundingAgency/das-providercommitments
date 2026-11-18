@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Routing;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -56,7 +57,7 @@ public class GetSelectMultipleLearnerRecordsFilterFixture
             .Setup(x => x.Map<SelectMultipleLearnerRecordsRequest>(_request))
             .ReturnsAsync(_redirectRequest);
 
-        _sut = new LearnerController(_modelMapperMock.Object);
+        _sut = new LearnerController(_modelMapperMock.Object, Mock.Of<ICacheStorageService>(), Mock.Of<IOuterApiService>());
     }
 
     public Task<IActionResult> Act() => _sut.SelectMultipleLearnerRecordsFilter(_request);

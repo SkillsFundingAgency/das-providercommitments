@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -52,7 +53,7 @@ public class LearnerSelectedFixture
             .Setup(x => x.Map<CreateCohortWithDraftApprenticeshipRequest>(_request))
             .ReturnsAsync(_model);
 
-        _sut = new LearnerController(_modelMapperMock.Object);
+        _sut = new LearnerController(_modelMapperMock.Object, Mock.Of<ICacheStorageService>(), Mock.Of<IOuterApiService>());
     }
 
     public void VerifyMapperWasCalled()
