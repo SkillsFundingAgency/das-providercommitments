@@ -10,13 +10,14 @@ public class GetAllChangeHistoryRequestToViewModelMapper(IApprovalsOuterApiClien
 {
     public async Task<GetAllChangeHistoryListViewModel> Map(GetAllChangeHistoryRequest source)
     {
-        var apiRequest = new GetAllChangeHistoryApiRequest(source.ProviderId, source.PageNumber);
+        var pageNumber = Math.Max(source.PageNumber, 1);
+        var apiRequest = new GetAllChangeHistoryApiRequest(source.ProviderId, pageNumber);
         var changeHistory = await approvalsApiClient.GetAllChangeHistory(apiRequest);
 
         return new GetAllChangeHistoryListViewModel
         {
             ProviderId = source.ProviderId,
-            PageNumber = source.PageNumber,
+            PageNumber = pageNumber,
             TotalCount = changeHistory.TotalCount,
             ChangeHistory = changeHistory.ChangeHistory.ConvertAll(x => new GetAllChangeHistoryViewModel
             {
@@ -27,7 +28,7 @@ public class GetAllChangeHistoryRequestToViewModelMapper(IApprovalsOuterApiClien
                 LearnerName = x.LearnerName,
                 EmployerName = x.EmployerName
             }),
-            AvailableFrom = changeHistory.ChangeHistory.OrderBy(t => t.Created).FirstOrDefault()?.Created ?? DateTime.UtcNow
+            AvailableFrom = changeHistory.AvailableFrom
         };
     }
 }
