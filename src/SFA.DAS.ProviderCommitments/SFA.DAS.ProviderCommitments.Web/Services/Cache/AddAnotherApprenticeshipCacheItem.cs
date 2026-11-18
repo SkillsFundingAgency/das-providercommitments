@@ -34,5 +34,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
         public bool? UseLearnerData { get; set; }
         public long? LearnerDataId { get; set; }
         public LearningType? LearningType { get; set; }
+        public bool? OnServicePayments { get; set; }
     }
 }

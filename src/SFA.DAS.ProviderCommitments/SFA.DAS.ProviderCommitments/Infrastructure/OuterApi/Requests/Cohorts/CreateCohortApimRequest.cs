@@ -30,5 +30,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
         public DateTime? EmploymentEndDate { get; set; }
         public bool IgnoreStartDateOverlap { get; set; }
         public long? LearnerDataId { get; set; }
+        public bool? OnServicePayments { get; set; }
     }
 }
