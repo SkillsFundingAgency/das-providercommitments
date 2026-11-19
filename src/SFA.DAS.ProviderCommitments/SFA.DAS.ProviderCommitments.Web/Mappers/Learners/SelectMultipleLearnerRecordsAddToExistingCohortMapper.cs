@@ -44,7 +44,8 @@ public class SelectMultipleLearnerRecordsAddToExistingCohortMapper(
             LevyStatus = cohortDetails.LevyStatus.ToString().ToEnum<CommonApprenticeshipEmployerType>(),
             AccountLegalEntityId = encodingService.Decode(source.AccountLegalEntityHashedId, EncodingType.PublicAccountLegalEntityId),
             AccountId = cohortDetails.AccountId,
-            UlnsInCohort = ulnsInCohort
+            UlnsInCohort = ulnsInCohort,
+            TransferSenderAccountId = cohortDetails.TransferSenderId
         };
 
         await cacheStorage.SaveToCache(cacheItem.Key.ToString(), cacheItem, 1);

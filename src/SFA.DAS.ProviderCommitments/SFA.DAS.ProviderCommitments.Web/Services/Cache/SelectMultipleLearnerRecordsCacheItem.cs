@@ -21,6 +21,7 @@ public class SelectMultipleLearnerRecordsCacheItem : ICacheModel
     public bool UseLearnerData { get; set; }
     public long? CohortId { get; set; }
     public long? AccountLegalEntityId { get; set; }
+    public long? TransferSenderAccountId { get; set; }
     public string CohortReference { get; set; }
     public string EmployerAccountName { get; set; }
     public string SearchTerm { get; set; }

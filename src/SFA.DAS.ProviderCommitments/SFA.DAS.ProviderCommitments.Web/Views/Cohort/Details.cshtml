@@ -409,7 +409,7 @@
         {
             @if (Model.UseLearnerData && Model.IlrSelectMultipleFeatureEnabled)
             {
-                <a class="govuk-link add-apprentice" href="@Url.Action("SelectMultipleLearnerRecordsAddToExistingCohort", "Learner", new { Model.CohortReference, Model.ProviderId, Model.AccountLegalEntityHashedId, Model.EncodedPledgeApplicationId, Model.TransferSenderHashedId, UseLearnerData = Model.UseLearnerData })">
+                <a class="govuk-link add-apprentice" href="@Url.Action("SelectMultipleLearnerRecordsAddToExistingCohort", "Learner", new { Model.CohortReference, Model.ProviderId, Model.AccountLegalEntityHashedId, Model.EncodedPledgeApplicationId, UseLearnerData = Model.UseLearnerData })">
                     Add another learner
                 </a>
             }
