@@ -121,7 +121,7 @@
                     <input type="hidden" asp-for="ProviderId" />
                     <input type="hidden" asp-for="HasMultipleDeliveryModelOptions" />
                     <input type="hidden" asp-for="HasLearnerDataChanges" />
-                    <input type="hidden" asp-for="LastLearnerDataSync" />
+                    <input type="hidden" asp-for="LastLearnerDataSync" asp-format="{0:O}" />
 
                     <input type="hidden" asp-for="CourseCode" value="@Model.CourseCode">
                     <input type="hidden" asp-for="DeliveryModel" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
