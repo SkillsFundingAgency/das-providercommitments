@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.Json;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -15,7 +16,10 @@ public static class ApprovalChangeFieldFormatter
 
         var displayFields = new List<InvalidIlrChangeFieldViewModel>();
         var priceFields = fields.Where(field => PriceFields.Contains(field.Field, StringComparer.OrdinalIgnoreCase)).ToList();
-        var otherFields = fields.Where(field => !PriceFields.Contains(field.Field, StringComparer.OrdinalIgnoreCase));
+        var scheduleField = fields.FirstOrDefault(field => string.Equals(field.Field, "Prices", StringComparison.OrdinalIgnoreCase));
+        var otherFields = fields.Where(field =>
+            !PriceFields.Contains(field.Field, StringComparer.OrdinalIgnoreCase)
+            && !string.Equals(field.Field, "Prices", StringComparison.OrdinalIgnoreCase));
 
         if (priceFields.Count > 0)
         {
@@ -25,6 +29,17 @@ public static class ApprovalChangeFieldFormatter
                 FieldDisplayName = "Total price",
                 Old = SumAmounts(priceFields, field => field.Old).ToGdsCostFormat(),
                 New = SumAmounts(priceFields, field => field.New).ToGdsCostFormat()
+            });
+        }
+
+        if (scheduleField != null)
+        {
+            displayFields.Add(new InvalidIlrChangeFieldViewModel
+            {
+                Field = "TotalPrice",
+                FieldDisplayName = "Total price",
+                Old = FormatLatestCost(scheduleField.Old),
+                New = FormatLatestCost(scheduleField.New)
             });
         }
 
@@ -66,6 +81,30 @@ public static class ApprovalChangeFieldFormatter
         return value;
     }
 
+    private static string FormatLatestCost(string schedule)
+    {
+        if (string.IsNullOrWhiteSpace(schedule))
+        {
+            return "#error#";
+        }
+
+        try
+        {
+            var latestEpisode = JsonSerializer.Deserialize<List<PriceScheduleEpisode>>(schedule, PriceJsonOptions)?
+                .Where(episode => episode != null && !string.IsNullOrWhiteSpace(episode.EffectiveFrom))
+                .OrderBy(episode => episode.EffectiveFrom, StringComparer.Ordinal)
+                .LastOrDefault();
+
+            return latestEpisode == null
+                ? "#error#"
+                : latestEpisode.Cost.ToGdsCostFormat();
+        }
+        catch (JsonException)
+        {
+            return "#error#";
+        }
+    }
+
     private static string ToFieldDisplayName(string field)
     {
         return field switch
@@ -73,5 +112,16 @@ public static class ApprovalChangeFieldFormatter
             "DateOfBirth" => "Date of birth",
             _ => field
         };
+    }
+
+    private static readonly JsonSerializerOptions PriceJsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    private sealed class PriceScheduleEpisode
+    {
+        public string EffectiveFrom { get; set; }
+        public decimal Cost { get; set; }
     }
 }
