@@ -1,3 +1,5 @@
+using SFA.DAS.ProviderCommitments.Web.Helpers;
+
 namespace SFA.DAS.ProviderCommitments.Web.Models.Shared;
 
 public class SelectEmployerFilterModel
@@ -79,56 +81,7 @@ public class SelectEmployerFilterModel
         };
     }
 
-    public IEnumerable<PaginationPageLink> PageLinks
-    {
-        get
-        {
-            var links = new List<PaginationPageLink>();
-            var totalPages = (int)Math.Ceiling((double)TotalEmployersFound / PageSize);
-            var totalPageLinks = totalPages < 5 ? totalPages : 5;
-
-            if (totalPages > 1 && PageNumber > 1)
-            {
-                links.Add(new PaginationPageLink
-                {
-                    Label = "Previous",
-                    AriaLabel = "Previous page",
-                    RouteData = BuildPagedRouteData(PageNumber - 1)
-                });
-            }
-
-            var pageNumberSeed = 1;
-            if (totalPages > 5 && PageNumber > 3)
-            {
-                pageNumberSeed = PageNumber - 2;
-                if (PageNumber > totalPages - 2)
-                    pageNumberSeed = totalPages - 4;
-            }
-
-            for (var i = 0; i < totalPageLinks; i++)
-            {
-                links.Add(new PaginationPageLink
-                {
-                    Label = (pageNumberSeed + i).ToString(),
-                    AriaLabel = $"Page {pageNumberSeed + i}",
-                    IsCurrent = pageNumberSeed + i == PageNumber ? true : (bool?)null,
-                    RouteData = BuildPagedRouteData(pageNumberSeed + i)
-                });
-            }
-
-            if (totalPages > 1 && PageNumber < totalPages)
-            {
-                links.Add(new PaginationPageLink
-                {
-                    Label = "Next",
-                    AriaLabel = "Next page",
-                    RouteData = BuildPagedRouteData(PageNumber + 1)
-                });
-            }
-
-            return links;
-        }
-    }
+    public IEnumerable<PaginationPageLink> PageLinks => PaginationHelper.BuildPageLinks(PageNumber, PaginationHelper.GetTotalPages(TotalEmployersFound, PageSize), BuildPagedRouteData);
 
     public string CssClassForArrowDirection(string sortByThisField)
     {
