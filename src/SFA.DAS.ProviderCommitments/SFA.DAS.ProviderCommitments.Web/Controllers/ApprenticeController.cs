@@ -774,6 +774,12 @@ public class ApprenticeController(
     public async Task<IActionResult> GetAllChangeHistory(GetAllChangeHistoryRequest request)
     {
         var viewModel = await modelMapper.Map<GetAllChangeHistoryListViewModel>(request);
+
+        if (viewModel.IsPageOutOfRange)
+        {
+            return RedirectToRoute(RouteNames.ApprenticesChangeHistory, new { request.ProviderId, PageNumber = viewModel.TotalPages });
+        }
+
         return View(viewModel);
     }
 

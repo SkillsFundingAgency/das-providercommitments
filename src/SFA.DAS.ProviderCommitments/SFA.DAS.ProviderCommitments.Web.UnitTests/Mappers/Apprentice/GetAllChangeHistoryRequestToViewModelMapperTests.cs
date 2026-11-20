@@ -50,6 +50,18 @@ public class GetAllChangeHistoryRequestToViewModelMapperTests
     }
 
     [Test]
+    public async Task Then_AvailableFromIsNullWhenNoHistory()
+    {
+        _mockApprovalsApiClient
+            .Setup(c => c.GetAllChangeHistory(It.IsAny<GetAllChangeHistoryApiRequest>()))
+            .ReturnsAsync(new GetAllChangeHistoryResponse { AvailableFrom = null, TotalCount = 0 });
+
+        var viewModel = await _mapper.Map(_request);
+
+        viewModel.AvailableFrom.Should().BeNull();
+    }
+
+    [Test]
     public async Task Then_PageNumberIsClampedToOneWhenZero()
     {
         _request.PageNumber = 0;
@@ -63,11 +75,42 @@ public class GetAllChangeHistoryRequestToViewModelMapperTests
     public async Task Then_ValidPageNumberIsPassedThroughUnchanged()
     {
         _request.PageNumber = 3;
+        _getAllChangeHistoryResponse.TotalCount = 120;
 
         var viewModel = await _mapper.Map(_request);
 
         _mockApprovalsApiClient.Verify(c => c.GetAllChangeHistory(It.Is<GetAllChangeHistoryApiRequest>(r => r.PageNumber == 3)), Times.Once);
         viewModel.PageNumber.Should().Be(3);
+    }
+
+    [Test]
+    public async Task Then_PageNumberPastLastPageIsPassedThroughWithSingleApiCall()
+    {
+        _request.PageNumber = 5;
+        _mockApprovalsApiClient
+            .Setup(c => c.GetAllChangeHistory(It.IsAny<GetAllChangeHistoryApiRequest>()))
+            .ReturnsAsync(new GetAllChangeHistoryResponse { TotalCount = 120 });
+
+        var viewModel = await _mapper.Map(_request);
+
+        _mockApprovalsApiClient.Verify(c => c.GetAllChangeHistory(It.IsAny<GetAllChangeHistoryApiRequest>()), Times.Once);
+        viewModel.PageNumber.Should().Be(5);
+        viewModel.IsPageOutOfRange.Should().BeTrue();
+    }
+
+    [Test]
+    public async Task Then_PageNumberWithNoChangesIsNotOutOfRange()
+    {
+        _request.PageNumber = 5;
+        _mockApprovalsApiClient
+            .Setup(c => c.GetAllChangeHistory(It.IsAny<GetAllChangeHistoryApiRequest>()))
+            .ReturnsAsync(new GetAllChangeHistoryResponse { TotalCount = 0 });
+
+        var viewModel = await _mapper.Map(_request);
+
+        viewModel.PageNumber.Should().Be(5);
+        viewModel.IsPageOutOfRange.Should().BeFalse();
+        viewModel.ChangeHistory.Should().BeEmpty();
     }
 
     [Test]

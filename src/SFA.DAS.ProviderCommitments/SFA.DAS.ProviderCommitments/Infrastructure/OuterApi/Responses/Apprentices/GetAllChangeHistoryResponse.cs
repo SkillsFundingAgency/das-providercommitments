@@ -7,5 +7,5 @@ public class GetAllChangeHistoryResponse
 {
     public List<GetChangeHistoryItem> ChangeHistory { get; set; } = new List<GetChangeHistoryItem>();
     public int TotalCount { get; set; }
-    public DateTime AvailableFrom { get; set; }
+    public DateTime? AvailableFrom { get; set; }
 }
