@@ -36,6 +36,7 @@ public class SelectMultipleLearnerRecordsPostRequestMapper(IOuterApiService clie
         apiRequest.TransferSenderAccountId = cacheItem.TransferSenderAccountId;
         apiRequest.CohortId = cacheItem.CohortId;
         apiRequest.CohortReference = cacheItem.CohortReference;
+        apiRequest.EncodedPledgeApplicationId = cacheItem.EncodedPledgeApplicationId;
 
         var result = await client.ValidateSelectMultipleLearnerRecordsRequest(apiRequest);
 

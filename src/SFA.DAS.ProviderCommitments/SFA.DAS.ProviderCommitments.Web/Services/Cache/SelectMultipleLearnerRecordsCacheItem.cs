@@ -36,4 +36,5 @@ public class SelectMultipleLearnerRecordsCacheItem : ICacheModel
     public long AccountId { get; set; }
     public IEnumerable<LearnerDataValidationError> ValidationErrors { get; set; }
     public List<long> UlnsInCohort { get; set; }
+    public string EncodedPledgeApplicationId { get; set; }
 }
