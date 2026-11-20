@@ -146,9 +146,9 @@ public class WhenMappingDeleteCohortRequestToDeleteCohortViewModelFixture
     {
         using (new AssertionScope())
         {
-            _deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "2 Course1").Should().BeTrue();
+            _deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "2 x Course1").Should().BeTrue();
             _deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Count.Should().Be(2);
-            _deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "1 Course2").Should().BeTrue();
+            _deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "1 x Course2").Should().BeTrue();
         }
     }
 
