@@ -909,6 +909,51 @@ bool isApprovedByEmployer, bool expectedShowApprovalOptionMessage)
             a.ShowRplAddLink.Should().Be(expected);
         }
     }
+
+    [TestCase(ApprenticeshipType.ApprenticeshipUnit, false)]
+    [TestCase(ApprenticeshipType.Apprenticeship, true)]
+    [TestCase(ApprenticeshipType.FoundationApprenticeship, true)]
+    [TestCase(ApprenticeshipType.Unknown, true)]
+    public async Task ShowRplConfirmationIsMappedCorrectly(ApprenticeshipType apprenticeshipType, bool expected)
+    {
+        var fixture = new DetailsViewModelMapperTestsFixture()
+            .CreateThisNumberOfApprenticeships(1)
+            .SetCohortDetailsForAddRpl(
+                apprenticeshipType.ToString(),
+                DateTime.Today,
+                false);
+
+        var result = await fixture.Map();
+
+        result.ShowRplConfirmation.Should().Be(expected);
+    }
+
+    [TestCase(ApprenticeshipType.Apprenticeship, ApprenticeshipType.Apprenticeship)]
+    [TestCase(ApprenticeshipType.FoundationApprenticeship, ApprenticeshipType.FoundationApprenticeship)]
+    [TestCase(ApprenticeshipType.Apprenticeship, ApprenticeshipType.ApprenticeshipUnit)]
+    [TestCase(ApprenticeshipType.FoundationApprenticeship, ApprenticeshipType.ApprenticeshipUnit)]
+    [TestCase(ApprenticeshipType.Apprenticeship, ApprenticeshipType.FoundationApprenticeship, ApprenticeshipType.ApprenticeshipUnit)]
+    public async Task ShowRplConfirmationIsTrueWhenCohortContainsMultipleApprenticeshipTypes(
+    params ApprenticeshipType[] apprenticeshipTypes)
+    {
+        var fixture = new DetailsViewModelMapperTestsFixture()
+            .SetApprenticeshipTypes(apprenticeshipTypes);
+
+        var result = await fixture.Map();
+
+        result.ShowRplConfirmation.Should().BeTrue();
+    }
+
+    [Test]
+    public async Task ShowRplConfirmationIsFalseWhenThereAreNoApprenticeships()
+    {
+        var fixture = new DetailsViewModelMapperTestsFixture()
+            .CreateThisNumberOfApprenticeships(0);
+
+        var result = await fixture.Map();
+
+        result.ShowRplConfirmation.Should().BeFalse();
+    }
 }
 
 public class DetailsViewModelMapperTestsFixture
@@ -1305,6 +1350,19 @@ public class DetailsViewModelMapperTestsFixture
     public DetailsViewModelMapperTestsFixture SetHasAgeRestrictedApprenticeships(bool hasAgeRestrictedApprenticeships)
     {
         CohortDetails.HasAgeRestrictedApprenticeships = hasAgeRestrictedApprenticeships;
+        return this;
+    }
+
+    public DetailsViewModelMapperTestsFixture SetApprenticeshipTypes(
+    params ApprenticeshipType[] apprenticeshipTypes)
+    {
+        CohortDetails.DraftApprenticeships = apprenticeshipTypes
+            .Select(apprenticeshipType => _autoFixture
+                .Build<DraftApprenticeshipDto>()
+                .With(x => x.ApprenticeshipType, apprenticeshipType.ToString())
+                .Create())
+            .ToArray();
+
         return this;
     }
 }
