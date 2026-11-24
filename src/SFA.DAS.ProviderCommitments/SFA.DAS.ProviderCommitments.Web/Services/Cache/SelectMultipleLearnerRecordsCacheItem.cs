@@ -34,4 +34,5 @@ public class SelectMultipleLearnerRecordsCacheItem : ICacheModel
     public LearningType? LearningType { get; set; }
     public long AccountId { get; set; }
     public IEnumerable<LearnerDataValidationError> ValidationErrors { get; set; }
+    public bool OnlyShowLearnersLinkedToEmployer { get; set; }
 }

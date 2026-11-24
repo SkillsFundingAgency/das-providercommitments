@@ -13,4 +13,5 @@ public class SelectMultipleLearnerRecordsFilterRequest : IAuthorizationContextMo
     public bool ClearFilter { get; set; }
     public string CourseCode { get; set; }
     public LearningType? LearningType { get; set; }
+    public bool OnlyShowLearnersLinkedToEmployer { get; set; }
 }

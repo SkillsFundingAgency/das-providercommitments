@@ -102,7 +102,7 @@ public class LearnerRecordsFilterModel
     public List<SelectListItem> Courses { get; set; }
     public LearningType? LearningType { get; set; }
     public List<SelectListItem> LearningTypes { get; set; }
-
+    public bool OnlyShowLearnersLinkedToEmployer { get; set; }
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
     public LearnerRecordsFilterModel()
@@ -163,6 +163,7 @@ public class LearnerRecordsFilterModel
         routeData.Add(nameof(StartMonth), StartMonth);
         routeData.Add(nameof(StartYear), StartYear);
         routeData.Add(nameof(LearningType), LearningType.ToString());
+        routeData.Add(nameof(OnlyShowLearnersLinkedToEmployer), OnlyShowLearnersLinkedToEmployer.ToString());
 
         return routeData;
     }
