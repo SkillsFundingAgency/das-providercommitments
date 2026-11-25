@@ -33,6 +33,6 @@ public enum ManualFieldOrFeature
 {
     StartDate,
     EndDate,
-    Price,
+    Cost,
     Withdrawal
 }

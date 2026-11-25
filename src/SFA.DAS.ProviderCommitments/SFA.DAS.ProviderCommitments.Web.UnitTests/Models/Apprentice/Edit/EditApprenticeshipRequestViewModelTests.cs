@@ -41,7 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Apprentice.Edit
         [Test]
         public void IsStartDateManualEditLockedForUpdate_WhenOnlyOtherManualFieldsAreLocked_ReturnsFalse()
         {
-            _viewModel.LockedManualFieldsAndFeatures = new List<ManualFieldOrFeature> { ManualFieldOrFeature.EndDate, ManualFieldOrFeature.Price, ManualFieldOrFeature.Withdrawal };
+            _viewModel.LockedManualFieldsAndFeatures = new List<ManualFieldOrFeature> { ManualFieldOrFeature.EndDate, ManualFieldOrFeature.Cost, ManualFieldOrFeature.Withdrawal };
 
             _viewModel.IsStartDateManualEditLockedForUpdate.Should().BeFalse();
         }
@@ -93,7 +93,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Apprentice.Edit
         [Test]
         public void IsCostManualEditLockedForUpdate_WhenPriceManualFieldIsLocked_ReturnsTrue()
         {
-            _viewModel.LockedManualFieldsAndFeatures = new List<ManualFieldOrFeature> { ManualFieldOrFeature.Price };
+            _viewModel.LockedManualFieldsAndFeatures = new List<ManualFieldOrFeature> { ManualFieldOrFeature.Cost };
 
             _viewModel.IsCostManualEditLockedForUpdate.Should().BeTrue();
         }

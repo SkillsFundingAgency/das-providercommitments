@@ -106,7 +106,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public List<ManualFieldOrFeature> LockedManualFieldsAndFeatures { get; set; }
         public bool IsStartDateManualEditLockedForUpdate => IsLockedForUpdate || IsUpdateLockedForStartDateAndCourse || IsManualFieldLocked(ManualFieldOrFeature.StartDate);
         public bool IsEndDateManualEditLockedForUpdate => IsEndDateLockedForUpdate || IsManualFieldLocked(ManualFieldOrFeature.EndDate);
-        public bool IsCostManualEditLockedForUpdate => IsLockedForUpdate || IsManualFieldLocked(ManualFieldOrFeature.Price);
+        public bool IsCostManualEditLockedForUpdate => IsLockedForUpdate || IsManualFieldLocked(ManualFieldOrFeature.Cost);
 
         private bool IsManualFieldLocked(ManualFieldOrFeature fieldOrFeature)
         {

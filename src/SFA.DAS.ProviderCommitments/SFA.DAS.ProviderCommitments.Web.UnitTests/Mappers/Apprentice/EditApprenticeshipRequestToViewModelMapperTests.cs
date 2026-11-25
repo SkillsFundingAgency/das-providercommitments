@@ -406,7 +406,7 @@ public class EditApprenticeshipRequestToViewModelMapperTests
     [Test]
     public async Task LockedManualFieldsAndFeatures_IsMapped()
     {
-        var lockedFields = new List<ManualFieldOrFeature> { ManualFieldOrFeature.StartDate, ManualFieldOrFeature.Price };
+        var lockedFields = new List<ManualFieldOrFeature> { ManualFieldOrFeature.StartDate, ManualFieldOrFeature.Cost };
         _fixture.WithLockedManualFieldsAndFeatures(lockedFields);
 
         //Act
