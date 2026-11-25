@@ -33,7 +33,7 @@ public class MultipleLearnerRecordsFilterModel
     public List<SelectListItem> Courses { get; set; }
     public LearningType? LearningType { get; set; }
     public List<SelectListItem> LearningTypes { get; set; }
-
+    public bool OnlyShowLearnersLinkedToEmployer { get; set; }
     private const int PageSize = LearnerRecordSearch.NumberOfLearnersPerSearchPage;
 
     public MultipleLearnerRecordsFilterModel()
