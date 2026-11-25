@@ -82,7 +82,8 @@ public class DetailsViewModelMapper(
             InvalidProviderCourseCodes = cohortDetails.InvalidProviderCourseCodes.ToList(),
             RplErrorDraftApprenticeshipIds = cohortDetails.RplErrorDraftApprenticeshipIds.ToList(),
             UseLearnerData = configuration.GetValue<bool>("ILRFeaturesEnabled"),
-            HasAgeRestrictedApprenticeships = cohortDetails.HasAgeRestrictedApprenticeships
+            HasAgeRestrictedApprenticeships = cohortDetails.HasAgeRestrictedApprenticeships,
+            ShowRplConfirmation = GetRplConfirmationVisibility(courses.SelectMany(c => c.DraftApprenticeships.Select(a => a.ApprenticeshipType)))
         };
 
     }
@@ -452,5 +453,10 @@ public class DetailsViewModelMapper(
         if (apprenticeshipsOverCap > 1)
             return new string("The price for these apprenticeships is above the");
         return null;
+    }
+
+    private static bool GetRplConfirmationVisibility(IEnumerable<ApprenticeshipType> apprenticeshipTypes)
+    {
+        return apprenticeshipTypes.Any(at => at != ApprenticeshipType.ApprenticeshipUnit);
     }
 }

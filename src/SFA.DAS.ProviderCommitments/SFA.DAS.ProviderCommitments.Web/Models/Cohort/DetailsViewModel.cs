@@ -80,6 +80,7 @@ public class DetailsViewModel : IAuthorizationContextModel
     public int NumberOfRplErrors => RplErrorDraftApprenticeshipIds?.Count ?? 0;
     public bool UseLearnerData { get; set; }
     public bool HasAgeRestrictedApprenticeships { get; set; }
+    public bool ShowRplConfirmation { get; set; }
 }
 
 public enum CohortDetailsOptions
