@@ -402,6 +402,31 @@ public class EditApprenticeshipRequestToViewModelMapperTests
 
         _fixture.VerifyHasMultipleDeliveryModelsIsMapped();
     }
+
+    [Test]
+    public async Task LockedManualFieldsAndFeatures_IsMapped()
+    {
+        var lockedFields = new List<ManualFieldOrFeature> { ManualFieldOrFeature.StartDate, ManualFieldOrFeature.Price };
+        _fixture.WithLockedManualFieldsAndFeatures(lockedFields);
+
+        //Act
+        await _fixture.Map();
+
+        //Assert
+        _fixture.VerifyLockedManualFieldsAndFeaturesIsMapped();
+    }
+
+    [Test]
+    public async Task LockedManualFieldsAndFeatures_WhenNull_IsMappedToEmptyList()
+    {
+        _fixture.WithLockedManualFieldsAndFeatures(null);
+
+        //Act
+        await _fixture.Map();
+
+        //Assert
+        _fixture.VerifyLockedManualFieldsAndFeaturesIsEmpty();
+    }
 }
 
 public class EditApprenticeshipRequestToViewModelMapperTestsFixture
@@ -629,6 +654,22 @@ public class EditApprenticeshipRequestToViewModelMapperTestsFixture
     internal void VerifyHasMultipleDeliveryModelsIsMapped()
     {
         _viewModel.HasMultipleDeliveryModelOptions.Should().Be(_editApprenticeshipResponse.HasMultipleDeliveryModelOptions);
+    }
+
+    internal EditApprenticeshipRequestToViewModelMapperTestsFixture WithLockedManualFieldsAndFeatures(List<ManualFieldOrFeature> lockedFields)
+    {
+        _editApprenticeshipResponse.LockedManualFieldsAndFeatures = lockedFields;
+        return this;
+    }
+
+    internal void VerifyLockedManualFieldsAndFeaturesIsMapped()
+    {
+        _viewModel.LockedManualFieldsAndFeatures.Should().BeEquivalentTo(_editApprenticeshipResponse.LockedManualFieldsAndFeatures);
+    }
+
+    internal void VerifyLockedManualFieldsAndFeaturesIsEmpty()
+    {
+        _viewModel.LockedManualFieldsAndFeatures.Should().BeEmpty();
     }
 
     public EditApprenticeshipRequestToViewModelMapperTestsFixture()

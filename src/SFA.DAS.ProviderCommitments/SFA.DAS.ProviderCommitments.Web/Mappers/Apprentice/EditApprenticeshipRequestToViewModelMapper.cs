@@ -95,7 +95,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(apprenticeship.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                 HasMultipleDeliveryModelOptions = editApprenticeship.HasMultipleDeliveryModelOptions,
                 CourseName = editApprenticeship.CourseName,
-                LearningType = editApprenticeship.LearningType ?? LearningType.Apprenticeship
+                LearningType = editApprenticeship.LearningType ?? LearningType.Apprenticeship,
+                LockedManualFieldsAndFeatures = editApprenticeship.LockedManualFieldsAndFeatures ?? new List<ManualFieldOrFeature>()
             };
 
             return result;
