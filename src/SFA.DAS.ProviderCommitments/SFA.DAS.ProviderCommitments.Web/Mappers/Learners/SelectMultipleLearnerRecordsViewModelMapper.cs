@@ -30,7 +30,8 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             StartYear = int.Parse(cacheItem.StartYear),
             CourseCode = cacheItem.CourseCode,
             ExcludeUlns = cacheItem.UlnsInCohort.Concat(cacheItem.SelectedLearners.Select(x => x.Uln)).ToList(),
-            LearningType = cacheItem.LearningType
+            LearningType = cacheItem.LearningType,
+            AgreementId = cacheItem.OnlyShowLearnersLinkedToEmployer ? cacheItem.EmployerAccountLegalEntityPublicHashedId : ""
         };
 
         var response = await client.GetLearnerDetailsForProvider(cacheItem.ProviderId, learnerRequest);
@@ -56,7 +57,8 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
                     Text = m.TrainingName,
                     Value = m.TrainingCode
                 })],
-            LearningType = cacheItem.LearningType
+            LearningType = cacheItem.LearningType,
+            OnlyShowLearnersLinkedToEmployer = cacheItem.OnlyShowLearnersLinkedToEmployer
         };
 
         var maxSelectableLearners = cacheItem.LevyStatus switch

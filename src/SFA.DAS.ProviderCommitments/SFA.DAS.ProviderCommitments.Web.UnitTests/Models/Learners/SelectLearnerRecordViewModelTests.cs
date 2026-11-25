@@ -107,8 +107,8 @@ public class SelectLearnerRecordViewModelTests
         sort["ReverseSort"].Should().Be((!reverse).ToString());
     }
 
-    [TestCase("", 8)]
-    [TestCase(null, 8)]
+    [TestCase("", 9)]
+    [TestCase(null, 9)]
     public void BuildRouteData_IsCorrect(string searchTerm, int expectedCount)
     {
         _viewModel.FilterModel.SearchTerm = searchTerm;
@@ -125,6 +125,7 @@ public class SelectLearnerRecordViewModelTests
         routeData["StartMonth"].Should().Be(_viewModel.FilterModel.StartMonth);
         routeData["StartYear"].Should().Be(_viewModel.FilterModel.StartYear);
         routeData["LearningType"].Should().Be(_viewModel.FilterModel.LearningType.ToString());
+        routeData["OnlyShowLearnersLinkedToEmployer"].Should().Be(_viewModel.FilterModel.OnlyShowLearnersLinkedToEmployer.ToString());
     }
 
     [Test]
@@ -135,7 +136,7 @@ public class SelectLearnerRecordViewModelTests
         var routeData = _viewModel.FilterModel.RouteData;
 
         routeData.Should().NotBeNull();
-        routeData.Count.Should().Be(9);
+        routeData.Count.Should().Be(10);
         routeData["SearchTerm"].Should().Be(_viewModel.FilterModel.SearchTerm);
     }
 

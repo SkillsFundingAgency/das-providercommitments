@@ -81,6 +81,7 @@ public class DetailsViewModel : IAuthorizationContextModel
     public bool UseLearnerData { get; set; }
     public bool IlrSelectMultipleFeatureEnabled { get; set; }
     public bool HasAgeRestrictedApprenticeships { get; set; }
+    public bool ShowRplConfirmation { get; set; }
 }
 
 public enum CohortDetailsOptions
