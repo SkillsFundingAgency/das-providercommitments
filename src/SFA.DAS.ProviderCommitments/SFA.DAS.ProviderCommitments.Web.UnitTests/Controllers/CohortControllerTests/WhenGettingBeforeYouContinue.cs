@@ -33,31 +33,6 @@ public class WhenGettingBeforeYouContinue
         var model = result.VerifyReturnsViewModel().WithModel<BeforeYouContinueViewModel>();
         model.ProviderId.Should().Be(fixture.ProviderId);
     }
-
-    [TestCase("true", true)]
-    [TestCase("false", false)]
-    public void ThenIlrSelectMultipleFeatureEnabledIsMappedFromConfiguration(string configValue, bool expected)
-    {
-        var fixture = new WhenGettingBeforeYouContinueFixture()
-            .WithConfiguration("ILRSelectMultipleFeatureEnabled", configValue);
-
-        var result = fixture.Act();
-
-        var model = result.VerifyReturnsViewModel().WithModel<BeforeYouContinueViewModel>();
-        model.IlrSelectMultipleFeatureEnabled.Should().Be(expected);
-    }
-
-    [Test]
-    public void ThenIlrSelectMultipleFeatureEnabledDefaultsToFalseWhenConfigKeyIsAbsent()
-    {
-        var fixture = new WhenGettingBeforeYouContinueFixture()
-            .WithEmptyConfiguration();
-
-        var result = fixture.Act();
-
-        var model = result.VerifyReturnsViewModel().WithModel<BeforeYouContinueViewModel>();
-        model.IlrSelectMultipleFeatureEnabled.Should().BeFalse();
-    }
 }
 
 public class WhenGettingBeforeYouContinueFixture
