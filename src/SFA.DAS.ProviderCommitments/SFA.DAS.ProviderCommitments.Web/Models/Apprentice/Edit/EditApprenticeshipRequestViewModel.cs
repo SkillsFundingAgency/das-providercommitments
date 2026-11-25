@@ -3,7 +3,6 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
-using StructureMap.Query;
 using System.ComponentModel.DataAnnotations;
 using LearningType = SFA.DAS.Common.Domain.Types.LearningType;
 
