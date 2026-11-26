@@ -1,8 +1,6 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.Common.Domain.Types;
 using LearningType = SFA.DAS.Common.Domain.Types.LearningType;
 
 
@@ -31,4 +29,5 @@ public class GetLearnerSelectedResponse
     public LearningType? LearningType { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
+    public bool? OnServicePayments { get; set; }
 }

@@ -223,4 +223,11 @@ public class WhenIMapCreateCohortRequest
         var result = await _act();
         result.LearnerDataId.Should().Be(_source.LearnerDataId);
     }
+
+    [Test]
+    public async Task ThenOnServicePaymentsIsMappedCorrectly()
+    {
+        var result = await _act();
+        result.OnServicePayments.Should().Be(_cacheItem.OnServicePayments);
+    }
 }
