@@ -66,7 +66,8 @@ public class WhenIMapSelectedLearnerRequestToCreateCohortWithDraftApprenticeship
         savedCacheItem.CourseCode.Should().Be(response.TrainingCode);
         savedCacheItem.Cost.Should().Be(response.TrainingPrice + response.EpaoPrice);
         savedCacheItem.DeliveryModel.Should().Be(response.IsFlexiJob ? DeliveryModel.FlexiJobAgency : DeliveryModel.Regular);
-        
+        savedCacheItem.OnServicePayments.Should().Be(cacheItem.OnServicePayments);
+
         _outerApiService.VerifyAll();
         _outerApiService.VerifyNoOtherCalls();
         _cacheService.VerifyAll();

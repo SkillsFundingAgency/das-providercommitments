@@ -51,7 +51,8 @@ public class CreateCohortRequestMapper : IMapper<AddDraftApprenticeshipOrRoutePo
             EndDate = source.EndDate.Date,
             OriginatorReference = source.Reference,
             DeliveryModel = source.DeliveryModel,
-            LearnerDataId = source.LearnerDataId
+            LearnerDataId = source.LearnerDataId,
+            OnServicePayments = cacheItem.OnServicePayments
         };
     }
 }
