@@ -34,7 +34,6 @@ public class SelectEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOut
                 AccountHashedId = x.AccountHashedId,
                 LevyStatus = ParseApprenticeshipEmployerType(x.ApprenticeshipEmployerType)
             });
-        var ilrSelectMultipleFeatureEnabled = configuration.GetValue<bool>("ILRSelectMultipleFeatureEnabled");
 
         var filterModel = new SelectEmployerFilterModel
         {
@@ -55,7 +54,6 @@ public class SelectEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOut
             ProviderId = source.ProviderId,
             SelectEmployerFilterModel = filterModel,
             UseLearnerData = source.UseLearnerData,
-            IlrSelectMultipleFeatureEnabled = ilrSelectMultipleFeatureEnabled,
             IsMultiSelectJourney = source.IsMultiSelectJourney
         };
     }
