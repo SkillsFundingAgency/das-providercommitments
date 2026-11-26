@@ -19,6 +19,7 @@ public class WhenIMapEditDraftApprenticeshipDetailsToViewModel
     private Func<Task<EditDraftApprenticeshipViewModel>> _act;
     private GetEditDraftApprenticeshipResponse _apiResponse;
     private Mock<ITempDataStorageService> _tempDataStorageService;
+    private Mock<ICacheStorageService> _cacheStorageService;
     private GetRplRequirementsResponse _rplRequirementsResponse;
 
     [SetUp]
@@ -42,15 +43,73 @@ public class WhenIMapEditDraftApprenticeshipDetailsToViewModel
         _tempDataStorageService.Setup(x => x.RetrieveFromCache<EditDraftApprenticeshipViewModel>())
             .Returns(() => null);
 
+        _cacheStorageService = new Mock<ICacheStorageService>();
         _mapper = new EditDraftApprenticeshipViewModelMapper(
             Mock.Of<IEncodingService>(), 
             commitmentsApiClient.Object,
             outerApiService.Object,
             _tempDataStorageService.Object,
-            Mock.Of<ICacheStorageService>());
+            _cacheStorageService.Object);
         _source = fixture.Build<EditDraftApprenticeshipRequest>().Create();
 
         _act = async () => (await _mapper.Map(TestHelper.Clone(_source))) as EditDraftApprenticeshipViewModel;
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task ApprenticeshipUnitResyncUsesNewActualStartDayForFreshAndCachedModels(bool hasCachedModel)
+    {
+        var oldStartDate = new DateTime(2026, 1, 14);
+        var newStartDate = oldStartDate.AddDays(1);
+        _apiResponse.CourseCode = "ZSC00001";
+        _apiResponse.LearningType = SFA.DAS.Common.Domain.Types.LearningType.ApprenticeshipUnit;
+        _apiResponse.ActualStartDate = oldStartDate;
+        _apiResponse.TrainingCourseVersion = "1.0";
+        _source.LearnerDataSyncKey = "learner-sync";
+        if (hasCachedModel)
+        {
+            _tempDataStorageService.Setup(x => x.RetrieveFromCache<EditDraftApprenticeshipViewModel>())
+                .Returns(new EditDraftApprenticeshipViewModel(null, oldStartDate, oldStartDate, null)
+                {
+                    CourseCode = "ZSC00001",
+                    LearningType = null
+                });
+        }
+        _cacheStorageService.Setup(x => x.SafeRetrieveFromCache<SFA.DAS.CommitmentsV2.Api.Types.Responses.GetDraftApprenticeshipResponse>("learner-sync"))
+            .ReturnsAsync(new SFA.DAS.CommitmentsV2.Api.Types.Responses.GetDraftApprenticeshipResponse
+            {
+                CourseCode = "ZSC00001", ActualStartDate = newStartDate, StartDate = newStartDate,
+                TrainingCourseVersion = "1.1"
+            });
+
+        var result = await _act();
+        var update = await new EditDraftApprenticeshipToUpdateRequestMapper().Map(result);
+
+        result.LearningType.Should().Be(SFA.DAS.Common.Domain.Types.LearningType.ApprenticeshipUnit);
+        result.ActualStartDate.Date.Should().Be(newStartDate);
+        result.TrainingCourseVersion.Should().Be("1.1");
+        update.ActualStartDate.Should().Be(newStartDate);
+        _cacheStorageService.Verify(x => x.DeleteFromCache("learner-sync"), Times.Once);
+    }
+
+    [Test]
+    public void ThenTheOuterStringLearningTypeIsDeserialized()
+    {
+        var response = Newtonsoft.Json.JsonConvert.DeserializeObject<GetEditDraftApprenticeshipResponse>(
+            "{\"courseCode\":\"ZSC00001\",\"learningType\":\"ApprenticeshipUnit\",\"trainingCourseVersion\":\"1.1\"}");
+
+        response.LearningType.Should().Be(SFA.DAS.Common.Domain.Types.LearningType.ApprenticeshipUnit);
+        response.TrainingCourseVersion.Should().Be("1.1");
+    }
+
+    [Test]
+    public async Task ThenLearningTypeIsMappedFromTheOuterResponse()
+    {
+        _apiResponse.LearningType = SFA.DAS.Common.Domain.Types.LearningType.ApprenticeshipUnit;
+
+        var result = await _act();
+
+        result.LearningType.Should().Be(_apiResponse.LearningType);
     }
 
     [Test]
