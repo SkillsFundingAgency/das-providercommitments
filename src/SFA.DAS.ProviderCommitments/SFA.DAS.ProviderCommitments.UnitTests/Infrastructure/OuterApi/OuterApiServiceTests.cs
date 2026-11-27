@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
@@ -252,6 +253,57 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
             {
                 _outerApiClientMock.Verify(x => x.Put<object>(It.IsAny<PutFileUploadUpdateLogRequest>()));
             }
+        }
+
+        [Test]
+        public async Task VerifyBulkUploadAddAndApproveMapsCommitmentsApiModelExceptionToBulkUploadErrors()
+        {
+            var request = _fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsRequest>();
+            request.FileUploadLogId = 1234;
+            var exception = new CommitmentsApiModelException(
+            [
+                new ErrorDetail("PriceReducedBy", "Enter the total price reduction due to RPL")
+            ]);
+            _outerApiClientMock
+                .Setup(x => x.Post<BulkUploadAddAndApproveDraftApprenticeshipsResult>(
+                    It.Is<PostBulkUploadAddAndApproveDraftApprenticeshipsRequest>(p => p.Data == request)))
+                .Throws(exception);
+
+            var act = () => _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(request);
+
+            var thrown = await act.Should().ThrowAsync<CommitmentsApiBulkUploadModelException>();
+            thrown.Which.Errors[0].RowNumber.Should().Be(0);
+            thrown.Which.Errors[0].Errors.Should().ContainSingle(e =>
+                e.Property == "PriceReducedBy" && e.ErrorText == "Enter the total price reduction due to RPL");
+
+            var expectedErrorContentPrefix = "Validation failure \r\n";
+            _outerApiClientMock.Verify(x => x.Put<object>(It.Is<PutFileUploadUpdateLogRequest>(p =>
+                ((FileUploadUpdateLogWithErrorContentRequest)p.Data).ErrorContent.StartsWith(expectedErrorContentPrefix))));
+        }
+
+        [Test]
+        public async Task VerifyBulkUploadAddMapsCommitmentsApiModelExceptionToBulkUploadErrors()
+        {
+            var request = _fixture.Create<BulkUploadAddDraftApprenticeshipsRequest>();
+            request.FileUploadLogId = 1234;
+            var exception = new CommitmentsApiModelException(
+            [
+                new ErrorDetail("TrainingHoursReduction", "You must enter the total reduction in off-the-job training time due to RPL")
+            ]);
+            _outerApiClientMock
+                .Setup(x => x.Post<GetBulkUploadAddDraftApprenticeshipsResult>(
+                    It.Is<PostBulkUploadAddDraftApprenticeshipsRequest>(p => p.Data == request)))
+                .Throws(exception);
+
+            var act = () => _outerApiService.BulkUploadDraftApprenticeships(request);
+
+            var thrown = await act.Should().ThrowAsync<CommitmentsApiBulkUploadModelException>();
+            thrown.Which.Errors[0].Errors.Should().ContainSingle(e =>
+                e.Property == "TrainingHoursReduction");
+
+            var expectedErrorContentPrefix = "Validation failure \r\n";
+            _outerApiClientMock.Verify(x => x.Put<object>(It.Is<PutFileUploadUpdateLogRequest>(p =>
+                ((FileUploadUpdateLogWithErrorContentRequest)p.Data).ErrorContent.StartsWith(expectedErrorContentPrefix))));
         }
 
         private void PopulateCsvList()

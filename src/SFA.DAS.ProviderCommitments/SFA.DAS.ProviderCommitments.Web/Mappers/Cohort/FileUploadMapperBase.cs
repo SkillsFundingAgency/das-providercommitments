@@ -18,8 +18,8 @@ public class FileUploadMapperBase(IEncodingService encodingService, IOuterApiSer
             DateOfBirthAsString = csvRecord.DateOfBirth,
             Email = csvRecord.EmailAddress,
             EndDateAsString = csvRecord.EndDate,
-            LastName = csvRecord.FamilyName.Replace("\t", " ").Trim(),
-            FirstName = csvRecord.GivenNames.Replace("\t", " ").Trim(),
+            LastName = (csvRecord.FamilyName ?? string.Empty).Replace("\t", " ").Trim(),
+            FirstName = (csvRecord.GivenNames ?? string.Empty).Replace("\t", " ").Trim(),
             StartDateAsString = csvRecord.StartDate,
             CourseCode = csvRecord.StdCode,
             CostAsString = csvRecord.TotalPrice,
@@ -34,8 +34,8 @@ public class FileUploadMapperBase(IEncodingService encodingService, IOuterApiSer
             RecognisePriorLearningAsString = csvRecord.RecognisePriorLearning,
             TrainingTotalHoursAsString = csvRecord.TrainingTotalHours,
             TrainingHoursReductionAsString = csvRecord.TrainingHoursReduction,
-            IsDurationReducedByRPLAsString = null,
-            DurationReducedByAsString = null,
+            IsDurationReducedByRPLAsString = csvRecord.IsDurationReducedByRPL,
+            DurationReducedByAsString = csvRecord.DurationReducedBy,
             PriceReducedByAsString = csvRecord.PriceReducedBy,
         }).ToList();
     }
