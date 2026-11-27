@@ -1,5 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
+﻿using SFA.DAS.CommitmentsV2.Shared.Extensions;
+using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 

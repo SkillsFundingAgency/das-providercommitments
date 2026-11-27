@@ -65,4 +65,5 @@ public class SelectMultipleLearnerRecordsViewModel : IAuthorizationContextModel
     public ApprenticeshipEmployerType LevyStatus { get; set; }
     public List<ValidationFailure> ModelValidationErrors { get; set; } = new List<ValidationFailure>();
     public int MaxSelectableLearners { get; set; }
+    public bool IsFundsTransfer { get; set; } = false;
 }

@@ -34,6 +34,10 @@ public class SelectMultipleLearnerRecordsPostRequestAddDraftMapper(IOuterApiServ
         apiRequest.AgreementId = cacheItem.EmployerAccountLegalEntityPublicHashedId;
         apiRequest.LearnerIds = cacheItem.SelectedLearners.Select(x => x.Id).ToList();
         apiRequest.AccountId = cacheItem.AccountId;
+        apiRequest.TransferSenderAccountId = cacheItem.TransferSenderAccountId;
+        apiRequest.CohortId = cacheItem.CohortId;
+        apiRequest.CohortReference = cacheItem.CohortReference;
+        apiRequest.EncodedPledgeApplicationId = cacheItem.EncodedPledgeApplicationId;
 
         return await client.SelectMultipleAddDraftApprenticeshipsRequest(apiRequest);
     }

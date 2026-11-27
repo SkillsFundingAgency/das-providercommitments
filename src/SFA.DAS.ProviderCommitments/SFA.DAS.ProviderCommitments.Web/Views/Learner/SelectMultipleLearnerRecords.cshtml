@@ -46,7 +46,7 @@
             </div>
         </details>
 
-        @if (Model.LevyStatus == ApprenticeshipEmployerType.NonLevy)
+        @if (Model.LevyStatus == ApprenticeshipEmployerType.NonLevy && !Model.IsFundsTransfer)
         {
             <p class="govuk-body">
                 You will not see learners with non-levy employers that have a future start date outside of the @Model.FutureMonths month reservation window.
@@ -62,10 +62,10 @@
         @if (Model.LevyStatus == ApprenticeshipEmployerType.Levy)
         {
             <p class="govuk-body">
-                You can select up to 100 learners
+                You can select up to @Model.MaxSelectableLearners learners
             </p>
         }
-        else if (Model.LevyStatus == ApprenticeshipEmployerType.NonLevy)
+        else if (Model.LevyStatus == ApprenticeshipEmployerType.NonLevy && !Model.IsFundsTransfer)
         {
             <p class="govuk-body">
                 You can select up to @Model.MaxSelectableLearners learners based on your employer’s reservation limit
@@ -364,6 +364,12 @@
 }
 
 @section breadcrumb {
-
-    <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", "Cohort", new { @Model.ProviderId, UseLearnerData = true, IsMultiSelectJourney = true })>Back</a>
+    @if (string.IsNullOrWhiteSpace(Model.CohortReference))
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", "Cohort", new { @Model.ProviderId, UseLearnerData = true, IsMultiSelectJourney = true })>Back</a>
+    }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })>Back</a>
+    }
 }

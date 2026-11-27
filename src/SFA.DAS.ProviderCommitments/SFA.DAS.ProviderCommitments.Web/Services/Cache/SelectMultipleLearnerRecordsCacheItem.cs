@@ -21,6 +21,7 @@ public class SelectMultipleLearnerRecordsCacheItem : ICacheModel
     public bool UseLearnerData { get; set; }
     public long? CohortId { get; set; }
     public long? AccountLegalEntityId { get; set; }
+    public long? TransferSenderAccountId { get; set; }
     public string CohortReference { get; set; }
     public string EmployerAccountName { get; set; }
     public string SearchTerm { get; set; }
@@ -34,5 +35,7 @@ public class SelectMultipleLearnerRecordsCacheItem : ICacheModel
     public LearningType? LearningType { get; set; }
     public long AccountId { get; set; }
     public IEnumerable<LearnerDataValidationError> ValidationErrors { get; set; }
+    public List<long> UlnsInCohort { get; set; } = new();
+    public string EncodedPledgeApplicationId { get; set; }
     public bool OnlyShowLearnersLinkedToEmployer { get; set; }
 }
