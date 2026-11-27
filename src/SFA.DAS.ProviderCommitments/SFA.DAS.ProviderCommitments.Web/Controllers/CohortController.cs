@@ -123,36 +123,16 @@ public class CohortController : Controller
     [Route("add/select-how")]
     public IActionResult SelectHowToAddApprentice(CreateCohortWithDraftApprenticeshipRequest request)
     {
-        var model = new SelectHowToAddFirstApprenticeshipJourneyViewModel
+        var redirectModel = new CreateCohortWithDraftApprenticeshipRequest
         {
             ProviderId = request.ProviderId,
             EmployerAccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId,
-            CacheKey = request.CacheKey
+            CacheKey = request.CacheKey,
+            UseLearnerData = true
         };
 
-        return View(model);
+        return RedirectToAction("SelectLearnerRecord", "Learner", redirectModel);
     }
-
-    [HttpPost]
-    [Route("add/select-how")]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public ActionResult SelectHowToAddApprentice(SelectHowToAddFirstApprenticeshipJourneyViewModel model)
-    {
-        var redirectModel = new CreateCohortWithDraftApprenticeshipRequest
-        {
-            ProviderId = model.ProviderId,
-            EmployerAccountLegalEntityPublicHashedId = model.EmployerAccountLegalEntityPublicHashedId,
-            CacheKey = model.CacheKey,
-            UseLearnerData = (model.Selection == AddFirstDraftApprenticeshipJourneyOptions.Ilr)
-        };
-
-        if (model.Selection == AddFirstDraftApprenticeshipJourneyOptions.Ilr)
-        {
-            return RedirectToAction("SelectLearnerRecord", "Learner", redirectModel);
-        }
-        return RedirectToAction("SelectCourse", redirectModel);
-    }
-
 
     [HttpGet]
     [Route("choose-cohort", Name = RouteNames.ChooseCohort)]
