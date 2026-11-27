@@ -95,7 +95,7 @@
             <input type="hidden" asp-for="EmployerAccountLegalEntityPublicHashedId"/>
             <input type="hidden" asp-for="HasMultipleDeliveryModelOptions"/>
             <input type="hidden" asp-for="HasLearnerDataChanges"/>
-            <input type="hidden" asp-for="LastLearnerDataSync"/>
+            <input type="hidden" asp-for="LastLearnerDataSync" asp-format="{0:O}"/>
 
             <button type="submit" id="defaultButton" aria-hidden="true" class="govuk-visually-hidden" tabindex="-1"></button>
             

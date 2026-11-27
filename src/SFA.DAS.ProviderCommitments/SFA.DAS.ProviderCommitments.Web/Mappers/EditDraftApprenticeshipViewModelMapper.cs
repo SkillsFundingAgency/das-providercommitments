@@ -71,12 +71,14 @@ public class EditDraftApprenticeshipViewModelMapper(
                 DurationReducedByHours = apiResponse.DurationReducedByHours,
                 IsDurationReducedByRpl = apiResponse.IsDurationReducedByRpl,
                 TrainingCourseVersion = apiResponse.TrainingCourseVersion,
+                LearningType = apiResponse.LearningType,
                 IsRplRequired = rplRequirements?.IsRequired ?? true,
                 ProposedMaxFunding = apiResponse.ProposedMaxFunding
             };
 
             if (cachedModel != null)
             {
+                cachedModel.LearningType ??= newModel.LearningType;
                 cachedModel.HasMultipleDeliveryModelOptions = newModel.HasMultipleDeliveryModelOptions;
                 cachedModel.HasChangedDeliveryModel = cachedModel.DeliveryModel != (DeliveryModel?)apiResponse.DeliveryModel;
                 
@@ -129,6 +131,14 @@ public class EditDraftApprenticeshipViewModelMapper(
             editModel.StartYear = updatedDraftApprenticeship.StartDate.Value.Year;
         }
             
+        if (editModel.LearningType == SFA.DAS.Common.Domain.Types.LearningType.ApprenticeshipUnit
+            && updatedDraftApprenticeship.ActualStartDate.HasValue)
+        {
+            editModel.ActualStartDay = updatedDraftApprenticeship.ActualStartDate.Value.Day;
+            editModel.ActualStartMonth = updatedDraftApprenticeship.ActualStartDate.Value.Month;
+            editModel.ActualStartYear = updatedDraftApprenticeship.ActualStartDate.Value.Year;
+        }
+
         if (updatedDraftApprenticeship.EndDate.HasValue)
         {
             editModel.EndDay = updatedDraftApprenticeship.EndDate.Value.Day;
