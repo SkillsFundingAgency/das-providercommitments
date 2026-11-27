@@ -17,6 +17,11 @@ namespace SFA.DAS.ProviderCommitments
             public const string BulkUploadErrors = "bulk-upload-errors";
         }
 
+        public static class ChangeHistory
+        {
+            public const int NumberOfChangesPerPage = 50;
+        }
+
         public static class LearnerRecordSearch
         {
             public const int NumberOfLearnersPerSearchPage = 50;

@@ -3,6 +3,7 @@
 public static class RouteNames
 {
     public const string ApprenticesIndex = "apprentices-index";
+    public const string ApprenticesChangeHistory = "apprentices-change-history";
     public const string DownloadApprentices = "apprentices-download";
     public const string ApprenticeDetail = "apprentice-details";
     public const string InvalidIlrChanges = "invalid-ilr-changes";

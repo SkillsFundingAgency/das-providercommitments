@@ -6,4 +6,6 @@ public class GetAllChangeHistoryRequest : IAuthorizationContextModel
 {
     [FromRoute]
     public long ProviderId { get; set; }
+
+    public int PageNumber { get; set; } = 1;
 }
