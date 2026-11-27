@@ -35,6 +35,11 @@
             @Html.HiddenFor(x => x.IsContinuation)
             @Html.HiddenFor(x => x.HasMultipleDeliveryModelOptions)
 
+            @for (int i = 0; i < Model.LockedManualFieldsAndFeatures.Count; i++)
+            {
+                @Html.HiddenFor(x => x.LockedManualFieldsAndFeatures[i])
+            }
+
             <button type="submit" id="defaultButton" aria-hidden="true" class="govuk-visually-hidden" tabindex="-1"></button>
 
             @if (!string.IsNullOrEmpty(Model.Email))
