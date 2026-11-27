@@ -67,6 +67,78 @@ public class InvalidIlrChangesRequestToViewModelMapperTests
     }
 
     [Test, MoqAutoData]
+    public async Task Map_ThenMapsPricesToLatestTotalPrice(
+        InvalidIlrChangesRequest request,
+        GetInvalidIlrChangesResponse response,
+        [Frozen] Mock<IOuterApiClient> outerApiClient,
+        InvalidIlrChangesRequestToViewModelMapper mapper)
+    {
+        response.RequestSets =
+        [
+            new InvalidIlrChangeSet
+            {
+                Fields =
+                [
+                    new InvalidIlrChangeField
+                    {
+                        Field = "Prices",
+                        Old = """[{"effectiveFrom":"2024-08-01","cost":900},{"effectiveFrom":"2025-06-01","cost":1500}]""",
+                        New = """[{"effectiveFrom":"2025-06-01","cost":1500},{"effectiveFrom":"2026-08-01","cost":1900.50}]"""
+                    }
+                ]
+            }
+        ];
+
+        outerApiClient.Setup(x => x.Get<GetInvalidIlrChangesResponse>(
+                It.IsAny<GetInvalidIlrChangesRequest>()))
+            .ReturnsAsync(response);
+
+        var result = await mapper.Map(request);
+
+        var price = result.RequestSets[0].Fields.Should().ContainSingle().Subject;
+        price.Field.Should().Be("TotalPrice");
+        price.FieldDisplayName.Should().Be("Total price");
+        price.Old.Should().Be("£1,500");
+        price.New.Should().Be("£1,901");
+    }
+
+    [Test, MoqAutoData]
+    public async Task Map_ThenShowsErrorForUnreadablePrices(
+        InvalidIlrChangesRequest request,
+        GetInvalidIlrChangesResponse response,
+        [Frozen] Mock<IOuterApiClient> outerApiClient,
+        InvalidIlrChangesRequestToViewModelMapper mapper)
+    {
+        response.RequestSets =
+        [
+            new InvalidIlrChangeSet
+            {
+                Fields =
+                [
+                    new InvalidIlrChangeField
+                    {
+                        Field = "Prices",
+                        Old = "not-json",
+                        New = "[]"
+                    }
+                ]
+            }
+        ];
+
+        outerApiClient.Setup(x => x.Get<GetInvalidIlrChangesResponse>(
+                It.IsAny<GetInvalidIlrChangesRequest>()))
+            .ReturnsAsync(response);
+
+        var result = await mapper.Map(request);
+
+        var price = result.RequestSets[0].Fields.Should().ContainSingle().Subject;
+        price.Field.Should().Be("TotalPrice");
+        price.FieldDisplayName.Should().Be("Total price");
+        price.Old.Should().Be("#error#");
+        price.New.Should().Be("#error#");
+    }
+
+    [Test, MoqAutoData]
     public async Task Map_ThenKeepsNonPriceFields(
         InvalidIlrChangesRequest request,
         GetInvalidIlrChangesResponse response,
