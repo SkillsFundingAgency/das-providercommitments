@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
-using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Authorization.FeatureToggles;
@@ -21,7 +20,6 @@ public static class ConfigurationServiceRegistrations
         services.AddConfigurationFor<BulkUploadFileValidationConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.BulkUploadFileValidationConfiguration);
         services.AddConfigurationFor<ProviderSharedUIConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.ProviderSharedUIConfiguration);
         services.AddConfigurationFor<BlobStorageSettings>(configuration, ProviderCommitmentsConfigurationKeys.BlobStorageSettings);
-        services.AddConfigurationFor<PasAccountApiConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.ProviderAccountApiConfiguration);
 
         return services;
     }

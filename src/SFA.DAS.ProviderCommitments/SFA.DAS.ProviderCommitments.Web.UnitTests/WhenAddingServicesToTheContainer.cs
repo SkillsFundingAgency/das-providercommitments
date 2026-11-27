@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
-using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
@@ -48,7 +47,6 @@ public class WhenAddingServicesToTheContainer
     [TestCase(typeof(BulkUploadFileValidationConfiguration))]
     [TestCase(typeof(ProviderSharedUIConfiguration))]
     [TestCase(typeof(BlobStorageSettings))]
-    [TestCase(typeof(PasAccountApiConfiguration))]
     public void Then_The_Dependencies_Are_Correctly_Resolved_For_Configuration(Type toResolve)
     {
         RunTestForType(toResolve);
@@ -125,8 +123,7 @@ public class WhenAddingServicesToTheContainer
         services.AddTransient<IAuthorizationService, AuthorizationService>();
 
         services
-            .AddCommitmentsApiClient(stubConfiguration)
-            .AddProviderApprenticeshipsApiClient(stubConfiguration);
+            .AddCommitmentsApiClient(stubConfiguration);
 
         services.AddEncodingServices(stubConfiguration);
         services.AddApplicationServices();
@@ -181,7 +178,7 @@ public class WhenAddingServicesToTheContainer
 
                 new("BlobStorage:ConnectionString", "UseDevelopmentStorage=true"),
                 new("BlobStorage:BulkUploadContainer", "test"),
-                
+
                 new("DfEOidcConfiguration:APIServiceUrl", "https://test.com"),
                 new("DfEOidcConfiguration:BaseUrl", "https://test.com"),
                 new("DfEOidcConfiguration:Scopes", "ABC 123 456 789"),
