@@ -4,8 +4,6 @@
 @using SFA.DAS.ProviderCommitments.Web.Extensions;
 @using SFA.DAS.CommitmentsV2.Api.Client
 @using SFA.DAS.ProviderCommitments.Extensions
-@using SFA.DAS.ProviderCommitments.Interfaces
-@using SFA.DAS.ProviderCommitments.Web.Mappers
 @inject ICommitmentsApiClient CommitmentsApiClient
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit.EditApprenticeshipRequestViewModel
 
@@ -36,6 +34,14 @@
             @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
             @Html.HiddenFor(x => x.IsContinuation)
             @Html.HiddenFor(x => x.HasMultipleDeliveryModelOptions)
+
+            @if (Model.LockedManualFieldsAndFeatures != null)
+            {
+                for (int i = 0; i < Model.LockedManualFieldsAndFeatures.Count; i++)
+                {
+                    @Html.HiddenFor(x => x.LockedManualFieldsAndFeatures[i])
+                }
+            }
 
             <button type="submit" id="defaultButton" aria-hidden="true" class="govuk-visually-hidden" tabindex="-1"></button>
 
@@ -158,7 +164,7 @@
             @Html.HiddenFor(x => x.DeliveryModel)
 
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6" />
-            @if (Model.IsLockedForUpdate || Model.IsUpdateLockedForStartDateAndCourse)
+            @if (Model.IsStartDateManualEditLockedForUpdate)
             {
                 <dl class="das-definition-list">
                     <dt class="das-definition-list__title">Planned training start date</dt>
@@ -200,7 +206,7 @@
             }
 
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6" />
-            @if (Model.IsEndDateLockedForUpdate)
+            @if (Model.IsEndDateManualEditLockedForUpdate)
             {
                 <dl class="das-definition-list">
                     <dt class="das-definition-list__title">Projected training finish date</dt>
@@ -284,7 +290,7 @@
             }
 
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6" />
-            @if (Model.IsLockedForUpdate)
+            @if (Model.IsCostManualEditLockedForUpdate)
             {
                 @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
                 {

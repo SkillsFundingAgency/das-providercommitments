@@ -1,29 +1,38 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SFA.DAS.Common.Domain.Types;
+using System.Collections.Generic;
 
-namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices
+namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+
+public class GetEditApprenticeshipRequest : IGetApiRequest
 {
-    public class GetEditApprenticeshipRequest : IGetApiRequest
+    public long ProviderId { get; }
+    public long ApprenticeshipId { get; set; }
+
+    public GetEditApprenticeshipRequest(long providerId, long apprenticeshipId)
     {
-        public long ProviderId { get; }
-        public long ApprenticeshipId { get; set; }
-
-        public GetEditApprenticeshipRequest(long providerId, long apprenticeshipId)
-        {
-            ProviderId = providerId;
-            ApprenticeshipId = apprenticeshipId;
-        }
-
-        public string GetUrl => $"provider/{ProviderId}/apprentices/{ApprenticeshipId}/edit";
+        ProviderId = providerId;
+        ApprenticeshipId = apprenticeshipId;
     }
 
-    public class GetEditApprenticeshipResponse
-    {
-        public bool HasMultipleDeliveryModelOptions { get; set; }
-        public bool IsFundedByTransfer { get; set; }
-        public string CourseName { get; set; }
-        [JsonConverter(typeof(StringEnumConverter))]
-        public LearningType? LearningType { get; set; }
-    }
+    public string GetUrl => $"provider/{ProviderId}/apprentices/{ApprenticeshipId}/edit";
+}
+
+public class GetEditApprenticeshipResponse
+{
+    public bool HasMultipleDeliveryModelOptions { get; set; }
+    public bool IsFundedByTransfer { get; set; }
+    public string CourseName { get; set; }
+    [JsonConverter(typeof(StringEnumConverter))]
+    public LearningType? LearningType { get; set; }
+    public List<ManualFieldOrFeature> LockedManualFieldsAndFeatures { get; set; }
+}
+
+public enum ManualFieldOrFeature
+{
+    StartDate,
+    EndDate,
+    Cost,
+    Withdrawal
 }
