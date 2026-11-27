@@ -19,6 +19,7 @@ using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Web.Models.Learners;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using ApprenticeshipEmployerType = SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType;
@@ -94,8 +95,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("add/select-how")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public ActionResult AddAnotherSelectMethod(SelectAddAnotherDraftApprenticeshipJourneyViewModel model)
+        public ActionResult AddAnotherSelectMethod(SelectAddAnotherDraftApprenticeshipJourneyViewModel model, [FromServices] IConfiguration configuration)
         {
+            if (configuration.GetValue<bool>("ILRFeaturesEnabled") && configuration.GetValue<bool>("ILRSelectMultipleFeatureEnabled"))
+            {
+                var request = new SelectMultipleLearnerRecordsAddToExistingCohortRequest
+                {
+                    ProviderId = model.ProviderId,
+                    CohortReference = model.CohortReference,
+                    AccountLegalEntityHashedId = model.AccountLegalEntityHashedId,
+                    EncodedPledgeApplicationId = model.EncodedPledgeApplicationId,
+                    UseLearnerData = (model.Selection == AddAnotherDraftApprenticeshipJourneyOptions.Ilr)
+                };
+                return RedirectToAction("SelectMultipleLearnerRecordsAddToExistingCohort", "Learner", request);
+            }
+
             var redirectModel = new GetReservationIdForAddAnotherApprenticeRequest
             {
                 ProviderId = model.ProviderId,

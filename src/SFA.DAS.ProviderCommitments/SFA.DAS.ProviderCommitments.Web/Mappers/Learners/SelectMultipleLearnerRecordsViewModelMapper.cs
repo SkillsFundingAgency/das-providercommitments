@@ -63,7 +63,7 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
 
         var maxSelectableLearners = cacheItem.LevyStatus switch
         {
-            ApprenticeshipEmployerType.Levy => 100,
+            ApprenticeshipEmployerType.Levy => 100-cacheItem.UlnsInCohort.Count,
             ApprenticeshipEmployerType.NonLevy => await GetRemainingReservationsCount(cacheItem.AccountId),
             _ => 0
         };

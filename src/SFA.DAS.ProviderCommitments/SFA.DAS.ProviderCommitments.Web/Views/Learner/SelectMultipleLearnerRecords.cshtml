@@ -62,7 +62,7 @@
         @if (Model.LevyStatus == ApprenticeshipEmployerType.Levy)
         {
             <p class="govuk-body">
-                You can select up to 100 learners
+                You can select up to @Model.MaxSelectableLearners learners
             </p>
         }
         else if (Model.LevyStatus == ApprenticeshipEmployerType.NonLevy)
