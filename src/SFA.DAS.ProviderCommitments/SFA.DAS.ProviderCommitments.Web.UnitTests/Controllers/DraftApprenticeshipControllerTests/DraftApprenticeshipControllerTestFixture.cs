@@ -69,7 +69,8 @@ public class DraftApprenticeshipControllerTestFixture
     private Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult _validateUlnOverlapOnStartDateResult;
 
     private Mock<IConfiguration> _configuration;
-    private Mock<IConfigurationSection> _configurationSection;
+    private Mock<IConfigurationSection> _configurationILRSection;
+    private Mock<IConfigurationSection> _configurationILRSelectMultipleSection;
 
     public DraftApprenticeshipControllerTestFixture()
     {
@@ -253,11 +254,14 @@ public class DraftApprenticeshipControllerTestFixture
                 DraftApprenticeshipId = _draftApprenticeshipId
             });
 
-        _configurationSection = new Mock<IConfigurationSection>();
+        _configurationILRSection = new Mock<IConfigurationSection>();
         SetupIlrConfigurationSection(false);
- 
+        _configurationILRSelectMultipleSection = new Mock<IConfigurationSection>();
+        SetupIlrSelectMultipleConfigurationSection(false);
+
         _configuration = new Mock<IConfiguration>();
-        _configuration.Setup(c => c.GetSection("ILRFeaturesEnabled")).Returns(_configurationSection.Object);
+        _configuration.Setup(c => c.GetSection("ILRFeaturesEnabled")).Returns(_configurationILRSection.Object);
+        _configuration.Setup(c => c.GetSection("ILRSelectMultipleFeatureEnabled")).Returns(_configurationILRSelectMultipleSection.Object);
 
         _controller = new DraftApprenticeshipController(
             _mediator.Object,
@@ -279,7 +283,13 @@ public class DraftApprenticeshipControllerTestFixture
 
     public DraftApprenticeshipControllerTestFixture SetupIlrConfigurationSection(bool status)
     {
-        _configurationSection.Setup(s => s.Value).Returns(status.ToString().ToLower);
+        _configurationILRSection.Setup(s => s.Value).Returns(status.ToString().ToLower);
+        return this;
+    }
+
+    public DraftApprenticeshipControllerTestFixture SetupIlrSelectMultipleConfigurationSection(bool status)
+    {
+        _configurationILRSelectMultipleSection.Setup(s => s.Value).Returns(status.ToString().ToLower);
         return this;
     }
 
@@ -353,13 +363,13 @@ public class DraftApprenticeshipControllerTestFixture
     public DraftApprenticeshipControllerTestFixture PostToAddAnotherSelectionMethod(AddAnotherDraftApprenticeshipJourneyOptions? option)
     {
         _selectAddAnotherApprenticeshipJourneyViewModel.Selection = option;
-        _actionResult = _controller.AddAnotherSelectMethod(_selectAddAnotherApprenticeshipJourneyViewModel);
+        _actionResult = _controller.AddAnotherSelectMethod(_selectAddAnotherApprenticeshipJourneyViewModel, _configuration.Object);
         return this;
     }
 
     public DraftApprenticeshipControllerTestFixture PostToAddAnotherSelectionMethod()
     {
-        _actionResult = _controller.AddAnotherSelectMethod(_selectAddAnotherApprenticeshipJourneyViewModel);
+        _actionResult = _controller.AddAnotherSelectMethod(_selectAddAnotherApprenticeshipJourneyViewModel, _configuration.Object);
         return this;
     }
 

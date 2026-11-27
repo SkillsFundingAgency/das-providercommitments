@@ -31,7 +31,8 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             CourseCode = cacheItem.CourseCode,
             ExcludeUlns = cacheItem.UlnsInCohort.Concat(cacheItem.SelectedLearners.Select(x => x.Uln)).ToList(),
             LearningType = cacheItem.LearningType,
-            AgreementId = cacheItem.OnlyShowLearnersLinkedToEmployer ? cacheItem.EmployerAccountLegalEntityPublicHashedId : ""
+            AgreementId = cacheItem.OnlyShowLearnersLinkedToEmployer ? cacheItem.EmployerAccountLegalEntityPublicHashedId : "",
+            IsFundsTransfer = cacheItem.TransferSenderAccountId.HasValue
         };
 
         var response = await client.GetLearnerDetailsForProvider(cacheItem.ProviderId, learnerRequest);
@@ -61,10 +62,12 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             OnlyShowLearnersLinkedToEmployer = cacheItem.OnlyShowLearnersLinkedToEmployer
         };
 
+        var isFundsTransfer = cacheItem.TransferSenderAccountId.HasValue;
+        var limit = Math.Max(0, 100 - cacheItem.UlnsInCohort.Count);
         var maxSelectableLearners = cacheItem.LevyStatus switch
         {
-            ApprenticeshipEmployerType.Levy => 100-cacheItem.UlnsInCohort.Count,
-            ApprenticeshipEmployerType.NonLevy => await GetRemainingReservationsCount(cacheItem.AccountId),
+            ApprenticeshipEmployerType.Levy => limit,
+            ApprenticeshipEmployerType.NonLevy => isFundsTransfer ? limit : await GetRemainingReservationsCount(cacheItem.AccountId),
             _ => 0
         };
 
@@ -81,7 +84,8 @@ public class SelectMultipleLearnerRecordsViewModelMapper(IOuterApiService client
             FilterModel = filterModel,
             FutureMonths = response.FutureMonths,
             LevyStatus = cacheItem.LevyStatus,
-            MaxSelectableLearners = maxSelectableLearners
+            MaxSelectableLearners = maxSelectableLearners,
+            IsFundsTransfer = isFundsTransfer
         };
 
         ValidationResult validationResult = await validator.ValidateAsync(model);

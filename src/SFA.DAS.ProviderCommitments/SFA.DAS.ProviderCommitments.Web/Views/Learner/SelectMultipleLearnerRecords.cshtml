@@ -46,7 +46,7 @@
             </div>
         </details>
 
-        @if (Model.LevyStatus == ApprenticeshipEmployerType.NonLevy)
+        @if (Model.LevyStatus == ApprenticeshipEmployerType.NonLevy && !Model.IsFundsTransfer)
         {
             <p class="govuk-body">
                 You will not see learners with non-levy employers that have a future start date outside of the @Model.FutureMonths month reservation window.
@@ -65,7 +65,7 @@
                 You can select up to @Model.MaxSelectableLearners learners
             </p>
         }
-        else if (Model.LevyStatus == ApprenticeshipEmployerType.NonLevy)
+        else if (Model.LevyStatus == ApprenticeshipEmployerType.NonLevy && !Model.IsFundsTransfer)
         {
             <p class="govuk-body">
                 You can select up to @Model.MaxSelectableLearners learners based on your employer’s reservation limit
